@@ -1,0 +1,303 @@
+{
+  "model": "C1000 Gen 2",
+  "main_firmware": "1.1.4.9",
+  "firmware_sha256": "21ffb746c1e07ecaa9817fa7017807585a00bedbca3f136c650129bb52a4a0c9",
+  "cases": 29,
+  "results": [
+    {
+      "group": "fa_callback",
+      "mode": 1,
+      "prior_buffer_fill": 0,
+      "typed_value_hex": "040101010100171100000000000000000000000000",
+      "saved_reads": 0,
+      "saved_state_and_output_flags_preserved": true
+    },
+    {
+      "group": "fa_callback",
+      "mode": 1,
+      "prior_buffer_fill": 85,
+      "typed_value_hex": "040101010155175155550000000000000000000000",
+      "saved_reads": 0,
+      "saved_state_and_output_flags_preserved": true
+    },
+    {
+      "group": "fa_callback",
+      "mode": 1,
+      "prior_buffer_fill": 170,
+      "typed_value_hex": "0401010101aa1791aaaa0000000000000000000000",
+      "saved_reads": 0,
+      "saved_state_and_output_flags_preserved": true
+    },
+    {
+      "group": "fa_callback",
+      "mode": 1,
+      "prior_buffer_fill": 255,
+      "typed_value_hex": "0401010101ff17d1ffff0000000000000000000000",
+      "saved_reads": 0,
+      "saved_state_and_output_flags_preserved": true
+    },
+    {
+      "group": "fa_callback",
+      "mode": 2,
+      "prior_buffer_fill": 0,
+      "typed_value_hex": "040101010100171100000000000000000000000000",
+      "saved_reads": 0,
+      "saved_state_and_output_flags_preserved": true
+    },
+    {
+      "group": "fa_callback",
+      "mode": 2,
+      "prior_buffer_fill": 85,
+      "typed_value_hex": "040101010155175155550000000000000000000000",
+      "saved_reads": 0,
+      "saved_state_and_output_flags_preserved": true
+    },
+    {
+      "group": "fa_callback",
+      "mode": 2,
+      "prior_buffer_fill": 170,
+      "typed_value_hex": "0401010101aa1791aaaa0000000000000000000000",
+      "saved_reads": 0,
+      "saved_state_and_output_flags_preserved": true
+    },
+    {
+      "group": "fa_callback",
+      "mode": 2,
+      "prior_buffer_fill": 255,
+      "typed_value_hex": "0401010101ff17d1ffff0000000000000000000000",
+      "saved_reads": 0,
+      "saved_state_and_output_flags_preserved": true
+    },
+    {
+      "group": "fa_callback",
+      "mode": 3,
+      "prior_buffer_fill": 0,
+      "typed_value_hex": "040101010100171100000000000000000000000000",
+      "saved_reads": 0,
+      "saved_state_and_output_flags_preserved": true
+    },
+    {
+      "group": "fa_callback",
+      "mode": 3,
+      "prior_buffer_fill": 85,
+      "typed_value_hex": "040101010155175155550000000000000000000000",
+      "saved_reads": 0,
+      "saved_state_and_output_flags_preserved": true
+    },
+    {
+      "group": "fa_callback",
+      "mode": 3,
+      "prior_buffer_fill": 170,
+      "typed_value_hex": "0401010101aa1791aaaa0000000000000000000000",
+      "saved_reads": 0,
+      "saved_state_and_output_flags_preserved": true
+    },
+    {
+      "group": "fa_callback",
+      "mode": 3,
+      "prior_buffer_fill": 255,
+      "typed_value_hex": "0401010101ff17d1ffff0000000000000000000000",
+      "saved_reads": 0,
+      "saved_state_and_output_flags_preserved": true
+    },
+    {
+      "group": "fa_capacity",
+      "capacity": 0,
+      "response_written": false,
+      "saved_reads": 0
+    },
+    {
+      "group": "fa_capacity",
+      "capacity": 20,
+      "response_written": false,
+      "saved_reads": 0
+    },
+    {
+      "group": "fa_capacity",
+      "capacity": 21,
+      "response_written": false,
+      "saved_reads": 0
+    },
+    {
+      "group": "fa_capacity",
+      "capacity": 22,
+      "response_written": true,
+      "saved_reads": 0
+    },
+    {
+      "group": "fa_capacity",
+      "capacity": 128,
+      "response_written": true,
+      "saved_reads": 0
+    },
+    {
+      "group": "saved_state_collision",
+      "hidden_difference": "automatic_0_maximum",
+      "same_a4_d9_da_fa": true,
+      "distinct_complete_saved_state": true,
+      "serializers_preserve_saved_state": true,
+      "responses": {
+        "a4": "0400000000b0043200000000000000001e0003000000010164010000000000000200",
+        "d9": "0400000a64010000000000000000000000000000000000000000",
+        "da": "040000000000000000000000000000000000000000000000",
+        "fa": "040101010100171100000000000000000000000000"
+      }
+    },
+    {
+      "group": "saved_state_collision",
+      "hidden_difference": "automatic_0_start",
+      "same_a4_d9_da_fa": true,
+      "distinct_complete_saved_state": true,
+      "serializers_preserve_saved_state": true,
+      "responses": {
+        "a4": "0400000000b0043200000000000000001e0003000000010164010000000000000200",
+        "d9": "0400000a64010000000000000000000000000000000000000000",
+        "da": "040000000000000000000000000000000000000000000000",
+        "fa": "040101010100171100000000000000000000000000"
+      }
+    },
+    {
+      "group": "saved_state_collision",
+      "hidden_difference": "automatic_0_end",
+      "same_a4_d9_da_fa": true,
+      "distinct_complete_saved_state": true,
+      "serializers_preserve_saved_state": true,
+      "responses": {
+        "a4": "0400000000b0043200000000000000001e0003000000010164010000000000000200",
+        "d9": "0400000a64010000000000000000000000000000000000000000",
+        "da": "040000000000000000000000000000000000000000000000",
+        "fa": "040101010100171100000000000000000000000000"
+      }
+    },
+    {
+      "group": "saved_state_collision",
+      "hidden_difference": "automatic_1_maximum",
+      "same_a4_d9_da_fa": true,
+      "distinct_complete_saved_state": true,
+      "serializers_preserve_saved_state": true,
+      "responses": {
+        "a4": "0400000000b0043200000000000000001e0003000000010164010000000000000200",
+        "d9": "0400000a64010000000000000000000000000000000000000000",
+        "da": "040000000000000000000000000000000000000000000000",
+        "fa": "040101010100171100000000000000000000000000"
+      }
+    },
+    {
+      "group": "saved_state_collision",
+      "hidden_difference": "automatic_1_start",
+      "same_a4_d9_da_fa": true,
+      "distinct_complete_saved_state": true,
+      "serializers_preserve_saved_state": true,
+      "responses": {
+        "a4": "0400000000b0043200000000000000001e0003000000010164010000000000000200",
+        "d9": "0400000a64010000000000000000000000000000000000000000",
+        "da": "040000000000000000000000000000000000000000000000",
+        "fa": "040101010100171100000000000000000000000000"
+      }
+    },
+    {
+      "group": "saved_state_collision",
+      "hidden_difference": "automatic_1_end",
+      "same_a4_d9_da_fa": true,
+      "distinct_complete_saved_state": true,
+      "serializers_preserve_saved_state": true,
+      "responses": {
+        "a4": "0400000000b0043200000000000000001e0003000000010164010000000000000200",
+        "d9": "0400000a64010000000000000000000000000000000000000000",
+        "da": "040000000000000000000000000000000000000000000000",
+        "fa": "040101010100171100000000000000000000000000"
+      }
+    },
+    {
+      "group": "saved_state_collision",
+      "hidden_difference": "automatic_2_maximum",
+      "same_a4_d9_da_fa": true,
+      "distinct_complete_saved_state": true,
+      "serializers_preserve_saved_state": true,
+      "responses": {
+        "a4": "0400000000b0043200000000000000001e0003000000010164010000000000000200",
+        "d9": "0400000a64010000000000000000000000000000000000000000",
+        "da": "040000000000000000000000000000000000000000000000",
+        "fa": "040101010100171100000000000000000000000000"
+      }
+    },
+    {
+      "group": "saved_state_collision",
+      "hidden_difference": "automatic_2_start",
+      "same_a4_d9_da_fa": true,
+      "distinct_complete_saved_state": true,
+      "serializers_preserve_saved_state": true,
+      "responses": {
+        "a4": "0400000000b0043200000000000000001e0003000000010164010000000000000200",
+        "d9": "0400000a64010000000000000000000000000000000000000000",
+        "da": "040000000000000000000000000000000000000000000000",
+        "fa": "040101010100171100000000000000000000000000"
+      }
+    },
+    {
+      "group": "saved_state_collision",
+      "hidden_difference": "automatic_2_end",
+      "same_a4_d9_da_fa": true,
+      "distinct_complete_saved_state": true,
+      "serializers_preserve_saved_state": true,
+      "responses": {
+        "a4": "0400000000b0043200000000000000001e0003000000010164010000000000000200",
+        "d9": "0400000a64010000000000000000000000000000000000000000",
+        "da": "040000000000000000000000000000000000000000000000",
+        "fa": "040101010100171100000000000000000000000000"
+      }
+    },
+    {
+      "group": "saved_state_collision",
+      "hidden_difference": "clock_first_enable",
+      "same_a4_d9_da_fa": true,
+      "distinct_complete_saved_state": true,
+      "serializers_preserve_saved_state": true,
+      "responses": {
+        "a4": "0400000000b0043200000000000000001e0003000000010164010000000000000200",
+        "d9": "0400000a64010000000000000000000000000000000000000000",
+        "da": "040000000000000000000000000000000000000000000000",
+        "fa": "040101010100171100000000000000000000000000"
+      }
+    },
+    {
+      "group": "saved_state_collision",
+      "hidden_difference": "clock_text",
+      "same_a4_d9_da_fa": true,
+      "distinct_complete_saved_state": true,
+      "serializers_preserve_saved_state": true,
+      "responses": {
+        "a4": "0400000000b0043200000000000000001e0003000000010164010000000000000200",
+        "d9": "0400000a64010000000000000000000000000000000000000000",
+        "da": "040000000000000000000000000000000000000000000000",
+        "fa": "040101010100171100000000000000000000000000"
+      }
+    },
+    {
+      "group": "saved_state_collision",
+      "hidden_difference": "clock_reserved_bits",
+      "same_a4_d9_da_fa": true,
+      "distinct_complete_saved_state": true,
+      "serializers_preserve_saved_state": true,
+      "responses": {
+        "a4": "0400000000b0043200000000000000001e0003000000010164010000000000000200",
+        "d9": "0400000a64010000000000000000000000000000000000000000",
+        "da": "040000000000000000000000000000000000000000000000",
+        "fa": "040101010100171100000000000000000000000000"
+      }
+    }
+  ],
+  "fa_handler": "0801af54",
+  "fa_typed_length": 21,
+  "fa_prior_buffer_bytes": [
+    5,
+    8,
+    9
+  ],
+  "fa_prior_buffer_bits": {
+    "7": "c0"
+  },
+  "limits": "Replay saved-state collisions and the FA full-status callback, offline only.\n\nActual A4/D9/DA/FA serializers execute in synthetic RAM. Existing calendar,\nmemory, logging, transport and persistence substitutes remain. This does not\nexecute all 19 callbacks, an Android SDK, flash, or any station/network action.",
+  "claim_scope": "These four responses cannot reconstruct the differing saved fields. FA is not a saved-state export. Other status callbacks and indirect diagnostic routes are not exhaustively proved here.",
+  "station_commands_sent": 0
+}

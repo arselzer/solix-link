@@ -1,0 +1,19 @@
+{
+  "script_sha256": "d9e8aeff8db9ba0eaa109b05f8f2843b880b224d3951cf0f6c2b41e192204549",
+  "firmware_sha256": "21ffb746c1e07ecaa9817fa7017807585a00bedbca3f136c650129bb52a4a0c9",
+  "python": "3.12.3",
+  "unicorn": "2.1.4",
+  "sources": {
+    "emulate_charging_followup.py": "47f845935c526ac13a9a9de119b8b442297d06039817e507ee3a6fb6e7591854",
+    "emulate_clock_semantics.py": "945b649c3b5cec00d816041e783641085ccfbdb5f80efc2ed2c4e15f3bae30f2",
+    "emulate_disaster_plan.py": "68b03e424fd4453548f30aedf56630a645faff85ec005edd0682b393abe4cf46",
+    "emulate_feature_candidates.py": "2b03b97727d634ce9040052de99f73a4834c2ecac7c71a476b418ec05fbb9a82",
+    "emulate_gen2_status_export_limits.py": "d9e8aeff8db9ba0eaa109b05f8f2843b880b224d3951cf0f6c2b41e192204549",
+    "emulate_general_settings.py": "26ce041976a8fd1ac43feb2851c1717363761cb2f7da69f4d780b3f42b8ef0ba",
+    "emulate_soc_cap_handler.py": "fbac6e75825cb096190779f583ade26ea4d5e4cd9f5a76781185d39d33280c71",
+    "emulate_tariff_power_policy.py": "a5949c67bda519bb82e8c3d14a72e29381d1f0a8a908977555abfc96dfb1b774",
+    "emulate_tou_controller_encoding.py": "9d65518d92649f47b67c86562b7edd29f0775d778b02c25eca72b0acd55a0e22",
+    "emulate_tou_d9.py": "25bfc0d14c3f2e7ba50d7b7c01c750c836cf1ce3c81d8db21d2a3e6630b04894",
+    "replay_io.py": "731d795a5ec37e2cf12b809b7122eaf7a29d84c21a2ecd43fafa3e2f8d962d30"
+  }
+}

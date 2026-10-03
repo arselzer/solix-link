@@ -1,0 +1,7110 @@
+{
+  "guest_instructions_executed": 0,
+  "instruction_check_counts": {
+    "container_routes_and_next_wrapper": 96,
+    "inherited": 630,
+    "new_handlers": 337
+  },
+  "limits": [
+    "Symbolic stack, memory, branch and callback values; no runtime success proof",
+    "No actual asset-name selection, callback identity or runtime key writer established",
+    "No plaintext DEX, container transform or SDK charging-pause packet recovered",
+    "DETool.dowork data protection is a separate boundary, not this ClassLoader record",
+    "Protector handler/table indices do not map to station protocol opcodes",
+    "No device-model or firmware applicability established"
+  ],
+  "native_container_call": {
+    "arguments": [
+      "local23 filename buffer",
+      "local4 out-buffer pointer cell",
+      "local38 out-length cell",
+      "local6 out-type cell"
+    ],
+    "record_token_offset": 264,
+    "return": "native w0 bit0; symbolic branch at record offset272",
+    "table_index": 4,
+    "target": "0xb2dbc",
+    "thunk_index": 3,
+    "type2": {
+      "helper": "0xb6b34",
+      "matches_selected_asset_headers": false
+    },
+    "type3": {
+      "actual_asset_selected_at_runtime": "unresolved descriptor+0x28",
+      "arguments": [
+        "transformed payload",
+        "signed payload length",
+        "classes.dex",
+        "out pointer cell",
+        "out length cell"
+      ],
+      "callback": "runtime context+0x48 interface+0x20 at0xb2ed8",
+      "header_bytes": 40,
+      "output": "out-buffer/out-length plus context+0x2b8 pointer and +0x2c0 zero",
+      "reader": "0xb69e8",
+      "transform": "0xb6d44(payload pointer cell, signed length minus40,1)"
+    }
+  },
+  "negative_parser_checks": [
+    "short_record",
+    "long_record",
+    "header_marker",
+    "encoded_frame_count",
+    "dispatch_identity",
+    "short_dispatch",
+    "state_bound_exhausted",
+    "state_bound_zero",
+    "state_bound_unbounded",
+    "branch_outside_record",
+    "unaudited_call_table_index",
+    "unaudited_thunk_index"
+  ],
+  "negative_relocation_checks": [
+    "rela_stride",
+    "rela_table_size",
+    "import_relocation_type",
+    "import_symbol_index",
+    "import_name",
+    "missing_selected_relocation",
+    "duplicate_selected_relocation"
+  ],
+  "new_zero_operand_handlers": [
+    {
+      "bytes": 4,
+      "common_exit": "0xc46e8",
+      "end_exclusive": "0xbd8e4",
+      "handler_index": "0x0",
+      "meaning": "return_void",
+      "operand_bytes": 0,
+      "semantic_checks": 1,
+      "sha256": "f94f59a4391f01b89f328cf531d646734788efcb1fd4cdc856988bd185e96fdc",
+      "start": "0xbd8e0"
+    },
+    {
+      "bytes": 200,
+      "common_exit": "0xbd8ac",
+      "end_exclusive": "0xc0e7c",
+      "handler_index": "0x7",
+      "meaning": "arithmetic_shift_right_pointer",
+      "operand_bytes": 0,
+      "semantic_checks": 24,
+      "sha256": "d86f5320aa868d07cd843a9c14f62389f23cd0c03afa9eaa5daab8855a05597c",
+      "start": "0xc0db4"
+    },
+    {
+      "bytes": 200,
+      "common_exit": "0xbd8ac",
+      "end_exclusive": "0xc2208",
+      "handler_index": "0xd",
+      "meaning": "compare_words_not_equal",
+      "operand_bytes": 0,
+      "semantic_checks": 24,
+      "sha256": "8f3b687e2e8d323682715e8b6c016f6509ce89989169ff2ab50be7dfcdb8784f",
+      "start": "0xc2140"
+    },
+    {
+      "bytes": 200,
+      "common_exit": "0xbd8ac",
+      "end_exclusive": "0xc09c4",
+      "handler_index": "0xe",
+      "meaning": "compare_signed_words_greater",
+      "operand_bytes": 0,
+      "semantic_checks": 24,
+      "sha256": "2b484c37cd3ef6304157e3e545f383fb5f8a7c5d295c4c4bb98e7a02024ada9d",
+      "start": "0xc08fc"
+    },
+    {
+      "bytes": 200,
+      "common_exit": "0xbd8ac",
+      "end_exclusive": "0xc14b0",
+      "handler_index": "0x16",
+      "meaning": "compare_pointers_equal",
+      "operand_bytes": 0,
+      "semantic_checks": 24,
+      "sha256": "ffbbea85f7eac87880f1b2b70086a0d537c554e6114161a472fdde8337acaf94",
+      "start": "0xc13e8"
+    },
+    {
+      "bytes": 200,
+      "common_exit": "0xbd8ac",
+      "end_exclusive": "0xc2d1c",
+      "handler_index": "0x18",
+      "meaning": "compare_signed_pointers_greater",
+      "operand_bytes": 0,
+      "semantic_checks": 24,
+      "sha256": "7f2f13bf1e1d974d843ecd864f299f73aa15422e25ac7a6fddb3fe35555a8dec",
+      "start": "0xc2c54"
+    },
+    {
+      "bytes": 196,
+      "common_exit": "0xbd8ac",
+      "end_exclusive": "0xc10cc",
+      "handler_index": "0x44",
+      "meaning": "load_indirect_word",
+      "operand_bytes": 0,
+      "semantic_checks": 24,
+      "sha256": "3421c573d3a64b41672730d0975c1ecbaf65acd7fbe8c0c32ec093a46876f80d",
+      "start": "0xc1008"
+    },
+    {
+      "bytes": 204,
+      "common_exit": "0xbd8ac",
+      "end_exclusive": "0xbed70",
+      "handler_index": "0x47",
+      "meaning": "store_indirect_byte",
+      "operand_bytes": 0,
+      "semantic_checks": 24,
+      "sha256": "83815a5b8918f950275c778c76b9bcd15b95023704dc40090d9e8a197958c686",
+      "start": "0xbeca4"
+    },
+    {
+      "bytes": 192,
+      "common_exit": "0xbd8ac",
+      "end_exclusive": "0xc4240",
+      "handler_index": "0x49",
+      "meaning": "store_indirect_word",
+      "operand_bytes": 0,
+      "semantic_checks": 24,
+      "sha256": "e6696723f7f913a882484f5d0b4cf7a49d723f1839687aad6202e5567c19c029",
+      "start": "0xc4180"
+    },
+    {
+      "bytes": 180,
+      "common_exit": "0xc45f0",
+      "end_exclusive": "0xbe808",
+      "handler_index": "0x52",
+      "meaning": "zero_extend_word_to_pointer",
+      "operand_bytes": 0,
+      "semantic_checks": 24,
+      "sha256": "f211f7424b90e86fb5116bed625959edb6f0f776156ec823411539a4b6e16287",
+      "start": "0xbe754"
+    },
+    {
+      "bytes": 188,
+      "common_exit": "0xc45f0",
+      "end_exclusive": "0xc40b4",
+      "handler_index": "0x53",
+      "meaning": "sign_extend_word_to_pointer",
+      "operand_bytes": 0,
+      "semantic_checks": 24,
+      "sha256": "86616cff118bdfa4211876c108eabbeb46ad514222589668ba930b11812ba11a",
+      "start": "0xc3ff8"
+    },
+    {
+      "bytes": 200,
+      "common_exit": "0xbd8ac",
+      "end_exclusive": "0xbf5f0",
+      "handler_index": "0x70",
+      "meaning": "multiply_pointers",
+      "operand_bytes": 0,
+      "semantic_checks": 24,
+      "sha256": "8076fe1e28c343345896295c069c435d1aca45a56235e6902335f0f0caa866b4",
+      "start": "0xbf528"
+    },
+    {
+      "bytes": 200,
+      "common_exit": "0xbd8ac",
+      "end_exclusive": "0xbdc6c",
+      "handler_index": "0x80",
+      "meaning": "and_pointers",
+      "operand_bytes": 0,
+      "semantic_checks": 24,
+      "sha256": "0ed92e8146cd7563238ec0774f326a612cfa271f39aebe305a160e23366e41ae",
+      "start": "0xbdba4"
+    },
+    {
+      "bytes": 196,
+      "common_exit": "0xbd8ac",
+      "end_exclusive": "0xc3b74",
+      "handler_index": "0x81",
+      "meaning": "xor_words",
+      "operand_bytes": 0,
+      "semantic_checks": 24,
+      "sha256": "1db1bb47b124d9bb44f4b67d5ebeed2f044634138be8d02f1c6747b42e4a5b3d",
+      "start": "0xc3ab0"
+    },
+    {
+      "bytes": 196,
+      "common_exit": "0xbd8ac",
+      "end_exclusive": "0xc2798",
+      "handler_index": "0x83",
+      "meaning": "or_words",
+      "operand_bytes": 0,
+      "semantic_checks": 24,
+      "sha256": "201659e6928ea23bdafe948f637d9715d95a1f17edcdaa26d7a2ca4f7dafbb61",
+      "start": "0xc26d4"
+    }
+  ],
+  "protected_record": {
+    "covered_body_bytes": 1640,
+    "distinct_token_offsets": 525,
+    "guest_instructions_executed": 0,
+    "header_bytes": 4,
+    "native_call_tokens": [
+      {
+        "offset": 92,
+        "thunk_index": 0
+      },
+      {
+        "offset": 150,
+        "thunk_index": 1
+      },
+      {
+        "offset": 241,
+        "thunk_index": 2
+      },
+      {
+        "offset": 264,
+        "thunk_index": 3
+      },
+      {
+        "offset": 297,
+        "thunk_index": 4
+      },
+      {
+        "offset": 334,
+        "thunk_index": 5
+      },
+      {
+        "offset": 362,
+        "thunk_index": 6
+      },
+      {
+        "offset": 515,
+        "thunk_index": 7
+      },
+      {
+        "offset": 638,
+        "thunk_index": 8
+      },
+      {
+        "offset": 735,
+        "thunk_index": 9
+      },
+      {
+        "offset": 772,
+        "thunk_index": 10
+      },
+      {
+        "offset": 805,
+        "thunk_index": 11
+      },
+      {
+        "offset": 1164,
+        "thunk_index": 12
+      },
+      {
+        "offset": 1539,
+        "thunk_index": 13
+      }
+    ],
+    "nodes": [
+      {
+        "handler_index": "0x2d",
+        "incoming_key": 35,
+        "meaning": "reserve_signed_word_count",
+        "offset": 4,
+        "operand": 334,
+        "operand_bytes": 2,
+        "previous_handler": null,
+        "successors": [
+          7
+        ]
+      },
+      {
+        "handler_index": "0x41",
+        "incoming_key": 45,
+        "meaning": "push_local_address",
+        "offset": 7,
+        "operand": 192,
+        "operand_bytes": 2,
+        "previous_handler": "0x2d",
+        "successors": [
+          10
+        ]
+      },
+      {
+        "handler_index": "0x3f",
+        "incoming_key": 65,
+        "meaning": "store_local_pointer",
+        "offset": 10,
+        "operand": 0,
+        "operand_bytes": 2,
+        "previous_handler": "0x41",
+        "successors": [
+          13
+        ]
+      },
+      {
+        "handler_index": "0x41",
+        "incoming_key": 63,
+        "meaning": "push_local_address",
+        "offset": 13,
+        "operand": 200,
+        "operand_bytes": 2,
+        "previous_handler": "0x3f",
+        "successors": [
+          16
+        ]
+      },
+      {
+        "handler_index": "0x3f",
+        "incoming_key": 65,
+        "meaning": "store_local_pointer",
+        "offset": 16,
+        "operand": 2,
+        "operand_bytes": 2,
+        "previous_handler": "0x41",
+        "successors": [
+          19
+        ]
+      },
+      {
+        "handler_index": "0x41",
+        "incoming_key": 63,
+        "meaning": "push_local_address",
+        "offset": 19,
+        "operand": 202,
+        "operand_bytes": 2,
+        "previous_handler": "0x3f",
+        "successors": [
+          22
+        ]
+      },
+      {
+        "handler_index": "0x3f",
+        "incoming_key": 65,
+        "meaning": "store_local_pointer",
+        "offset": 22,
+        "operand": 4,
+        "operand_bytes": 2,
+        "previous_handler": "0x41",
+        "successors": [
+          25
+        ]
+      },
+      {
+        "handler_index": "0x41",
+        "incoming_key": 63,
+        "meaning": "push_local_address",
+        "offset": 25,
+        "operand": 204,
+        "operand_bytes": 2,
+        "previous_handler": "0x3f",
+        "successors": [
+          28
+        ]
+      },
+      {
+        "handler_index": "0x3f",
+        "incoming_key": 65,
+        "meaning": "store_local_pointer",
+        "offset": 28,
+        "operand": 6,
+        "operand_bytes": 2,
+        "previous_handler": "0x41",
+        "successors": [
+          31
+        ]
+      },
+      {
+        "handler_index": "0x41",
+        "incoming_key": 63,
+        "meaning": "push_local_address",
+        "offset": 31,
+        "operand": 205,
+        "operand_bytes": 2,
+        "previous_handler": "0x3f",
+        "successors": [
+          34
+        ]
+      },
+      {
+        "handler_index": "0x3f",
+        "incoming_key": 65,
+        "meaning": "store_local_pointer",
+        "offset": 34,
+        "operand": 8,
+        "operand_bytes": 2,
+        "previous_handler": "0x41",
+        "successors": [
+          37
+        ]
+      },
+      {
+        "handler_index": "0x4c",
+        "incoming_key": 63,
+        "meaning": "push_call_table_pointer",
+        "offset": 37,
+        "operand": 0,
+        "operand_bytes": 2,
+        "previous_handler": "0x3f",
+        "successors": [
+          40
+        ]
+      },
+      {
+        "handler_index": "0x45",
+        "incoming_key": 76,
+        "meaning": "load_indirect_pointer",
+        "offset": 40,
+        "operand": null,
+        "operand_bytes": 0,
+        "previous_handler": "0x4c",
+        "successors": [
+          41
+        ]
+      },
+      {
+        "handler_index": "0x3f",
+        "incoming_key": 69,
+        "meaning": "store_local_pointer",
+        "offset": 41,
+        "operand": 10,
+        "operand_bytes": 2,
+        "previous_handler": "0x45",
+        "successors": [
+          44
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 63,
+        "meaning": "push_local_pointer",
+        "offset": 44,
+        "operand": 10,
+        "operand_bytes": 2,
+        "previous_handler": "0x3f",
+        "successors": [
+          47
+        ]
+      },
+      {
+        "handler_index": "0x33",
+        "incoming_key": 57,
+        "meaning": "push_immediate_pointer",
+        "offset": 47,
+        "operand": 880,
+        "operand_bytes": 8,
+        "previous_handler": "0x39",
+        "successors": [
+          56
+        ]
+      },
+      {
+        "handler_index": "0x68",
+        "incoming_key": 51,
+        "meaning": "add_pointers",
+        "offset": 56,
+        "operand": null,
+        "operand_bytes": 0,
+        "previous_handler": "0x33",
+        "successors": [
+          57
+        ]
+      },
+      {
+        "handler_index": "0x3f",
+        "incoming_key": 104,
+        "meaning": "store_local_pointer",
+        "offset": 57,
+        "operand": 12,
+        "operand_bytes": 2,
+        "previous_handler": "0x68",
+        "successors": [
+          60
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 63,
+        "meaning": "push_local_pointer",
+        "offset": 60,
+        "operand": 12,
+        "operand_bytes": 2,
+        "previous_handler": "0x3f",
+        "successors": [
+          63
+        ]
+      },
+      {
+        "handler_index": "0x42",
+        "incoming_key": 57,
+        "meaning": "load_indirect_byte",
+        "offset": 63,
+        "operand": null,
+        "operand_bytes": 0,
+        "previous_handler": "0x39",
+        "successors": [
+          64
+        ]
+      },
+      {
+        "handler_index": "0x3c",
+        "incoming_key": 66,
+        "meaning": "store_local_byte",
+        "offset": 64,
+        "operand": 56,
+        "operand_bytes": 2,
+        "previous_handler": "0x42",
+        "successors": [
+          67
+        ]
+      },
+      {
+        "handler_index": "0x36",
+        "incoming_key": 60,
+        "meaning": "push_local_byte",
+        "offset": 67,
+        "operand": 56,
+        "operand_bytes": 2,
+        "previous_handler": "0x3c",
+        "successors": [
+          70
+        ]
+      },
+      {
+        "handler_index": "0x30",
+        "incoming_key": 54,
+        "meaning": "push_immediate_byte",
+        "offset": 70,
+        "operand": 0,
+        "operand_bytes": 1,
+        "previous_handler": "0x36",
+        "successors": [
+          72
+        ]
+      },
+      {
+        "handler_index": "0xc",
+        "incoming_key": 48,
+        "meaning": "compare_words_equal",
+        "offset": 72,
+        "operand": null,
+        "operand_bytes": 0,
+        "previous_handler": "0x30",
+        "successors": [
+          73
+        ]
+      },
+      {
+        "handler_index": "0x3c",
+        "incoming_key": 12,
+        "meaning": "store_local_byte",
+        "offset": 73,
+        "operand": 64,
+        "operand_bytes": 2,
+        "previous_handler": "0xc",
+        "successors": [
+          76
+        ]
+      },
+      {
+        "handler_index": "0x36",
+        "incoming_key": 60,
+        "meaning": "push_local_byte",
+        "offset": 76,
+        "operand": 64,
+        "operand_bytes": 2,
+        "previous_handler": "0x3c",
+        "successors": [
+          79
+        ]
+      },
+      {
+        "handler_index": "0x86",
+        "incoming_key": 54,
+        "meaning": "jump_relative_if_byte_nonzero",
+        "offset": 79,
+        "operand": 19,
+        "operand_bytes": 3,
+        "previous_handler": "0x36",
+        "signed_displacement": 19,
+        "successors": [
+          98,
+          83
+        ]
+      },
+      {
+        "handler_index": "0x85",
+        "incoming_key": 134,
+        "meaning": "jump_relative",
+        "offset": 83,
+        "operand": 4,
+        "operand_bytes": 3,
+        "previous_handler": "0x86",
+        "signed_displacement": 4,
+        "successors": [
+          87
+        ]
+      },
+      {
+        "handler_index": "0x3b",
+        "incoming_key": 133,
+        "meaning": "reset_rolling_key",
+        "offset": 87,
+        "operand": 58,
+        "operand_bytes": 1,
+        "previous_handler": "0x85",
+        "successors": [
+          89
+        ]
+      },
+      {
+        "handler_index": "0x4c",
+        "incoming_key": 58,
+        "meaning": "push_call_table_pointer",
+        "offset": 89,
+        "operand": 10,
+        "operand_bytes": 2,
+        "previous_handler": "0x3b",
+        "successors": [
+          92
+        ]
+      },
+      {
+        "handler_index": "0x4d",
+        "incoming_key": 76,
+        "meaning": "call_native_thunk",
+        "offset": 92,
+        "operand": 0,
+        "operand_bytes": 1,
+        "previous_handler": "0x4c",
+        "successors": [
+          94
+        ]
+      },
+      {
+        "handler_index": "0x85",
+        "incoming_key": 77,
+        "meaning": "jump_relative",
+        "offset": 94,
+        "operand": 1547,
+        "operand_bytes": 3,
+        "previous_handler": "0x4d",
+        "signed_displacement": 1547,
+        "successors": [
+          1641
+        ]
+      },
+      {
+        "handler_index": "0x3b",
+        "incoming_key": 134,
+        "meaning": "reset_rolling_key",
+        "offset": 98,
+        "operand": 159,
+        "operand_bytes": 1,
+        "previous_handler": "0x86",
+        "successors": [
+          100
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 159,
+        "meaning": "push_local_pointer",
+        "offset": 100,
+        "operand": 2,
+        "operand_bytes": 2,
+        "previous_handler": "0x3b",
+        "successors": [
+          103
+        ]
+      },
+      {
+        "handler_index": "0x3f",
+        "incoming_key": 57,
+        "meaning": "store_local_pointer",
+        "offset": 103,
+        "operand": 17,
+        "operand_bytes": 2,
+        "previous_handler": "0x39",
+        "successors": [
+          106
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 63,
+        "meaning": "push_local_pointer",
+        "offset": 106,
+        "operand": 4,
+        "operand_bytes": 2,
+        "previous_handler": "0x3f",
+        "successors": [
+          109
+        ]
+      },
+      {
+        "handler_index": "0x3f",
+        "incoming_key": 57,
+        "meaning": "store_local_pointer",
+        "offset": 109,
+        "operand": 19,
+        "operand_bytes": 2,
+        "previous_handler": "0x39",
+        "successors": [
+          112
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 63,
+        "meaning": "push_local_pointer",
+        "offset": 112,
+        "operand": 6,
+        "operand_bytes": 2,
+        "previous_handler": "0x3f",
+        "successors": [
+          115
+        ]
+      },
+      {
+        "handler_index": "0x3f",
+        "incoming_key": 57,
+        "meaning": "store_local_pointer",
+        "offset": 115,
+        "operand": 21,
+        "operand_bytes": 2,
+        "previous_handler": "0x39",
+        "successors": [
+          118
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 63,
+        "meaning": "push_local_pointer",
+        "offset": 118,
+        "operand": 6,
+        "operand_bytes": 2,
+        "previous_handler": "0x3f",
+        "successors": [
+          121
+        ]
+      },
+      {
+        "handler_index": "0x32",
+        "incoming_key": 57,
+        "meaning": "push_immediate_word",
+        "offset": 121,
+        "operand": 0,
+        "operand_bytes": 4,
+        "previous_handler": "0x39",
+        "successors": [
+          126
+        ]
+      },
+      {
+        "handler_index": "0x49",
+        "incoming_key": 50,
+        "meaning": "store_indirect_word",
+        "offset": 126,
+        "operand": null,
+        "operand_bytes": 0,
+        "previous_handler": "0x32",
+        "successors": [
+          127
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 73,
+        "meaning": "push_local_pointer",
+        "offset": 127,
+        "operand": 8,
+        "operand_bytes": 2,
+        "previous_handler": "0x49",
+        "successors": [
+          130
+        ]
+      },
+      {
+        "handler_index": "0x3f",
+        "incoming_key": 57,
+        "meaning": "store_local_pointer",
+        "offset": 130,
+        "operand": 23,
+        "operand_bytes": 2,
+        "previous_handler": "0x39",
+        "successors": [
+          133
+        ]
+      },
+      {
+        "handler_index": "0x4c",
+        "incoming_key": 63,
+        "meaning": "push_call_table_pointer",
+        "offset": 133,
+        "operand": 2,
+        "operand_bytes": 2,
+        "previous_handler": "0x3f",
+        "successors": [
+          136
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 76,
+        "meaning": "push_local_pointer",
+        "offset": 136,
+        "operand": 23,
+        "operand_bytes": 2,
+        "previous_handler": "0x4c",
+        "successors": [
+          139
+        ]
+      },
+      {
+        "handler_index": "0x30",
+        "incoming_key": 57,
+        "meaning": "push_immediate_byte",
+        "offset": 139,
+        "operand": 0,
+        "operand_bytes": 1,
+        "previous_handler": "0x39",
+        "successors": [
+          141
+        ]
+      },
+      {
+        "handler_index": "0x33",
+        "incoming_key": 48,
+        "meaning": "push_immediate_pointer",
+        "offset": 141,
+        "operand": 512,
+        "operand_bytes": 8,
+        "previous_handler": "0x30",
+        "successors": [
+          150
+        ]
+      },
+      {
+        "handler_index": "0x4d",
+        "incoming_key": 51,
+        "meaning": "call_native_thunk",
+        "offset": 150,
+        "operand": 1,
+        "operand_bytes": 1,
+        "previous_handler": "0x33",
+        "successors": [
+          152
+        ]
+      },
+      {
+        "handler_index": "0x3f",
+        "incoming_key": 77,
+        "meaning": "store_local_pointer",
+        "offset": 152,
+        "operand": 25,
+        "operand_bytes": 2,
+        "previous_handler": "0x4d",
+        "successors": [
+          155
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 63,
+        "meaning": "push_local_pointer",
+        "offset": 155,
+        "operand": 10,
+        "operand_bytes": 2,
+        "previous_handler": "0x3f",
+        "successors": [
+          158
+        ]
+      },
+      {
+        "handler_index": "0x33",
+        "incoming_key": 57,
+        "meaning": "push_immediate_pointer",
+        "offset": 158,
+        "operand": 240,
+        "operand_bytes": 8,
+        "previous_handler": "0x39",
+        "successors": [
+          167
+        ]
+      },
+      {
+        "handler_index": "0x68",
+        "incoming_key": 51,
+        "meaning": "add_pointers",
+        "offset": 167,
+        "operand": null,
+        "operand_bytes": 0,
+        "previous_handler": "0x33",
+        "successors": [
+          168
+        ]
+      },
+      {
+        "handler_index": "0x3f",
+        "incoming_key": 104,
+        "meaning": "store_local_pointer",
+        "offset": 168,
+        "operand": 27,
+        "operand_bytes": 2,
+        "previous_handler": "0x68",
+        "successors": [
+          171
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 63,
+        "meaning": "push_local_pointer",
+        "offset": 171,
+        "operand": 27,
+        "operand_bytes": 2,
+        "previous_handler": "0x3f",
+        "successors": [
+          174
+        ]
+      },
+      {
+        "handler_index": "0x45",
+        "incoming_key": 57,
+        "meaning": "load_indirect_pointer",
+        "offset": 174,
+        "operand": null,
+        "operand_bytes": 0,
+        "previous_handler": "0x39",
+        "successors": [
+          175
+        ]
+      },
+      {
+        "handler_index": "0x3f",
+        "incoming_key": 69,
+        "meaning": "store_local_pointer",
+        "offset": 175,
+        "operand": 30,
+        "operand_bytes": 2,
+        "previous_handler": "0x45",
+        "successors": [
+          178
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 63,
+        "meaning": "push_local_pointer",
+        "offset": 178,
+        "operand": 10,
+        "operand_bytes": 2,
+        "previous_handler": "0x3f",
+        "successors": [
+          181
+        ]
+      },
+      {
+        "handler_index": "0x33",
+        "incoming_key": 57,
+        "meaning": "push_immediate_pointer",
+        "offset": 181,
+        "operand": 352,
+        "operand_bytes": 8,
+        "previous_handler": "0x39",
+        "successors": [
+          190
+        ]
+      },
+      {
+        "handler_index": "0x68",
+        "incoming_key": 51,
+        "meaning": "add_pointers",
+        "offset": 190,
+        "operand": null,
+        "operand_bytes": 0,
+        "previous_handler": "0x33",
+        "successors": [
+          191
+        ]
+      },
+      {
+        "handler_index": "0x3f",
+        "incoming_key": 104,
+        "meaning": "store_local_pointer",
+        "offset": 191,
+        "operand": 32,
+        "operand_bytes": 2,
+        "previous_handler": "0x68",
+        "successors": [
+          194
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 63,
+        "meaning": "push_local_pointer",
+        "offset": 194,
+        "operand": 32,
+        "operand_bytes": 2,
+        "previous_handler": "0x3f",
+        "successors": [
+          197
+        ]
+      },
+      {
+        "handler_index": "0x45",
+        "incoming_key": 57,
+        "meaning": "load_indirect_pointer",
+        "offset": 197,
+        "operand": null,
+        "operand_bytes": 0,
+        "previous_handler": "0x39",
+        "successors": [
+          198
+        ]
+      },
+      {
+        "handler_index": "0x3f",
+        "incoming_key": 69,
+        "meaning": "store_local_pointer",
+        "offset": 198,
+        "operand": 34,
+        "operand_bytes": 2,
+        "previous_handler": "0x45",
+        "successors": [
+          201
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 63,
+        "meaning": "push_local_pointer",
+        "offset": 201,
+        "operand": 34,
+        "operand_bytes": 2,
+        "previous_handler": "0x3f",
+        "successors": [
+          204
+        ]
+      },
+      {
+        "handler_index": "0x33",
+        "incoming_key": 57,
+        "meaning": "push_immediate_pointer",
+        "offset": 204,
+        "operand": 16,
+        "operand_bytes": 8,
+        "previous_handler": "0x39",
+        "successors": [
+          213
+        ]
+      },
+      {
+        "handler_index": "0x68",
+        "incoming_key": 51,
+        "meaning": "add_pointers",
+        "offset": 213,
+        "operand": null,
+        "operand_bytes": 0,
+        "previous_handler": "0x33",
+        "successors": [
+          214
+        ]
+      },
+      {
+        "handler_index": "0x3f",
+        "incoming_key": 104,
+        "meaning": "store_local_pointer",
+        "offset": 214,
+        "operand": 36,
+        "operand_bytes": 2,
+        "previous_handler": "0x68",
+        "successors": [
+          217
+        ]
+      },
+      {
+        "handler_index": "0x4c",
+        "incoming_key": 63,
+        "meaning": "push_call_table_pointer",
+        "offset": 217,
+        "operand": 13,
+        "operand_bytes": 2,
+        "previous_handler": "0x3f",
+        "successors": [
+          220
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 76,
+        "meaning": "push_local_pointer",
+        "offset": 220,
+        "operand": 23,
+        "operand_bytes": 2,
+        "previous_handler": "0x4c",
+        "successors": [
+          223
+        ]
+      },
+      {
+        "handler_index": "0x33",
+        "incoming_key": 57,
+        "meaning": "push_immediate_pointer",
+        "offset": 223,
+        "operand": 512,
+        "operand_bytes": 8,
+        "previous_handler": "0x39",
+        "successors": [
+          232
+        ]
+      },
+      {
+        "handler_index": "0x4c",
+        "incoming_key": 51,
+        "meaning": "push_call_table_pointer",
+        "offset": 232,
+        "operand": 9,
+        "operand_bytes": 2,
+        "previous_handler": "0x33",
+        "successors": [
+          235
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 76,
+        "meaning": "push_local_pointer",
+        "offset": 235,
+        "operand": 30,
+        "operand_bytes": 2,
+        "previous_handler": "0x4c",
+        "successors": [
+          238
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 57,
+        "meaning": "push_local_pointer",
+        "offset": 238,
+        "operand": 36,
+        "operand_bytes": 2,
+        "previous_handler": "0x39",
+        "successors": [
+          241
+        ]
+      },
+      {
+        "handler_index": "0x4d",
+        "incoming_key": 57,
+        "meaning": "call_native_thunk",
+        "offset": 241,
+        "operand": 2,
+        "operand_bytes": 1,
+        "previous_handler": "0x39",
+        "successors": [
+          243
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 77,
+        "meaning": "push_local_pointer",
+        "offset": 243,
+        "operand": 2,
+        "operand_bytes": 2,
+        "previous_handler": "0x4d",
+        "successors": [
+          246
+        ]
+      },
+      {
+        "handler_index": "0x3f",
+        "incoming_key": 57,
+        "meaning": "store_local_pointer",
+        "offset": 246,
+        "operand": 38,
+        "operand_bytes": 2,
+        "previous_handler": "0x39",
+        "successors": [
+          249
+        ]
+      },
+      {
+        "handler_index": "0x4c",
+        "incoming_key": 63,
+        "meaning": "push_call_table_pointer",
+        "offset": 249,
+        "operand": 4,
+        "operand_bytes": 2,
+        "previous_handler": "0x3f",
+        "successors": [
+          252
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 76,
+        "meaning": "push_local_pointer",
+        "offset": 252,
+        "operand": 23,
+        "operand_bytes": 2,
+        "previous_handler": "0x4c",
+        "successors": [
+          255
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 57,
+        "meaning": "push_local_pointer",
+        "offset": 255,
+        "operand": 4,
+        "operand_bytes": 2,
+        "previous_handler": "0x39",
+        "successors": [
+          258
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 57,
+        "meaning": "push_local_pointer",
+        "offset": 258,
+        "operand": 38,
+        "operand_bytes": 2,
+        "previous_handler": "0x39",
+        "successors": [
+          261
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 57,
+        "meaning": "push_local_pointer",
+        "offset": 261,
+        "operand": 6,
+        "operand_bytes": 2,
+        "previous_handler": "0x39",
+        "successors": [
+          264
+        ]
+      },
+      {
+        "handler_index": "0x4d",
+        "incoming_key": 57,
+        "meaning": "call_native_thunk",
+        "offset": 264,
+        "operand": 3,
+        "operand_bytes": 1,
+        "previous_handler": "0x39",
+        "successors": [
+          266
+        ]
+      },
+      {
+        "handler_index": "0x3c",
+        "incoming_key": 77,
+        "meaning": "store_local_byte",
+        "offset": 266,
+        "operand": 160,
+        "operand_bytes": 2,
+        "previous_handler": "0x4d",
+        "successors": [
+          269
+        ]
+      },
+      {
+        "handler_index": "0x36",
+        "incoming_key": 60,
+        "meaning": "push_local_byte",
+        "offset": 269,
+        "operand": 160,
+        "operand_bytes": 2,
+        "previous_handler": "0x3c",
+        "successors": [
+          272
+        ]
+      },
+      {
+        "handler_index": "0x86",
+        "incoming_key": 54,
+        "meaning": "jump_relative_if_byte_nonzero",
+        "offset": 272,
+        "operand": 512,
+        "operand_bytes": 3,
+        "previous_handler": "0x36",
+        "signed_displacement": 512,
+        "successors": [
+          784,
+          276
+        ]
+      },
+      {
+        "handler_index": "0x85",
+        "incoming_key": 134,
+        "meaning": "jump_relative",
+        "offset": 276,
+        "operand": 4,
+        "operand_bytes": 3,
+        "previous_handler": "0x86",
+        "signed_displacement": 4,
+        "successors": [
+          280
+        ]
+      },
+      {
+        "handler_index": "0x3b",
+        "incoming_key": 133,
+        "meaning": "reset_rolling_key",
+        "offset": 280,
+        "operand": 118,
+        "operand_bytes": 1,
+        "previous_handler": "0x85",
+        "successors": [
+          282
+        ]
+      },
+      {
+        "handler_index": "0x4c",
+        "incoming_key": 118,
+        "meaning": "push_call_table_pointer",
+        "offset": 282,
+        "operand": 11,
+        "operand_bytes": 2,
+        "previous_handler": "0x3b",
+        "successors": [
+          285
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 76,
+        "meaning": "push_local_pointer",
+        "offset": 285,
+        "operand": 23,
+        "operand_bytes": 2,
+        "previous_handler": "0x4c",
+        "successors": [
+          288
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 57,
+        "meaning": "push_local_pointer",
+        "offset": 288,
+        "operand": 4,
+        "operand_bytes": 2,
+        "previous_handler": "0x39",
+        "successors": [
+          291
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 57,
+        "meaning": "push_local_pointer",
+        "offset": 291,
+        "operand": 38,
+        "operand_bytes": 2,
+        "previous_handler": "0x39",
+        "successors": [
+          294
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 57,
+        "meaning": "push_local_pointer",
+        "offset": 294,
+        "operand": 6,
+        "operand_bytes": 2,
+        "previous_handler": "0x39",
+        "successors": [
+          297
+        ]
+      },
+      {
+        "handler_index": "0x4d",
+        "incoming_key": 57,
+        "meaning": "call_native_thunk",
+        "offset": 297,
+        "operand": 4,
+        "operand_bytes": 1,
+        "previous_handler": "0x39",
+        "successors": [
+          299
+        ]
+      },
+      {
+        "handler_index": "0x3c",
+        "incoming_key": 77,
+        "meaning": "store_local_byte",
+        "offset": 299,
+        "operand": 164,
+        "operand_bytes": 2,
+        "previous_handler": "0x4d",
+        "successors": [
+          302
+        ]
+      },
+      {
+        "handler_index": "0x36",
+        "incoming_key": 60,
+        "meaning": "push_local_byte",
+        "offset": 302,
+        "operand": 164,
+        "operand_bytes": 2,
+        "previous_handler": "0x3c",
+        "successors": [
+          305
+        ]
+      },
+      {
+        "handler_index": "0x86",
+        "incoming_key": 54,
+        "meaning": "jump_relative_if_byte_nonzero",
+        "offset": 305,
+        "operand": 8,
+        "operand_bytes": 3,
+        "previous_handler": "0x36",
+        "signed_displacement": 8,
+        "successors": [
+          313,
+          309
+        ]
+      },
+      {
+        "handler_index": "0x85",
+        "incoming_key": 134,
+        "meaning": "jump_relative",
+        "offset": 309,
+        "operand": 1326,
+        "operand_bytes": 3,
+        "previous_handler": "0x86",
+        "signed_displacement": 1326,
+        "successors": [
+          1635
+        ]
+      },
+      {
+        "handler_index": "0x3b",
+        "incoming_key": 134,
+        "meaning": "reset_rolling_key",
+        "offset": 313,
+        "operand": 196,
+        "operand_bytes": 1,
+        "previous_handler": "0x86",
+        "successors": [
+          315
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 196,
+        "meaning": "push_local_pointer",
+        "offset": 315,
+        "operand": 6,
+        "operand_bytes": 2,
+        "previous_handler": "0x3b",
+        "successors": [
+          318
+        ]
+      },
+      {
+        "handler_index": "0x44",
+        "incoming_key": 57,
+        "meaning": "load_indirect_word",
+        "offset": 318,
+        "operand": null,
+        "operand_bytes": 0,
+        "previous_handler": "0x39",
+        "successors": [
+          319
+        ]
+      },
+      {
+        "handler_index": "0x3e",
+        "incoming_key": 68,
+        "meaning": "store_local_word",
+        "offset": 319,
+        "operand": 42,
+        "operand_bytes": 2,
+        "previous_handler": "0x44",
+        "successors": [
+          322
+        ]
+      },
+      {
+        "handler_index": "0x4c",
+        "incoming_key": 62,
+        "meaning": "push_call_table_pointer",
+        "offset": 322,
+        "operand": 1,
+        "operand_bytes": 2,
+        "previous_handler": "0x3e",
+        "successors": [
+          325
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 76,
+        "meaning": "push_local_pointer",
+        "offset": 325,
+        "operand": 4,
+        "operand_bytes": 2,
+        "previous_handler": "0x4c",
+        "successors": [
+          328
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 57,
+        "meaning": "push_local_pointer",
+        "offset": 328,
+        "operand": 2,
+        "operand_bytes": 2,
+        "previous_handler": "0x39",
+        "successors": [
+          331
+        ]
+      },
+      {
+        "handler_index": "0x38",
+        "incoming_key": 57,
+        "meaning": "push_local_word",
+        "offset": 331,
+        "operand": 42,
+        "operand_bytes": 2,
+        "previous_handler": "0x39",
+        "successors": [
+          334
+        ]
+      },
+      {
+        "handler_index": "0x4d",
+        "incoming_key": 56,
+        "meaning": "call_native_thunk",
+        "offset": 334,
+        "operand": 5,
+        "operand_bytes": 1,
+        "previous_handler": "0x38",
+        "successors": [
+          336
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 77,
+        "meaning": "push_local_pointer",
+        "offset": 336,
+        "operand": 2,
+        "operand_bytes": 2,
+        "previous_handler": "0x4d",
+        "successors": [
+          339
+        ]
+      },
+      {
+        "handler_index": "0x45",
+        "incoming_key": 57,
+        "meaning": "load_indirect_pointer",
+        "offset": 339,
+        "operand": null,
+        "operand_bytes": 0,
+        "previous_handler": "0x39",
+        "successors": [
+          340
+        ]
+      },
+      {
+        "handler_index": "0x3f",
+        "incoming_key": 69,
+        "meaning": "store_local_pointer",
+        "offset": 340,
+        "operand": 44,
+        "operand_bytes": 2,
+        "previous_handler": "0x45",
+        "successors": [
+          343
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 63,
+        "meaning": "push_local_pointer",
+        "offset": 343,
+        "operand": 4,
+        "operand_bytes": 2,
+        "previous_handler": "0x3f",
+        "successors": [
+          346
+        ]
+      },
+      {
+        "handler_index": "0x45",
+        "incoming_key": 57,
+        "meaning": "load_indirect_pointer",
+        "offset": 346,
+        "operand": null,
+        "operand_bytes": 0,
+        "previous_handler": "0x39",
+        "successors": [
+          347
+        ]
+      },
+      {
+        "handler_index": "0x3f",
+        "incoming_key": 69,
+        "meaning": "store_local_pointer",
+        "offset": 347,
+        "operand": 46,
+        "operand_bytes": 2,
+        "previous_handler": "0x45",
+        "successors": [
+          350
+        ]
+      },
+      {
+        "handler_index": "0x4c",
+        "incoming_key": 63,
+        "meaning": "push_call_table_pointer",
+        "offset": 350,
+        "operand": 3,
+        "operand_bytes": 2,
+        "previous_handler": "0x3f",
+        "successors": [
+          353
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 76,
+        "meaning": "push_local_pointer",
+        "offset": 353,
+        "operand": 44,
+        "operand_bytes": 2,
+        "previous_handler": "0x4c",
+        "successors": [
+          356
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 57,
+        "meaning": "push_local_pointer",
+        "offset": 356,
+        "operand": 46,
+        "operand_bytes": 2,
+        "previous_handler": "0x39",
+        "successors": [
+          359
+        ]
+      },
+      {
+        "handler_index": "0x38",
+        "incoming_key": 57,
+        "meaning": "push_local_word",
+        "offset": 359,
+        "operand": 42,
+        "operand_bytes": 2,
+        "previous_handler": "0x39",
+        "successors": [
+          362
+        ]
+      },
+      {
+        "handler_index": "0x4d",
+        "incoming_key": 56,
+        "meaning": "call_native_thunk",
+        "offset": 362,
+        "operand": 6,
+        "operand_bytes": 1,
+        "previous_handler": "0x38",
+        "successors": [
+          364
+        ]
+      },
+      {
+        "handler_index": "0x3c",
+        "incoming_key": 77,
+        "meaning": "store_local_byte",
+        "offset": 364,
+        "operand": 192,
+        "operand_bytes": 2,
+        "previous_handler": "0x4d",
+        "successors": [
+          367
+        ]
+      },
+      {
+        "handler_index": "0x38",
+        "incoming_key": 60,
+        "meaning": "push_local_word",
+        "offset": 367,
+        "operand": 42,
+        "operand_bytes": 2,
+        "previous_handler": "0x3c",
+        "successors": [
+          370
+        ]
+      },
+      {
+        "handler_index": "0x3e",
+        "incoming_key": 56,
+        "meaning": "store_local_word",
+        "offset": 370,
+        "operand": 87,
+        "operand_bytes": 2,
+        "previous_handler": "0x38",
+        "successors": [
+          373
+        ]
+      },
+      {
+        "handler_index": "0x36",
+        "incoming_key": 62,
+        "meaning": "push_local_byte",
+        "offset": 373,
+        "operand": 192,
+        "operand_bytes": 2,
+        "previous_handler": "0x3e",
+        "successors": [
+          376
+        ]
+      },
+      {
+        "handler_index": "0x86",
+        "incoming_key": 54,
+        "meaning": "jump_relative_if_byte_nonzero",
+        "offset": 376,
+        "operand": 441,
+        "operand_bytes": 3,
+        "previous_handler": "0x36",
+        "signed_displacement": 441,
+        "successors": [
+          817,
+          380
+        ]
+      },
+      {
+        "handler_index": "0x85",
+        "incoming_key": 134,
+        "meaning": "jump_relative",
+        "offset": 380,
+        "operand": 4,
+        "operand_bytes": 3,
+        "previous_handler": "0x86",
+        "signed_displacement": 4,
+        "successors": [
+          384
+        ]
+      },
+      {
+        "handler_index": "0x3b",
+        "incoming_key": 133,
+        "meaning": "reset_rolling_key",
+        "offset": 384,
+        "operand": 244,
+        "operand_bytes": 1,
+        "previous_handler": "0x85",
+        "successors": [
+          386
+        ]
+      },
+      {
+        "handler_index": "0x4c",
+        "incoming_key": 244,
+        "meaning": "push_call_table_pointer",
+        "offset": 386,
+        "operand": 0,
+        "operand_bytes": 2,
+        "previous_handler": "0x3b",
+        "successors": [
+          389
+        ]
+      },
+      {
+        "handler_index": "0x45",
+        "incoming_key": 76,
+        "meaning": "load_indirect_pointer",
+        "offset": 389,
+        "operand": null,
+        "operand_bytes": 0,
+        "previous_handler": "0x4c",
+        "successors": [
+          390
+        ]
+      },
+      {
+        "handler_index": "0x3f",
+        "incoming_key": 69,
+        "meaning": "store_local_pointer",
+        "offset": 390,
+        "operand": 50,
+        "operand_bytes": 2,
+        "previous_handler": "0x45",
+        "successors": [
+          393
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 63,
+        "meaning": "push_local_pointer",
+        "offset": 393,
+        "operand": 50,
+        "operand_bytes": 2,
+        "previous_handler": "0x3f",
+        "successors": [
+          396
+        ]
+      },
+      {
+        "handler_index": "0x33",
+        "incoming_key": 57,
+        "meaning": "push_immediate_pointer",
+        "offset": 396,
+        "operand": 704,
+        "operand_bytes": 8,
+        "previous_handler": "0x39",
+        "successors": [
+          405
+        ]
+      },
+      {
+        "handler_index": "0x68",
+        "incoming_key": 51,
+        "meaning": "add_pointers",
+        "offset": 405,
+        "operand": null,
+        "operand_bytes": 0,
+        "previous_handler": "0x33",
+        "successors": [
+          406
+        ]
+      },
+      {
+        "handler_index": "0x3f",
+        "incoming_key": 104,
+        "meaning": "store_local_pointer",
+        "offset": 406,
+        "operand": 52,
+        "operand_bytes": 2,
+        "previous_handler": "0x68",
+        "successors": [
+          409
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 63,
+        "meaning": "push_local_pointer",
+        "offset": 409,
+        "operand": 52,
+        "operand_bytes": 2,
+        "previous_handler": "0x3f",
+        "successors": [
+          412
+        ]
+      },
+      {
+        "handler_index": "0x44",
+        "incoming_key": 57,
+        "meaning": "load_indirect_word",
+        "offset": 412,
+        "operand": null,
+        "operand_bytes": 0,
+        "previous_handler": "0x39",
+        "successors": [
+          413
+        ]
+      },
+      {
+        "handler_index": "0x3e",
+        "incoming_key": 68,
+        "meaning": "store_local_word",
+        "offset": 413,
+        "operand": 54,
+        "operand_bytes": 2,
+        "previous_handler": "0x44",
+        "successors": [
+          416
+        ]
+      },
+      {
+        "handler_index": "0x38",
+        "incoming_key": 62,
+        "meaning": "push_local_word",
+        "offset": 416,
+        "operand": 54,
+        "operand_bytes": 2,
+        "previous_handler": "0x3e",
+        "successors": [
+          419
+        ]
+      },
+      {
+        "handler_index": "0x32",
+        "incoming_key": 56,
+        "meaning": "push_immediate_word",
+        "offset": 419,
+        "operand": 0,
+        "operand_bytes": 4,
+        "previous_handler": "0x38",
+        "successors": [
+          424
+        ]
+      },
+      {
+        "handler_index": "0xc",
+        "incoming_key": 50,
+        "meaning": "compare_words_equal",
+        "offset": 424,
+        "operand": null,
+        "operand_bytes": 0,
+        "previous_handler": "0x32",
+        "successors": [
+          425
+        ]
+      },
+      {
+        "handler_index": "0x3c",
+        "incoming_key": 12,
+        "meaning": "store_local_byte",
+        "offset": 425,
+        "operand": 224,
+        "operand_bytes": 2,
+        "previous_handler": "0xc",
+        "successors": [
+          428
+        ]
+      },
+      {
+        "handler_index": "0x36",
+        "incoming_key": 60,
+        "meaning": "push_local_byte",
+        "offset": 428,
+        "operand": 224,
+        "operand_bytes": 2,
+        "previous_handler": "0x3c",
+        "successors": [
+          431
+        ]
+      },
+      {
+        "handler_index": "0x86",
+        "incoming_key": 54,
+        "meaning": "jump_relative_if_byte_nonzero",
+        "offset": 431,
+        "operand": 141,
+        "operand_bytes": 3,
+        "previous_handler": "0x36",
+        "signed_displacement": 141,
+        "successors": [
+          572,
+          435
+        ]
+      },
+      {
+        "handler_index": "0x85",
+        "incoming_key": 134,
+        "meaning": "jump_relative",
+        "offset": 435,
+        "operand": 4,
+        "operand_bytes": 3,
+        "previous_handler": "0x86",
+        "signed_displacement": 4,
+        "successors": [
+          439
+        ]
+      },
+      {
+        "handler_index": "0x3b",
+        "incoming_key": 133,
+        "meaning": "reset_rolling_key",
+        "offset": 439,
+        "operand": 149,
+        "operand_bytes": 1,
+        "previous_handler": "0x85",
+        "successors": [
+          441
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 149,
+        "meaning": "push_local_pointer",
+        "offset": 441,
+        "operand": 50,
+        "operand_bytes": 2,
+        "previous_handler": "0x3b",
+        "successors": [
+          444
+        ]
+      },
+      {
+        "handler_index": "0x33",
+        "incoming_key": 57,
+        "meaning": "push_immediate_pointer",
+        "offset": 444,
+        "operand": 696,
+        "operand_bytes": 8,
+        "previous_handler": "0x39",
+        "successors": [
+          453
+        ]
+      },
+      {
+        "handler_index": "0x68",
+        "incoming_key": 51,
+        "meaning": "add_pointers",
+        "offset": 453,
+        "operand": null,
+        "operand_bytes": 0,
+        "previous_handler": "0x33",
+        "successors": [
+          454
+        ]
+      },
+      {
+        "handler_index": "0x3f",
+        "incoming_key": 104,
+        "meaning": "store_local_pointer",
+        "offset": 454,
+        "operand": 57,
+        "operand_bytes": 2,
+        "previous_handler": "0x68",
+        "successors": [
+          457
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 63,
+        "meaning": "push_local_pointer",
+        "offset": 457,
+        "operand": 57,
+        "operand_bytes": 2,
+        "previous_handler": "0x3f",
+        "successors": [
+          460
+        ]
+      },
+      {
+        "handler_index": "0x45",
+        "incoming_key": 57,
+        "meaning": "load_indirect_pointer",
+        "offset": 460,
+        "operand": null,
+        "operand_bytes": 0,
+        "previous_handler": "0x39",
+        "successors": [
+          461
+        ]
+      },
+      {
+        "handler_index": "0x3f",
+        "incoming_key": 69,
+        "meaning": "store_local_pointer",
+        "offset": 461,
+        "operand": 60,
+        "operand_bytes": 2,
+        "previous_handler": "0x45",
+        "successors": [
+          464
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 63,
+        "meaning": "push_local_pointer",
+        "offset": 464,
+        "operand": 60,
+        "operand_bytes": 2,
+        "previous_handler": "0x3f",
+        "successors": [
+          467
+        ]
+      },
+      {
+        "handler_index": "0x33",
+        "incoming_key": 57,
+        "meaning": "push_immediate_pointer",
+        "offset": 467,
+        "operand": 0,
+        "operand_bytes": 8,
+        "previous_handler": "0x39",
+        "successors": [
+          476
+        ]
+      },
+      {
+        "handler_index": "0x16",
+        "incoming_key": 51,
+        "meaning": "compare_pointers_equal",
+        "offset": 476,
+        "operand": null,
+        "operand_bytes": 0,
+        "previous_handler": "0x33",
+        "successors": [
+          477
+        ]
+      },
+      {
+        "handler_index": "0x3c",
+        "incoming_key": 22,
+        "meaning": "store_local_byte",
+        "offset": 477,
+        "operand": 248,
+        "operand_bytes": 2,
+        "previous_handler": "0x16",
+        "successors": [
+          480
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 60,
+        "meaning": "push_local_pointer",
+        "offset": 480,
+        "operand": 50,
+        "operand_bytes": 2,
+        "previous_handler": "0x3c",
+        "successors": [
+          483
+        ]
+      },
+      {
+        "handler_index": "0x3f",
+        "incoming_key": 57,
+        "meaning": "store_local_pointer",
+        "offset": 483,
+        "operand": 68,
+        "operand_bytes": 2,
+        "previous_handler": "0x39",
+        "successors": [
+          486
+        ]
+      },
+      {
+        "handler_index": "0x36",
+        "incoming_key": 63,
+        "meaning": "push_local_byte",
+        "offset": 486,
+        "operand": 248,
+        "operand_bytes": 2,
+        "previous_handler": "0x3f",
+        "successors": [
+          489
+        ]
+      },
+      {
+        "handler_index": "0x86",
+        "incoming_key": 54,
+        "meaning": "jump_relative_if_byte_nonzero",
+        "offset": 489,
+        "operand": 48,
+        "operand_bytes": 3,
+        "previous_handler": "0x36",
+        "signed_displacement": 48,
+        "successors": [
+          537,
+          493
+        ]
+      },
+      {
+        "handler_index": "0x85",
+        "incoming_key": 134,
+        "meaning": "jump_relative",
+        "offset": 493,
+        "operand": 4,
+        "operand_bytes": 3,
+        "previous_handler": "0x86",
+        "signed_displacement": 4,
+        "successors": [
+          497
+        ]
+      },
+      {
+        "handler_index": "0x3b",
+        "incoming_key": 133,
+        "meaning": "reset_rolling_key",
+        "offset": 497,
+        "operand": 136,
+        "operand_bytes": 1,
+        "previous_handler": "0x85",
+        "successors": [
+          499
+        ]
+      },
+      {
+        "handler_index": "0x38",
+        "incoming_key": 136,
+        "meaning": "push_local_word",
+        "offset": 499,
+        "operand": 54,
+        "operand_bytes": 2,
+        "previous_handler": "0x3b",
+        "successors": [
+          502
+        ]
+      },
+      {
+        "handler_index": "0x53",
+        "incoming_key": 56,
+        "meaning": "sign_extend_word_to_pointer",
+        "offset": 502,
+        "operand": null,
+        "operand_bytes": 0,
+        "previous_handler": "0x38",
+        "successors": [
+          503
+        ]
+      },
+      {
+        "handler_index": "0x3f",
+        "incoming_key": 83,
+        "meaning": "store_local_pointer",
+        "offset": 503,
+        "operand": 63,
+        "operand_bytes": 2,
+        "previous_handler": "0x53",
+        "successors": [
+          506
+        ]
+      },
+      {
+        "handler_index": "0x4c",
+        "incoming_key": 63,
+        "meaning": "push_call_table_pointer",
+        "offset": 506,
+        "operand": 6,
+        "operand_bytes": 2,
+        "previous_handler": "0x3f",
+        "successors": [
+          509
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 76,
+        "meaning": "push_local_pointer",
+        "offset": 509,
+        "operand": 60,
+        "operand_bytes": 2,
+        "previous_handler": "0x4c",
+        "successors": [
+          512
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 57,
+        "meaning": "push_local_pointer",
+        "offset": 512,
+        "operand": 63,
+        "operand_bytes": 2,
+        "previous_handler": "0x39",
+        "successors": [
+          515
+        ]
+      },
+      {
+        "handler_index": "0x4d",
+        "incoming_key": 57,
+        "meaning": "call_native_thunk",
+        "offset": 515,
+        "operand": 7,
+        "operand_bytes": 1,
+        "previous_handler": "0x39",
+        "successors": [
+          517
+        ]
+      },
+      {
+        "handler_index": "0x3e",
+        "incoming_key": 77,
+        "meaning": "store_local_word",
+        "offset": 517,
+        "operand": 65,
+        "operand_bytes": 2,
+        "previous_handler": "0x4d",
+        "successors": [
+          520
+        ]
+      },
+      {
+        "handler_index": "0x4c",
+        "incoming_key": 62,
+        "meaning": "push_call_table_pointer",
+        "offset": 520,
+        "operand": 0,
+        "operand_bytes": 2,
+        "previous_handler": "0x3e",
+        "successors": [
+          523
+        ]
+      },
+      {
+        "handler_index": "0x45",
+        "incoming_key": 76,
+        "meaning": "load_indirect_pointer",
+        "offset": 523,
+        "operand": null,
+        "operand_bytes": 0,
+        "previous_handler": "0x4c",
+        "successors": [
+          524
+        ]
+      },
+      {
+        "handler_index": "0x3f",
+        "incoming_key": 69,
+        "meaning": "store_local_pointer",
+        "offset": 524,
+        "operand": 66,
+        "operand_bytes": 2,
+        "previous_handler": "0x45",
+        "successors": [
+          527
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 63,
+        "meaning": "push_local_pointer",
+        "offset": 527,
+        "operand": 66,
+        "operand_bytes": 2,
+        "previous_handler": "0x3f",
+        "successors": [
+          530
+        ]
+      },
+      {
+        "handler_index": "0x3f",
+        "incoming_key": 57,
+        "meaning": "store_local_pointer",
+        "offset": 530,
+        "operand": 68,
+        "operand_bytes": 2,
+        "previous_handler": "0x39",
+        "successors": [
+          533
+        ]
+      },
+      {
+        "handler_index": "0x85",
+        "incoming_key": 63,
+        "meaning": "jump_relative",
+        "offset": 533,
+        "operand": 4,
+        "operand_bytes": 3,
+        "previous_handler": "0x3f",
+        "signed_displacement": 4,
+        "successors": [
+          537
+        ]
+      },
+      {
+        "handler_index": "0x3b",
+        "incoming_key": 133,
+        "meaning": "reset_rolling_key",
+        "offset": 537,
+        "operand": 62,
+        "operand_bytes": 1,
+        "previous_handler": "0x85",
+        "successors": [
+          539
+        ]
+      },
+      {
+        "handler_index": "0x3b",
+        "incoming_key": 134,
+        "meaning": "reset_rolling_key",
+        "offset": 537,
+        "operand": 62,
+        "operand_bytes": 1,
+        "previous_handler": "0x86",
+        "successors": [
+          539
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 62,
+        "meaning": "push_local_pointer",
+        "offset": 539,
+        "operand": 68,
+        "operand_bytes": 2,
+        "previous_handler": "0x3b",
+        "successors": [
+          542
+        ]
+      },
+      {
+        "handler_index": "0x33",
+        "incoming_key": 57,
+        "meaning": "push_immediate_pointer",
+        "offset": 542,
+        "operand": 696,
+        "operand_bytes": 8,
+        "previous_handler": "0x39",
+        "successors": [
+          551
+        ]
+      },
+      {
+        "handler_index": "0x68",
+        "incoming_key": 51,
+        "meaning": "add_pointers",
+        "offset": 551,
+        "operand": null,
+        "operand_bytes": 0,
+        "previous_handler": "0x33",
+        "successors": [
+          552
+        ]
+      },
+      {
+        "handler_index": "0x3f",
+        "incoming_key": 104,
+        "meaning": "store_local_pointer",
+        "offset": 552,
+        "operand": 70,
+        "operand_bytes": 2,
+        "previous_handler": "0x68",
+        "successors": [
+          555
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 63,
+        "meaning": "push_local_pointer",
+        "offset": 555,
+        "operand": 70,
+        "operand_bytes": 2,
+        "previous_handler": "0x3f",
+        "successors": [
+          558
+        ]
+      },
+      {
+        "handler_index": "0x33",
+        "incoming_key": 57,
+        "meaning": "push_immediate_pointer",
+        "offset": 558,
+        "operand": 0,
+        "operand_bytes": 8,
+        "previous_handler": "0x39",
+        "successors": [
+          567
+        ]
+      },
+      {
+        "handler_index": "0x4a",
+        "incoming_key": 51,
+        "meaning": "store_indirect_pointer",
+        "offset": 567,
+        "operand": null,
+        "operand_bytes": 0,
+        "previous_handler": "0x33",
+        "successors": [
+          568
+        ]
+      },
+      {
+        "handler_index": "0x85",
+        "incoming_key": 74,
+        "meaning": "jump_relative",
+        "offset": 568,
+        "operand": 124,
+        "operand_bytes": 3,
+        "previous_handler": "0x4a",
+        "signed_displacement": 124,
+        "successors": [
+          692
+        ]
+      },
+      {
+        "handler_index": "0x3b",
+        "incoming_key": 134,
+        "meaning": "reset_rolling_key",
+        "offset": 572,
+        "operand": 56,
+        "operand_bytes": 1,
+        "previous_handler": "0x86",
+        "successors": [
+          574
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 56,
+        "meaning": "push_local_pointer",
+        "offset": 574,
+        "operand": 50,
+        "operand_bytes": 2,
+        "previous_handler": "0x3b",
+        "successors": [
+          577
+        ]
+      },
+      {
+        "handler_index": "0x33",
+        "incoming_key": 57,
+        "meaning": "push_immediate_pointer",
+        "offset": 577,
+        "operand": 696,
+        "operand_bytes": 8,
+        "previous_handler": "0x39",
+        "successors": [
+          586
+        ]
+      },
+      {
+        "handler_index": "0x68",
+        "incoming_key": 51,
+        "meaning": "add_pointers",
+        "offset": 586,
+        "operand": null,
+        "operand_bytes": 0,
+        "previous_handler": "0x33",
+        "successors": [
+          587
+        ]
+      },
+      {
+        "handler_index": "0x3f",
+        "incoming_key": 104,
+        "meaning": "store_local_pointer",
+        "offset": 587,
+        "operand": 72,
+        "operand_bytes": 2,
+        "previous_handler": "0x68",
+        "successors": [
+          590
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 63,
+        "meaning": "push_local_pointer",
+        "offset": 590,
+        "operand": 72,
+        "operand_bytes": 2,
+        "previous_handler": "0x3f",
+        "successors": [
+          593
+        ]
+      },
+      {
+        "handler_index": "0x45",
+        "incoming_key": 57,
+        "meaning": "load_indirect_pointer",
+        "offset": 593,
+        "operand": null,
+        "operand_bytes": 0,
+        "previous_handler": "0x39",
+        "successors": [
+          594
+        ]
+      },
+      {
+        "handler_index": "0x3f",
+        "incoming_key": 69,
+        "meaning": "store_local_pointer",
+        "offset": 594,
+        "operand": 74,
+        "operand_bytes": 2,
+        "previous_handler": "0x45",
+        "successors": [
+          597
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 63,
+        "meaning": "push_local_pointer",
+        "offset": 597,
+        "operand": 74,
+        "operand_bytes": 2,
+        "previous_handler": "0x3f",
+        "successors": [
+          600
+        ]
+      },
+      {
+        "handler_index": "0x33",
+        "incoming_key": 57,
+        "meaning": "push_immediate_pointer",
+        "offset": 600,
+        "operand": 0,
+        "operand_bytes": 8,
+        "previous_handler": "0x39",
+        "successors": [
+          609
+        ]
+      },
+      {
+        "handler_index": "0x16",
+        "incoming_key": 51,
+        "meaning": "compare_pointers_equal",
+        "offset": 609,
+        "operand": null,
+        "operand_bytes": 0,
+        "previous_handler": "0x33",
+        "successors": [
+          610
+        ]
+      },
+      {
+        "handler_index": "0x3c",
+        "incoming_key": 22,
+        "meaning": "store_local_byte",
+        "offset": 610,
+        "operand": 304,
+        "operand_bytes": 2,
+        "previous_handler": "0x16",
+        "successors": [
+          613
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 60,
+        "meaning": "push_local_pointer",
+        "offset": 613,
+        "operand": 50,
+        "operand_bytes": 2,
+        "previous_handler": "0x3c",
+        "successors": [
+          616
+        ]
+      },
+      {
+        "handler_index": "0x3f",
+        "incoming_key": 57,
+        "meaning": "store_local_pointer",
+        "offset": 616,
+        "operand": 80,
+        "operand_bytes": 2,
+        "previous_handler": "0x39",
+        "successors": [
+          619
+        ]
+      },
+      {
+        "handler_index": "0x36",
+        "incoming_key": 63,
+        "meaning": "push_local_byte",
+        "offset": 619,
+        "operand": 304,
+        "operand_bytes": 2,
+        "previous_handler": "0x3f",
+        "successors": [
+          622
+        ]
+      },
+      {
+        "handler_index": "0x86",
+        "incoming_key": 54,
+        "meaning": "jump_relative_if_byte_nonzero",
+        "offset": 622,
+        "operand": 35,
+        "operand_bytes": 3,
+        "previous_handler": "0x36",
+        "signed_displacement": 35,
+        "successors": [
+          657,
+          626
+        ]
+      },
+      {
+        "handler_index": "0x85",
+        "incoming_key": 134,
+        "meaning": "jump_relative",
+        "offset": 626,
+        "operand": 4,
+        "operand_bytes": 3,
+        "previous_handler": "0x86",
+        "signed_displacement": 4,
+        "successors": [
+          630
+        ]
+      },
+      {
+        "handler_index": "0x3b",
+        "incoming_key": 133,
+        "meaning": "reset_rolling_key",
+        "offset": 630,
+        "operand": 237,
+        "operand_bytes": 1,
+        "previous_handler": "0x85",
+        "successors": [
+          632
+        ]
+      },
+      {
+        "handler_index": "0x4c",
+        "incoming_key": 237,
+        "meaning": "push_call_table_pointer",
+        "offset": 632,
+        "operand": 12,
+        "operand_bytes": 2,
+        "previous_handler": "0x3b",
+        "successors": [
+          635
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 76,
+        "meaning": "push_local_pointer",
+        "offset": 635,
+        "operand": 74,
+        "operand_bytes": 2,
+        "previous_handler": "0x4c",
+        "successors": [
+          638
+        ]
+      },
+      {
+        "handler_index": "0x4d",
+        "incoming_key": 57,
+        "meaning": "call_native_thunk",
+        "offset": 638,
+        "operand": 8,
+        "operand_bytes": 1,
+        "previous_handler": "0x39",
+        "successors": [
+          640
+        ]
+      },
+      {
+        "handler_index": "0x4c",
+        "incoming_key": 77,
+        "meaning": "push_call_table_pointer",
+        "offset": 640,
+        "operand": 0,
+        "operand_bytes": 2,
+        "previous_handler": "0x4d",
+        "successors": [
+          643
+        ]
+      },
+      {
+        "handler_index": "0x45",
+        "incoming_key": 76,
+        "meaning": "load_indirect_pointer",
+        "offset": 643,
+        "operand": null,
+        "operand_bytes": 0,
+        "previous_handler": "0x4c",
+        "successors": [
+          644
+        ]
+      },
+      {
+        "handler_index": "0x3f",
+        "incoming_key": 69,
+        "meaning": "store_local_pointer",
+        "offset": 644,
+        "operand": 78,
+        "operand_bytes": 2,
+        "previous_handler": "0x45",
+        "successors": [
+          647
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 63,
+        "meaning": "push_local_pointer",
+        "offset": 647,
+        "operand": 78,
+        "operand_bytes": 2,
+        "previous_handler": "0x3f",
+        "successors": [
+          650
+        ]
+      },
+      {
+        "handler_index": "0x3f",
+        "incoming_key": 57,
+        "meaning": "store_local_pointer",
+        "offset": 650,
+        "operand": 80,
+        "operand_bytes": 2,
+        "previous_handler": "0x39",
+        "successors": [
+          653
+        ]
+      },
+      {
+        "handler_index": "0x85",
+        "incoming_key": 63,
+        "meaning": "jump_relative",
+        "offset": 653,
+        "operand": 4,
+        "operand_bytes": 3,
+        "previous_handler": "0x3f",
+        "signed_displacement": 4,
+        "successors": [
+          657
+        ]
+      },
+      {
+        "handler_index": "0x3b",
+        "incoming_key": 133,
+        "meaning": "reset_rolling_key",
+        "offset": 657,
+        "operand": 31,
+        "operand_bytes": 1,
+        "previous_handler": "0x85",
+        "successors": [
+          659
+        ]
+      },
+      {
+        "handler_index": "0x3b",
+        "incoming_key": 134,
+        "meaning": "reset_rolling_key",
+        "offset": 657,
+        "operand": 31,
+        "operand_bytes": 1,
+        "previous_handler": "0x86",
+        "successors": [
+          659
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 31,
+        "meaning": "push_local_pointer",
+        "offset": 659,
+        "operand": 80,
+        "operand_bytes": 2,
+        "previous_handler": "0x3b",
+        "successors": [
+          662
+        ]
+      },
+      {
+        "handler_index": "0x33",
+        "incoming_key": 57,
+        "meaning": "push_immediate_pointer",
+        "offset": 662,
+        "operand": 696,
+        "operand_bytes": 8,
+        "previous_handler": "0x39",
+        "successors": [
+          671
+        ]
+      },
+      {
+        "handler_index": "0x68",
+        "incoming_key": 51,
+        "meaning": "add_pointers",
+        "offset": 671,
+        "operand": null,
+        "operand_bytes": 0,
+        "previous_handler": "0x33",
+        "successors": [
+          672
+        ]
+      },
+      {
+        "handler_index": "0x3f",
+        "incoming_key": 104,
+        "meaning": "store_local_pointer",
+        "offset": 672,
+        "operand": 82,
+        "operand_bytes": 2,
+        "previous_handler": "0x68",
+        "successors": [
+          675
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 63,
+        "meaning": "push_local_pointer",
+        "offset": 675,
+        "operand": 82,
+        "operand_bytes": 2,
+        "previous_handler": "0x3f",
+        "successors": [
+          678
+        ]
+      },
+      {
+        "handler_index": "0x33",
+        "incoming_key": 57,
+        "meaning": "push_immediate_pointer",
+        "offset": 678,
+        "operand": 0,
+        "operand_bytes": 8,
+        "previous_handler": "0x39",
+        "successors": [
+          687
+        ]
+      },
+      {
+        "handler_index": "0x4a",
+        "incoming_key": 51,
+        "meaning": "store_indirect_pointer",
+        "offset": 687,
+        "operand": null,
+        "operand_bytes": 0,
+        "previous_handler": "0x33",
+        "successors": [
+          688
+        ]
+      },
+      {
+        "handler_index": "0x85",
+        "incoming_key": 74,
+        "meaning": "jump_relative",
+        "offset": 688,
+        "operand": 4,
+        "operand_bytes": 3,
+        "previous_handler": "0x4a",
+        "signed_displacement": 4,
+        "successors": [
+          692
+        ]
+      },
+      {
+        "handler_index": "0x3b",
+        "incoming_key": 133,
+        "meaning": "reset_rolling_key",
+        "offset": 692,
+        "operand": 50,
+        "operand_bytes": 1,
+        "previous_handler": "0x85",
+        "successors": [
+          694
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 50,
+        "meaning": "push_local_pointer",
+        "offset": 694,
+        "operand": 4,
+        "operand_bytes": 2,
+        "previous_handler": "0x3b",
+        "successors": [
+          697
+        ]
+      },
+      {
+        "handler_index": "0x33",
+        "incoming_key": 57,
+        "meaning": "push_immediate_pointer",
+        "offset": 697,
+        "operand": 0,
+        "operand_bytes": 8,
+        "previous_handler": "0x39",
+        "successors": [
+          706
+        ]
+      },
+      {
+        "handler_index": "0x4a",
+        "incoming_key": 51,
+        "meaning": "store_indirect_pointer",
+        "offset": 706,
+        "operand": null,
+        "operand_bytes": 0,
+        "previous_handler": "0x33",
+        "successors": [
+          707
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 74,
+        "meaning": "push_local_pointer",
+        "offset": 707,
+        "operand": 2,
+        "operand_bytes": 2,
+        "previous_handler": "0x4a",
+        "successors": [
+          710
+        ]
+      },
+      {
+        "handler_index": "0x33",
+        "incoming_key": 57,
+        "meaning": "push_immediate_pointer",
+        "offset": 710,
+        "operand": 0,
+        "operand_bytes": 8,
+        "previous_handler": "0x39",
+        "successors": [
+          719
+        ]
+      },
+      {
+        "handler_index": "0x4a",
+        "incoming_key": 51,
+        "meaning": "store_indirect_pointer",
+        "offset": 719,
+        "operand": null,
+        "operand_bytes": 0,
+        "previous_handler": "0x33",
+        "successors": [
+          720
+        ]
+      },
+      {
+        "handler_index": "0x4c",
+        "incoming_key": 74,
+        "meaning": "push_call_table_pointer",
+        "offset": 720,
+        "operand": 7,
+        "operand_bytes": 2,
+        "previous_handler": "0x4a",
+        "successors": [
+          723
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 76,
+        "meaning": "push_local_pointer",
+        "offset": 723,
+        "operand": 23,
+        "operand_bytes": 2,
+        "previous_handler": "0x4c",
+        "successors": [
+          726
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 57,
+        "meaning": "push_local_pointer",
+        "offset": 726,
+        "operand": 4,
+        "operand_bytes": 2,
+        "previous_handler": "0x39",
+        "successors": [
+          729
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 57,
+        "meaning": "push_local_pointer",
+        "offset": 729,
+        "operand": 38,
+        "operand_bytes": 2,
+        "previous_handler": "0x39",
+        "successors": [
+          732
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 57,
+        "meaning": "push_local_pointer",
+        "offset": 732,
+        "operand": 6,
+        "operand_bytes": 2,
+        "previous_handler": "0x39",
+        "successors": [
+          735
+        ]
+      },
+      {
+        "handler_index": "0x4d",
+        "incoming_key": 57,
+        "meaning": "call_native_thunk",
+        "offset": 735,
+        "operand": 9,
+        "operand_bytes": 1,
+        "previous_handler": "0x39",
+        "successors": [
+          737
+        ]
+      },
+      {
+        "handler_index": "0x3c",
+        "incoming_key": 77,
+        "meaning": "store_local_byte",
+        "offset": 737,
+        "operand": 336,
+        "operand_bytes": 2,
+        "previous_handler": "0x4d",
+        "successors": [
+          740
+        ]
+      },
+      {
+        "handler_index": "0x36",
+        "incoming_key": 60,
+        "meaning": "push_local_byte",
+        "offset": 740,
+        "operand": 336,
+        "operand_bytes": 2,
+        "previous_handler": "0x3c",
+        "successors": [
+          743
+        ]
+      },
+      {
+        "handler_index": "0x86",
+        "incoming_key": 54,
+        "meaning": "jump_relative_if_byte_nonzero",
+        "offset": 743,
+        "operand": 8,
+        "operand_bytes": 3,
+        "previous_handler": "0x36",
+        "signed_displacement": 8,
+        "successors": [
+          751,
+          747
+        ]
+      },
+      {
+        "handler_index": "0x85",
+        "incoming_key": 134,
+        "meaning": "jump_relative",
+        "offset": 747,
+        "operand": 888,
+        "operand_bytes": 3,
+        "previous_handler": "0x86",
+        "signed_displacement": 888,
+        "successors": [
+          1635
+        ]
+      },
+      {
+        "handler_index": "0x3b",
+        "incoming_key": 134,
+        "meaning": "reset_rolling_key",
+        "offset": 751,
+        "operand": 195,
+        "operand_bytes": 1,
+        "previous_handler": "0x86",
+        "successors": [
+          753
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 195,
+        "meaning": "push_local_pointer",
+        "offset": 753,
+        "operand": 6,
+        "operand_bytes": 2,
+        "previous_handler": "0x3b",
+        "successors": [
+          756
+        ]
+      },
+      {
+        "handler_index": "0x44",
+        "incoming_key": 57,
+        "meaning": "load_indirect_word",
+        "offset": 756,
+        "operand": null,
+        "operand_bytes": 0,
+        "previous_handler": "0x39",
+        "successors": [
+          757
+        ]
+      },
+      {
+        "handler_index": "0x3e",
+        "incoming_key": 68,
+        "meaning": "store_local_word",
+        "offset": 757,
+        "operand": 85,
+        "operand_bytes": 2,
+        "previous_handler": "0x44",
+        "successors": [
+          760
+        ]
+      },
+      {
+        "handler_index": "0x4c",
+        "incoming_key": 62,
+        "meaning": "push_call_table_pointer",
+        "offset": 760,
+        "operand": 1,
+        "operand_bytes": 2,
+        "previous_handler": "0x3e",
+        "successors": [
+          763
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 76,
+        "meaning": "push_local_pointer",
+        "offset": 763,
+        "operand": 4,
+        "operand_bytes": 2,
+        "previous_handler": "0x4c",
+        "successors": [
+          766
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 57,
+        "meaning": "push_local_pointer",
+        "offset": 766,
+        "operand": 2,
+        "operand_bytes": 2,
+        "previous_handler": "0x39",
+        "successors": [
+          769
+        ]
+      },
+      {
+        "handler_index": "0x38",
+        "incoming_key": 57,
+        "meaning": "push_local_word",
+        "offset": 769,
+        "operand": 85,
+        "operand_bytes": 2,
+        "previous_handler": "0x39",
+        "successors": [
+          772
+        ]
+      },
+      {
+        "handler_index": "0x4d",
+        "incoming_key": 56,
+        "meaning": "call_native_thunk",
+        "offset": 772,
+        "operand": 10,
+        "operand_bytes": 1,
+        "previous_handler": "0x38",
+        "successors": [
+          774
+        ]
+      },
+      {
+        "handler_index": "0x38",
+        "incoming_key": 77,
+        "meaning": "push_local_word",
+        "offset": 774,
+        "operand": 85,
+        "operand_bytes": 2,
+        "previous_handler": "0x4d",
+        "successors": [
+          777
+        ]
+      },
+      {
+        "handler_index": "0x3e",
+        "incoming_key": 56,
+        "meaning": "store_local_word",
+        "offset": 777,
+        "operand": 87,
+        "operand_bytes": 2,
+        "previous_handler": "0x38",
+        "successors": [
+          780
+        ]
+      },
+      {
+        "handler_index": "0x85",
+        "incoming_key": 62,
+        "meaning": "jump_relative",
+        "offset": 780,
+        "operand": 37,
+        "operand_bytes": 3,
+        "previous_handler": "0x3e",
+        "signed_displacement": 37,
+        "successors": [
+          817
+        ]
+      },
+      {
+        "handler_index": "0x3b",
+        "incoming_key": 134,
+        "meaning": "reset_rolling_key",
+        "offset": 784,
+        "operand": 111,
+        "operand_bytes": 1,
+        "previous_handler": "0x86",
+        "successors": [
+          786
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 111,
+        "meaning": "push_local_pointer",
+        "offset": 786,
+        "operand": 6,
+        "operand_bytes": 2,
+        "previous_handler": "0x3b",
+        "successors": [
+          789
+        ]
+      },
+      {
+        "handler_index": "0x44",
+        "incoming_key": 57,
+        "meaning": "load_indirect_word",
+        "offset": 789,
+        "operand": null,
+        "operand_bytes": 0,
+        "previous_handler": "0x39",
+        "successors": [
+          790
+        ]
+      },
+      {
+        "handler_index": "0x3e",
+        "incoming_key": 68,
+        "meaning": "store_local_word",
+        "offset": 790,
+        "operand": 86,
+        "operand_bytes": 2,
+        "previous_handler": "0x44",
+        "successors": [
+          793
+        ]
+      },
+      {
+        "handler_index": "0x4c",
+        "incoming_key": 62,
+        "meaning": "push_call_table_pointer",
+        "offset": 793,
+        "operand": 1,
+        "operand_bytes": 2,
+        "previous_handler": "0x3e",
+        "successors": [
+          796
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 76,
+        "meaning": "push_local_pointer",
+        "offset": 796,
+        "operand": 4,
+        "operand_bytes": 2,
+        "previous_handler": "0x4c",
+        "successors": [
+          799
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 57,
+        "meaning": "push_local_pointer",
+        "offset": 799,
+        "operand": 2,
+        "operand_bytes": 2,
+        "previous_handler": "0x39",
+        "successors": [
+          802
+        ]
+      },
+      {
+        "handler_index": "0x38",
+        "incoming_key": 57,
+        "meaning": "push_local_word",
+        "offset": 802,
+        "operand": 86,
+        "operand_bytes": 2,
+        "previous_handler": "0x39",
+        "successors": [
+          805
+        ]
+      },
+      {
+        "handler_index": "0x4d",
+        "incoming_key": 56,
+        "meaning": "call_native_thunk",
+        "offset": 805,
+        "operand": 11,
+        "operand_bytes": 1,
+        "previous_handler": "0x38",
+        "successors": [
+          807
+        ]
+      },
+      {
+        "handler_index": "0x38",
+        "incoming_key": 77,
+        "meaning": "push_local_word",
+        "offset": 807,
+        "operand": 86,
+        "operand_bytes": 2,
+        "previous_handler": "0x4d",
+        "successors": [
+          810
+        ]
+      },
+      {
+        "handler_index": "0x3e",
+        "incoming_key": 56,
+        "meaning": "store_local_word",
+        "offset": 810,
+        "operand": 87,
+        "operand_bytes": 2,
+        "previous_handler": "0x38",
+        "successors": [
+          813
+        ]
+      },
+      {
+        "handler_index": "0x85",
+        "incoming_key": 62,
+        "meaning": "jump_relative",
+        "offset": 813,
+        "operand": 4,
+        "operand_bytes": 3,
+        "previous_handler": "0x3e",
+        "signed_displacement": 4,
+        "successors": [
+          817
+        ]
+      },
+      {
+        "handler_index": "0x3b",
+        "incoming_key": 133,
+        "meaning": "reset_rolling_key",
+        "offset": 817,
+        "operand": 141,
+        "operand_bytes": 1,
+        "previous_handler": "0x85",
+        "successors": [
+          819
+        ]
+      },
+      {
+        "handler_index": "0x3b",
+        "incoming_key": 134,
+        "meaning": "reset_rolling_key",
+        "offset": 817,
+        "operand": 141,
+        "operand_bytes": 1,
+        "previous_handler": "0x86",
+        "successors": [
+          819
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 141,
+        "meaning": "push_local_pointer",
+        "offset": 819,
+        "operand": 4,
+        "operand_bytes": 2,
+        "previous_handler": "0x3b",
+        "successors": [
+          822
+        ]
+      },
+      {
+        "handler_index": "0x45",
+        "incoming_key": 57,
+        "meaning": "load_indirect_pointer",
+        "offset": 822,
+        "operand": null,
+        "operand_bytes": 0,
+        "previous_handler": "0x39",
+        "successors": [
+          823
+        ]
+      },
+      {
+        "handler_index": "0x3f",
+        "incoming_key": 69,
+        "meaning": "store_local_pointer",
+        "offset": 823,
+        "operand": 88,
+        "operand_bytes": 2,
+        "previous_handler": "0x45",
+        "successors": [
+          826
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 63,
+        "meaning": "push_local_pointer",
+        "offset": 826,
+        "operand": 88,
+        "operand_bytes": 2,
+        "previous_handler": "0x3f",
+        "successors": [
+          829
+        ]
+      },
+      {
+        "handler_index": "0x3f",
+        "incoming_key": 57,
+        "meaning": "store_local_pointer",
+        "offset": 829,
+        "operand": 90,
+        "operand_bytes": 2,
+        "previous_handler": "0x39",
+        "successors": [
+          832
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 63,
+        "meaning": "push_local_pointer",
+        "offset": 832,
+        "operand": 2,
+        "operand_bytes": 2,
+        "previous_handler": "0x3f",
+        "successors": [
+          835
+        ]
+      },
+      {
+        "handler_index": "0x45",
+        "incoming_key": 57,
+        "meaning": "load_indirect_pointer",
+        "offset": 835,
+        "operand": null,
+        "operand_bytes": 0,
+        "previous_handler": "0x39",
+        "successors": [
+          836
+        ]
+      },
+      {
+        "handler_index": "0x3f",
+        "incoming_key": 69,
+        "meaning": "store_local_pointer",
+        "offset": 836,
+        "operand": 92,
+        "operand_bytes": 2,
+        "previous_handler": "0x45",
+        "successors": [
+          839
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 63,
+        "meaning": "push_local_pointer",
+        "offset": 839,
+        "operand": 92,
+        "operand_bytes": 2,
+        "previous_handler": "0x3f",
+        "successors": [
+          842
+        ]
+      },
+      {
+        "handler_index": "0x33",
+        "incoming_key": 57,
+        "meaning": "push_immediate_pointer",
+        "offset": 842,
+        "operand": 18446744073709551612,
+        "operand_bytes": 8,
+        "previous_handler": "0x39",
+        "successors": [
+          851
+        ]
+      },
+      {
+        "handler_index": "0x68",
+        "incoming_key": 51,
+        "meaning": "add_pointers",
+        "offset": 851,
+        "operand": null,
+        "operand_bytes": 0,
+        "previous_handler": "0x33",
+        "successors": [
+          852
+        ]
+      },
+      {
+        "handler_index": "0x3f",
+        "incoming_key": 104,
+        "meaning": "store_local_pointer",
+        "offset": 852,
+        "operand": 94,
+        "operand_bytes": 2,
+        "previous_handler": "0x68",
+        "successors": [
+          855
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 63,
+        "meaning": "push_local_pointer",
+        "offset": 855,
+        "operand": 94,
+        "operand_bytes": 2,
+        "previous_handler": "0x3f",
+        "successors": [
+          858
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 57,
+        "meaning": "push_local_pointer",
+        "offset": 858,
+        "operand": 90,
+        "operand_bytes": 2,
+        "previous_handler": "0x39",
+        "successors": [
+          861
+        ]
+      },
+      {
+        "handler_index": "0x68",
+        "incoming_key": 57,
+        "meaning": "add_pointers",
+        "offset": 861,
+        "operand": null,
+        "operand_bytes": 0,
+        "previous_handler": "0x39",
+        "successors": [
+          862
+        ]
+      },
+      {
+        "handler_index": "0x3f",
+        "incoming_key": 104,
+        "meaning": "store_local_pointer",
+        "offset": 862,
+        "operand": 96,
+        "operand_bytes": 2,
+        "previous_handler": "0x68",
+        "successors": [
+          865
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 63,
+        "meaning": "push_local_pointer",
+        "offset": 865,
+        "operand": 96,
+        "operand_bytes": 2,
+        "previous_handler": "0x3f",
+        "successors": [
+          868
+        ]
+      },
+      {
+        "handler_index": "0x3f",
+        "incoming_key": 57,
+        "meaning": "store_local_pointer",
+        "offset": 868,
+        "operand": 98,
+        "operand_bytes": 2,
+        "previous_handler": "0x39",
+        "successors": [
+          871
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 63,
+        "meaning": "push_local_pointer",
+        "offset": 871,
+        "operand": 98,
+        "operand_bytes": 2,
+        "previous_handler": "0x3f",
+        "successors": [
+          874
+        ]
+      },
+      {
+        "handler_index": "0x44",
+        "incoming_key": 57,
+        "meaning": "load_indirect_word",
+        "offset": 874,
+        "operand": null,
+        "operand_bytes": 0,
+        "previous_handler": "0x39",
+        "successors": [
+          875
+        ]
+      },
+      {
+        "handler_index": "0x3e",
+        "incoming_key": 68,
+        "meaning": "store_local_word",
+        "offset": 875,
+        "operand": 100,
+        "operand_bytes": 2,
+        "previous_handler": "0x44",
+        "successors": [
+          878
+        ]
+      },
+      {
+        "handler_index": "0x4c",
+        "incoming_key": 62,
+        "meaning": "push_call_table_pointer",
+        "offset": 878,
+        "operand": 0,
+        "operand_bytes": 2,
+        "previous_handler": "0x3e",
+        "successors": [
+          881
+        ]
+      },
+      {
+        "handler_index": "0x45",
+        "incoming_key": 76,
+        "meaning": "load_indirect_pointer",
+        "offset": 881,
+        "operand": null,
+        "operand_bytes": 0,
+        "previous_handler": "0x4c",
+        "successors": [
+          882
+        ]
+      },
+      {
+        "handler_index": "0x3f",
+        "incoming_key": 69,
+        "meaning": "store_local_pointer",
+        "offset": 882,
+        "operand": 102,
+        "operand_bytes": 2,
+        "previous_handler": "0x45",
+        "successors": [
+          885
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 63,
+        "meaning": "push_local_pointer",
+        "offset": 885,
+        "operand": 102,
+        "operand_bytes": 2,
+        "previous_handler": "0x3f",
+        "successors": [
+          888
+        ]
+      },
+      {
+        "handler_index": "0x33",
+        "incoming_key": 57,
+        "meaning": "push_immediate_pointer",
+        "offset": 888,
+        "operand": 400,
+        "operand_bytes": 8,
+        "previous_handler": "0x39",
+        "successors": [
+          897
+        ]
+      },
+      {
+        "handler_index": "0x68",
+        "incoming_key": 51,
+        "meaning": "add_pointers",
+        "offset": 897,
+        "operand": null,
+        "operand_bytes": 0,
+        "previous_handler": "0x33",
+        "successors": [
+          898
+        ]
+      },
+      {
+        "handler_index": "0x3f",
+        "incoming_key": 104,
+        "meaning": "store_local_pointer",
+        "offset": 898,
+        "operand": 104,
+        "operand_bytes": 2,
+        "previous_handler": "0x68",
+        "successors": [
+          901
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 63,
+        "meaning": "push_local_pointer",
+        "offset": 901,
+        "operand": 104,
+        "operand_bytes": 2,
+        "previous_handler": "0x3f",
+        "successors": [
+          904
+        ]
+      },
+      {
+        "handler_index": "0x38",
+        "incoming_key": 57,
+        "meaning": "push_local_word",
+        "offset": 904,
+        "operand": 100,
+        "operand_bytes": 2,
+        "previous_handler": "0x39",
+        "successors": [
+          907
+        ]
+      },
+      {
+        "handler_index": "0x49",
+        "incoming_key": 56,
+        "meaning": "store_indirect_word",
+        "offset": 907,
+        "operand": null,
+        "operand_bytes": 0,
+        "previous_handler": "0x38",
+        "successors": [
+          908
+        ]
+      },
+      {
+        "handler_index": "0x38",
+        "incoming_key": 73,
+        "meaning": "push_local_word",
+        "offset": 908,
+        "operand": 100,
+        "operand_bytes": 2,
+        "previous_handler": "0x49",
+        "successors": [
+          911
+        ]
+      },
+      {
+        "handler_index": "0x32",
+        "incoming_key": 56,
+        "meaning": "push_immediate_word",
+        "offset": 911,
+        "operand": 0,
+        "operand_bytes": 4,
+        "previous_handler": "0x38",
+        "successors": [
+          916
+        ]
+      },
+      {
+        "handler_index": "0xe",
+        "incoming_key": 50,
+        "meaning": "compare_signed_words_greater",
+        "offset": 916,
+        "operand": null,
+        "operand_bytes": 0,
+        "previous_handler": "0x32",
+        "successors": [
+          917
+        ]
+      },
+      {
+        "handler_index": "0x3c",
+        "incoming_key": 14,
+        "meaning": "store_local_byte",
+        "offset": 917,
+        "operand": 424,
+        "operand_bytes": 2,
+        "previous_handler": "0xe",
+        "successors": [
+          920
+        ]
+      },
+      {
+        "handler_index": "0x36",
+        "incoming_key": 60,
+        "meaning": "push_local_byte",
+        "offset": 920,
+        "operand": 424,
+        "operand_bytes": 2,
+        "previous_handler": "0x3c",
+        "successors": [
+          923
+        ]
+      },
+      {
+        "handler_index": "0x86",
+        "incoming_key": 54,
+        "meaning": "jump_relative_if_byte_nonzero",
+        "offset": 923,
+        "operand": 8,
+        "operand_bytes": 3,
+        "previous_handler": "0x36",
+        "signed_displacement": 8,
+        "successors": [
+          931,
+          927
+        ]
+      },
+      {
+        "handler_index": "0x85",
+        "incoming_key": 134,
+        "meaning": "jump_relative",
+        "offset": 927,
+        "operand": 708,
+        "operand_bytes": 3,
+        "previous_handler": "0x86",
+        "signed_displacement": 708,
+        "successors": [
+          1635
+        ]
+      },
+      {
+        "handler_index": "0x3b",
+        "incoming_key": 134,
+        "meaning": "reset_rolling_key",
+        "offset": 931,
+        "operand": 139,
+        "operand_bytes": 1,
+        "previous_handler": "0x86",
+        "successors": [
+          933
+        ]
+      },
+      {
+        "handler_index": "0x36",
+        "incoming_key": 139,
+        "meaning": "push_local_byte",
+        "offset": 933,
+        "operand": 160,
+        "operand_bytes": 2,
+        "previous_handler": "0x3b",
+        "successors": [
+          936
+        ]
+      },
+      {
+        "handler_index": "0x30",
+        "incoming_key": 54,
+        "meaning": "push_immediate_byte",
+        "offset": 936,
+        "operand": 1,
+        "operand_bytes": 1,
+        "previous_handler": "0x36",
+        "successors": [
+          938
+        ]
+      },
+      {
+        "handler_index": "0x81",
+        "incoming_key": 48,
+        "meaning": "xor_words",
+        "offset": 938,
+        "operand": null,
+        "operand_bytes": 0,
+        "previous_handler": "0x30",
+        "successors": [
+          939
+        ]
+      },
+      {
+        "handler_index": "0x3c",
+        "incoming_key": 129,
+        "meaning": "store_local_byte",
+        "offset": 939,
+        "operand": 428,
+        "operand_bytes": 2,
+        "previous_handler": "0x81",
+        "successors": [
+          942
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 60,
+        "meaning": "push_local_pointer",
+        "offset": 942,
+        "operand": 0,
+        "operand_bytes": 2,
+        "previous_handler": "0x3c",
+        "successors": [
+          945
+        ]
+      },
+      {
+        "handler_index": "0x3f",
+        "incoming_key": 57,
+        "meaning": "store_local_pointer",
+        "offset": 945,
+        "operand": 108,
+        "operand_bytes": 2,
+        "previous_handler": "0x39",
+        "successors": [
+          948
+        ]
+      },
+      {
+        "handler_index": "0x38",
+        "incoming_key": 63,
+        "meaning": "push_local_word",
+        "offset": 948,
+        "operand": 100,
+        "operand_bytes": 2,
+        "previous_handler": "0x3f",
+        "successors": [
+          951
+        ]
+      },
+      {
+        "handler_index": "0x52",
+        "incoming_key": 56,
+        "meaning": "zero_extend_word_to_pointer",
+        "offset": 951,
+        "operand": null,
+        "operand_bytes": 0,
+        "previous_handler": "0x38",
+        "successors": [
+          952
+        ]
+      },
+      {
+        "handler_index": "0x3f",
+        "incoming_key": 82,
+        "meaning": "store_local_pointer",
+        "offset": 952,
+        "operand": 110,
+        "operand_bytes": 2,
+        "previous_handler": "0x52",
+        "successors": [
+          955
+        ]
+      },
+      {
+        "handler_index": "0x38",
+        "incoming_key": 63,
+        "meaning": "push_local_word",
+        "offset": 955,
+        "operand": 87,
+        "operand_bytes": 2,
+        "previous_handler": "0x3f",
+        "successors": [
+          958
+        ]
+      },
+      {
+        "handler_index": "0x3e",
+        "incoming_key": 56,
+        "meaning": "store_local_word",
+        "offset": 958,
+        "operand": 112,
+        "operand_bytes": 2,
+        "previous_handler": "0x38",
+        "successors": [
+          961
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 62,
+        "meaning": "push_local_pointer",
+        "offset": 961,
+        "operand": 92,
+        "operand_bytes": 2,
+        "previous_handler": "0x3e",
+        "successors": [
+          964
+        ]
+      },
+      {
+        "handler_index": "0x3f",
+        "incoming_key": 57,
+        "meaning": "store_local_pointer",
+        "offset": 964,
+        "operand": 113,
+        "operand_bytes": 2,
+        "previous_handler": "0x39",
+        "successors": [
+          967
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 63,
+        "meaning": "push_local_pointer",
+        "offset": 967,
+        "operand": 88,
+        "operand_bytes": 2,
+        "previous_handler": "0x3f",
+        "successors": [
+          970
+        ]
+      },
+      {
+        "handler_index": "0x3f",
+        "incoming_key": 57,
+        "meaning": "store_local_pointer",
+        "offset": 970,
+        "operand": 115,
+        "operand_bytes": 2,
+        "previous_handler": "0x39",
+        "successors": [
+          973
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 63,
+        "meaning": "push_local_pointer",
+        "offset": 973,
+        "operand": 110,
+        "operand_bytes": 2,
+        "previous_handler": "0x3f",
+        "successors": [
+          976
+        ]
+      },
+      {
+        "handler_index": "0x3f",
+        "incoming_key": 57,
+        "meaning": "store_local_pointer",
+        "offset": 976,
+        "operand": 117,
+        "operand_bytes": 2,
+        "previous_handler": "0x39",
+        "successors": [
+          979
+        ]
+      },
+      {
+        "handler_index": "0x85",
+        "incoming_key": 63,
+        "meaning": "jump_relative",
+        "offset": 979,
+        "operand": 4,
+        "operand_bytes": 3,
+        "previous_handler": "0x3f",
+        "signed_displacement": 4,
+        "successors": [
+          983
+        ]
+      },
+      {
+        "handler_index": "0x3b",
+        "incoming_key": 133,
+        "meaning": "reset_rolling_key",
+        "offset": 983,
+        "operand": 88,
+        "operand_bytes": 1,
+        "previous_handler": "0x85",
+        "successors": [
+          985
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 88,
+        "meaning": "push_local_pointer",
+        "offset": 985,
+        "operand": 115,
+        "operand_bytes": 2,
+        "previous_handler": "0x3b",
+        "successors": [
+          988
+        ]
+      },
+      {
+        "handler_index": "0x3f",
+        "incoming_key": 57,
+        "meaning": "store_local_pointer",
+        "offset": 988,
+        "operand": 119,
+        "operand_bytes": 2,
+        "previous_handler": "0x39",
+        "successors": [
+          991
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 63,
+        "meaning": "push_local_pointer",
+        "offset": 991,
+        "operand": 117,
+        "operand_bytes": 2,
+        "previous_handler": "0x3f",
+        "successors": [
+          994
+        ]
+      },
+      {
+        "handler_index": "0x33",
+        "incoming_key": 57,
+        "meaning": "push_immediate_pointer",
+        "offset": 994,
+        "operand": 18446744039349813248,
+        "operand_bytes": 8,
+        "previous_handler": "0x39",
+        "successors": [
+          1003
+        ]
+      },
+      {
+        "handler_index": "0x70",
+        "incoming_key": 51,
+        "meaning": "multiply_pointers",
+        "offset": 1003,
+        "operand": null,
+        "operand_bytes": 0,
+        "previous_handler": "0x33",
+        "successors": [
+          1004
+        ]
+      },
+      {
+        "handler_index": "0x3f",
+        "incoming_key": 112,
+        "meaning": "store_local_pointer",
+        "offset": 1004,
+        "operand": 121,
+        "operand_bytes": 2,
+        "previous_handler": "0x70",
+        "successors": [
+          1007
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 63,
+        "meaning": "push_local_pointer",
+        "offset": 1007,
+        "operand": 121,
+        "operand_bytes": 2,
+        "previous_handler": "0x3f",
+        "successors": [
+          1010
+        ]
+      },
+      {
+        "handler_index": "0x33",
+        "incoming_key": 57,
+        "meaning": "push_immediate_pointer",
+        "offset": 1010,
+        "operand": 18446744056529682432,
+        "operand_bytes": 8,
+        "previous_handler": "0x39",
+        "successors": [
+          1019
+        ]
+      },
+      {
+        "handler_index": "0x68",
+        "incoming_key": 51,
+        "meaning": "add_pointers",
+        "offset": 1019,
+        "operand": null,
+        "operand_bytes": 0,
+        "previous_handler": "0x33",
+        "successors": [
+          1020
+        ]
+      },
+      {
+        "handler_index": "0x3f",
+        "incoming_key": 104,
+        "meaning": "store_local_pointer",
+        "offset": 1020,
+        "operand": 123,
+        "operand_bytes": 2,
+        "previous_handler": "0x68",
+        "successors": [
+          1023
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 63,
+        "meaning": "push_local_pointer",
+        "offset": 1023,
+        "operand": 123,
+        "operand_bytes": 2,
+        "previous_handler": "0x3f",
+        "successors": [
+          1026
+        ]
+      },
+      {
+        "handler_index": "0x33",
+        "incoming_key": 57,
+        "meaning": "push_immediate_pointer",
+        "offset": 1026,
+        "operand": 32,
+        "operand_bytes": 8,
+        "previous_handler": "0x39",
+        "successors": [
+          1035
+        ]
+      },
+      {
+        "handler_index": "0x7",
+        "incoming_key": 51,
+        "meaning": "arithmetic_shift_right_pointer",
+        "offset": 1035,
+        "operand": null,
+        "operand_bytes": 0,
+        "previous_handler": "0x33",
+        "successors": [
+          1036
+        ]
+      },
+      {
+        "handler_index": "0x3f",
+        "incoming_key": 7,
+        "meaning": "store_local_pointer",
+        "offset": 1036,
+        "operand": 125,
+        "operand_bytes": 2,
+        "previous_handler": "0x7",
+        "successors": [
+          1039
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 63,
+        "meaning": "push_local_pointer",
+        "offset": 1039,
+        "operand": 125,
+        "operand_bytes": 2,
+        "previous_handler": "0x3f",
+        "successors": [
+          1042
+        ]
+      },
+      {
+        "handler_index": "0x33",
+        "incoming_key": 57,
+        "meaning": "push_immediate_pointer",
+        "offset": 1042,
+        "operand": 4,
+        "operand_bytes": 8,
+        "previous_handler": "0x39",
+        "successors": [
+          1051
+        ]
+      },
+      {
+        "handler_index": "0x68",
+        "incoming_key": 51,
+        "meaning": "add_pointers",
+        "offset": 1051,
+        "operand": null,
+        "operand_bytes": 0,
+        "previous_handler": "0x33",
+        "successors": [
+          1052
+        ]
+      },
+      {
+        "handler_index": "0x3f",
+        "incoming_key": 104,
+        "meaning": "store_local_pointer",
+        "offset": 1052,
+        "operand": 127,
+        "operand_bytes": 2,
+        "previous_handler": "0x68",
+        "successors": [
+          1055
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 63,
+        "meaning": "push_local_pointer",
+        "offset": 1055,
+        "operand": 127,
+        "operand_bytes": 2,
+        "previous_handler": "0x3f",
+        "successors": [
+          1058
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 57,
+        "meaning": "push_local_pointer",
+        "offset": 1058,
+        "operand": 119,
+        "operand_bytes": 2,
+        "previous_handler": "0x39",
+        "successors": [
+          1061
+        ]
+      },
+      {
+        "handler_index": "0x68",
+        "incoming_key": 57,
+        "meaning": "add_pointers",
+        "offset": 1061,
+        "operand": null,
+        "operand_bytes": 0,
+        "previous_handler": "0x39",
+        "successors": [
+          1062
+        ]
+      },
+      {
+        "handler_index": "0x3f",
+        "incoming_key": 104,
+        "meaning": "store_local_pointer",
+        "offset": 1062,
+        "operand": 129,
+        "operand_bytes": 2,
+        "previous_handler": "0x68",
+        "successors": [
+          1065
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 63,
+        "meaning": "push_local_pointer",
+        "offset": 1065,
+        "operand": 129,
+        "operand_bytes": 2,
+        "previous_handler": "0x3f",
+        "successors": [
+          1068
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 57,
+        "meaning": "push_local_pointer",
+        "offset": 1068,
+        "operand": 113,
+        "operand_bytes": 2,
+        "previous_handler": "0x39",
+        "successors": [
+          1071
+        ]
+      },
+      {
+        "handler_index": "0x68",
+        "incoming_key": 57,
+        "meaning": "add_pointers",
+        "offset": 1071,
+        "operand": null,
+        "operand_bytes": 0,
+        "previous_handler": "0x39",
+        "successors": [
+          1072
+        ]
+      },
+      {
+        "handler_index": "0x3f",
+        "incoming_key": 104,
+        "meaning": "store_local_pointer",
+        "offset": 1072,
+        "operand": 131,
+        "operand_bytes": 2,
+        "previous_handler": "0x68",
+        "successors": [
+          1075
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 63,
+        "meaning": "push_local_pointer",
+        "offset": 1075,
+        "operand": 131,
+        "operand_bytes": 2,
+        "previous_handler": "0x3f",
+        "successors": [
+          1078
+        ]
+      },
+      {
+        "handler_index": "0x3f",
+        "incoming_key": 57,
+        "meaning": "store_local_pointer",
+        "offset": 1078,
+        "operand": 133,
+        "operand_bytes": 2,
+        "previous_handler": "0x39",
+        "successors": [
+          1081
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 63,
+        "meaning": "push_local_pointer",
+        "offset": 1081,
+        "operand": 133,
+        "operand_bytes": 2,
+        "previous_handler": "0x3f",
+        "successors": [
+          1084
+        ]
+      },
+      {
+        "handler_index": "0x44",
+        "incoming_key": 57,
+        "meaning": "load_indirect_word",
+        "offset": 1084,
+        "operand": null,
+        "operand_bytes": 0,
+        "previous_handler": "0x39",
+        "successors": [
+          1085
+        ]
+      },
+      {
+        "handler_index": "0x3e",
+        "incoming_key": 68,
+        "meaning": "store_local_word",
+        "offset": 1085,
+        "operand": 135,
+        "operand_bytes": 2,
+        "previous_handler": "0x44",
+        "successors": [
+          1088
+        ]
+      },
+      {
+        "handler_index": "0x38",
+        "incoming_key": 62,
+        "meaning": "push_local_word",
+        "offset": 1088,
+        "operand": 135,
+        "operand_bytes": 2,
+        "previous_handler": "0x3e",
+        "successors": [
+          1091
+        ]
+      },
+      {
+        "handler_index": "0x53",
+        "incoming_key": 56,
+        "meaning": "sign_extend_word_to_pointer",
+        "offset": 1091,
+        "operand": null,
+        "operand_bytes": 0,
+        "previous_handler": "0x38",
+        "successors": [
+          1092
+        ]
+      },
+      {
+        "handler_index": "0x3f",
+        "incoming_key": 83,
+        "meaning": "store_local_pointer",
+        "offset": 1092,
+        "operand": 136,
+        "operand_bytes": 2,
+        "previous_handler": "0x53",
+        "successors": [
+          1095
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 63,
+        "meaning": "push_local_pointer",
+        "offset": 1095,
+        "operand": 136,
+        "operand_bytes": 2,
+        "previous_handler": "0x3f",
+        "successors": [
+          1098
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 57,
+        "meaning": "push_local_pointer",
+        "offset": 1098,
+        "operand": 119,
+        "operand_bytes": 2,
+        "previous_handler": "0x39",
+        "successors": [
+          1101
+        ]
+      },
+      {
+        "handler_index": "0x68",
+        "incoming_key": 57,
+        "meaning": "add_pointers",
+        "offset": 1101,
+        "operand": null,
+        "operand_bytes": 0,
+        "previous_handler": "0x39",
+        "successors": [
+          1102
+        ]
+      },
+      {
+        "handler_index": "0x3f",
+        "incoming_key": 104,
+        "meaning": "store_local_pointer",
+        "offset": 1102,
+        "operand": 138,
+        "operand_bytes": 2,
+        "previous_handler": "0x68",
+        "successors": [
+          1105
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 63,
+        "meaning": "push_local_pointer",
+        "offset": 1105,
+        "operand": 138,
+        "operand_bytes": 2,
+        "previous_handler": "0x3f",
+        "successors": [
+          1108
+        ]
+      },
+      {
+        "handler_index": "0x3f",
+        "incoming_key": 57,
+        "meaning": "store_local_pointer",
+        "offset": 1108,
+        "operand": 140,
+        "operand_bytes": 2,
+        "previous_handler": "0x39",
+        "successors": [
+          1111
+        ]
+      },
+      {
+        "handler_index": "0x38",
+        "incoming_key": 63,
+        "meaning": "push_local_word",
+        "offset": 1111,
+        "operand": 112,
+        "operand_bytes": 2,
+        "previous_handler": "0x3f",
+        "successors": [
+          1114
+        ]
+      },
+      {
+        "handler_index": "0x32",
+        "incoming_key": 56,
+        "meaning": "push_immediate_word",
+        "offset": 1114,
+        "operand": 6,
+        "operand_bytes": 4,
+        "previous_handler": "0x38",
+        "successors": [
+          1119
+        ]
+      },
+      {
+        "handler_index": "0xd",
+        "incoming_key": 50,
+        "meaning": "compare_words_not_equal",
+        "offset": 1119,
+        "operand": null,
+        "operand_bytes": 0,
+        "previous_handler": "0x32",
+        "successors": [
+          1120
+        ]
+      },
+      {
+        "handler_index": "0x3c",
+        "incoming_key": 13,
+        "meaning": "store_local_byte",
+        "offset": 1120,
+        "operand": 568,
+        "operand_bytes": 2,
+        "previous_handler": "0xd",
+        "successors": [
+          1123
+        ]
+      },
+      {
+        "handler_index": "0x36",
+        "incoming_key": 60,
+        "meaning": "push_local_byte",
+        "offset": 1123,
+        "operand": 568,
+        "operand_bytes": 2,
+        "previous_handler": "0x3c",
+        "successors": [
+          1126
+        ]
+      },
+      {
+        "handler_index": "0x36",
+        "incoming_key": 54,
+        "meaning": "push_local_byte",
+        "offset": 1126,
+        "operand": 428,
+        "operand_bytes": 2,
+        "previous_handler": "0x36",
+        "successors": [
+          1129
+        ]
+      },
+      {
+        "handler_index": "0x83",
+        "incoming_key": 54,
+        "meaning": "or_words",
+        "offset": 1129,
+        "operand": null,
+        "operand_bytes": 0,
+        "previous_handler": "0x36",
+        "successors": [
+          1130
+        ]
+      },
+      {
+        "handler_index": "0x3c",
+        "incoming_key": 131,
+        "meaning": "store_local_byte",
+        "offset": 1130,
+        "operand": 572,
+        "operand_bytes": 2,
+        "previous_handler": "0x83",
+        "successors": [
+          1133
+        ]
+      },
+      {
+        "handler_index": "0x36",
+        "incoming_key": 60,
+        "meaning": "push_local_byte",
+        "offset": 1133,
+        "operand": 572,
+        "operand_bytes": 2,
+        "previous_handler": "0x3c",
+        "successors": [
+          1136
+        ]
+      },
+      {
+        "handler_index": "0x86",
+        "incoming_key": 54,
+        "meaning": "jump_relative_if_byte_nonzero",
+        "offset": 1136,
+        "operand": 393,
+        "operand_bytes": 3,
+        "previous_handler": "0x36",
+        "signed_displacement": 393,
+        "successors": [
+          1529,
+          1140
+        ]
+      },
+      {
+        "handler_index": "0x85",
+        "incoming_key": 134,
+        "meaning": "jump_relative",
+        "offset": 1140,
+        "operand": 4,
+        "operand_bytes": 3,
+        "previous_handler": "0x86",
+        "signed_displacement": 4,
+        "successors": [
+          1144
+        ]
+      },
+      {
+        "handler_index": "0x3b",
+        "incoming_key": 133,
+        "meaning": "reset_rolling_key",
+        "offset": 1144,
+        "operand": 143,
+        "operand_bytes": 1,
+        "previous_handler": "0x85",
+        "successors": [
+          1146
+        ]
+      },
+      {
+        "handler_index": "0x4c",
+        "incoming_key": 143,
+        "meaning": "push_call_table_pointer",
+        "offset": 1146,
+        "operand": 14,
+        "operand_bytes": 2,
+        "previous_handler": "0x3b",
+        "successors": [
+          1149
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 76,
+        "meaning": "push_local_pointer",
+        "offset": 1149,
+        "operand": 108,
+        "operand_bytes": 2,
+        "previous_handler": "0x4c",
+        "successors": [
+          1152
+        ]
+      },
+      {
+        "handler_index": "0x4c",
+        "incoming_key": 57,
+        "meaning": "push_call_table_pointer",
+        "offset": 1152,
+        "operand": 8,
+        "operand_bytes": 2,
+        "previous_handler": "0x39",
+        "successors": [
+          1155
+        ]
+      },
+      {
+        "handler_index": "0x33",
+        "incoming_key": 76,
+        "meaning": "push_immediate_pointer",
+        "offset": 1155,
+        "operand": 30,
+        "operand_bytes": 8,
+        "previous_handler": "0x4c",
+        "successors": [
+          1164
+        ]
+      },
+      {
+        "handler_index": "0x4d",
+        "incoming_key": 51,
+        "meaning": "call_native_thunk",
+        "offset": 1164,
+        "operand": 12,
+        "operand_bytes": 1,
+        "previous_handler": "0x33",
+        "successors": [
+          1166
+        ]
+      },
+      {
+        "handler_index": "0x3f",
+        "incoming_key": 77,
+        "meaning": "store_local_pointer",
+        "offset": 1166,
+        "operand": 144,
+        "operand_bytes": 2,
+        "previous_handler": "0x4d",
+        "successors": [
+          1169
+        ]
+      },
+      {
+        "handler_index": "0x4c",
+        "incoming_key": 63,
+        "meaning": "push_call_table_pointer",
+        "offset": 1169,
+        "operand": 0,
+        "operand_bytes": 2,
+        "previous_handler": "0x3f",
+        "successors": [
+          1172
+        ]
+      },
+      {
+        "handler_index": "0x45",
+        "incoming_key": 76,
+        "meaning": "load_indirect_pointer",
+        "offset": 1172,
+        "operand": null,
+        "operand_bytes": 0,
+        "previous_handler": "0x4c",
+        "successors": [
+          1173
+        ]
+      },
+      {
+        "handler_index": "0x3f",
+        "incoming_key": 69,
+        "meaning": "store_local_pointer",
+        "offset": 1173,
+        "operand": 146,
+        "operand_bytes": 2,
+        "previous_handler": "0x45",
+        "successors": [
+          1176
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 63,
+        "meaning": "push_local_pointer",
+        "offset": 1176,
+        "operand": 146,
+        "operand_bytes": 2,
+        "previous_handler": "0x3f",
+        "successors": [
+          1179
+        ]
+      },
+      {
+        "handler_index": "0x33",
+        "incoming_key": 57,
+        "meaning": "push_immediate_pointer",
+        "offset": 1179,
+        "operand": 352,
+        "operand_bytes": 8,
+        "previous_handler": "0x39",
+        "successors": [
+          1188
+        ]
+      },
+      {
+        "handler_index": "0x68",
+        "incoming_key": 51,
+        "meaning": "add_pointers",
+        "offset": 1188,
+        "operand": null,
+        "operand_bytes": 0,
+        "previous_handler": "0x33",
+        "successors": [
+          1189
+        ]
+      },
+      {
+        "handler_index": "0x3f",
+        "incoming_key": 104,
+        "meaning": "store_local_pointer",
+        "offset": 1189,
+        "operand": 148,
+        "operand_bytes": 2,
+        "previous_handler": "0x68",
+        "successors": [
+          1192
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 63,
+        "meaning": "push_local_pointer",
+        "offset": 1192,
+        "operand": 148,
+        "operand_bytes": 2,
+        "previous_handler": "0x3f",
+        "successors": [
+          1195
+        ]
+      },
+      {
+        "handler_index": "0x45",
+        "incoming_key": 57,
+        "meaning": "load_indirect_pointer",
+        "offset": 1195,
+        "operand": null,
+        "operand_bytes": 0,
+        "previous_handler": "0x39",
+        "successors": [
+          1196
+        ]
+      },
+      {
+        "handler_index": "0x3f",
+        "incoming_key": 69,
+        "meaning": "store_local_pointer",
+        "offset": 1196,
+        "operand": 150,
+        "operand_bytes": 2,
+        "previous_handler": "0x45",
+        "successors": [
+          1199
+        ]
+      },
+      {
+        "handler_index": "0x33",
+        "incoming_key": 63,
+        "meaning": "push_immediate_pointer",
+        "offset": 1199,
+        "operand": 0,
+        "operand_bytes": 8,
+        "previous_handler": "0x3f",
+        "successors": [
+          1208
+        ]
+      },
+      {
+        "handler_index": "0x3f",
+        "incoming_key": 51,
+        "meaning": "store_local_pointer",
+        "offset": 1208,
+        "operand": 152,
+        "operand_bytes": 2,
+        "previous_handler": "0x33",
+        "successors": [
+          1211
+        ]
+      },
+      {
+        "handler_index": "0x85",
+        "incoming_key": 63,
+        "meaning": "jump_relative",
+        "offset": 1211,
+        "operand": 4,
+        "operand_bytes": 3,
+        "previous_handler": "0x3f",
+        "signed_displacement": 4,
+        "successors": [
+          1215
+        ]
+      },
+      {
+        "handler_index": "0x3b",
+        "incoming_key": 133,
+        "meaning": "reset_rolling_key",
+        "offset": 1215,
+        "operand": 193,
+        "operand_bytes": 1,
+        "previous_handler": "0x85",
+        "successors": [
+          1217
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 193,
+        "meaning": "push_local_pointer",
+        "offset": 1217,
+        "operand": 152,
+        "operand_bytes": 2,
+        "previous_handler": "0x3b",
+        "successors": [
+          1220
+        ]
+      },
+      {
+        "handler_index": "0x33",
+        "incoming_key": 57,
+        "meaning": "push_immediate_pointer",
+        "offset": 1220,
+        "operand": 1,
+        "operand_bytes": 8,
+        "previous_handler": "0x39",
+        "successors": [
+          1229
+        ]
+      },
+      {
+        "handler_index": "0x68",
+        "incoming_key": 51,
+        "meaning": "add_pointers",
+        "offset": 1229,
+        "operand": null,
+        "operand_bytes": 0,
+        "previous_handler": "0x33",
+        "successors": [
+          1230
+        ]
+      },
+      {
+        "handler_index": "0x3f",
+        "incoming_key": 104,
+        "meaning": "store_local_pointer",
+        "offset": 1230,
+        "operand": 154,
+        "operand_bytes": 2,
+        "previous_handler": "0x68",
+        "successors": [
+          1233
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 63,
+        "meaning": "push_local_pointer",
+        "offset": 1233,
+        "operand": 0,
+        "operand_bytes": 2,
+        "previous_handler": "0x3f",
+        "successors": [
+          1236
+        ]
+      },
+      {
+        "handler_index": "0x33",
+        "incoming_key": 57,
+        "meaning": "push_immediate_pointer",
+        "offset": 1236,
+        "operand": 1,
+        "operand_bytes": 8,
+        "previous_handler": "0x39",
+        "successors": [
+          1245
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 51,
+        "meaning": "push_local_pointer",
+        "offset": 1245,
+        "operand": 154,
+        "operand_bytes": 2,
+        "previous_handler": "0x33",
+        "successors": [
+          1248
+        ]
+      },
+      {
+        "handler_index": "0x70",
+        "incoming_key": 57,
+        "meaning": "multiply_pointers",
+        "offset": 1248,
+        "operand": null,
+        "operand_bytes": 0,
+        "previous_handler": "0x39",
+        "successors": [
+          1249
+        ]
+      },
+      {
+        "handler_index": "0x68",
+        "incoming_key": 112,
+        "meaning": "add_pointers",
+        "offset": 1249,
+        "operand": null,
+        "operand_bytes": 0,
+        "previous_handler": "0x70",
+        "successors": [
+          1250
+        ]
+      },
+      {
+        "handler_index": "0x3f",
+        "incoming_key": 104,
+        "meaning": "store_local_pointer",
+        "offset": 1250,
+        "operand": 156,
+        "operand_bytes": 2,
+        "previous_handler": "0x68",
+        "successors": [
+          1253
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 63,
+        "meaning": "push_local_pointer",
+        "offset": 1253,
+        "operand": 156,
+        "operand_bytes": 2,
+        "previous_handler": "0x3f",
+        "successors": [
+          1256
+        ]
+      },
+      {
+        "handler_index": "0x42",
+        "incoming_key": 57,
+        "meaning": "load_indirect_byte",
+        "offset": 1256,
+        "operand": null,
+        "operand_bytes": 0,
+        "previous_handler": "0x39",
+        "successors": [
+          1257
+        ]
+      },
+      {
+        "handler_index": "0x3c",
+        "incoming_key": 66,
+        "meaning": "store_local_byte",
+        "offset": 1257,
+        "operand": 632,
+        "operand_bytes": 2,
+        "previous_handler": "0x42",
+        "successors": [
+          1260
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 60,
+        "meaning": "push_local_pointer",
+        "offset": 1260,
+        "operand": 152,
+        "operand_bytes": 2,
+        "previous_handler": "0x3c",
+        "successors": [
+          1263
+        ]
+      },
+      {
+        "handler_index": "0x33",
+        "incoming_key": 57,
+        "meaning": "push_immediate_pointer",
+        "offset": 1263,
+        "operand": 3,
+        "operand_bytes": 8,
+        "previous_handler": "0x39",
+        "successors": [
+          1272
+        ]
+      },
+      {
+        "handler_index": "0x68",
+        "incoming_key": 51,
+        "meaning": "add_pointers",
+        "offset": 1272,
+        "operand": null,
+        "operand_bytes": 0,
+        "previous_handler": "0x33",
+        "successors": [
+          1273
+        ]
+      },
+      {
+        "handler_index": "0x3f",
+        "incoming_key": 104,
+        "meaning": "store_local_pointer",
+        "offset": 1273,
+        "operand": 159,
+        "operand_bytes": 2,
+        "previous_handler": "0x68",
+        "successors": [
+          1276
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 63,
+        "meaning": "push_local_pointer",
+        "offset": 1276,
+        "operand": 150,
+        "operand_bytes": 2,
+        "previous_handler": "0x3f",
+        "successors": [
+          1279
+        ]
+      },
+      {
+        "handler_index": "0x33",
+        "incoming_key": 57,
+        "meaning": "push_immediate_pointer",
+        "offset": 1279,
+        "operand": 1,
+        "operand_bytes": 8,
+        "previous_handler": "0x39",
+        "successors": [
+          1288
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 51,
+        "meaning": "push_local_pointer",
+        "offset": 1288,
+        "operand": 159,
+        "operand_bytes": 2,
+        "previous_handler": "0x33",
+        "successors": [
+          1291
+        ]
+      },
+      {
+        "handler_index": "0x70",
+        "incoming_key": 57,
+        "meaning": "multiply_pointers",
+        "offset": 1291,
+        "operand": null,
+        "operand_bytes": 0,
+        "previous_handler": "0x39",
+        "successors": [
+          1292
+        ]
+      },
+      {
+        "handler_index": "0x68",
+        "incoming_key": 112,
+        "meaning": "add_pointers",
+        "offset": 1292,
+        "operand": null,
+        "operand_bytes": 0,
+        "previous_handler": "0x70",
+        "successors": [
+          1293
+        ]
+      },
+      {
+        "handler_index": "0x3f",
+        "incoming_key": 104,
+        "meaning": "store_local_pointer",
+        "offset": 1293,
+        "operand": 161,
+        "operand_bytes": 2,
+        "previous_handler": "0x68",
+        "successors": [
+          1296
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 63,
+        "meaning": "push_local_pointer",
+        "offset": 1296,
+        "operand": 161,
+        "operand_bytes": 2,
+        "previous_handler": "0x3f",
+        "successors": [
+          1299
+        ]
+      },
+      {
+        "handler_index": "0x42",
+        "incoming_key": 57,
+        "meaning": "load_indirect_byte",
+        "offset": 1299,
+        "operand": null,
+        "operand_bytes": 0,
+        "previous_handler": "0x39",
+        "successors": [
+          1300
+        ]
+      },
+      {
+        "handler_index": "0x3c",
+        "incoming_key": 66,
+        "meaning": "store_local_byte",
+        "offset": 1300,
+        "operand": 652,
+        "operand_bytes": 2,
+        "previous_handler": "0x42",
+        "successors": [
+          1303
+        ]
+      },
+      {
+        "handler_index": "0x36",
+        "incoming_key": 60,
+        "meaning": "push_local_byte",
+        "offset": 1303,
+        "operand": 652,
+        "operand_bytes": 2,
+        "previous_handler": "0x3c",
+        "successors": [
+          1306
+        ]
+      },
+      {
+        "handler_index": "0x36",
+        "incoming_key": 54,
+        "meaning": "push_local_byte",
+        "offset": 1306,
+        "operand": 632,
+        "operand_bytes": 2,
+        "previous_handler": "0x36",
+        "successors": [
+          1309
+        ]
+      },
+      {
+        "handler_index": "0x81",
+        "incoming_key": 54,
+        "meaning": "xor_words",
+        "offset": 1309,
+        "operand": null,
+        "operand_bytes": 0,
+        "previous_handler": "0x36",
+        "successors": [
+          1310
+        ]
+      },
+      {
+        "handler_index": "0x3c",
+        "incoming_key": 129,
+        "meaning": "store_local_byte",
+        "offset": 1310,
+        "operand": 656,
+        "operand_bytes": 2,
+        "previous_handler": "0x81",
+        "successors": [
+          1313
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 60,
+        "meaning": "push_local_pointer",
+        "offset": 1313,
+        "operand": 0,
+        "operand_bytes": 2,
+        "previous_handler": "0x3c",
+        "successors": [
+          1316
+        ]
+      },
+      {
+        "handler_index": "0x33",
+        "incoming_key": 57,
+        "meaning": "push_immediate_pointer",
+        "offset": 1316,
+        "operand": 1,
+        "operand_bytes": 8,
+        "previous_handler": "0x39",
+        "successors": [
+          1325
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 51,
+        "meaning": "push_local_pointer",
+        "offset": 1325,
+        "operand": 152,
+        "operand_bytes": 2,
+        "previous_handler": "0x33",
+        "successors": [
+          1328
+        ]
+      },
+      {
+        "handler_index": "0x70",
+        "incoming_key": 57,
+        "meaning": "multiply_pointers",
+        "offset": 1328,
+        "operand": null,
+        "operand_bytes": 0,
+        "previous_handler": "0x39",
+        "successors": [
+          1329
+        ]
+      },
+      {
+        "handler_index": "0x68",
+        "incoming_key": 112,
+        "meaning": "add_pointers",
+        "offset": 1329,
+        "operand": null,
+        "operand_bytes": 0,
+        "previous_handler": "0x70",
+        "successors": [
+          1330
+        ]
+      },
+      {
+        "handler_index": "0x3f",
+        "incoming_key": 104,
+        "meaning": "store_local_pointer",
+        "offset": 1330,
+        "operand": 165,
+        "operand_bytes": 2,
+        "previous_handler": "0x68",
+        "successors": [
+          1333
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 63,
+        "meaning": "push_local_pointer",
+        "offset": 1333,
+        "operand": 165,
+        "operand_bytes": 2,
+        "previous_handler": "0x3f",
+        "successors": [
+          1336
+        ]
+      },
+      {
+        "handler_index": "0x36",
+        "incoming_key": 57,
+        "meaning": "push_local_byte",
+        "offset": 1336,
+        "operand": 656,
+        "operand_bytes": 2,
+        "previous_handler": "0x39",
+        "successors": [
+          1339
+        ]
+      },
+      {
+        "handler_index": "0x47",
+        "incoming_key": 54,
+        "meaning": "store_indirect_byte",
+        "offset": 1339,
+        "operand": null,
+        "operand_bytes": 0,
+        "previous_handler": "0x36",
+        "successors": [
+          1340
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 71,
+        "meaning": "push_local_pointer",
+        "offset": 1340,
+        "operand": 154,
+        "operand_bytes": 2,
+        "previous_handler": "0x47",
+        "successors": [
+          1343
+        ]
+      },
+      {
+        "handler_index": "0x33",
+        "incoming_key": 57,
+        "meaning": "push_immediate_pointer",
+        "offset": 1343,
+        "operand": 26,
+        "operand_bytes": 8,
+        "previous_handler": "0x39",
+        "successors": [
+          1352
+        ]
+      },
+      {
+        "handler_index": "0x16",
+        "incoming_key": 51,
+        "meaning": "compare_pointers_equal",
+        "offset": 1352,
+        "operand": null,
+        "operand_bytes": 0,
+        "previous_handler": "0x33",
+        "successors": [
+          1353
+        ]
+      },
+      {
+        "handler_index": "0x3c",
+        "incoming_key": 22,
+        "meaning": "store_local_byte",
+        "offset": 1353,
+        "operand": 668,
+        "operand_bytes": 2,
+        "previous_handler": "0x16",
+        "successors": [
+          1356
+        ]
+      },
+      {
+        "handler_index": "0x33",
+        "incoming_key": 60,
+        "meaning": "push_immediate_pointer",
+        "offset": 1356,
+        "operand": 0,
+        "operand_bytes": 8,
+        "previous_handler": "0x3c",
+        "successors": [
+          1365
+        ]
+      },
+      {
+        "handler_index": "0x3f",
+        "incoming_key": 51,
+        "meaning": "store_local_pointer",
+        "offset": 1365,
+        "operand": 168,
+        "operand_bytes": 2,
+        "previous_handler": "0x33",
+        "successors": [
+          1368
+        ]
+      },
+      {
+        "handler_index": "0x36",
+        "incoming_key": 63,
+        "meaning": "push_local_byte",
+        "offset": 1368,
+        "operand": 668,
+        "operand_bytes": 2,
+        "previous_handler": "0x3f",
+        "successors": [
+          1371
+        ]
+      },
+      {
+        "handler_index": "0x86",
+        "incoming_key": 54,
+        "meaning": "jump_relative_if_byte_nonzero",
+        "offset": 1371,
+        "operand": 14,
+        "operand_bytes": 3,
+        "previous_handler": "0x36",
+        "signed_displacement": 14,
+        "successors": [
+          1385,
+          1375
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 134,
+        "meaning": "push_local_pointer",
+        "offset": 1375,
+        "operand": 154,
+        "operand_bytes": 2,
+        "previous_handler": "0x86",
+        "successors": [
+          1378
+        ]
+      },
+      {
+        "handler_index": "0x3f",
+        "incoming_key": 57,
+        "meaning": "store_local_pointer",
+        "offset": 1378,
+        "operand": 152,
+        "operand_bytes": 2,
+        "previous_handler": "0x39",
+        "successors": [
+          1381
+        ]
+      },
+      {
+        "handler_index": "0x85",
+        "incoming_key": 63,
+        "meaning": "jump_relative",
+        "offset": 1381,
+        "operand": 16777050,
+        "operand_bytes": 3,
+        "previous_handler": "0x3f",
+        "signed_displacement": -166,
+        "successors": [
+          1215
+        ]
+      },
+      {
+        "handler_index": "0x3b",
+        "incoming_key": 133,
+        "meaning": "reset_rolling_key",
+        "offset": 1385,
+        "operand": 236,
+        "operand_bytes": 1,
+        "previous_handler": "0x85",
+        "successors": [
+          1387
+        ]
+      },
+      {
+        "handler_index": "0x3b",
+        "incoming_key": 134,
+        "meaning": "reset_rolling_key",
+        "offset": 1385,
+        "operand": 236,
+        "operand_bytes": 1,
+        "previous_handler": "0x86",
+        "successors": [
+          1387
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 236,
+        "meaning": "push_local_pointer",
+        "offset": 1387,
+        "operand": 140,
+        "operand_bytes": 2,
+        "previous_handler": "0x3b",
+        "successors": [
+          1390
+        ]
+      },
+      {
+        "handler_index": "0x33",
+        "incoming_key": 57,
+        "meaning": "push_immediate_pointer",
+        "offset": 1390,
+        "operand": 1,
+        "operand_bytes": 8,
+        "previous_handler": "0x39",
+        "successors": [
+          1399
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 51,
+        "meaning": "push_local_pointer",
+        "offset": 1399,
+        "operand": 168,
+        "operand_bytes": 2,
+        "previous_handler": "0x33",
+        "successors": [
+          1402
+        ]
+      },
+      {
+        "handler_index": "0x70",
+        "incoming_key": 57,
+        "meaning": "multiply_pointers",
+        "offset": 1402,
+        "operand": null,
+        "operand_bytes": 0,
+        "previous_handler": "0x39",
+        "successors": [
+          1403
+        ]
+      },
+      {
+        "handler_index": "0x68",
+        "incoming_key": 112,
+        "meaning": "add_pointers",
+        "offset": 1403,
+        "operand": null,
+        "operand_bytes": 0,
+        "previous_handler": "0x70",
+        "successors": [
+          1404
+        ]
+      },
+      {
+        "handler_index": "0x3f",
+        "incoming_key": 104,
+        "meaning": "store_local_pointer",
+        "offset": 1404,
+        "operand": 170,
+        "operand_bytes": 2,
+        "previous_handler": "0x68",
+        "successors": [
+          1407
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 63,
+        "meaning": "push_local_pointer",
+        "offset": 1407,
+        "operand": 170,
+        "operand_bytes": 2,
+        "previous_handler": "0x3f",
+        "successors": [
+          1410
+        ]
+      },
+      {
+        "handler_index": "0x42",
+        "incoming_key": 57,
+        "meaning": "load_indirect_byte",
+        "offset": 1410,
+        "operand": null,
+        "operand_bytes": 0,
+        "previous_handler": "0x39",
+        "successors": [
+          1411
+        ]
+      },
+      {
+        "handler_index": "0x3c",
+        "incoming_key": 66,
+        "meaning": "store_local_byte",
+        "offset": 1411,
+        "operand": 688,
+        "operand_bytes": 2,
+        "previous_handler": "0x42",
+        "successors": [
+          1414
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 60,
+        "meaning": "push_local_pointer",
+        "offset": 1414,
+        "operand": 168,
+        "operand_bytes": 2,
+        "previous_handler": "0x3c",
+        "successors": [
+          1417
+        ]
+      },
+      {
+        "handler_index": "0x33",
+        "incoming_key": 57,
+        "meaning": "push_immediate_pointer",
+        "offset": 1417,
+        "operand": 15,
+        "operand_bytes": 8,
+        "previous_handler": "0x39",
+        "successors": [
+          1426
+        ]
+      },
+      {
+        "handler_index": "0x80",
+        "incoming_key": 51,
+        "meaning": "and_pointers",
+        "offset": 1426,
+        "operand": null,
+        "operand_bytes": 0,
+        "previous_handler": "0x33",
+        "successors": [
+          1427
+        ]
+      },
+      {
+        "handler_index": "0x3f",
+        "incoming_key": 128,
+        "meaning": "store_local_pointer",
+        "offset": 1427,
+        "operand": 173,
+        "operand_bytes": 2,
+        "previous_handler": "0x80",
+        "successors": [
+          1430
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 63,
+        "meaning": "push_local_pointer",
+        "offset": 1430,
+        "operand": 0,
+        "operand_bytes": 2,
+        "previous_handler": "0x3f",
+        "successors": [
+          1433
+        ]
+      },
+      {
+        "handler_index": "0x33",
+        "incoming_key": 57,
+        "meaning": "push_immediate_pointer",
+        "offset": 1433,
+        "operand": 1,
+        "operand_bytes": 8,
+        "previous_handler": "0x39",
+        "successors": [
+          1442
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 51,
+        "meaning": "push_local_pointer",
+        "offset": 1442,
+        "operand": 173,
+        "operand_bytes": 2,
+        "previous_handler": "0x33",
+        "successors": [
+          1445
+        ]
+      },
+      {
+        "handler_index": "0x70",
+        "incoming_key": 57,
+        "meaning": "multiply_pointers",
+        "offset": 1445,
+        "operand": null,
+        "operand_bytes": 0,
+        "previous_handler": "0x39",
+        "successors": [
+          1446
+        ]
+      },
+      {
+        "handler_index": "0x68",
+        "incoming_key": 112,
+        "meaning": "add_pointers",
+        "offset": 1446,
+        "operand": null,
+        "operand_bytes": 0,
+        "previous_handler": "0x70",
+        "successors": [
+          1447
+        ]
+      },
+      {
+        "handler_index": "0x3f",
+        "incoming_key": 104,
+        "meaning": "store_local_pointer",
+        "offset": 1447,
+        "operand": 175,
+        "operand_bytes": 2,
+        "previous_handler": "0x68",
+        "successors": [
+          1450
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 63,
+        "meaning": "push_local_pointer",
+        "offset": 1450,
+        "operand": 175,
+        "operand_bytes": 2,
+        "previous_handler": "0x3f",
+        "successors": [
+          1453
+        ]
+      },
+      {
+        "handler_index": "0x42",
+        "incoming_key": 57,
+        "meaning": "load_indirect_byte",
+        "offset": 1453,
+        "operand": null,
+        "operand_bytes": 0,
+        "previous_handler": "0x39",
+        "successors": [
+          1454
+        ]
+      },
+      {
+        "handler_index": "0x3c",
+        "incoming_key": 66,
+        "meaning": "store_local_byte",
+        "offset": 1454,
+        "operand": 708,
+        "operand_bytes": 2,
+        "previous_handler": "0x42",
+        "successors": [
+          1457
+        ]
+      },
+      {
+        "handler_index": "0x36",
+        "incoming_key": 60,
+        "meaning": "push_local_byte",
+        "offset": 1457,
+        "operand": 708,
+        "operand_bytes": 2,
+        "previous_handler": "0x3c",
+        "successors": [
+          1460
+        ]
+      },
+      {
+        "handler_index": "0x36",
+        "incoming_key": 54,
+        "meaning": "push_local_byte",
+        "offset": 1460,
+        "operand": 688,
+        "operand_bytes": 2,
+        "previous_handler": "0x36",
+        "successors": [
+          1463
+        ]
+      },
+      {
+        "handler_index": "0x81",
+        "incoming_key": 54,
+        "meaning": "xor_words",
+        "offset": 1463,
+        "operand": null,
+        "operand_bytes": 0,
+        "previous_handler": "0x36",
+        "successors": [
+          1464
+        ]
+      },
+      {
+        "handler_index": "0x3c",
+        "incoming_key": 129,
+        "meaning": "store_local_byte",
+        "offset": 1464,
+        "operand": 712,
+        "operand_bytes": 2,
+        "previous_handler": "0x81",
+        "successors": [
+          1467
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 60,
+        "meaning": "push_local_pointer",
+        "offset": 1467,
+        "operand": 170,
+        "operand_bytes": 2,
+        "previous_handler": "0x3c",
+        "successors": [
+          1470
+        ]
+      },
+      {
+        "handler_index": "0x36",
+        "incoming_key": 57,
+        "meaning": "push_local_byte",
+        "offset": 1470,
+        "operand": 712,
+        "operand_bytes": 2,
+        "previous_handler": "0x39",
+        "successors": [
+          1473
+        ]
+      },
+      {
+        "handler_index": "0x47",
+        "incoming_key": 54,
+        "meaning": "store_indirect_byte",
+        "offset": 1473,
+        "operand": null,
+        "operand_bytes": 0,
+        "previous_handler": "0x36",
+        "successors": [
+          1474
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 71,
+        "meaning": "push_local_pointer",
+        "offset": 1474,
+        "operand": 168,
+        "operand_bytes": 2,
+        "previous_handler": "0x47",
+        "successors": [
+          1477
+        ]
+      },
+      {
+        "handler_index": "0x33",
+        "incoming_key": 57,
+        "meaning": "push_immediate_pointer",
+        "offset": 1477,
+        "operand": 1,
+        "operand_bytes": 8,
+        "previous_handler": "0x39",
+        "successors": [
+          1486
+        ]
+      },
+      {
+        "handler_index": "0x68",
+        "incoming_key": 51,
+        "meaning": "add_pointers",
+        "offset": 1486,
+        "operand": null,
+        "operand_bytes": 0,
+        "previous_handler": "0x33",
+        "successors": [
+          1487
+        ]
+      },
+      {
+        "handler_index": "0x3f",
+        "incoming_key": 104,
+        "meaning": "store_local_pointer",
+        "offset": 1487,
+        "operand": 179,
+        "operand_bytes": 2,
+        "previous_handler": "0x68",
+        "successors": [
+          1490
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 63,
+        "meaning": "push_local_pointer",
+        "offset": 1490,
+        "operand": 179,
+        "operand_bytes": 2,
+        "previous_handler": "0x3f",
+        "successors": [
+          1493
+        ]
+      },
+      {
+        "handler_index": "0x33",
+        "incoming_key": 57,
+        "meaning": "push_immediate_pointer",
+        "offset": 1493,
+        "operand": 48,
+        "operand_bytes": 8,
+        "previous_handler": "0x39",
+        "successors": [
+          1502
+        ]
+      },
+      {
+        "handler_index": "0x16",
+        "incoming_key": 51,
+        "meaning": "compare_pointers_equal",
+        "offset": 1502,
+        "operand": null,
+        "operand_bytes": 0,
+        "previous_handler": "0x33",
+        "successors": [
+          1503
+        ]
+      },
+      {
+        "handler_index": "0x3c",
+        "incoming_key": 22,
+        "meaning": "store_local_byte",
+        "offset": 1503,
+        "operand": 724,
+        "operand_bytes": 2,
+        "previous_handler": "0x16",
+        "successors": [
+          1506
+        ]
+      },
+      {
+        "handler_index": "0x36",
+        "incoming_key": 60,
+        "meaning": "push_local_byte",
+        "offset": 1506,
+        "operand": 724,
+        "operand_bytes": 2,
+        "previous_handler": "0x3c",
+        "successors": [
+          1509
+        ]
+      },
+      {
+        "handler_index": "0x86",
+        "incoming_key": 54,
+        "meaning": "jump_relative_if_byte_nonzero",
+        "offset": 1509,
+        "operand": 14,
+        "operand_bytes": 3,
+        "previous_handler": "0x36",
+        "signed_displacement": 14,
+        "successors": [
+          1523,
+          1513
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 134,
+        "meaning": "push_local_pointer",
+        "offset": 1513,
+        "operand": 179,
+        "operand_bytes": 2,
+        "previous_handler": "0x86",
+        "successors": [
+          1516
+        ]
+      },
+      {
+        "handler_index": "0x3f",
+        "incoming_key": 57,
+        "meaning": "store_local_pointer",
+        "offset": 1516,
+        "operand": 168,
+        "operand_bytes": 2,
+        "previous_handler": "0x39",
+        "successors": [
+          1519
+        ]
+      },
+      {
+        "handler_index": "0x85",
+        "incoming_key": 63,
+        "meaning": "jump_relative",
+        "offset": 1519,
+        "operand": 16777082,
+        "operand_bytes": 3,
+        "previous_handler": "0x3f",
+        "signed_displacement": -134,
+        "successors": [
+          1385
+        ]
+      },
+      {
+        "handler_index": "0x3b",
+        "incoming_key": 134,
+        "meaning": "reset_rolling_key",
+        "offset": 1523,
+        "operand": 223,
+        "operand_bytes": 1,
+        "previous_handler": "0x86",
+        "successors": [
+          1525
+        ]
+      },
+      {
+        "handler_index": "0x85",
+        "incoming_key": 223,
+        "meaning": "jump_relative",
+        "offset": 1525,
+        "operand": 4,
+        "operand_bytes": 3,
+        "previous_handler": "0x3b",
+        "signed_displacement": 4,
+        "successors": [
+          1529
+        ]
+      },
+      {
+        "handler_index": "0x3b",
+        "incoming_key": 133,
+        "meaning": "reset_rolling_key",
+        "offset": 1529,
+        "operand": 172,
+        "operand_bytes": 1,
+        "previous_handler": "0x85",
+        "successors": [
+          1531
+        ]
+      },
+      {
+        "handler_index": "0x3b",
+        "incoming_key": 134,
+        "meaning": "reset_rolling_key",
+        "offset": 1529,
+        "operand": 172,
+        "operand_bytes": 1,
+        "previous_handler": "0x86",
+        "successors": [
+          1531
+        ]
+      },
+      {
+        "handler_index": "0x4c",
+        "incoming_key": 172,
+        "meaning": "push_call_table_pointer",
+        "offset": 1531,
+        "operand": 5,
+        "operand_bytes": 2,
+        "previous_handler": "0x3b",
+        "successors": [
+          1534
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 76,
+        "meaning": "push_local_pointer",
+        "offset": 1534,
+        "operand": 140,
+        "operand_bytes": 2,
+        "previous_handler": "0x4c",
+        "successors": [
+          1537
+        ]
+      },
+      {
+        "handler_index": "0x30",
+        "incoming_key": 57,
+        "meaning": "push_immediate_byte",
+        "offset": 1537,
+        "operand": 0,
+        "operand_bytes": 1,
+        "previous_handler": "0x39",
+        "successors": [
+          1539
+        ]
+      },
+      {
+        "handler_index": "0x4d",
+        "incoming_key": 48,
+        "meaning": "call_native_thunk",
+        "offset": 1539,
+        "operand": 13,
+        "operand_bytes": 1,
+        "previous_handler": "0x30",
+        "successors": [
+          1541
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 77,
+        "meaning": "push_local_pointer",
+        "offset": 1541,
+        "operand": 117,
+        "operand_bytes": 2,
+        "previous_handler": "0x4d",
+        "successors": [
+          1544
+        ]
+      },
+      {
+        "handler_index": "0x33",
+        "incoming_key": 57,
+        "meaning": "push_immediate_pointer",
+        "offset": 1544,
+        "operand": 1,
+        "operand_bytes": 8,
+        "previous_handler": "0x39",
+        "successors": [
+          1553
+        ]
+      },
+      {
+        "handler_index": "0x18",
+        "incoming_key": 51,
+        "meaning": "compare_signed_pointers_greater",
+        "offset": 1553,
+        "operand": null,
+        "operand_bytes": 0,
+        "previous_handler": "0x33",
+        "successors": [
+          1554
+        ]
+      },
+      {
+        "handler_index": "0x3c",
+        "incoming_key": 24,
+        "meaning": "store_local_byte",
+        "offset": 1554,
+        "operand": 728,
+        "operand_bytes": 2,
+        "previous_handler": "0x18",
+        "successors": [
+          1557
+        ]
+      },
+      {
+        "handler_index": "0x36",
+        "incoming_key": 60,
+        "meaning": "push_local_byte",
+        "offset": 1557,
+        "operand": 728,
+        "operand_bytes": 2,
+        "previous_handler": "0x3c",
+        "successors": [
+          1560
+        ]
+      },
+      {
+        "handler_index": "0x86",
+        "incoming_key": 54,
+        "meaning": "jump_relative_if_byte_nonzero",
+        "offset": 1560,
+        "operand": 8,
+        "operand_bytes": 3,
+        "previous_handler": "0x36",
+        "signed_displacement": 8,
+        "successors": [
+          1568,
+          1564
+        ]
+      },
+      {
+        "handler_index": "0x85",
+        "incoming_key": 134,
+        "meaning": "jump_relative",
+        "offset": 1564,
+        "operand": 71,
+        "operand_bytes": 3,
+        "previous_handler": "0x86",
+        "signed_displacement": 71,
+        "successors": [
+          1635
+        ]
+      },
+      {
+        "handler_index": "0x3b",
+        "incoming_key": 134,
+        "meaning": "reset_rolling_key",
+        "offset": 1568,
+        "operand": 192,
+        "operand_bytes": 1,
+        "previous_handler": "0x86",
+        "successors": [
+          1570
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 192,
+        "meaning": "push_local_pointer",
+        "offset": 1570,
+        "operand": 117,
+        "operand_bytes": 2,
+        "previous_handler": "0x3b",
+        "successors": [
+          1573
+        ]
+      },
+      {
+        "handler_index": "0x33",
+        "incoming_key": 57,
+        "meaning": "push_immediate_pointer",
+        "offset": 1573,
+        "operand": 18446744073709551615,
+        "operand_bytes": 8,
+        "previous_handler": "0x39",
+        "successors": [
+          1582
+        ]
+      },
+      {
+        "handler_index": "0x68",
+        "incoming_key": 51,
+        "meaning": "add_pointers",
+        "offset": 1582,
+        "operand": null,
+        "operand_bytes": 0,
+        "previous_handler": "0x33",
+        "successors": [
+          1583
+        ]
+      },
+      {
+        "handler_index": "0x3f",
+        "incoming_key": 104,
+        "meaning": "store_local_pointer",
+        "offset": 1583,
+        "operand": 183,
+        "operand_bytes": 2,
+        "previous_handler": "0x68",
+        "successors": [
+          1586
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 63,
+        "meaning": "push_local_pointer",
+        "offset": 1586,
+        "operand": 4,
+        "operand_bytes": 2,
+        "previous_handler": "0x3f",
+        "successors": [
+          1589
+        ]
+      },
+      {
+        "handler_index": "0x45",
+        "incoming_key": 57,
+        "meaning": "load_indirect_pointer",
+        "offset": 1589,
+        "operand": null,
+        "operand_bytes": 0,
+        "previous_handler": "0x39",
+        "successors": [
+          1590
+        ]
+      },
+      {
+        "handler_index": "0x3f",
+        "incoming_key": 69,
+        "meaning": "store_local_pointer",
+        "offset": 1590,
+        "operand": 186,
+        "operand_bytes": 2,
+        "previous_handler": "0x45",
+        "successors": [
+          1593
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 63,
+        "meaning": "push_local_pointer",
+        "offset": 1593,
+        "operand": 2,
+        "operand_bytes": 2,
+        "previous_handler": "0x3f",
+        "successors": [
+          1596
+        ]
+      },
+      {
+        "handler_index": "0x45",
+        "incoming_key": 57,
+        "meaning": "load_indirect_pointer",
+        "offset": 1596,
+        "operand": null,
+        "operand_bytes": 0,
+        "previous_handler": "0x39",
+        "successors": [
+          1597
+        ]
+      },
+      {
+        "handler_index": "0x3f",
+        "incoming_key": 69,
+        "meaning": "store_local_pointer",
+        "offset": 1597,
+        "operand": 188,
+        "operand_bytes": 2,
+        "previous_handler": "0x45",
+        "successors": [
+          1600
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 63,
+        "meaning": "push_local_pointer",
+        "offset": 1600,
+        "operand": 6,
+        "operand_bytes": 2,
+        "previous_handler": "0x3f",
+        "successors": [
+          1603
+        ]
+      },
+      {
+        "handler_index": "0x44",
+        "incoming_key": 57,
+        "meaning": "load_indirect_word",
+        "offset": 1603,
+        "operand": null,
+        "operand_bytes": 0,
+        "previous_handler": "0x39",
+        "successors": [
+          1604
+        ]
+      },
+      {
+        "handler_index": "0x3e",
+        "incoming_key": 68,
+        "meaning": "store_local_word",
+        "offset": 1604,
+        "operand": 190,
+        "operand_bytes": 2,
+        "previous_handler": "0x44",
+        "successors": [
+          1607
+        ]
+      },
+      {
+        "handler_index": "0x38",
+        "incoming_key": 62,
+        "meaning": "push_local_word",
+        "offset": 1607,
+        "operand": 190,
+        "operand_bytes": 2,
+        "previous_handler": "0x3e",
+        "successors": [
+          1610
+        ]
+      },
+      {
+        "handler_index": "0x3e",
+        "incoming_key": 56,
+        "meaning": "store_local_word",
+        "offset": 1610,
+        "operand": 112,
+        "operand_bytes": 2,
+        "previous_handler": "0x38",
+        "successors": [
+          1613
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 62,
+        "meaning": "push_local_pointer",
+        "offset": 1613,
+        "operand": 188,
+        "operand_bytes": 2,
+        "previous_handler": "0x3e",
+        "successors": [
+          1616
+        ]
+      },
+      {
+        "handler_index": "0x3f",
+        "incoming_key": 57,
+        "meaning": "store_local_pointer",
+        "offset": 1616,
+        "operand": 113,
+        "operand_bytes": 2,
+        "previous_handler": "0x39",
+        "successors": [
+          1619
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 63,
+        "meaning": "push_local_pointer",
+        "offset": 1619,
+        "operand": 186,
+        "operand_bytes": 2,
+        "previous_handler": "0x3f",
+        "successors": [
+          1622
+        ]
+      },
+      {
+        "handler_index": "0x3f",
+        "incoming_key": 57,
+        "meaning": "store_local_pointer",
+        "offset": 1622,
+        "operand": 115,
+        "operand_bytes": 2,
+        "previous_handler": "0x39",
+        "successors": [
+          1625
+        ]
+      },
+      {
+        "handler_index": "0x39",
+        "incoming_key": 63,
+        "meaning": "push_local_pointer",
+        "offset": 1625,
+        "operand": 183,
+        "operand_bytes": 2,
+        "previous_handler": "0x3f",
+        "successors": [
+          1628
+        ]
+      },
+      {
+        "handler_index": "0x3f",
+        "incoming_key": 57,
+        "meaning": "store_local_pointer",
+        "offset": 1628,
+        "operand": 117,
+        "operand_bytes": 2,
+        "previous_handler": "0x39",
+        "successors": [
+          1631
+        ]
+      },
+      {
+        "handler_index": "0x85",
+        "incoming_key": 63,
+        "meaning": "jump_relative",
+        "offset": 1631,
+        "operand": 16776568,
+        "operand_bytes": 3,
+        "previous_handler": "0x3f",
+        "signed_displacement": -648,
+        "successors": [
+          983
+        ]
+      },
+      {
+        "handler_index": "0x3b",
+        "incoming_key": 133,
+        "meaning": "reset_rolling_key",
+        "offset": 1635,
+        "operand": 53,
+        "operand_bytes": 1,
+        "previous_handler": "0x85",
+        "successors": [
+          1637
+        ]
+      },
+      {
+        "handler_index": "0x85",
+        "incoming_key": 53,
+        "meaning": "jump_relative",
+        "offset": 1637,
+        "operand": 4,
+        "operand_bytes": 3,
+        "previous_handler": "0x3b",
+        "signed_displacement": 4,
+        "successors": [
+          1641
+        ]
+      },
+      {
+        "handler_index": "0x3b",
+        "incoming_key": 133,
+        "meaning": "reset_rolling_key",
+        "offset": 1641,
+        "operand": 64,
+        "operand_bytes": 1,
+        "previous_handler": "0x85",
+        "successors": [
+          1643
+        ]
+      },
+      {
+        "handler_index": "0x0",
+        "incoming_key": 64,
+        "meaning": "return_void",
+        "offset": 1643,
+        "operand": null,
+        "operand_bytes": 0,
+        "previous_handler": "0x3b",
+        "successors": []
+      }
+    ],
+    "record_bytes": 1644,
+    "record_end_exclusive": "0x11919c",
+    "record_sha256": "11889935baf88763cb254647ed77bd71f343b12714e578d6d007982b8c6dae1e",
+    "record_start": "0x118b30",
+    "runtime_branches_and_native_results": "symbolic",
+    "terminals": [
+      {
+        "handler_index": "0x0",
+        "meaning": "return_void",
+        "offset": 1643
+      }
+    ],
+    "unknown_handlers": 0,
+    "visited_states": 530
+  },
+  "remaining_wrapper": {
+    "call_table_index": 5,
+    "calls": "0x10b3e0",
+    "descriptors": "0x10c430",
+    "inputs": [
+      "original x0 pointer",
+      "original w1 low byte"
+    ],
+    "native_address": "0x43308",
+    "record_not_parsed_this_batch": true,
+    "record_token_offset": 1539,
+    "records": "0x10b660",
+    "selector": 2,
+    "thunks": "0x10b500"
+  },
+  "runtime_key_dependency": {
+    "data_transform_executed": false,
+    "derived_bytes": 26,
+    "formula": "key[i]=static_seed[i+1] XOR runtime_context_pointer160[i+3]",
+    "helper": "0xb6d44",
+    "protected_record_separate_seed_bytes": 30,
+    "protected_record_separate_seed_initialized_sha256": "e9c114f755c7776d50b4de73cb8400b98243d2d07ce94a3bc5ba1e330c74ccd3",
+    "protected_record_separate_seed_offset": "0x10a140",
+    "runtime_pointer": "context+0x160; writer and actual value unresolved",
+    "seed_or_key_bytes_exported": false,
+    "static_seed_bytes": 30,
+    "static_seed_initialized_sha256": "e9c114f755c7776d50b4de73cb8400b98243d2d07ce94a3bc5ba1e330c74ccd3",
+    "static_seed_offset": "0x10a0d0"
+  },
+  "scope": "Static coverage and candidate container route only; no native/VM/JNI/Android execution",
+  "selected_assets": [
+    {
+      "bytes": 32016,
+      "entry": "assets/IJMDal.Data",
+      "header_type_2_or_3": "other",
+      "sha256": "358ac3092eaa68058739c497ff6cbb27d2cc54e3e92bddb1599fa57e96f5fa31",
+      "starts_with_dex_magic": false
+    },
+    {
+      "bytes": 7176288,
+      "entry": "assets/ijiami.ajm",
+      "header_type_2_or_3": "other",
+      "sha256": "ea68ea4fa5981f12e89651f50d637f5d4c80e24fe1700b41c11c2a02cc055960",
+      "starts_with_dex_magic": false
+    },
+    {
+      "bytes": 8847278,
+      "entry": "assets/ijiami.dat",
+      "header_type_2_or_3": 3,
+      "sha256": "56cb2bd0d8c6eea2aeced1b274c006be6b852309b5e267daa53a50641e43eb1c",
+      "starts_with_dex_magic": false
+    }
+  ],
+  "selected_call_table": [
+    {
+      "index": 0,
+      "kind": "static_data",
+      "relocation_type": 1027,
+      "target": "0xfd220"
+    },
+    {
+      "index": 1,
+      "kind": "native_function",
+      "relocation_type": 1027,
+      "target": "0xb353c"
+    },
+    {
+      "index": 2,
+      "kind": "unresolved_import",
+      "name": "memset",
+      "relocation_type": 257,
+      "symbol_index": 20
+    },
+    {
+      "index": 3,
+      "kind": "native_function",
+      "relocation_type": 1027,
+      "target": "0xb366c"
+    },
+    {
+      "index": 4,
+      "kind": "native_function",
+      "relocation_type": 1027,
+      "target": "0xb2dbc"
+    },
+    {
+      "index": 5,
+      "kind": "native_function",
+      "relocation_type": 1027,
+      "target": "0x43308"
+    },
+    {
+      "index": 6,
+      "kind": "unresolved_import",
+      "name": "munmap",
+      "relocation_type": 257,
+      "symbol_index": 22
+    },
+    {
+      "index": 7,
+      "kind": "native_function",
+      "relocation_type": 1027,
+      "target": "0xb39c4"
+    },
+    {
+      "index": 8,
+      "kind": "static_data",
+      "relocation_type": 1027,
+      "target": "0x10a140"
+    },
+    {
+      "index": 9,
+      "kind": "static_data",
+      "relocation_type": 1027,
+      "target": "0x109924"
+    },
+    {
+      "index": 10,
+      "kind": "native_function",
+      "relocation_type": 1027,
+      "target": "0xb20fc"
+    },
+    {
+      "index": 11,
+      "kind": "native_function",
+      "relocation_type": 1027,
+      "target": "0xb3278"
+    },
+    {
+      "index": 12,
+      "kind": "unresolved_import",
+      "name": "free",
+      "relocation_type": 257,
+      "symbol_index": 17
+    },
+    {
+      "index": 13,
+      "kind": "native_function",
+      "relocation_type": 1027,
+      "target": "0xae000"
+    },
+    {
+      "index": 14,
+      "kind": "unresolved_import",
+      "name": "memcpy",
+      "relocation_type": 257,
+      "symbol_index": 46
+    }
+  ],
+  "selected_native_functions": [
+    {
+      "bytes": 56,
+      "direct_calls": 1,
+      "end_exclusive": "0xb20fc",
+      "indirect_calls": 0,
+      "sha256": "62c810110d7882e35e08003a776aa6ad5eb2b760082d9875fa1ae515f392889a",
+      "start": "0xb20c4"
+    },
+    {
+      "bytes": 1212,
+      "direct_calls": 39,
+      "end_exclusive": "0xb3278",
+      "indirect_calls": 3,
+      "sha256": "c5040d46299c151d8328a6083bf6e67d2b7405f3453b3f1b636c96d03d4d57c3",
+      "start": "0xb2dbc"
+    },
+    {
+      "bytes": 320,
+      "direct_calls": 9,
+      "end_exclusive": "0xb6c74",
+      "indirect_calls": 0,
+      "sha256": "c163bf79669a070b892a15ef4a3d97f6ceae573028e027e263f9feaf1eed73c6",
+      "start": "0xb6b34"
+    },
+    {
+      "bytes": 1432,
+      "direct_calls": 1,
+      "end_exclusive": "0xb72dc",
+      "indirect_calls": 0,
+      "sha256": "1ab4c1cc08ebc2ee550908e067e241cd754198b3eb581a8f9f18ef44e86f2ab0",
+      "start": "0xb6d44"
+    },
+    {
+      "bytes": 332,
+      "direct_calls": 2,
+      "end_exclusive": "0xb6b34",
+      "indirect_calls": 4,
+      "sha256": "4d0166cd13a57ebc0197483ef5a9b15f105883a42806f9e58210a40878338b59",
+      "start": "0xb69e8"
+    },
+    {
+      "bytes": 108,
+      "direct_calls": 3,
+      "end_exclusive": "0x43374",
+      "indirect_calls": 0,
+      "sha256": "f87b2d999edeef4d5415439040784f65253f060a20161bdc1f720f19fbf79a73",
+      "start": "0x43308"
+    }
+  ],
+  "selected_native_thunks": [
+    {
+      "bytes": 36,
+      "end_exclusive": "0xee1ac",
+      "index": 0,
+      "indirect_branch_sites": [
+        {
+          "address": "0xee1a8",
+          "kind": "br"
+        }
+      ],
+      "sha256": "eb91409d73430c893af956d944d1effb610198ef64d5050ec77f826dd4b56e74",
+      "start": "0xee188"
+    },
+    {
+      "bytes": 156,
+      "end_exclusive": "0xee248",
+      "index": 1,
+      "indirect_branch_sites": [
+        {
+          "address": "0xee220",
+          "kind": "blr"
+        }
+      ],
+      "sha256": "cf6f886369ed0dc0f63503db0f1d47f9ec20fb9660e635f4a321d70f0fbf16c8",
+      "start": "0xee1ac"
+    },
+    {
+      "bytes": 188,
+      "end_exclusive": "0xee304",
+      "index": 2,
+      "indirect_branch_sites": [
+        {
+          "address": "0xee300",
+          "kind": "br"
+        }
+      ],
+      "sha256": "63c56763644af99fff98a0ce1787eb4a74f1079d261e0179cbd9d9830d649e29",
+      "start": "0xee248"
+    },
+    {
+      "bytes": 184,
+      "end_exclusive": "0xee3bc",
+      "index": 3,
+      "indirect_branch_sites": [
+        {
+          "address": "0xee3a0",
+          "kind": "blr"
+        }
+      ],
+      "sha256": "29272643838d8c8c966cc64f5ad3a08ff5d73d36938cd1ed8c1eebbbf38424f9",
+      "start": "0xee304"
+    },
+    {
+      "bytes": 184,
+      "end_exclusive": "0xee474",
+      "index": 4,
+      "indirect_branch_sites": [
+        {
+          "address": "0xee458",
+          "kind": "blr"
+        }
+      ],
+      "sha256": "29272643838d8c8c966cc64f5ad3a08ff5d73d36938cd1ed8c1eebbbf38424f9",
+      "start": "0xee3bc"
+    },
+    {
+      "bytes": 108,
+      "end_exclusive": "0xee4e0",
+      "index": 5,
+      "indirect_branch_sites": [
+        {
+          "address": "0xee4dc",
+          "kind": "br"
+        }
+      ],
+      "sha256": "c7cae11f9f36c752e6736bb11dc48c3eb7bfa23a80d250e968d106c7ab77c6da",
+      "start": "0xee474"
+    },
+    {
+      "bytes": 140,
+      "end_exclusive": "0xee56c",
+      "index": 6,
+      "indirect_branch_sites": [
+        {
+          "address": "0xee550",
+          "kind": "blr"
+        }
+      ],
+      "sha256": "6d2bfffc8a41a0ff7e571fa084b87a78059eb1e96ddc72276c45b241fa3b0104",
+      "start": "0xee4e0"
+    },
+    {
+      "bytes": 124,
+      "end_exclusive": "0xee5e8",
+      "index": 7,
+      "indirect_branch_sites": [
+        {
+          "address": "0xee5d0",
+          "kind": "blr"
+        }
+      ],
+      "sha256": "7034ebe19fab3d400f3fc5bbc6d751c69d754b1bcc2a3ff7d68be78fed18ab5f",
+      "start": "0xee56c"
+    },
+    {
+      "bytes": 68,
+      "end_exclusive": "0xee62c",
+      "index": 8,
+      "indirect_branch_sites": [
+        {
+          "address": "0xee628",
+          "kind": "br"
+        }
+      ],
+      "sha256": "3e89efde3edddc311f877feb041cd72db56f70587c8ef07aaf6a007e94cc139c",
+      "start": "0xee5e8"
+    },
+    {
+      "bytes": 184,
+      "end_exclusive": "0xee6e4",
+      "index": 9,
+      "indirect_branch_sites": [
+        {
+          "address": "0xee6c8",
+          "kind": "blr"
+        }
+      ],
+      "sha256": "29272643838d8c8c966cc64f5ad3a08ff5d73d36938cd1ed8c1eebbbf38424f9",
+      "start": "0xee62c"
+    },
+    {
+      "bytes": 108,
+      "end_exclusive": "0xee750",
+      "index": 10,
+      "indirect_branch_sites": [
+        {
+          "address": "0xee74c",
+          "kind": "br"
+        }
+      ],
+      "sha256": "c7cae11f9f36c752e6736bb11dc48c3eb7bfa23a80d250e968d106c7ab77c6da",
+      "start": "0xee6e4"
+    },
+    {
+      "bytes": 108,
+      "end_exclusive": "0xee7bc",
+      "index": 11,
+      "indirect_branch_sites": [
+        {
+          "address": "0xee7b8",
+          "kind": "br"
+        }
+      ],
+      "sha256": "c7cae11f9f36c752e6736bb11dc48c3eb7bfa23a80d250e968d106c7ab77c6da",
+      "start": "0xee750"
+    },
+    {
+      "bytes": 172,
+      "end_exclusive": "0xee868",
+      "index": 12,
+      "indirect_branch_sites": [
+        {
+          "address": "0xee840",
+          "kind": "blr"
+        }
+      ],
+      "sha256": "900c9c43b7b74af6018734b30a8d786c203915f525a94ae10564b8adeb6f6a50",
+      "start": "0xee7bc"
+    },
+    {
+      "bytes": 84,
+      "end_exclusive": "0xee8bc",
+      "index": 13,
+      "indirect_branch_sites": [
+        {
+          "address": "0xee8b8",
+          "kind": "br"
+        }
+      ],
+      "sha256": "590916849d0d4fc0fa852e1dec1a353b6777177c80162d9f6998de3abda33150",
+      "start": "0xee868"
+    }
+  ]
+}

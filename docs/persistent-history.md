@@ -13,6 +13,12 @@ solix-link serve --history-file ~/.local/share/solix-link/history/readings.sqlit
 `ap-service-serve` accepts the same options for native MQTT monitoring. Gateway
 retention choices are 1–365 days. `GET /history` reports whether recording is
 enabled; `GET /devices/{name}/history?limit=1000` returns that station's history.
+Authenticated `GET /history/summary` returns at most 32 cached lifetime counter
+records without scanning samples. Its sampler timestamp describes the last
+successful complete recording poll, independently of the HTTP request time.
+See [Home Assistant diagnostics](home-assistant-history.md),
+[terminal views](terminal-history-preview.md) and
+[restart verification](runtime-observation-restart.md).
 These endpoints use the gateway's existing authentication. Disabling recording
 does not delete a previously created database.
 

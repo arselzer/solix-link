@@ -36,6 +36,8 @@ def test_diagnostics_omit_configured_names_identifiers_credentials_and_raw_data(
     raw.update(serial_number="private serial", account_id="private account", token="private token",
                url="http://private-gateway", raw_tlvs={"a2": "private bytes"}, error="private error")
     raw["metrics"].update(serial_number="private serial", ssid="private network", raw_tlv="private bytes")
+    raw["history"] = {"name": "private name", "database_path": "private path",
+                      "account_id": "private account", "lifetime_totals": {"token": "private token"}}
     report = diagnostics.diagnostics_report({"private map key": raw}, now=1000)
     text = json.dumps(report)
     assert "private" not in text

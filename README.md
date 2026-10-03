@@ -33,10 +33,12 @@ Home Assistant integration for the local gateway.
 - Authenticated JSON HTTP, SSE and Prometheus for multiple stations.
 - Opt-in Home Assistant price/solar charging blueprint with telemetry freshness,
   reserve protection and a failure latch; installed automations start disabled.
-- Read-only charging-policy previews in the browser, API and CLI; proposals
+- Read-only charging-policy previews in the browser, terminal, API and CLI; proposals
   send no commands and do not activate automations.
 - Optional private SQLite history with saved battery/AC-power charts, estimated
-  AC energy and coverage; gaps and process restarts stop integration.
+  AC energy and coverage; gaps and process restarts stop integration. Includes
+  [HA diagnostics](docs/home-assistant-history.md) and
+  [terminal history/preview panels](docs/terminal-history-preview.md).
 - Home Assistant diagnostics downloads with model/firmware, freshness and
   supported settings; the integration report omits credentials and identities.
 - [Passive gateway diagnostics](docs/gateway-diagnostics.md) and
@@ -173,6 +175,8 @@ web-dashboard guide. Commit Vue sources and compiled Python assets together.
 - [Gen 2 full status](docs/gen2-backup-query-investigation.md): controller UTC
   telemetry and non-clearing queries; [backup-export follow-up](docs/gen2-backup-export-radio-app.md)
   resolves radio/app candidates and diagnostic tracking side effects.
+  [Additional status replay](docs/gen2-status-export-limits.md) closes the `FA`
+  export candidate and demonstrates saved-state collisions.
 - [Charging and reserve validation](docs/c1000-charging-and-reserve-validation.md):
   native fast charge, lower charging power, reserve floor and cached reconnect.
 - [Native display/memory validation](docs/c1000-native-preferences-validation.md):
@@ -186,6 +190,9 @@ web-dashboard guide. Commit Vue sources and compiled Python assets together.
   and [protected SDK loader recovery](docs/android-loader-carriers.md).
   [Record 2 analysis](docs/android-loader-record-two.md) resolves JNI method
   registration and stub decoders; the charging-pause encoder remains unknown.
+  [ClassLoader tracing](docs/android-loader-classloader-boundary.md) and
+  [container-record analysis](docs/android-loader-container-record.md) identify
+  DEX preparation and its unresolved runtime key without executing Android/JNI code.
 - [Original charging gates](docs/c1000-charge-gate-rules.md): input-event
   priority and the second charging channel; no external bypass selector found.
   [Saved-limit validation](docs/c1000-saved-charge-validation.md) distinguishes

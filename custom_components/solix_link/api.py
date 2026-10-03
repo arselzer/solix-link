@@ -431,16 +431,20 @@ class GatewayClient:
         if any(ord(char) < 32 for char in self.token):
             raise ValueError("Invalid gateway token")
 
-    async def _request(self, method: str, path: str, payload: dict | None = None) -> Any:
+    async def _request(self, method: str, path: str, payload: dict | None = None,
+                       *, optional_history: bool = False) -> Any:
         headers = {"Authorization": f"Bearer {self.token}"} if self.token else {}
         try:
             async with self.session.request(method, self.url + path, json=payload,
                                             headers=headers, allow_redirects=False,
                                             timeout=aiohttp.ClientTimeout(
-                                                total=request_deadline(method, payload), sock_connect=10
+                                                total=3 if optional_history else request_deadline(method, payload),
+                                                sock_connect=3 if optional_history else 10
                                             )) as response:
                 if response.status == 401 or (response.status == 403 and method == "GET"):
                     raise GatewayAuthError("Gateway authentication failed")
+                if optional_history and response.status == 404:
+                    return None
                 if response.status != 200:
                     if method == "POST":
                         if response.status == 504:
@@ -449,6 +453,22 @@ class GatewayClient:
                             f"Gateway command failed (HTTP {response.status}); settings may have changed. Refresh status before retrying."
                         )
                     raise GatewayError(f"Gateway request failed (HTTP {response.status})")
+                if optional_history:
+                    # A fixed fleet summary is bounded; never ingest raw history
+                    # rows or an unbounded private response into HA.
+                    import json
+                    body = bytearray()
+                    async for chunk in response.content.iter_chunked(8192):
+                        body.extend(chunk)
+                        if len(body) > 65536:
+                            raise GatewayError("Gateway history summary is too large")
+                    try:
+                        result = json.loads(body)
+                    except RecursionError as err:
+                        raise GatewayError("Invalid gateway history summary") from err
+                    if not isinstance(result, dict):
+                        raise GatewayError("Invalid gateway history summary")
+                    return result
                 return await response.json()
         except (aiohttp.ClientError, asyncio.TimeoutError, ValueError) as err:
             if method == "POST":
@@ -466,6 +486,10 @@ class GatewayClient:
                 raise GatewayError("Gateway device names must be unique")
             result[snapshot["name"]] = snapshot
         return result
+
+    async def async_history_summary(self) -> dict | None:
+        """One optional read-only fleet request, never a station query."""
+        return await self._request("GET", "/history/summary", optional_history=True)
 
     async def async_device(self, name: str) -> dict:
         snapshot = parse_snapshot(await self._request("GET", f"/devices/{quote(name, safe='')}"))

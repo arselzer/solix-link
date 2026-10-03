@@ -481,7 +481,66 @@ def mqtt_menu(device: DeviceConfig, config_path: Path, directory: Path) -> None:
             print(f"{type(error).__name__}: {error}")
 
 
-def run_interactive(config_path: Path, ap_service_directory: Path | None = None) -> None:
+def run_gateway_menu(client) -> None:
+    """GET-only line fallback; choosing a gateway never scans Bluetooth."""
+    from .gateway_client import GatewayReadError
+    from .terminal_preview import manual_preview
+    from .tui import public_snapshot
+    selected = None
+    while True:
+        try:
+            if selected is None:
+                stations = client.devices()
+                choice = choose("Read-only gateway stations", [item["name"] for item in stations])
+                if choice is None:
+                    return
+                selected = stations[choice]["name"]
+            action = choose(f"Gateway: {selected} · read only", [
+                "Cached status (no station request)", "Saved AC/battery history",
+                "Charging policy preview (commands sent: 0)", "Select another station",
+            ])
+            if action is None:
+                return
+            if action == 3:
+                selected = None
+                continue
+            if action == 0:
+                print(json.dumps(public_snapshot(client.snapshot(selected)), indent=2))
+            elif action == 1:
+                value = prompt("History hours (1,6,24,168)", "24")
+                if value not in ("1", "6", "24", "168"):
+                    raise GatewayReadError("Choose 1, 6, 24 or 168 history hours")
+                now = time.time()
+                result = client.history(selected, since=max(0, now - int(value) * 3600), until=now, limit=200)
+                print("AC energy is estimated, includes bypass, and is not stored battery energy. Gaps remain unknown.")
+                print(json.dumps(result, indent=2))
+            elif action == 2:
+                raw = client.snapshot(selected)
+                snapshot = {**public_snapshot(raw), "model": raw["model"], "protocol": raw["protocol"]}
+                path = Path(prompt("Policy request JSON file")).expanduser()
+                print("Optional manual observations: enter value AND age, or leave both blank. Age0 means observed now.")
+                result = manual_preview(snapshot, path, price_value=prompt("Price value"),
+                                        price_age=prompt("Price age (seconds)"), export_value=prompt("Export W (+ means grid export)"),
+                                        export_age=prompt("Export age (seconds)"))
+                print("Read-only preview uses this laptop's clock. No policy/HA state or settings are changed.")
+                print(json.dumps(result, indent=2))
+        except KeyboardInterrupt:
+            print("Stopped.")
+        except Exception as error:
+            from .tui import safe_error
+            print(safe_error(error))
+            if selected is None:
+                return
+
+
+def run_interactive(config_path: Path, ap_service_directory: Path | None = None, *,
+                    gateway_url: str | None = None, gateway_token_file: Path | None = None) -> None:
+    if gateway_token_file is not None and gateway_url is None:
+        raise ValueError("A gateway token file requires --gateway-url")
+    if gateway_url is not None:
+        from .gateway_client import GatewayClient
+        run_gateway_menu(GatewayClient(gateway_url, gateway_token_file))
+        return
     print("SOLIX local monitoring — Ctrl-C stops an active monitor; 0 returns to the menu.")
     selected = select_device(config_path)
     while True:

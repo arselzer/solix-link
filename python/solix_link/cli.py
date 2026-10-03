@@ -27,6 +27,17 @@ def parser() -> argparse.ArgumentParser:
     tui = subcommands.add_parser("tui", help="Open the terminal dashboard (requires the tui extra)")
     tui.add_argument("--config", type=Path, default=DEFAULT_CONFIG)
     tui.add_argument("--ap-service-directory", type=Path, help="Inspect/control an already running AP service")
+    for target in (guided, tui):
+        target.add_argument("--gateway-url", help="Explicit HTTP/HTTPS gateway for read-only cached monitoring/history")
+        target.add_argument("--gateway-token-file", type=Path, help="Owner-only Bearer token file; never displayed or saved")
+
+    gateway_history = subcommands.add_parser("gateway-history", help="Read bounded saved AC/battery history as JSON; no station requests")
+    gateway_history.add_argument("--gateway-url", required=True)
+    gateway_history.add_argument("--gateway-token-file", type=Path)
+    gateway_history.add_argument("--name", required=True, help="Exact public station name")
+    gateway_history.add_argument("--since", type=float, help="UNIX seconds; default last 24h on gateway")
+    gateway_history.add_argument("--until", type=float, help="UNIX seconds; default gateway clock")
+    gateway_history.add_argument("--limit", type=int, default=200, help="1–2000 points (default 200)")
 
     scan = subcommands.add_parser("scan", help="Find C300 AC, C1000, and C1000/C2000 Gen 2 devices")
     scan.add_argument("--timeout", type=float, default=8)
@@ -433,10 +444,16 @@ def main(argv: list[str] | None = None) -> int:
     try:
         if args.command == "interactive":
             from .interactive import run_interactive
-            run_interactive(args.config, args.ap_service_directory)
+            options = {"gateway_url": args.gateway_url, "gateway_token_file": args.gateway_token_file} if args.gateway_url or args.gateway_token_file else {}
+            run_interactive(args.config, args.ap_service_directory, **options)
         elif args.command == "tui":
             from .tui import run_tui
-            run_tui(args.config, args.ap_service_directory)
+            options = {"gateway_url": args.gateway_url, "gateway_token_file": args.gateway_token_file} if args.gateway_url or args.gateway_token_file else {}
+            run_tui(args.config, args.ap_service_directory, **options)
+        elif args.command == "gateway-history":
+            from .gateway_client import GatewayClient
+            client = GatewayClient(args.gateway_url, args.gateway_token_file)
+            print(json.dumps(client.history(args.name, since=args.since, until=args.until, limit=args.limit), indent=2))
         elif args.command == "scan":
             asyncio.run(_scan(args.timeout))
         elif args.command == "add":

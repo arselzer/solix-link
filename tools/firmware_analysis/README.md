@@ -360,3 +360,41 @@ Compare both complete `android-loader-record-two-*.json` files with
 whitelisted registration signatures. `b2b`, `m` and `sa` are exact stubs;
 the real `al` ClassLoader method is a next static lead, not a recovered SDK
 serializer or executable decoder. No Android/JNI/VM method is invoked.
+
+The [ClassLoader boundary](../../docs/android-loader-classloader-boundary.md)
+adds 336 static instruction checks and exact JNI-header slot verification.
+The [complete container record](../../docs/android-loader-container-record.md)
+adds 1,063 checks, 530 symbolic control-flow states and all 1,640 body bytes:
+
+```sh
+python3 tools/firmware_analysis/inspect_android_loader_classloader.py \
+  --base-apk /private/path/base.apk \
+  --images-dir /private/path/recovered-virtual-images \
+  --initialized-image /private/path/libexec.so.decoded-strings-memory.bin \
+  --jni-header /path/to/pinned/include/jni.h \
+  --output-dir /tmp/android-loader-classloader
+python3 tools/firmware_analysis/inspect_android_loader_container_record.py \
+  --base-apk /private/path/base.apk \
+  --images-dir /private/path/recovered-virtual-images \
+  --initialized-image /private/path/libexec.so.decoded-strings-memory.bin \
+  --output-dir /tmp/android-loader-container-record
+```
+
+Compare each complete result and manifest against `expected_results/`. The
+retained `ijiami.dat` has a type-3 header; the candidate callback requests
+`classes.dex`. Its runtime key, callback and actual filename selection remain
+unresolved. These tools perform no transform or Android/JNI/VM execution.
+
+## Additional saved-state export checks
+
+```sh
+python3 tools/firmware_analysis/emulate_gen2_status_export_limits.py \
+  --output-dir /tmp/gen2-status-export
+```
+
+Compare both `gen2-status-export-limits-*.json` files with `expected_results/`.
+The 29 offline cases execute actual A4/D9/DA/FA serializers in synthetic RAM,
+retain declared harness substitutes, and demonstrate distinct saved settings
+with identical responses. FA reads no saved settings and retains some caller
+buffer bits. See [response limits](../../docs/gen2-status-export-limits.md);
+no complete export, physical behavior or additional model support is claimed.

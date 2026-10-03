@@ -66,7 +66,15 @@
       "controller_error_code": {"name": "Controller error code (raw)"},
       "battery_health_raw": {"name": "Battery compatibility byte (raw)"},
       "ac_output_frequency_setting_hz": {"name": "AC output frequency setting"},
-      "ac_frequency_raw": {"name": "AC frequency byte (raw)"}
+      "ac_frequency_raw": {"name": "AC frequency byte (raw)"},
+      "history_ac_input_energy_kwh_estimate": {"name": "Estimated lifetime AC input energy"},
+      "history_ac_output_energy_kwh_estimate": {"name": "Estimated lifetime AC output energy"},
+      "history_ac_input_coverage_seconds": {"name": "AC input history coverage"},
+      "history_ac_output_coverage_seconds": {"name": "AC output history coverage"},
+      "history_gap_count": {"name": "History gaps"},
+      "history_collection_start": {"name": "History collection start"},
+      "history_updated_at": {"name": "History sampler last update"},
+      "history_continuity": {"name": "History continuity", "state": {"continuous": "Continuous chain", "gap": "Open gap", "pending": "Awaiting first report"}}
     },
     "number": {
       "charging_power": {"name": "AC charging power limit"},

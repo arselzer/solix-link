@@ -5,6 +5,7 @@ from __future__ import annotations
 import asyncio
 from datetime import timedelta
 import logging
+import time
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
@@ -13,6 +14,8 @@ from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, Upda
 
 from .api import GatewayAuthError, GatewayClient, GatewayError, gateway_id
 from .const import DOMAIN, POLL_SECONDS
+from .history import (HISTORY_DISCOVERY_SECONDS, HISTORY_POLL_SECONDS,
+                      HistoryValidationError, history_nonregressing, parse_history_summary)
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -24,11 +27,56 @@ class SolixCoordinator(DataUpdateCoordinator[dict[str, dict]]):
         self.client = client
         self.endpoint_id = entry.unique_id or gateway_id(client.url)
         self._io_lock = asyncio.Lock()
+        self._history_cache: dict | None = None
+        self._history_next_poll = 0.0
+        self._history_highwater: dict[str, dict] = {}
+
+    async def _async_history(self) -> None:
+        if time.monotonic() < self._history_next_poll:
+            return
+        self._history_next_poll = time.monotonic() + HISTORY_POLL_SECONDS
+        try:
+            raw = await self.client.async_history_summary()
+            summary = None if raw is None else parse_history_summary(raw)
+        except GatewayAuthError:
+            self._history_cache = None
+            self._history_next_poll = 0.0
+            raise
+        except (GatewayError, HistoryValidationError):
+            self._history_cache = None
+            return
+        self._history_cache = summary
+        if summary is None or not summary["enabled"]:
+            self._history_next_poll = time.monotonic() + HISTORY_DISCOVERY_SECONDS
+
+    def _attach_history(self, data: dict[str, dict]) -> dict[str, dict]:
+        # Command results and peers may already carry an earlier summary.
+        # Reattach only the current validated cache; never keep failed history.
+        data = {name: {key: value for key, value in snapshot.items() if key != "history"}
+                for name, snapshot in data.items()}
+        summary = self._history_cache
+        if summary is None or not summary["enabled"]:
+            return data
+        result = dict(data)
+        for name, snapshot in data.items():
+            candidate = summary["stations"].get(name)
+            if candidate is None or (candidate["model"], candidate["protocol"]) != (
+                    snapshot.get("model"), snapshot.get("protocol")):
+                continue
+            history = {**candidate, "updated_at": summary["updated_at"],
+                       "max_gap_seconds": summary["max_gap_seconds"]}
+            if not history_nonregressing(self._history_highwater.get(name), history):
+                continue
+            self._history_highwater[name] = history
+            result[name] = {**snapshot, "history": history}
+        return result
 
     async def _async_update_data(self) -> dict[str, dict]:
         try:
             async with self._io_lock:
-                return await self.client.async_devices()
+                data = await self.client.async_devices()
+                await self._async_history()
+                return self._attach_history(data)
         except GatewayAuthError as err:
             raise ConfigEntryAuthFailed("Gateway authentication failed") from err
         except GatewayError as err:
@@ -48,7 +96,7 @@ class SolixCoordinator(DataUpdateCoordinator[dict[str, dict]]):
                 except GatewayError:
                     if name in data:
                         data[name] = {**data[name], "connected": False, "available": False}
-            self.async_set_updated_data(data)
+            self.async_set_updated_data(self._attach_history(data))
         if error is not None:
             raise HomeAssistantError(str(error)) from error
 

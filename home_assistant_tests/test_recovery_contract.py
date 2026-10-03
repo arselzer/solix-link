@@ -292,8 +292,13 @@ def test_command_and_poll_io_are_serialized(integration):
             calls.append("poll")
             return {"target": {"connected": True, "available": True}}
 
+        async def history():
+            calls.append("history")
+            return None
+
         coordinator = integration.coordinator.SolixCoordinator(None, Entry("entry", "http://gateway.test"),
-            SimpleNamespace(url="http://gateway.test", async_command=command, async_devices=devices))
+            SimpleNamespace(url="http://gateway.test", async_command=command, async_devices=devices,
+                            async_history_summary=history))
         write = asyncio.create_task(coordinator.async_command("target", {}))
         await started.wait()
         poll = asyncio.create_task(coordinator._async_update_data())
@@ -301,6 +306,6 @@ def test_command_and_poll_io_are_serialized(integration):
         assert calls == ["post"]
         release.set()
         await asyncio.gather(write, poll)
-        assert calls == ["post", "poll"]
+        assert calls == ["post", "poll", "history"]
 
     asyncio.run(scenario())

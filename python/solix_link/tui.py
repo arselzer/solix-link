@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import asyncio
 from dataclasses import dataclass, field, replace
+from datetime import datetime, timezone
 from pathlib import Path
 import re
 import time
@@ -71,6 +72,8 @@ class Target:
     device: DeviceConfig | None = field(default=None, repr=False)
     saved: bool = True
     native_name: str | None = None
+    gateway: bool = False
+    public_name: str | None = None
 
 
 @dataclass(frozen=True)
@@ -82,6 +85,8 @@ class Control:
 
 def controls_for(target: Target) -> tuple[Control, ...]:
     """Expose model-supported operations; C2000 never gets an AC switch."""
+    if target.gateway:
+        return ()
     if target.model == Model.C1000 and (target.native or target.device and target.device.protocol == "prime"):
         candidates = (
             ("ac_charging_power", Control("charge-power", "AC charging power", "100–1000 W, in 100 W steps")),
@@ -220,6 +225,7 @@ def public_snapshot(snapshot: dict) -> dict:
         key: value for key, value in metrics.items()
         if key in METRIC_LABELS and isinstance(value, (int, float, str))
     }
+    result["error"] = "ConnectionError" if snapshot.get("error") is not None else None
     return result
 
 
@@ -230,7 +236,9 @@ class TuiBackend:
                  *, monitor_factory: Callable[..., Any] = SolixMonitor,
                  requester: Callable[..., Any] | None = None,
                  scanner: Callable[..., Any] | None = None,
-                 config_path: Path | None = None) -> None:
+                 config_path: Path | None = None,
+                 gateway_url: str | None = None, gateway_token_file: Path | None = None,
+                 gateway_client: Any = None) -> None:
         self.targets = [Target(f"ble:{d.name}", f"{d.name} · {d.model.value} · {d.protocol}", d.model, device=d)
                         for d in devices]
         if ap_service_directory is not None:
@@ -241,7 +249,7 @@ class TuiBackend:
                 for name, (config, _) in profiles.items():
                     key = "native" if len(profiles) == 1 else f"native:{name}"
                     self.targets.append(Target(key, f"{name} · {config.model.value} · Native MQTT", config.model,
-                                               True, native_name=name if len(profiles) > 1 else None))
+                                               True, native_name=name if len(profiles) > 1 else None, public_name=name))
             else:
                 self.targets.append(Target("native", f"Native MQTT · {model.value} · AP service", model, True))
         self.directory = ap_service_directory
@@ -254,7 +262,53 @@ class TuiBackend:
         self.last_seen: float | None = None
         self.control_enabled = False
         self.native_snapshot: dict = {}
+        if gateway_token_file is not None and gateway_url is None:
+            raise ValueError("A gateway token file requires --gateway-url")
+        if gateway_client is None and gateway_url is not None:
+            from .gateway_client import GatewayClient
+            gateway_client = GatewayClient(gateway_url, gateway_token_file)
+        self.gateway_client = gateway_client
+        self.gateway_snapshot: dict = {}
         self._lock = asyncio.Lock()
+
+    async def load_gateway(self) -> int:
+        """List cached HTTP stations; never scan or activate a station transport."""
+        if self.gateway_client is None:
+            raise ValueError("Configure --gateway-url to read saved gateway history")
+        stations = await asyncio.to_thread(self.gateway_client.devices)
+        async with self._lock:
+            targets = [Target("gateway:" + item["name"],
+                              f"{item['name']} · {item['model']} · Gateway read only", Model(item["model"]),
+                              gateway=True, public_name=item["name"]) for item in stations]
+            if self.target and self.target.gateway:
+                replacement = next((target for target in targets if target.key == self.target.key), None)
+                if replacement is None or replacement.model != self.target.model:
+                    await self._close()
+                else:
+                    self.target = replacement
+            self.targets = [target for target in self.targets if not target.gateway] + targets
+            return len(targets)
+
+    async def saved_history(self, key: str, hours: int = 24) -> dict:
+        target = next((item for item in self.targets if item.key == key), None)
+        if self.gateway_client is None or target is None:
+            raise ValueError("Configure --gateway-url and select an exact saved station")
+        name = target.public_name or (target.device.name if target.device else None)
+        if name is None:
+            raise ValueError("Select a gateway station with an exact public name")
+        if type(hours) is not int or hours not in (1, 6, 24, 168):
+            raise ValueError("Choose 1, 6, 24 or 168 hours")
+        now = time.time()
+        return await asyncio.to_thread(self.gateway_client.history, name, since=max(0, now - hours * 3600),
+                                       until=now, limit=200)
+
+    def preview_snapshot(self, cached: dict) -> dict:
+        target = self.target
+        if target is None:
+            return {"connected": False, "available": False, "metrics": {}}
+        protocol = (self.gateway_snapshot.get("protocol") if target.gateway else
+                    "native_mqtt" if target.native else target.device.protocol)
+        return {**public_snapshot(cached), "model": target.model.value, "protocol": protocol}
 
     @staticmethod
     def _native_model(directory: Path) -> Model:
@@ -395,7 +449,7 @@ class TuiBackend:
             self.targets = [item for item in self.targets if not item.native]
             for name, (item, _) in profiles.items():
                 self.targets.append(Target(f"native:{name}", f"{name} · {item.model.value} · Native MQTT", item.model,
-                                           True, native_name=name))
+                                           True, native_name=name, public_name=name))
 
     async def check_ap_setup(self) -> dict:
         """Inspect saved AP files without connecting, provisioning or repairing."""
@@ -411,6 +465,7 @@ class TuiBackend:
         self.last_seen = None
         self.control_enabled = False
         self.native_snapshot = {}
+        self.gateway_snapshot = {}
         if monitor is not None:
             await monitor.disconnect()
 
@@ -424,6 +479,13 @@ class TuiBackend:
             target = next((item for item in self.targets if item.key == key), None)
             if target is None:
                 raise ValueError("Choose a saved station or a running AP service")
+            if target.gateway:
+                snapshot = await asyncio.to_thread(self.gateway_client.snapshot, target.public_name)
+                if snapshot.get("model") != target.model.value:
+                    raise ValueError("Gateway station profile changed; reload the gateway list")
+                self.gateway_snapshot = snapshot
+                self.target = target
+                return public_snapshot(snapshot)
             if target.native:
                 snapshot = await self._native("status", target=target)
                 self.target = target
@@ -461,6 +523,12 @@ class TuiBackend:
         async with self._lock:
             if self.target is None:
                 return public_snapshot({"metrics": {}, "connected": False, "available": False})
+            if self.target.gateway:
+                snapshot = await asyncio.to_thread(self.gateway_client.snapshot, self.target.public_name)
+                if snapshot.get("model") != self.target.model.value:
+                    raise ValueError("Gateway station profile changed; reload the gateway list")
+                self.gateway_snapshot = snapshot
+                return public_snapshot(snapshot)
             if self.target.native:
                 snapshot = await self._native("status")
                 self.control_enabled = snapshot.get("control_enabled") is True
@@ -475,6 +543,8 @@ class TuiBackend:
             target = self.target
             if target is None:
                 raise RuntimeError("Connect to a station first")
+            if target.gateway:
+                raise PermissionError("Gateway terminal targets are read only")
             allowed = {item.key for item in controls_for(target)}
             if target.native and target.model in (Model.C1000_GEN2, Model.C2000_GEN2):
                 allowed.update(("plan", "return-grid"))
@@ -646,7 +716,8 @@ class TuiBackend:
 
 
 def create_app(config_path: Path = DEFAULT_CONFIG, ap_service_directory: Path | None = None,
-               *, backend: TuiBackend | None = None) -> Any:
+               *, backend: TuiBackend | None = None, gateway_url: str | None = None,
+               gateway_token_file: Path | None = None) -> Any:
     """Build the dashboard lazily, allowing CLI help without the TUI extra."""
     try:
         from textual import on
@@ -658,7 +729,8 @@ def create_app(config_path: Path = DEFAULT_CONFIG, ap_service_directory: Path | 
     except ImportError:
         raise RuntimeError("Install the terminal UI with: pip install 'solix-link[tui]'") from None
 
-    backend = backend or TuiBackend(load_config(config_path), ap_service_directory, config_path=config_path)
+    backend = backend or TuiBackend(load_config(config_path), ap_service_directory, config_path=config_path,
+                                    gateway_url=gateway_url, gateway_token_file=gateway_token_file)
 
     class DashboardTabs(TabbedContent):
         def _on_tab_pane_focused(self, event: Any) -> None:
@@ -764,6 +836,7 @@ def create_app(config_path: Path = DEFAULT_CONFIG, ap_service_directory: Path | 
                     "Tab / Shift+Tab   Move between fields and buttons\n"
                     "↑ / ↓, Enter      Select a station, setting or option\n"
                     "F1–F4             Overview, Controls, Hourly plan, Events\n"
+                    "F5 / F6           Saved history / read-only policy preview\n"
                     "F8                Check saved AP setup (read-only)\n"
                     "Ctrl+O            Connect to the selected station\n"
                     "Ctrl+S            Scan nearby Bluetooth stations\n"
@@ -826,6 +899,8 @@ def create_app(config_path: Path = DEFAULT_CONFIG, ap_service_directory: Path | 
             Binding("f2", "panel('controls')", "Controls", priority=True),
             Binding("f3", "panel('plan')", "Plan", priority=True),
             Binding("f4", "panel('events')", "Events", priority=True),
+            Binding("f5", "panel('history')", "History", priority=True),
+            Binding("f6", "panel('preview')", "Preview", priority=True),
             Binding("f8", "check_ap_setup", "AP check", priority=True),
             Binding("ctrl+o", "connect", "Connect", show=False, priority=True),
             Binding("ctrl+s", "scan", "Scan", priority=True),
@@ -860,7 +935,12 @@ def create_app(config_path: Path = DEFAULT_CONFIG, ap_service_directory: Path | 
         #tabs { height: 1fr; min-height: 6; }
         #tabs ContentSwitcher { height: 1fr; }
         TabPane { height: 1fr; padding: 0 1; }
-        #controls-scroll, #plan-scroll { height: 1fr; }
+        #controls-scroll, #plan-scroll, #preview-scroll { height: 1fr; }
+        #history-actions { height: auto; }
+        #history-hours { width: 1fr; }
+        #history-summary, #history-note { height: auto; color: #a8bdd4; }
+        #history-table { height: 1fr; border: round #2c4866; }
+        #preview-result { height: 16; border: round #2c4866; }
         #readings { height: 1fr; }
         #event-log { height: 1fr; border: round #2c4866; }
         #diagnostic-actions { height: auto; }
@@ -898,6 +978,11 @@ def create_app(config_path: Path = DEFAULT_CONFIG, ap_service_directory: Path | 
             self.refreshing = False
             self.snapshot: dict = {}
             self.reading_keys: tuple[str, ...] = ()
+            self.history_loading = False
+            self.preview_loading = False
+            self._history_generation = 0
+            self._preview_generation = 0
+            self._has_preview = False
 
         def compose(self) -> ComposeResult:
             yield Header(show_clock=True)
@@ -917,7 +1002,7 @@ def create_app(config_path: Path = DEFAULT_CONFIG, ap_service_directory: Path | 
                         yield Button("Add to AP", id="add-to-ap", disabled=True)
                     yield Static("Scan nearby stations or choose a saved station.", id="discovery-hint", markup=False)
                 yield Static("Disconnected · Choose a station, then Connect.", id="connection-status", markup=False)
-                yield Static("Tab / Shift+Tab navigate · Enter select · F1–F4 panels · ? help", id="keyboard-hint", markup=False)
+                yield Static("Tab / Shift+Tab navigate · Enter select · F1–F6 panels · ? help", id="keyboard-hint", markup=False)
                 with Grid(id="cards"):
                     yield Static("BATTERY\n—", classes="card", id="battery", markup=False)
                     yield Static("POWER\n—", classes="card", id="power", markup=False)
@@ -951,22 +1036,54 @@ def create_app(config_path: Path = DEFAULT_CONFIG, ap_service_directory: Path | 
                         with Horizontal(id="diagnostic-actions"):
                             yield Button("Check saved AP setup · F8", id="check-ap-setup", disabled=backend.directory is None)
                         yield RichLog(id="event-log", markup=False, wrap=True, max_lines=200)
+                    with TabPane("History", id="history"):
+                        yield Static("Saved AC readings · read-only gateway access · gaps remain unknown", id="history-note", markup=False)
+                        with Horizontal(id="history-actions"):
+                            yield Select([("Last hour", 1), ("Last 6 hours", 6), ("Last 24 hours", 24),
+                                          ("Last 7 days", 168)], value=24, allow_blank=False, id="history-hours")
+                            yield Button("Load history", id="history-load", disabled=True)
+                            yield Button("Gateway stations", id="gateway-reload", disabled=backend.gateway_client is None)
+                        yield Static("Configure --gateway-url and --gateway-token-file. The gateway alone owns its history database.",
+                                     id="history-summary", markup=False)
+                        yield DataTable(id="history-table", zebra_stripes=True, cursor_type="row")
+                    with TabPane("Preview", id="preview"):
+                        with VerticalScroll(id="preview-scroll"):
+                            yield Static("Read-only charging policy preview · commands sent: 0\nUses the local clock and current cached snapshot. Simulated armed/latch values in the file do not enable automation.", classes="hint", markup=False)
+                            yield Label("Policy request JSON file (maximum 4 KiB)", classes="form-label")
+                            yield Input(placeholder="/path/to/policy-request.json", id="preview-file")
+                            yield Static("Optional manual observations: provide value and age together, or leave both blank to keep the file signal. Age 0 explicitly means observed now.", classes="hint", markup=False)
+                            yield Label("Price value / age in seconds (same price unit as file thresholds)", classes="form-label")
+                            with Horizontal(classes="form-row"):
+                                yield Input(placeholder="Price value", id="preview-price", max_length=64)
+                                yield Input(placeholder="Age (seconds)", id="preview-price-age", max_length=5)
+                            yield Label("Export watts / age in seconds (positive means grid export)", classes="form-label")
+                            with Horizontal(classes="form-row"):
+                                yield Input(placeholder="Export W", id="preview-export", max_length=64)
+                                yield Input(placeholder="Age (seconds)", id="preview-export-age", max_length=5)
+                            yield Button("Preview only", id="preview-run", variant="primary", disabled=True)
+                            yield Static("No preview yet. Results describe one cached snapshot, not an active policy.", id="preview-state", classes="hint", markup=False)
+                            yield RichLog(id="preview-result", markup=False, wrap=True, max_lines=100)
             yield Footer()
 
         def on_mount(self) -> None:
             table = self.query_one("#readings", DataTable)
             table.add_column("Measurement", key="measurement")
             table.add_column("Value", key="value")
+            history = self.query_one("#history-table", DataTable)
+            for title in ("UTC report time", "AC in W", "AC out W", "SOC %", "Source Δs", "Gap"):
+                history.add_column(title)
             self.configure_controls()
             self.query_one("#station", Select).focus()
             self.set_interval(2, self.poll)
+            if backend.gateway_client is not None:
+                self.action_gateway_reload()
 
         def on_resize(self, event: Any) -> None:
             self.set_class(event.size.width < 82, "narrow")
             self.set_class(event.size.height < 32 or event.size.width < 58, "compact")
             self.query_one("#keyboard-hint", Static).update(
-                "Tab / Enter · F1–F4 panels · F10 help" if event.size.width < 82
-                else "Tab / Shift+Tab navigate · Enter select · F1–F4 panels · ? help"
+                "Tab / Enter · F1–F6 panels · F10 help" if event.size.width < 82
+                else "Tab / Shift+Tab navigate · Enter select · F1–F6 panels · ? help"
             )
 
         def event_log(self, message: str) -> None:
@@ -994,6 +1111,8 @@ def create_app(config_path: Path = DEFAULT_CONFIG, ap_service_directory: Path | 
                 note = "Controls require the running AP service to have been started with --allow-control."
                 if target.model == Model.C1000 and not controls_for(target):
                     note = "Original C1000 native MQTT monitoring is verified; native controls remain unavailable."
+            if target and target.gateway:
+                note = "Gateway monitoring, saved history and policy previews are read only. This terminal sends no HTTP commands."
             self.query_one("#notice", Static).update(note)
             guidance = "Scan nearby stations or choose a saved station."
             if target and not target.saved:
@@ -1018,6 +1137,9 @@ def create_app(config_path: Path = DEFAULT_CONFIG, ap_service_directory: Path | 
             self.query_one("#add-to-ap", Button).disabled = self.busy or not connected or not fresh or backend.directory is None or not target or target.native or not target.saved or target.model not in (Model.C1000, Model.C1000_GEN2, Model.C2000_GEN2) or not target.device or target.device.protocol != "prime" or not target.device.client_id
             self.query_one("#disconnect", Button).disabled = self.busy or not connected
             self.query_one("#apply-setting", Button).disabled = self.busy or not connected or not fresh or not permitted or not (target and controls_for(target))
+            self.query_one("#history-load", Button).disabled = self.history_loading or backend.gateway_client is None or target is None
+            self.query_one("#gateway-reload", Button).disabled = self.busy or backend.gateway_client is None
+            self.query_one("#preview-run", Button).disabled = self.preview_loading or self.busy or not connected or target is None
             if (target and (target.model == Model.C1000 and (target.native or target.device and target.device.protocol == "prime")
                            or target.model == Model.C1000_GEN2 and target.native)
                     and self.query_one("#setting", Select).value == "dc-power-saving"):
@@ -1060,13 +1182,21 @@ def create_app(config_path: Path = DEFAULT_CONFIG, ap_service_directory: Path | 
                 self.query_one(f"#{name}", Button).disabled = self.busy or not connected or not fresh or not permitted or not (target and target.native and target.model in (Model.C1000_GEN2, Model.C2000_GEN2))
 
         def render_snapshot(self, snapshot: dict) -> None:
+            if (self._has_preview or self.preview_loading) and snapshot != self.snapshot:
+                self._preview_generation += 1
+                pending = self.preview_loading
+                self._has_preview = self.preview_loading = False
+                self.query_one("#preview-state", Static).update("Snapshot changed. Previous result is historical; select Preview only again. Commands sent: 0.")
+                if pending:
+                    self.query_one("#preview-result", RichLog).clear()
+                    self.query_one("#preview-result", RichLog).write("Snapshot changed. Run Preview only again; commands sent: 0.")
             self.snapshot = snapshot
             metrics = snapshot.get("metrics", {})
             fresh = bool(snapshot.get("available"))
             latest = snapshot.get("last_seen_timestamp")
             age = f" · {max(0, int(time.time() - latest))}s since update" if isinstance(latest, (int, float)) else ""
             state = "Live" if fresh else "Waiting for fresh telemetry" if snapshot.get("connected") else "Disconnected"
-            permission = " · Read only" if backend.target and backend.target.native and not snapshot.get("control_enabled") else ""
+            permission = " · Read only" if backend.target and (backend.target.gateway or backend.target.native and not snapshot.get("control_enabled")) else ""
             self.status(state + age + permission, "live" if fresh else "idle")
             self.query_one("#battery", Static).update(f"BATTERY\n{metrics.get('battery_percentage', '—')}% · {metrics.get('battery_status', 'unknown')}")
             incoming = metrics.get("input_power_w", metrics.get("ac_input_power_w", "—"))
@@ -1128,6 +1258,7 @@ def create_app(config_path: Path = DEFAULT_CONFIG, ap_service_directory: Path | 
             if key == self.selected:
                 return
             self.selected = key
+            self.reset_readonly_views()
             self.snapshot = {}
             self.configure_controls()
             async def changed() -> dict:
@@ -1155,6 +1286,12 @@ def create_app(config_path: Path = DEFAULT_CONFIG, ap_service_directory: Path | 
                 self.action_scan()
             elif action == "check-ap-setup":
                 self.action_check_ap_setup()
+            elif action == "history-load":
+                self.action_history_load()
+            elif action == "gateway-reload":
+                self.action_gateway_reload()
+            elif action == "preview-run":
+                self.action_preview()
             elif action == "save-station" and self.selected:
                 async def save() -> None:
                     target = await backend.save_target(self.selected)
@@ -1259,7 +1396,8 @@ def create_app(config_path: Path = DEFAULT_CONFIG, ap_service_directory: Path | 
         def action_panel(self, panel: str) -> None:
             self.screen.set_focus(None)
             self.query_one("#tabs", TabbedContent).active = panel
-            widget = {"overview": "readings", "controls": "setting", "plan": "plan-text", "events": "event-log"}[panel]
+            widget = {"overview": "readings", "controls": "setting", "plan": "plan-text", "events": "event-log",
+                      "history": "history-load", "preview": "preview-file"}[panel]
             self.screen.set_focus(self.query_one(f"#{widget}"))
 
         def action_help(self) -> None:
@@ -1299,11 +1437,139 @@ def create_app(config_path: Path = DEFAULT_CONFIG, ap_service_directory: Path | 
             self.launch(scan())
 
         def action_disconnect(self) -> None:
+            self.reset_readonly_views()
             async def disconnect() -> dict:
                 await backend.disconnect()
                 self.event_log("Disconnected; station settings are unchanged.")
                 return public_snapshot({"metrics": {}})
             self.launch(disconnect())
+
+        def reset_readonly_views(self) -> None:
+            self._history_generation += 1
+            self._preview_generation += 1
+            self.history_loading = self.preview_loading = self._has_preview = False
+            self.query_one("#history-table", DataTable).clear()
+            self.query_one("#history-summary", Static).update("Select a station and Load history. No database is opened by this terminal.")
+            self.query_one("#preview-result", RichLog).clear()
+            self.query_one("#preview-state", Static).update("Select and connect a station; policy preview never sends commands.")
+
+        def action_gateway_reload(self) -> None:
+            if self.busy or backend.gateway_client is None:
+                return
+            async def reload_gateway() -> None:
+                count = await backend.load_gateway()
+                if backend.target is None:
+                    target = next((item for item in backend.targets if item.gateway), None)
+                    if target:
+                        self.reset_readonly_views()
+                        self.selected = target.key
+                        self.snapshot = {}
+                self.refresh_targets()
+                self.event_log(f"Loaded {count} read-only gateway station(s). Choose one and Connect.")
+            self.launch(reload_gateway())
+
+        def action_history_load(self) -> None:
+            if self.selected is None or backend.gateway_client is None:
+                return
+            self._history_generation += 1
+            generation, selection = self._history_generation, self.selected
+            self.history_loading = True
+            self.query_one("#history-table", DataTable).clear()
+            self.query_one("#history-summary", Static).update("Loading bounded saved history…")
+            self.update_buttons()
+            hours = self.query_one("#history-hours", Select).value
+            async def load_history() -> None:
+                try:
+                    result = await backend.saved_history(selection, hours)
+                    if generation != self._history_generation or selection != self.selected:
+                        return
+                    totals, lifetime = result["totals"], result["lifetime_totals"]
+                    start = result.get("collection_start")
+                    epoch = datetime.fromtimestamp(start, timezone.utc).strftime("%Y-%m-%d %H:%M UTC") if start is not None else "unknown start"
+                    self.query_one("#history-summary", Static).update(
+                        f"Window AC estimates: {totals['ac_input_energy_kwh_estimate']:.4f} kWh in / {totals['ac_output_energy_kwh_estimate']:.4f} kWh out\n"
+                        f"Coverage: {totals['ac_input_coverage_seconds']:.0f}s in / {totals['ac_output_coverage_seconds']:.0f}s out · Gaps: {totals['gap_count']}\n"
+                        f"Lifetime AC estimates: {lifetime['ac_input_energy_kwh_estimate']:.4f} kWh in / {lifetime['ac_output_energy_kwh_estimate']:.4f} kWh out · Since {epoch}\n"
+                        f"Lifetime coverage: {lifetime['ac_input_coverage_seconds']:.0f}s / {lifetime['ac_output_coverage_seconds']:.0f}s · Gaps: {lifetime['gap_count']} · Includes bypass; not stored battery energy."
+                    )
+                    table = self.query_one("#history-table", DataTable)
+                    for point in result["points"]:
+                        def text(key: str) -> str:
+                            return "—" if point.get(key) is None else f"{point[key]:g}"
+                        stamp = datetime.fromtimestamp(point["timestamp"], timezone.utc).strftime("%m-%d %H:%M:%S")
+                        table.add_row(stamp, text("ac_input_power_w"), text("ac_output_power_w"),
+                                      text("battery_percentage"), text("max_source_interval_seconds"),
+                                      "BREAK" if point["gap"] else "")
+                    if not result["points"]:
+                        self.query_one("#history-summary", Static).update("No saved readings in this window. Unknown coverage is not zero power.")
+                except Exception as error:
+                    if generation == self._history_generation and selection == self.selected:
+                        self.query_one("#history-summary", Static).update(safe_error(error))
+                finally:
+                    if generation == self._history_generation:
+                        self.history_loading = False
+                        self.update_buttons()
+            self.run_worker(load_history(), group="history-read", exclusive=True, exit_on_error=False)
+
+        @on(Select.Changed, "#history-hours")
+        def history_window_changed(self, event: Any) -> None:
+            if not self.is_mounted:
+                return
+            self._history_generation += 1
+            self.history_loading = False
+            self.query_one("#history-table", DataTable).clear()
+            self.query_one("#history-summary", Static).update("Window changed. Select Load history; no station requests are made.")
+            self.update_buttons()
+
+        @on(Input.Changed)
+        def preview_input_changed(self, event: Any) -> None:
+            if not self.is_mounted or not (event.input.id or "").startswith("preview-"):
+                return
+            self._preview_generation += 1
+            self.preview_loading = self._has_preview = False
+            self.query_one("#preview-result", RichLog).clear()
+            self.query_one("#preview-result", RichLog).write("Inputs changed. Select Preview only; commands sent: 0.")
+            self.query_one("#preview-state", Static).update("Inputs changed; no preview is current.")
+            self.update_buttons()
+
+        def action_preview(self) -> None:
+            if backend.target is None or self.selected != backend.target.key:
+                return
+            from .terminal_preview import manual_preview
+            self._preview_generation += 1
+            generation, selection = self._preview_generation, self.selected
+            self.preview_loading = True
+            self.update_buttons()
+            snapshot = backend.preview_snapshot(self.snapshot)
+            path = Path(self.query_one("#preview-file", Input).value).expanduser()
+            fields = {"price_value": self.query_one("#preview-price", Input).value,
+                      "price_age": self.query_one("#preview-price-age", Input).value,
+                      "export_value": self.query_one("#preview-export", Input).value,
+                      "export_age": self.query_one("#preview-export-age", Input).value}
+            async def preview() -> None:
+                try:
+                    result = await asyncio.to_thread(manual_preview, snapshot, path, **fields)
+                    if generation != self._preview_generation or selection != self.selected:
+                        return
+                    log = self.query_one("#preview-result", RichLog)
+                    log.clear()
+                    log.write(f"Read-only preview: {result['decision'].upper()} · Commands sent: 0")
+                    log.write("Reasons: " + ", ".join(result["reasons"]))
+                    log.write("Current settings: " + str(result["current_settings"]))
+                    log.write("Proposed settings (never applied): " + str(result["proposed_settings"]))
+                    log.write(f"Telemetry age: {result['telemetry_age_seconds']}s · local clock")
+                    self.query_one("#preview-state", Static).update("Preview calculated at " + time.strftime("%H:%M:%S") + " local time; commands sent: 0.")
+                    self._has_preview = True
+                except Exception as error:
+                    if generation == self._preview_generation and selection == self.selected:
+                        log = self.query_one("#preview-result", RichLog)
+                        log.clear()
+                        log.write(safe_error(error) + " · Commands sent: 0")
+                finally:
+                    if generation == self._preview_generation:
+                        self.preview_loading = False
+                        self.update_buttons()
+            self.run_worker(preview(), group="policy-preview", exclusive=True, exit_on_error=False)
 
         async def action_quit(self) -> None:
             if self.busy:
@@ -1318,6 +1584,7 @@ def create_app(config_path: Path = DEFAULT_CONFIG, ap_service_directory: Path | 
     return SolixApp()
 
 
-def run_tui(config_path: Path = DEFAULT_CONFIG, ap_service_directory: Path | None = None) -> None:
+def run_tui(config_path: Path = DEFAULT_CONFIG, ap_service_directory: Path | None = None, *,
+            gateway_url: str | None = None, gateway_token_file: Path | None = None) -> None:
     """Open the optional dashboard without starting services or changing settings."""
-    create_app(config_path, ap_service_directory).run()
+    create_app(config_path, ap_service_directory, gateway_url=gateway_url, gateway_token_file=gateway_token_file).run()

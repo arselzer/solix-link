@@ -476,6 +476,34 @@ class HistoryStore:
                     "window": {"since": start, "until": end}, "limits": self._limits(),
                     "truncated": count > count_limit}
 
+    def summary(self) -> dict[str, Any]:
+        """Copy bounded persisted counters without querying or scanning sample rows.
+
+        ``updated_at`` is the last successful complete cache poll, not the HTTP
+        request time. ``gap_open`` describes integration continuity; it does
+        not establish that every power channel was present in a report.
+        Collection start identifies the first accepted report for a public
+        name, not the device or a globally unique database reset identifier.
+        """
+        with self._lock:
+            self._check_open()
+            stations = []
+            for name, state in self._states.items():
+                counters = state.totals
+                if (len(counters) != 5 or any(_number(value, 0, 1e18) is None for value in counters[:4])
+                        or type(counters[4]) is not int or not 0 <= counters[4] <= 2**53):
+                    raise ValueError("Invalid history counters")
+                for timestamp in (state.collection_start, state.highwater):
+                    if timestamp is not None:
+                        _epoch(timestamp)
+                stations.append({"name": name, "model": state.model, "protocol": state.protocol,
+                                 "collection_start": state.collection_start,
+                                 "last_seen_timestamp": state.highwater,
+                                 "lifetime_totals": dict(zip(_TOTAL_KEYS, counters)),
+                                 "gap_open": state.gap_open})
+            return {"schema_version": 1, "estimated": True, "updated_at": self._last_now,
+                    "limits": self._limits(), "stations": stations}
+
     def close(self) -> None:
         with self._lock:
             if not self._closed:

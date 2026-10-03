@@ -178,6 +178,19 @@ def create_app(service: MonitorService, token: str | None = None, *, allow_contr
         except (OSError, sqlite3.Error):
             return JSONResponse({"error": "HistoryUnavailable"}, status_code=503)
 
+    @app.api_route("/history/summary", methods=["GET", "HEAD"])
+    async def history_summary():
+        if history_file is None:
+            return {"schema_version": 1, "enabled": False, "estimated": True, "read_only": True}
+        if history_store is None or history_failed:
+            return JSONResponse({"error": "HistoryUnavailable"}, status_code=503)
+        try:
+            summary = await asyncio.to_thread(history_store.summary)
+            summary["stations"] = [item for item in summary["stations"] if item["name"] in service.devices]
+            return {**summary, "enabled": True, "recording": True, "read_only": True}
+        except (OSError, ValueError, sqlite3.Error):
+            return JSONResponse({"error": "HistoryUnavailable"}, status_code=503)
+
     @app.post("/devices/{name}/charging-preview")
     async def charging_preview(name: str, request: Request):
         if name not in service.devices:
