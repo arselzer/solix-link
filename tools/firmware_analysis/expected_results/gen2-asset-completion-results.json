@@ -1,0 +1,1049 @@
+{
+  "cases": 25,
+  "complete_settings_export": false,
+  "firmware_sha256": "21ffb746c1e07ecaa9817fa7017807585a00bedbca3f136c650129bb52a4a0c9",
+  "instruction_limit_per_entry": 100000,
+  "limits": "Bounded A1763 asset final receipt and subsequent completion polling.\n\nSelected final/status callbacks, descriptors, fixed serializers, timer wrapper\nand transfer reset execute in synthetic RAM. Queue execution, timer services,\nlogging, libc, UART delivery and application callbacks are substitutes. No\nreceiver application, file/flash backend, firmware boot or station executes.\nReply frames are host-seeded callback inputs, without ingress/CRC validation.",
+  "main_version": "1.1.4.9",
+  "model": "A1763",
+  "negative_guards": [
+    "application_body_excluded",
+    "watchdog_callback_excluded",
+    "firmware_startup_excluded",
+    "saved_settings_write_excluded",
+    "output_flags_write_excluded"
+  ],
+  "physical_transport_verified": false,
+  "receiver_application_verified": false,
+  "results": [
+    {
+      "application_callback_substitutes": [],
+      "case": "final_received",
+      "chunk_pending": 0,
+      "distinct_instruction_addresses": 89,
+      "final_retry_byte": 0,
+      "frames": [
+        {
+          "block_index_u16_le": null,
+          "bytes": 16,
+          "header_words_le": [
+            16,
+            5,
+            4,
+            22
+          ],
+          "sha256": "02ed7561bd18ec59f79c70ffb07520e42a29779818bda448d1bc9d8fc4cd1416"
+        }
+      ],
+      "immediate_error_response_statuses": [],
+      "maximum_entry_instructions": 46,
+      "queued_points_raw": [
+        22
+      ],
+      "radio_083e_ack_statuses": [],
+      "retry_byte": 0,
+      "saved_settings_and_output_flags_preserved": true,
+      "saved_settings_bytes_read": 0,
+      "stored_offset": 0,
+      "stored_reported_length": 0,
+      "stored_total": 0,
+      "timer_service_substitutes": [],
+      "transfer_active": 1,
+      "watchdog_period_raw": 0
+    },
+    {
+      "application_callback_substitutes": [],
+      "case": "final_received_without_application_callback",
+      "chunk_pending": 0,
+      "distinct_instruction_addresses": 89,
+      "final_retry_byte": 0,
+      "frames": [
+        {
+          "block_index_u16_le": null,
+          "bytes": 16,
+          "header_words_le": [
+            16,
+            5,
+            4,
+            22
+          ],
+          "sha256": "02ed7561bd18ec59f79c70ffb07520e42a29779818bda448d1bc9d8fc4cd1416"
+        }
+      ],
+      "immediate_error_response_statuses": [],
+      "maximum_entry_instructions": 46,
+      "queued_points_raw": [
+        22
+      ],
+      "radio_083e_ack_statuses": [],
+      "retry_byte": 0,
+      "saved_settings_and_output_flags_preserved": true,
+      "saved_settings_bytes_read": 0,
+      "stored_offset": 0,
+      "stored_reported_length": 0,
+      "stored_total": 0,
+      "timer_service_substitutes": [],
+      "transfer_active": 1,
+      "watchdog_period_raw": 0
+    },
+    {
+      "application_callback_substitutes": [],
+      "case": "final_status_queue_rejected",
+      "chunk_pending": 0,
+      "distinct_instruction_addresses": 89,
+      "final_retry_byte": 0,
+      "frames": [
+        {
+          "block_index_u16_le": null,
+          "bytes": 16,
+          "header_words_le": [
+            16,
+            5,
+            4,
+            22
+          ],
+          "sha256": "02ed7561bd18ec59f79c70ffb07520e42a29779818bda448d1bc9d8fc4cd1416"
+        }
+      ],
+      "immediate_error_response_statuses": [],
+      "maximum_entry_instructions": 46,
+      "queued_points_raw": [
+        22
+      ],
+      "radio_083e_ack_statuses": [],
+      "retry_byte": 0,
+      "saved_settings_and_output_flags_preserved": true,
+      "saved_settings_bytes_read": 0,
+      "stored_offset": 0,
+      "stored_reported_length": 0,
+      "stored_total": 0,
+      "timer_service_substitutes": [],
+      "transfer_active": 1,
+      "watchdog_period_raw": 0
+    },
+    {
+      "application_callback_substitutes": [],
+      "case": "final_no_reply",
+      "chunk_pending": 0,
+      "distinct_instruction_addresses": 83,
+      "final_retry_byte": 1,
+      "frames": [
+        {
+          "block_index_u16_le": null,
+          "bytes": 16,
+          "header_words_le": [
+            16,
+            5,
+            4,
+            20
+          ],
+          "sha256": "2d7dc1c260b3fdc1d45bcab17e30456034ab8764fd6ac6f5729db3cd869cb862"
+        }
+      ],
+      "immediate_error_response_statuses": [],
+      "maximum_entry_instructions": 40,
+      "queued_points_raw": [
+        20
+      ],
+      "radio_083e_ack_statuses": [],
+      "retry_byte": 0,
+      "saved_settings_and_output_flags_preserved": true,
+      "saved_settings_bytes_read": 0,
+      "stored_offset": 0,
+      "stored_reported_length": 0,
+      "stored_total": 0,
+      "timer_service_substitutes": [],
+      "transfer_active": 1,
+      "watchdog_period_raw": 0
+    },
+    {
+      "application_callback_substitutes": [],
+      "case": "final_wrong_point",
+      "chunk_pending": 0,
+      "distinct_instruction_addresses": 95,
+      "final_retry_byte": 1,
+      "frames": [
+        {
+          "block_index_u16_le": null,
+          "bytes": 16,
+          "header_words_le": [
+            16,
+            5,
+            4,
+            20
+          ],
+          "sha256": "2d7dc1c260b3fdc1d45bcab17e30456034ab8764fd6ac6f5729db3cd869cb862"
+        }
+      ],
+      "immediate_error_response_statuses": [],
+      "maximum_entry_instructions": 53,
+      "queued_points_raw": [
+        20
+      ],
+      "radio_083e_ack_statuses": [],
+      "retry_byte": 0,
+      "saved_settings_and_output_flags_preserved": true,
+      "saved_settings_bytes_read": 0,
+      "stored_offset": 0,
+      "stored_reported_length": 0,
+      "stored_total": 0,
+      "timer_service_substitutes": [],
+      "transfer_active": 1,
+      "watchdog_period_raw": 0
+    },
+    {
+      "application_callback_substitutes": [],
+      "case": "final_error_status",
+      "chunk_pending": 0,
+      "distinct_instruction_addresses": 97,
+      "final_retry_byte": 1,
+      "frames": [
+        {
+          "block_index_u16_le": null,
+          "bytes": 16,
+          "header_words_le": [
+            16,
+            5,
+            4,
+            20
+          ],
+          "sha256": "2d7dc1c260b3fdc1d45bcab17e30456034ab8764fd6ac6f5729db3cd869cb862"
+        }
+      ],
+      "immediate_error_response_statuses": [],
+      "maximum_entry_instructions": 55,
+      "queued_points_raw": [
+        20
+      ],
+      "radio_083e_ack_statuses": [],
+      "retry_byte": 0,
+      "saved_settings_and_output_flags_preserved": true,
+      "saved_settings_bytes_read": 0,
+      "stored_offset": 0,
+      "stored_reported_length": 0,
+      "stored_total": 0,
+      "timer_service_substitutes": [],
+      "transfer_active": 1,
+      "watchdog_period_raw": 0
+    },
+    {
+      "application_callback_substitutes": [],
+      "case": "final_bad_marker",
+      "chunk_pending": 0,
+      "distinct_instruction_addresses": 89,
+      "final_retry_byte": 1,
+      "frames": [
+        {
+          "block_index_u16_le": null,
+          "bytes": 16,
+          "header_words_le": [
+            16,
+            5,
+            4,
+            20
+          ],
+          "sha256": "2d7dc1c260b3fdc1d45bcab17e30456034ab8764fd6ac6f5729db3cd869cb862"
+        }
+      ],
+      "immediate_error_response_statuses": [],
+      "maximum_entry_instructions": 47,
+      "queued_points_raw": [
+        20
+      ],
+      "radio_083e_ack_statuses": [],
+      "retry_byte": 0,
+      "saved_settings_and_output_flags_preserved": true,
+      "saved_settings_bytes_read": 0,
+      "stored_offset": 0,
+      "stored_reported_length": 0,
+      "stored_total": 0,
+      "timer_service_substitutes": [],
+      "transfer_active": 1,
+      "watchdog_period_raw": 0
+    },
+    {
+      "application_callback_substitutes": [],
+      "case": "final_bad_trailing_marker",
+      "chunk_pending": 0,
+      "distinct_instruction_addresses": 92,
+      "final_retry_byte": 1,
+      "frames": [
+        {
+          "block_index_u16_le": null,
+          "bytes": 16,
+          "header_words_le": [
+            16,
+            5,
+            4,
+            20
+          ],
+          "sha256": "2d7dc1c260b3fdc1d45bcab17e30456034ab8764fd6ac6f5729db3cd869cb862"
+        }
+      ],
+      "immediate_error_response_statuses": [],
+      "maximum_entry_instructions": 50,
+      "queued_points_raw": [
+        20
+      ],
+      "radio_083e_ack_statuses": [],
+      "retry_byte": 0,
+      "saved_settings_and_output_flags_preserved": true,
+      "saved_settings_bytes_read": 0,
+      "stored_offset": 0,
+      "stored_reported_length": 0,
+      "stored_total": 0,
+      "timer_service_substitutes": [],
+      "transfer_active": 1,
+      "watchdog_period_raw": 0
+    },
+    {
+      "application_callback_substitutes": [
+        {
+          "reason_argument": 5,
+          "success_argument": 0
+        }
+      ],
+      "case": "final_fourth_missing",
+      "chunk_pending": 0,
+      "distinct_instruction_addresses": 78,
+      "final_retry_byte": 0,
+      "frames": [],
+      "immediate_error_response_statuses": [],
+      "maximum_entry_instructions": 47,
+      "queued_points_raw": [],
+      "radio_083e_ack_statuses": [],
+      "retry_byte": 0,
+      "saved_settings_and_output_flags_preserved": true,
+      "saved_settings_bytes_read": 0,
+      "stored_offset": 0,
+      "stored_reported_length": 0,
+      "stored_total": 0,
+      "timer_service_substitutes": [
+        {
+          "id": 9,
+          "operation": "stop"
+        },
+        {
+          "id": 0,
+          "operation": "stop"
+        }
+      ],
+      "transfer_active": 0,
+      "watchdog_period_raw": 0
+    },
+    {
+      "application_callback_substitutes": [
+        {
+          "reason_argument": 5,
+          "success_argument": 0
+        }
+      ],
+      "case": "final_fourth_malformed",
+      "chunk_pending": 0,
+      "distinct_instruction_addresses": 92,
+      "final_retry_byte": 0,
+      "frames": [],
+      "immediate_error_response_statuses": [],
+      "maximum_entry_instructions": 62,
+      "queued_points_raw": [],
+      "radio_083e_ack_statuses": [],
+      "retry_byte": 0,
+      "saved_settings_and_output_flags_preserved": true,
+      "saved_settings_bytes_read": 0,
+      "stored_offset": 0,
+      "stored_reported_length": 0,
+      "stored_total": 0,
+      "timer_service_substitutes": [
+        {
+          "id": 9,
+          "operation": "stop"
+        },
+        {
+          "id": 0,
+          "operation": "stop"
+        }
+      ],
+      "transfer_active": 0,
+      "watchdog_period_raw": 0
+    },
+    {
+      "application_callback_substitutes": [],
+      "case": "final_fourth_without_callback",
+      "chunk_pending": 0,
+      "distinct_instruction_addresses": 74,
+      "final_retry_byte": 0,
+      "frames": [],
+      "immediate_error_response_statuses": [],
+      "maximum_entry_instructions": 43,
+      "queued_points_raw": [],
+      "radio_083e_ack_statuses": [],
+      "retry_byte": 0,
+      "saved_settings_and_output_flags_preserved": true,
+      "saved_settings_bytes_read": 0,
+      "stored_offset": 0,
+      "stored_reported_length": 0,
+      "stored_total": 0,
+      "timer_service_substitutes": [
+        {
+          "id": 9,
+          "operation": "stop"
+        },
+        {
+          "id": 0,
+          "operation": "stop"
+        }
+      ],
+      "transfer_active": 0,
+      "watchdog_period_raw": 0
+    },
+    {
+      "application_callback_substitutes": [],
+      "case": "final_retry_u8_wrap",
+      "chunk_pending": 0,
+      "distinct_instruction_addresses": 83,
+      "final_retry_byte": 0,
+      "frames": [
+        {
+          "block_index_u16_le": null,
+          "bytes": 16,
+          "header_words_le": [
+            16,
+            5,
+            4,
+            20
+          ],
+          "sha256": "2d7dc1c260b3fdc1d45bcab17e30456034ab8764fd6ac6f5729db3cd869cb862"
+        }
+      ],
+      "immediate_error_response_statuses": [],
+      "maximum_entry_instructions": 40,
+      "queued_points_raw": [
+        20
+      ],
+      "radio_083e_ack_statuses": [],
+      "retry_byte": 0,
+      "saved_settings_and_output_flags_preserved": true,
+      "saved_settings_bytes_read": 0,
+      "stored_offset": 0,
+      "stored_reported_length": 0,
+      "stored_total": 0,
+      "timer_service_substitutes": [],
+      "transfer_active": 1,
+      "watchdog_period_raw": 0
+    },
+    {
+      "application_callback_substitutes": [
+        {
+          "reason_argument": 0,
+          "success_argument": 1
+        }
+      ],
+      "case": "completion_confirmed",
+      "chunk_pending": 0,
+      "distinct_instruction_addresses": 77,
+      "final_retry_byte": 0,
+      "frames": [],
+      "immediate_error_response_statuses": [],
+      "maximum_entry_instructions": 46,
+      "queued_points_raw": [],
+      "radio_083e_ack_statuses": [],
+      "retry_byte": 0,
+      "saved_settings_and_output_flags_preserved": true,
+      "saved_settings_bytes_read": 0,
+      "stored_offset": 0,
+      "stored_reported_length": 0,
+      "stored_total": 0,
+      "timer_service_substitutes": [
+        {
+          "id": 9,
+          "operation": "stop"
+        },
+        {
+          "id": 0,
+          "operation": "stop"
+        }
+      ],
+      "transfer_active": 0,
+      "watchdog_period_raw": 0
+    },
+    {
+      "application_callback_substitutes": [],
+      "case": "completion_without_callback",
+      "chunk_pending": 0,
+      "distinct_instruction_addresses": 73,
+      "final_retry_byte": 0,
+      "frames": [],
+      "immediate_error_response_statuses": [],
+      "maximum_entry_instructions": 42,
+      "queued_points_raw": [],
+      "radio_083e_ack_statuses": [],
+      "retry_byte": 0,
+      "saved_settings_and_output_flags_preserved": true,
+      "saved_settings_bytes_read": 0,
+      "stored_offset": 0,
+      "stored_reported_length": 0,
+      "stored_total": 0,
+      "timer_service_substitutes": [
+        {
+          "id": 9,
+          "operation": "stop"
+        },
+        {
+          "id": 0,
+          "operation": "stop"
+        }
+      ],
+      "transfer_active": 0,
+      "watchdog_period_raw": 0
+    },
+    {
+      "application_callback_substitutes": [
+        {
+          "reason_argument": 0,
+          "success_argument": 1
+        }
+      ],
+      "case": "completion_ignores_byte13",
+      "chunk_pending": 0,
+      "distinct_instruction_addresses": 77,
+      "final_retry_byte": 0,
+      "frames": [],
+      "immediate_error_response_statuses": [],
+      "maximum_entry_instructions": 46,
+      "queued_points_raw": [],
+      "radio_083e_ack_statuses": [],
+      "retry_byte": 0,
+      "saved_settings_and_output_flags_preserved": true,
+      "saved_settings_bytes_read": 0,
+      "stored_offset": 0,
+      "stored_reported_length": 0,
+      "stored_total": 0,
+      "timer_service_substitutes": [
+        {
+          "id": 9,
+          "operation": "stop"
+        },
+        {
+          "id": 0,
+          "operation": "stop"
+        }
+      ],
+      "transfer_active": 0,
+      "watchdog_period_raw": 0
+    },
+    {
+      "application_callback_substitutes": [],
+      "case": "completion_no_reply",
+      "chunk_pending": 0,
+      "distinct_instruction_addresses": 98,
+      "final_retry_byte": 0,
+      "frames": [
+        {
+          "block_index_u16_le": null,
+          "bytes": 16,
+          "header_words_le": [
+            16,
+            5,
+            4,
+            22
+          ],
+          "sha256": "02ed7561bd18ec59f79c70ffb07520e42a29779818bda448d1bc9d8fc4cd1416"
+        }
+      ],
+      "immediate_error_response_statuses": [],
+      "maximum_entry_instructions": 55,
+      "queued_points_raw": [
+        22
+      ],
+      "radio_083e_ack_statuses": [],
+      "retry_byte": 0,
+      "saved_settings_and_output_flags_preserved": true,
+      "saved_settings_bytes_read": 0,
+      "stored_offset": 0,
+      "stored_reported_length": 0,
+      "stored_total": 0,
+      "timer_service_substitutes": [
+        {
+          "id": 9,
+          "operation": "stop"
+        },
+        {
+          "id": 9,
+          "operation": "set_period",
+          "period_argument": 20000
+        },
+        {
+          "id": 9,
+          "operation": "start"
+        }
+      ],
+      "transfer_active": 1,
+      "watchdog_period_raw": 2000
+    },
+    {
+      "application_callback_substitutes": [],
+      "case": "completion_wrong_point",
+      "chunk_pending": 0,
+      "distinct_instruction_addresses": 104,
+      "final_retry_byte": 0,
+      "frames": [
+        {
+          "block_index_u16_le": null,
+          "bytes": 16,
+          "header_words_le": [
+            16,
+            5,
+            4,
+            22
+          ],
+          "sha256": "02ed7561bd18ec59f79c70ffb07520e42a29779818bda448d1bc9d8fc4cd1416"
+        }
+      ],
+      "immediate_error_response_statuses": [],
+      "maximum_entry_instructions": 61,
+      "queued_points_raw": [
+        22
+      ],
+      "radio_083e_ack_statuses": [],
+      "retry_byte": 0,
+      "saved_settings_and_output_flags_preserved": true,
+      "saved_settings_bytes_read": 0,
+      "stored_offset": 0,
+      "stored_reported_length": 0,
+      "stored_total": 0,
+      "timer_service_substitutes": [
+        {
+          "id": 9,
+          "operation": "stop"
+        },
+        {
+          "id": 9,
+          "operation": "set_period",
+          "period_argument": 20000
+        },
+        {
+          "id": 9,
+          "operation": "start"
+        }
+      ],
+      "transfer_active": 1,
+      "watchdog_period_raw": 2000
+    },
+    {
+      "application_callback_substitutes": [],
+      "case": "completion_error_status",
+      "chunk_pending": 0,
+      "distinct_instruction_addresses": 106,
+      "final_retry_byte": 0,
+      "frames": [
+        {
+          "block_index_u16_le": null,
+          "bytes": 16,
+          "header_words_le": [
+            16,
+            5,
+            4,
+            22
+          ],
+          "sha256": "02ed7561bd18ec59f79c70ffb07520e42a29779818bda448d1bc9d8fc4cd1416"
+        }
+      ],
+      "immediate_error_response_statuses": [],
+      "maximum_entry_instructions": 63,
+      "queued_points_raw": [
+        22
+      ],
+      "radio_083e_ack_statuses": [],
+      "retry_byte": 0,
+      "saved_settings_and_output_flags_preserved": true,
+      "saved_settings_bytes_read": 0,
+      "stored_offset": 0,
+      "stored_reported_length": 0,
+      "stored_total": 0,
+      "timer_service_substitutes": [
+        {
+          "id": 9,
+          "operation": "stop"
+        },
+        {
+          "id": 9,
+          "operation": "set_period",
+          "period_argument": 20000
+        },
+        {
+          "id": 9,
+          "operation": "start"
+        }
+      ],
+      "transfer_active": 1,
+      "watchdog_period_raw": 2000
+    },
+    {
+      "application_callback_substitutes": [],
+      "case": "completion_state_zero",
+      "chunk_pending": 0,
+      "distinct_instruction_addresses": 109,
+      "final_retry_byte": 0,
+      "frames": [
+        {
+          "block_index_u16_le": null,
+          "bytes": 16,
+          "header_words_le": [
+            16,
+            5,
+            4,
+            22
+          ],
+          "sha256": "02ed7561bd18ec59f79c70ffb07520e42a29779818bda448d1bc9d8fc4cd1416"
+        }
+      ],
+      "immediate_error_response_statuses": [],
+      "maximum_entry_instructions": 66,
+      "queued_points_raw": [
+        22
+      ],
+      "radio_083e_ack_statuses": [],
+      "retry_byte": 0,
+      "saved_settings_and_output_flags_preserved": true,
+      "saved_settings_bytes_read": 0,
+      "stored_offset": 0,
+      "stored_reported_length": 0,
+      "stored_total": 0,
+      "timer_service_substitutes": [
+        {
+          "id": 9,
+          "operation": "stop"
+        },
+        {
+          "id": 9,
+          "operation": "set_period",
+          "period_argument": 20000
+        },
+        {
+          "id": 9,
+          "operation": "start"
+        }
+      ],
+      "transfer_active": 1,
+      "watchdog_period_raw": 2000
+    },
+    {
+      "application_callback_substitutes": [],
+      "case": "completion_state_two",
+      "chunk_pending": 0,
+      "distinct_instruction_addresses": 109,
+      "final_retry_byte": 0,
+      "frames": [
+        {
+          "block_index_u16_le": null,
+          "bytes": 16,
+          "header_words_le": [
+            16,
+            5,
+            4,
+            22
+          ],
+          "sha256": "02ed7561bd18ec59f79c70ffb07520e42a29779818bda448d1bc9d8fc4cd1416"
+        }
+      ],
+      "immediate_error_response_statuses": [],
+      "maximum_entry_instructions": 66,
+      "queued_points_raw": [
+        22
+      ],
+      "radio_083e_ack_statuses": [],
+      "retry_byte": 0,
+      "saved_settings_and_output_flags_preserved": true,
+      "saved_settings_bytes_read": 0,
+      "stored_offset": 0,
+      "stored_reported_length": 0,
+      "stored_total": 0,
+      "timer_service_substitutes": [
+        {
+          "id": 9,
+          "operation": "stop"
+        },
+        {
+          "id": 9,
+          "operation": "set_period",
+          "period_argument": 20000
+        },
+        {
+          "id": 9,
+          "operation": "start"
+        }
+      ],
+      "transfer_active": 1,
+      "watchdog_period_raw": 2000
+    },
+    {
+      "application_callback_substitutes": [],
+      "case": "completion_state_255",
+      "chunk_pending": 0,
+      "distinct_instruction_addresses": 109,
+      "final_retry_byte": 0,
+      "frames": [
+        {
+          "block_index_u16_le": null,
+          "bytes": 16,
+          "header_words_le": [
+            16,
+            5,
+            4,
+            22
+          ],
+          "sha256": "02ed7561bd18ec59f79c70ffb07520e42a29779818bda448d1bc9d8fc4cd1416"
+        }
+      ],
+      "immediate_error_response_statuses": [],
+      "maximum_entry_instructions": 66,
+      "queued_points_raw": [
+        22
+      ],
+      "radio_083e_ack_statuses": [],
+      "retry_byte": 0,
+      "saved_settings_and_output_flags_preserved": true,
+      "saved_settings_bytes_read": 0,
+      "stored_offset": 0,
+      "stored_reported_length": 0,
+      "stored_total": 0,
+      "timer_service_substitutes": [
+        {
+          "id": 9,
+          "operation": "stop"
+        },
+        {
+          "id": 9,
+          "operation": "set_period",
+          "period_argument": 20000
+        },
+        {
+          "id": 9,
+          "operation": "start"
+        }
+      ],
+      "transfer_active": 1,
+      "watchdog_period_raw": 2000
+    },
+    {
+      "application_callback_substitutes": [],
+      "case": "completion_creates_watchdog",
+      "chunk_pending": 0,
+      "distinct_instruction_addresses": 115,
+      "final_retry_byte": 0,
+      "frames": [
+        {
+          "block_index_u16_le": null,
+          "bytes": 16,
+          "header_words_le": [
+            16,
+            5,
+            4,
+            22
+          ],
+          "sha256": "02ed7561bd18ec59f79c70ffb07520e42a29779818bda448d1bc9d8fc4cd1416"
+        }
+      ],
+      "immediate_error_response_statuses": [],
+      "maximum_entry_instructions": 72,
+      "queued_points_raw": [
+        22
+      ],
+      "radio_083e_ack_statuses": [],
+      "retry_byte": 0,
+      "saved_settings_and_output_flags_preserved": true,
+      "saved_settings_bytes_read": 0,
+      "stored_offset": 0,
+      "stored_reported_length": 0,
+      "stored_total": 0,
+      "timer_service_substitutes": [
+        {
+          "callback": "08017add",
+          "operation": "create",
+          "period_argument": 20000,
+          "synthetic_id": 11
+        },
+        {
+          "id": 11,
+          "operation": "stop"
+        },
+        {
+          "id": 11,
+          "operation": "set_period",
+          "period_argument": 20000
+        },
+        {
+          "id": 11,
+          "operation": "start"
+        }
+      ],
+      "transfer_active": 1,
+      "watchdog_period_raw": 2000
+    },
+    {
+      "application_callback_substitutes": [],
+      "case": "completion_reuses_watchdog_period",
+      "chunk_pending": 0,
+      "distinct_instruction_addresses": 102,
+      "final_retry_byte": 0,
+      "frames": [
+        {
+          "block_index_u16_le": null,
+          "bytes": 16,
+          "header_words_le": [
+            16,
+            5,
+            4,
+            22
+          ],
+          "sha256": "02ed7561bd18ec59f79c70ffb07520e42a29779818bda448d1bc9d8fc4cd1416"
+        }
+      ],
+      "immediate_error_response_statuses": [],
+      "maximum_entry_instructions": 59,
+      "queued_points_raw": [
+        22
+      ],
+      "radio_083e_ack_statuses": [],
+      "retry_byte": 0,
+      "saved_settings_and_output_flags_preserved": true,
+      "saved_settings_bytes_read": 0,
+      "stored_offset": 0,
+      "stored_reported_length": 0,
+      "stored_total": 0,
+      "timer_service_substitutes": [
+        {
+          "id": 9,
+          "operation": "start"
+        }
+      ],
+      "transfer_active": 1,
+      "watchdog_period_raw": 2000
+    },
+    {
+      "application_callback_substitutes": [],
+      "case": "completion_queue_rejected",
+      "chunk_pending": 0,
+      "distinct_instruction_addresses": 109,
+      "final_retry_byte": 0,
+      "frames": [
+        {
+          "block_index_u16_le": null,
+          "bytes": 16,
+          "header_words_le": [
+            16,
+            5,
+            4,
+            22
+          ],
+          "sha256": "02ed7561bd18ec59f79c70ffb07520e42a29779818bda448d1bc9d8fc4cd1416"
+        }
+      ],
+      "immediate_error_response_statuses": [],
+      "maximum_entry_instructions": 66,
+      "queued_points_raw": [
+        22
+      ],
+      "radio_083e_ack_statuses": [],
+      "retry_byte": 0,
+      "saved_settings_and_output_flags_preserved": true,
+      "saved_settings_bytes_read": 0,
+      "stored_offset": 0,
+      "stored_reported_length": 0,
+      "stored_total": 0,
+      "timer_service_substitutes": [
+        {
+          "id": 9,
+          "operation": "stop"
+        },
+        {
+          "id": 9,
+          "operation": "set_period",
+          "period_argument": 20000
+        },
+        {
+          "id": 9,
+          "operation": "start"
+        }
+      ],
+      "transfer_active": 1,
+      "watchdog_period_raw": 2000
+    },
+    {
+      "application_callback_substitutes": [
+        {
+          "reason_argument": 0,
+          "success_argument": 1
+        }
+      ],
+      "case": "host_delivered_chunk_final_completion_chain",
+      "chunk_pending": 0,
+      "distinct_instruction_addresses": 494,
+      "final_retry_byte": 0,
+      "frames": [
+        {
+          "block_index_u16_le": 0,
+          "bytes": 1040,
+          "header_words_le": [
+            16,
+            5,
+            1028,
+            19
+          ],
+          "sha256": "3869a0922eca6ef5426321ccfe4e745d1584dd6dc8e7a8f440d9a722d6d1b936"
+        },
+        {
+          "block_index_u16_le": null,
+          "bytes": 16,
+          "header_words_le": [
+            16,
+            5,
+            4,
+            20
+          ],
+          "sha256": "2d7dc1c260b3fdc1d45bcab17e30456034ab8764fd6ac6f5729db3cd869cb862"
+        },
+        {
+          "block_index_u16_le": null,
+          "bytes": 16,
+          "header_words_le": [
+            16,
+            5,
+            4,
+            22
+          ],
+          "sha256": "02ed7561bd18ec59f79c70ffb07520e42a29779818bda448d1bc9d8fc4cd1416"
+        }
+      ],
+      "immediate_error_response_statuses": [],
+      "maximum_entry_instructions": 68642,
+      "queued_points_raw": [
+        19,
+        20,
+        22
+      ],
+      "radio_083e_ack_statuses": [
+        0
+      ],
+      "retry_byte": 0,
+      "saved_settings_and_output_flags_preserved": true,
+      "saved_settings_bytes_read": 0,
+      "stored_offset": 0,
+      "stored_reported_length": 0,
+      "stored_total": 0,
+      "timer_service_substitutes": [
+        {
+          "id": 9,
+          "operation": "stop"
+        },
+        {
+          "id": 0,
+          "operation": "stop"
+        }
+      ],
+      "transfer_active": 0,
+      "watchdog_period_raw": 0
+    }
+  ],
+  "station_commands_sent": 0
+}

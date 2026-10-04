@@ -1,0 +1,1167 @@
+{
+  "cases": 30,
+  "firmware_sha256": "21ffb746c1e07ecaa9817fa7017807585a00bedbca3f136c650129bb52a4a0c9",
+  "full_ingress_verified": false,
+  "instruction_limit_per_entry": 3000,
+  "limits": "Bounded A1763 pending-request registration, reply matching and expiry.\n\nActual fifteen-slot registration, function-10 reply dispatch/matcher, expiry\npass and selected 003d asset callback execute in synthetic RAM. Generic\ncallbacks, queues, timers, libc and logs are substitutes. Parsed contexts and\nregistration arguments are host seeded; no ingress, authentication, outer\nframing, radio receiver, service loop, firmware boot or station executes.",
+  "main_version": "1.1.4.9",
+  "model": "A1763",
+  "negative_guards": [
+    "live_worker_excluded",
+    "firmware_startup_excluded",
+    "function_outside_u8",
+    "saved_settings_write_excluded",
+    "output_flags_write_excluded"
+  ],
+  "physical_transport_verified": false,
+  "results": [
+    {
+      "asset_callback_result": {
+        "application_callback_substitutes": [],
+        "descriptors": [],
+        "distinct_instruction_addresses": 45,
+        "initial_retry_byte": 0,
+        "main_frame_lengths": [],
+        "main_frame_sha256": [],
+        "radio_payload_lengths": [],
+        "radio_payload_sha256": [],
+        "saved_settings_bytes_read": 0,
+        "second_retry_byte": 0,
+        "settings_and_output_flags_preserved_with_callbacks_substituted": true,
+        "timer_calls": [],
+        "transfer_active": 1
+      },
+      "callback_substitutes": [
+        {
+          "active_slots_during_callback": [
+            0
+          ],
+          "callback": "08004000",
+          "context_is_seeded_request": true,
+          "success_argument": 1
+        }
+      ],
+      "case": "registered_003d_matches_083d",
+      "maximum_entry_instructions": 45,
+      "pending": [],
+      "slot_15_canary_preserved": true
+    },
+    {
+      "asset_callback_result": {
+        "application_callback_substitutes": [],
+        "descriptors": [],
+        "distinct_instruction_addresses": 45,
+        "initial_retry_byte": 0,
+        "main_frame_lengths": [],
+        "main_frame_sha256": [],
+        "radio_payload_lengths": [],
+        "radio_payload_sha256": [],
+        "saved_settings_bytes_read": 0,
+        "second_retry_byte": 0,
+        "settings_and_output_flags_preserved_with_callbacks_substituted": true,
+        "timer_calls": [],
+        "transfer_active": 1
+      },
+      "callback_substitutes": [
+        {
+          "active_slots_during_callback": [
+            0
+          ],
+          "callback": "08004000",
+          "context_is_seeded_request": true,
+          "success_argument": 1
+        }
+      ],
+      "case": "registered_003e_matches_083e",
+      "maximum_entry_instructions": 45,
+      "pending": [],
+      "slot_15_canary_preserved": true
+    },
+    {
+      "asset_callback_result": {
+        "application_callback_substitutes": [],
+        "descriptors": [],
+        "distinct_instruction_addresses": 49,
+        "initial_retry_byte": 0,
+        "main_frame_lengths": [],
+        "main_frame_sha256": [],
+        "radio_payload_lengths": [],
+        "radio_payload_sha256": [],
+        "saved_settings_bytes_read": 0,
+        "second_retry_byte": 0,
+        "settings_and_output_flags_preserved_with_callbacks_substituted": true,
+        "timer_calls": [],
+        "transfer_active": 1
+      },
+      "callback_substitutes": [
+        {
+          "active_slots_during_callback": [
+            14
+          ],
+          "callback": "08004000",
+          "context_is_seeded_request": true,
+          "success_argument": 1
+        }
+      ],
+      "case": "last_slot_matches",
+      "maximum_entry_instructions": 157,
+      "pending": [],
+      "slot_15_canary_preserved": true
+    },
+    {
+      "asset_callback_result": {
+        "application_callback_substitutes": [],
+        "descriptors": [],
+        "distinct_instruction_addresses": 31,
+        "initial_retry_byte": 0,
+        "main_frame_lengths": [],
+        "main_frame_sha256": [],
+        "radio_payload_lengths": [],
+        "radio_payload_sha256": [],
+        "saved_settings_bytes_read": 0,
+        "second_retry_byte": 0,
+        "settings_and_output_flags_preserved_with_callbacks_substituted": true,
+        "timer_calls": [],
+        "transfer_active": 1
+      },
+      "callback_substitutes": [],
+      "case": "slot15_is_not_searched",
+      "maximum_entry_instructions": 143,
+      "pending": [],
+      "slot_15_canary_preserved": true
+    },
+    {
+      "asset_callback_result": {
+        "application_callback_substitutes": [],
+        "descriptors": [],
+        "distinct_instruction_addresses": 31,
+        "initial_retry_byte": 0,
+        "main_frame_lengths": [],
+        "main_frame_sha256": [],
+        "radio_payload_lengths": [],
+        "radio_payload_sha256": [],
+        "saved_settings_bytes_read": 0,
+        "second_retry_byte": 0,
+        "settings_and_output_flags_preserved_with_callbacks_substituted": true,
+        "timer_calls": [],
+        "transfer_active": 1
+      },
+      "callback_substitutes": [],
+      "case": "inactive_is_not_matched",
+      "maximum_entry_instructions": 143,
+      "pending": [],
+      "slot_15_canary_preserved": true
+    },
+    {
+      "asset_callback_result": {
+        "application_callback_substitutes": [],
+        "descriptors": [],
+        "distinct_instruction_addresses": 45,
+        "initial_retry_byte": 0,
+        "main_frame_lengths": [],
+        "main_frame_sha256": [],
+        "radio_payload_lengths": [],
+        "radio_payload_sha256": [],
+        "saved_settings_bytes_read": 0,
+        "second_retry_byte": 0,
+        "settings_and_output_flags_preserved_with_callbacks_substituted": true,
+        "timer_calls": [],
+        "transfer_active": 1
+      },
+      "callback_substitutes": [
+        {
+          "active_slots_during_callback": [
+            0
+          ],
+          "callback": "08004000",
+          "context_is_seeded_request": true,
+          "success_argument": 1
+        }
+      ],
+      "case": "nonzero_active_is_matched",
+      "maximum_entry_instructions": 45,
+      "pending": [],
+      "slot_15_canary_preserved": true
+    },
+    {
+      "asset_callback_result": {
+        "application_callback_substitutes": [],
+        "descriptors": [],
+        "distinct_instruction_addresses": 38,
+        "initial_retry_byte": 0,
+        "main_frame_lengths": [],
+        "main_frame_sha256": [],
+        "radio_payload_lengths": [],
+        "radio_payload_sha256": [],
+        "saved_settings_bytes_read": 0,
+        "second_retry_byte": 0,
+        "settings_and_output_flags_preserved_with_callbacks_substituted": true,
+        "timer_calls": [],
+        "transfer_active": 1
+      },
+      "callback_substitutes": [],
+      "case": "wrong_reply_command",
+      "maximum_entry_instructions": 150,
+      "pending": [
+        {
+          "active_raw": 1,
+          "callback": "08004001",
+          "command_raw": 61,
+          "countdown_raw": 5,
+          "function_raw": 16,
+          "slot": 0
+        }
+      ],
+      "slot_15_canary_preserved": true
+    },
+    {
+      "asset_callback_result": {
+        "application_callback_substitutes": [],
+        "descriptors": [],
+        "distinct_instruction_addresses": 18,
+        "initial_retry_byte": 0,
+        "main_frame_lengths": [],
+        "main_frame_sha256": [],
+        "radio_payload_lengths": [],
+        "radio_payload_sha256": [],
+        "saved_settings_bytes_read": 0,
+        "second_retry_byte": 0,
+        "settings_and_output_flags_preserved_with_callbacks_substituted": true,
+        "timer_calls": [],
+        "transfer_active": 1
+      },
+      "callback_substitutes": [],
+      "case": "wrong_function",
+      "maximum_entry_instructions": 130,
+      "pending": [
+        {
+          "active_raw": 1,
+          "callback": "08004001",
+          "command_raw": 61,
+          "countdown_raw": 5,
+          "function_raw": 16,
+          "slot": 0
+        }
+      ],
+      "slot_15_canary_preserved": true
+    },
+    {
+      "asset_callback_result": {
+        "application_callback_substitutes": [],
+        "descriptors": [],
+        "distinct_instruction_addresses": 45,
+        "initial_retry_byte": 0,
+        "main_frame_lengths": [],
+        "main_frame_sha256": [],
+        "radio_payload_lengths": [],
+        "radio_payload_sha256": [],
+        "saved_settings_bytes_read": 0,
+        "second_retry_byte": 0,
+        "settings_and_output_flags_preserved_with_callbacks_substituted": true,
+        "timer_calls": [],
+        "transfer_active": 1
+      },
+      "callback_substitutes": [
+        {
+          "active_slots_during_callback": [
+            0
+          ],
+          "callback": "08004000",
+          "context_is_seeded_request": true,
+          "success_argument": 1
+        }
+      ],
+      "case": "different_context_marker",
+      "maximum_entry_instructions": 45,
+      "pending": [],
+      "slot_15_canary_preserved": true
+    },
+    {
+      "asset_callback_result": {
+        "application_callback_substitutes": [],
+        "descriptors": [],
+        "distinct_instruction_addresses": 41,
+        "initial_retry_byte": 0,
+        "main_frame_lengths": [],
+        "main_frame_sha256": [],
+        "radio_payload_lengths": [],
+        "radio_payload_sha256": [],
+        "saved_settings_bytes_read": 0,
+        "second_retry_byte": 0,
+        "settings_and_output_flags_preserved_with_callbacks_substituted": true,
+        "timer_calls": [],
+        "transfer_active": 1
+      },
+      "callback_substitutes": [],
+      "case": "null_callback_still_clears",
+      "maximum_entry_instructions": 41,
+      "pending": [],
+      "slot_15_canary_preserved": true
+    },
+    {
+      "asset_callback_result": {
+        "application_callback_substitutes": [],
+        "descriptors": [],
+        "distinct_instruction_addresses": 45,
+        "initial_retry_byte": 0,
+        "main_frame_lengths": [],
+        "main_frame_sha256": [],
+        "radio_payload_lengths": [],
+        "radio_payload_sha256": [],
+        "saved_settings_bytes_read": 0,
+        "second_retry_byte": 0,
+        "settings_and_output_flags_preserved_with_callbacks_substituted": true,
+        "timer_calls": [],
+        "transfer_active": 1
+      },
+      "callback_substitutes": [
+        {
+          "active_slots_during_callback": [
+            0,
+            1
+          ],
+          "callback": "08004000",
+          "context_is_seeded_request": true,
+          "success_argument": 1
+        }
+      ],
+      "case": "first_matching_duplicate_only",
+      "maximum_entry_instructions": 45,
+      "pending": [
+        {
+          "active_raw": 1,
+          "callback": "08004011",
+          "command_raw": 61,
+          "countdown_raw": 5,
+          "function_raw": 16,
+          "slot": 1
+        }
+      ],
+      "slot_15_canary_preserved": true
+    },
+    {
+      "asset_callback_result": {
+        "application_callback_substitutes": [],
+        "descriptors": [],
+        "distinct_instruction_addresses": 49,
+        "initial_retry_byte": 0,
+        "main_frame_lengths": [],
+        "main_frame_sha256": [],
+        "radio_payload_lengths": [],
+        "radio_payload_sha256": [],
+        "saved_settings_bytes_read": 0,
+        "second_retry_byte": 0,
+        "settings_and_output_flags_preserved_with_callbacks_substituted": true,
+        "timer_calls": [],
+        "transfer_active": 1
+      },
+      "callback_substitutes": [
+        {
+          "active_slots_during_callback": [
+            0,
+            1
+          ],
+          "callback": "08004000",
+          "context_is_seeded_request": true,
+          "success_argument": 1
+        }
+      ],
+      "case": "unrelated_slot_preserved",
+      "maximum_entry_instructions": 60,
+      "pending": [
+        {
+          "active_raw": 1,
+          "callback": "08004001",
+          "command_raw": 62,
+          "countdown_raw": 5,
+          "function_raw": 16,
+          "slot": 0
+        }
+      ],
+      "slot_15_canary_preserved": true
+    },
+    {
+      "asset_callback_result": {
+        "application_callback_substitutes": [],
+        "descriptors": [],
+        "distinct_instruction_addresses": 27,
+        "initial_retry_byte": 0,
+        "main_frame_lengths": [],
+        "main_frame_sha256": [],
+        "radio_payload_lengths": [],
+        "radio_payload_sha256": [],
+        "saved_settings_bytes_read": 0,
+        "second_retry_byte": 0,
+        "settings_and_output_flags_preserved_with_callbacks_substituted": true,
+        "timer_calls": [],
+        "transfer_active": 1
+      },
+      "callback_substitutes": [],
+      "case": "register_first_free",
+      "maximum_entry_instructions": 153,
+      "pending": [
+        {
+          "active_raw": 1,
+          "callback": "08004001",
+          "command_raw": 61,
+          "countdown_raw": 7,
+          "function_raw": 16,
+          "slot": 0
+        }
+      ],
+      "slot_15_canary_preserved": true
+    },
+    {
+      "asset_callback_result": {
+        "application_callback_substitutes": [],
+        "descriptors": [],
+        "distinct_instruction_addresses": 34,
+        "initial_retry_byte": 0,
+        "main_frame_lengths": [],
+        "main_frame_sha256": [],
+        "radio_payload_lengths": [],
+        "radio_payload_sha256": [],
+        "saved_settings_bytes_read": 0,
+        "second_retry_byte": 0,
+        "settings_and_output_flags_preserved_with_callbacks_substituted": true,
+        "timer_calls": [],
+        "transfer_active": 1
+      },
+      "callback_substitutes": [],
+      "case": "register_last_free",
+      "maximum_entry_instructions": 307,
+      "pending": [
+        {
+          "active_raw": 1,
+          "callback": "08004001",
+          "command_raw": 97,
+          "countdown_raw": 5,
+          "function_raw": 16,
+          "slot": 0
+        },
+        {
+          "active_raw": 1,
+          "callback": "08004001",
+          "command_raw": 97,
+          "countdown_raw": 5,
+          "function_raw": 16,
+          "slot": 1
+        },
+        {
+          "active_raw": 1,
+          "callback": "08004001",
+          "command_raw": 97,
+          "countdown_raw": 5,
+          "function_raw": 16,
+          "slot": 2
+        },
+        {
+          "active_raw": 1,
+          "callback": "08004001",
+          "command_raw": 97,
+          "countdown_raw": 5,
+          "function_raw": 16,
+          "slot": 3
+        },
+        {
+          "active_raw": 1,
+          "callback": "08004001",
+          "command_raw": 97,
+          "countdown_raw": 5,
+          "function_raw": 16,
+          "slot": 4
+        },
+        {
+          "active_raw": 1,
+          "callback": "08004001",
+          "command_raw": 97,
+          "countdown_raw": 5,
+          "function_raw": 16,
+          "slot": 5
+        },
+        {
+          "active_raw": 1,
+          "callback": "08004001",
+          "command_raw": 97,
+          "countdown_raw": 5,
+          "function_raw": 16,
+          "slot": 6
+        },
+        {
+          "active_raw": 1,
+          "callback": "08004001",
+          "command_raw": 97,
+          "countdown_raw": 5,
+          "function_raw": 16,
+          "slot": 7
+        },
+        {
+          "active_raw": 1,
+          "callback": "08004001",
+          "command_raw": 97,
+          "countdown_raw": 5,
+          "function_raw": 16,
+          "slot": 8
+        },
+        {
+          "active_raw": 1,
+          "callback": "08004001",
+          "command_raw": 97,
+          "countdown_raw": 5,
+          "function_raw": 16,
+          "slot": 9
+        },
+        {
+          "active_raw": 1,
+          "callback": "08004001",
+          "command_raw": 97,
+          "countdown_raw": 5,
+          "function_raw": 16,
+          "slot": 10
+        },
+        {
+          "active_raw": 1,
+          "callback": "08004001",
+          "command_raw": 97,
+          "countdown_raw": 5,
+          "function_raw": 16,
+          "slot": 11
+        },
+        {
+          "active_raw": 1,
+          "callback": "08004001",
+          "command_raw": 97,
+          "countdown_raw": 5,
+          "function_raw": 16,
+          "slot": 12
+        },
+        {
+          "active_raw": 1,
+          "callback": "08004001",
+          "command_raw": 97,
+          "countdown_raw": 5,
+          "function_raw": 16,
+          "slot": 13
+        },
+        {
+          "active_raw": 1,
+          "callback": "08004001",
+          "command_raw": 61,
+          "countdown_raw": 7,
+          "function_raw": 16,
+          "slot": 14
+        }
+      ],
+      "slot_15_canary_preserved": true
+    },
+    {
+      "asset_callback_result": {
+        "application_callback_substitutes": [],
+        "descriptors": [],
+        "distinct_instruction_addresses": 26,
+        "initial_retry_byte": 0,
+        "main_frame_lengths": [],
+        "main_frame_sha256": [],
+        "radio_payload_lengths": [],
+        "radio_payload_sha256": [],
+        "saved_settings_bytes_read": 0,
+        "second_retry_byte": 0,
+        "settings_and_output_flags_preserved_with_callbacks_substituted": true,
+        "timer_calls": [],
+        "transfer_active": 1
+      },
+      "callback_substitutes": [],
+      "case": "register_full_table",
+      "maximum_entry_instructions": 306,
+      "pending": [
+        {
+          "active_raw": 1,
+          "callback": "08004001",
+          "command_raw": 97,
+          "countdown_raw": 5,
+          "function_raw": 16,
+          "slot": 0
+        },
+        {
+          "active_raw": 1,
+          "callback": "08004001",
+          "command_raw": 97,
+          "countdown_raw": 5,
+          "function_raw": 16,
+          "slot": 1
+        },
+        {
+          "active_raw": 1,
+          "callback": "08004001",
+          "command_raw": 97,
+          "countdown_raw": 5,
+          "function_raw": 16,
+          "slot": 2
+        },
+        {
+          "active_raw": 1,
+          "callback": "08004001",
+          "command_raw": 97,
+          "countdown_raw": 5,
+          "function_raw": 16,
+          "slot": 3
+        },
+        {
+          "active_raw": 1,
+          "callback": "08004001",
+          "command_raw": 97,
+          "countdown_raw": 5,
+          "function_raw": 16,
+          "slot": 4
+        },
+        {
+          "active_raw": 1,
+          "callback": "08004001",
+          "command_raw": 97,
+          "countdown_raw": 5,
+          "function_raw": 16,
+          "slot": 5
+        },
+        {
+          "active_raw": 1,
+          "callback": "08004001",
+          "command_raw": 97,
+          "countdown_raw": 5,
+          "function_raw": 16,
+          "slot": 6
+        },
+        {
+          "active_raw": 1,
+          "callback": "08004001",
+          "command_raw": 97,
+          "countdown_raw": 5,
+          "function_raw": 16,
+          "slot": 7
+        },
+        {
+          "active_raw": 1,
+          "callback": "08004001",
+          "command_raw": 97,
+          "countdown_raw": 5,
+          "function_raw": 16,
+          "slot": 8
+        },
+        {
+          "active_raw": 1,
+          "callback": "08004001",
+          "command_raw": 97,
+          "countdown_raw": 5,
+          "function_raw": 16,
+          "slot": 9
+        },
+        {
+          "active_raw": 1,
+          "callback": "08004001",
+          "command_raw": 97,
+          "countdown_raw": 5,
+          "function_raw": 16,
+          "slot": 10
+        },
+        {
+          "active_raw": 1,
+          "callback": "08004001",
+          "command_raw": 97,
+          "countdown_raw": 5,
+          "function_raw": 16,
+          "slot": 11
+        },
+        {
+          "active_raw": 1,
+          "callback": "08004001",
+          "command_raw": 97,
+          "countdown_raw": 5,
+          "function_raw": 16,
+          "slot": 12
+        },
+        {
+          "active_raw": 1,
+          "callback": "08004001",
+          "command_raw": 97,
+          "countdown_raw": 5,
+          "function_raw": 16,
+          "slot": 13
+        },
+        {
+          "active_raw": 1,
+          "callback": "08004001",
+          "command_raw": 97,
+          "countdown_raw": 5,
+          "function_raw": 16,
+          "slot": 14
+        }
+      ],
+      "slot_15_canary_preserved": true
+    },
+    {
+      "asset_callback_result": {
+        "application_callback_substitutes": [],
+        "descriptors": [],
+        "distinct_instruction_addresses": 36,
+        "initial_retry_byte": 0,
+        "main_frame_lengths": [],
+        "main_frame_sha256": [],
+        "radio_payload_lengths": [],
+        "radio_payload_sha256": [],
+        "saved_settings_bytes_read": 0,
+        "second_retry_byte": 0,
+        "settings_and_output_flags_preserved_with_callbacks_substituted": true,
+        "timer_calls": [],
+        "transfer_active": 1
+      },
+      "callback_substitutes": [],
+      "case": "duplicate_003d_allocates_second_slot",
+      "maximum_entry_instructions": 166,
+      "pending": [
+        {
+          "active_raw": 1,
+          "callback": "08004001",
+          "command_raw": 61,
+          "countdown_raw": 5,
+          "function_raw": 16,
+          "slot": 0
+        },
+        {
+          "active_raw": 1,
+          "callback": "08004011",
+          "command_raw": 61,
+          "countdown_raw": 7,
+          "function_raw": 16,
+          "slot": 1
+        }
+      ],
+      "slot_15_canary_preserved": true
+    },
+    {
+      "asset_callback_result": {
+        "application_callback_substitutes": [],
+        "descriptors": [],
+        "distinct_instruction_addresses": 19,
+        "initial_retry_byte": 0,
+        "main_frame_lengths": [],
+        "main_frame_sha256": [],
+        "radio_payload_lengths": [],
+        "radio_payload_sha256": [],
+        "saved_settings_bytes_read": 0,
+        "second_retry_byte": 0,
+        "settings_and_output_flags_preserved_with_callbacks_substituted": true,
+        "timer_calls": [],
+        "transfer_active": 1
+      },
+      "callback_substitutes": [],
+      "case": "equal_command_function_updates_slot",
+      "maximum_entry_instructions": 19,
+      "pending": [
+        {
+          "active_raw": 1,
+          "callback": "08004011",
+          "command_raw": 16,
+          "countdown_raw": 7,
+          "function_raw": 16,
+          "slot": 0
+        }
+      ],
+      "slot_15_canary_preserved": true
+    },
+    {
+      "asset_callback_result": {
+        "application_callback_substitutes": [],
+        "descriptors": [],
+        "distinct_instruction_addresses": 19,
+        "initial_retry_byte": 0,
+        "main_frame_lengths": [],
+        "main_frame_sha256": [],
+        "radio_payload_lengths": [],
+        "radio_payload_sha256": [],
+        "saved_settings_bytes_read": 0,
+        "second_retry_byte": 0,
+        "settings_and_output_flags_preserved_with_callbacks_substituted": true,
+        "timer_calls": [],
+        "transfer_active": 1
+      },
+      "callback_substitutes": [],
+      "case": "update_branch_does_not_compare_stored_function",
+      "maximum_entry_instructions": 19,
+      "pending": [
+        {
+          "active_raw": 1,
+          "callback": "08004011",
+          "command_raw": 16,
+          "countdown_raw": 7,
+          "function_raw": 17,
+          "slot": 0
+        }
+      ],
+      "slot_15_canary_preserved": true
+    },
+    {
+      "asset_callback_result": {
+        "application_callback_substitutes": [],
+        "descriptors": [],
+        "distinct_instruction_addresses": 85,
+        "initial_retry_byte": 0,
+        "main_frame_lengths": [],
+        "main_frame_sha256": [],
+        "radio_payload_lengths": [],
+        "radio_payload_sha256": [],
+        "saved_settings_bytes_read": 0,
+        "second_retry_byte": 0,
+        "settings_and_output_flags_preserved_with_callbacks_substituted": true,
+        "timer_calls": [],
+        "transfer_active": 1
+      },
+      "callback_substitutes": [
+        {
+          "active_slots_during_callback": [
+            0,
+            1
+          ],
+          "callback": "08004000",
+          "context_is_seeded_request": true,
+          "success_argument": 1
+        },
+        {
+          "active_slots_during_callback": [
+            1
+          ],
+          "callback": "08004010",
+          "context_is_seeded_request": true,
+          "success_argument": 1
+        }
+      ],
+      "case": "duplicate_replies_consume_slots_in_order",
+      "maximum_entry_instructions": 166,
+      "pending": [],
+      "slot_15_canary_preserved": true
+    },
+    {
+      "asset_callback_result": {
+        "application_callback_substitutes": [],
+        "descriptors": [],
+        "distinct_instruction_addresses": 27,
+        "initial_retry_byte": 0,
+        "main_frame_lengths": [],
+        "main_frame_sha256": [],
+        "radio_payload_lengths": [],
+        "radio_payload_sha256": [],
+        "saved_settings_bytes_read": 0,
+        "second_retry_byte": 0,
+        "settings_and_output_flags_preserved_with_callbacks_substituted": true,
+        "timer_calls": [],
+        "transfer_active": 1
+      },
+      "callback_substitutes": [
+        {
+          "active_slots_during_callback": [
+            0
+          ],
+          "callback": "08004000",
+          "context_is_seeded_request": false,
+          "success_argument": 0
+        }
+      ],
+      "case": "expire_zero",
+      "maximum_entry_instructions": 139,
+      "pending": [],
+      "slot_15_canary_preserved": true
+    },
+    {
+      "asset_callback_result": {
+        "application_callback_substitutes": [],
+        "descriptors": [],
+        "distinct_instruction_addresses": 29,
+        "initial_retry_byte": 0,
+        "main_frame_lengths": [],
+        "main_frame_sha256": [],
+        "radio_payload_lengths": [],
+        "radio_payload_sha256": [],
+        "saved_settings_bytes_read": 0,
+        "second_retry_byte": 0,
+        "settings_and_output_flags_preserved_with_callbacks_substituted": true,
+        "timer_calls": [],
+        "transfer_active": 1
+      },
+      "callback_substitutes": [
+        {
+          "active_slots_during_callback": [
+            0
+          ],
+          "callback": "08004000",
+          "context_is_seeded_request": false,
+          "success_argument": 0
+        }
+      ],
+      "case": "expire_one",
+      "maximum_entry_instructions": 141,
+      "pending": [],
+      "slot_15_canary_preserved": true
+    },
+    {
+      "asset_callback_result": {
+        "application_callback_substitutes": [],
+        "descriptors": [],
+        "distinct_instruction_addresses": 19,
+        "initial_retry_byte": 0,
+        "main_frame_lengths": [],
+        "main_frame_sha256": [],
+        "radio_payload_lengths": [],
+        "radio_payload_sha256": [],
+        "saved_settings_bytes_read": 0,
+        "second_retry_byte": 0,
+        "settings_and_output_flags_preserved_with_callbacks_substituted": true,
+        "timer_calls": [],
+        "transfer_active": 1
+      },
+      "callback_substitutes": [],
+      "case": "decrement_two",
+      "maximum_entry_instructions": 131,
+      "pending": [
+        {
+          "active_raw": 1,
+          "callback": "08004001",
+          "command_raw": 61,
+          "countdown_raw": 1,
+          "function_raw": 16,
+          "slot": 0
+        }
+      ],
+      "slot_15_canary_preserved": true
+    },
+    {
+      "asset_callback_result": {
+        "application_callback_substitutes": [],
+        "descriptors": [],
+        "distinct_instruction_addresses": 19,
+        "initial_retry_byte": 0,
+        "main_frame_lengths": [],
+        "main_frame_sha256": [],
+        "radio_payload_lengths": [],
+        "radio_payload_sha256": [],
+        "saved_settings_bytes_read": 0,
+        "second_retry_byte": 0,
+        "settings_and_output_flags_preserved_with_callbacks_substituted": true,
+        "timer_calls": [],
+        "transfer_active": 1
+      },
+      "callback_substitutes": [],
+      "case": "decrement_u32_max",
+      "maximum_entry_instructions": 131,
+      "pending": [
+        {
+          "active_raw": 1,
+          "callback": "08004001",
+          "command_raw": 61,
+          "countdown_raw": 4294967294,
+          "function_raw": 16,
+          "slot": 0
+        }
+      ],
+      "slot_15_canary_preserved": true
+    },
+    {
+      "asset_callback_result": {
+        "application_callback_substitutes": [],
+        "descriptors": [],
+        "distinct_instruction_addresses": 25,
+        "initial_retry_byte": 0,
+        "main_frame_lengths": [],
+        "main_frame_sha256": [],
+        "radio_payload_lengths": [],
+        "radio_payload_sha256": [],
+        "saved_settings_bytes_read": 0,
+        "second_retry_byte": 0,
+        "settings_and_output_flags_preserved_with_callbacks_substituted": true,
+        "timer_calls": [],
+        "transfer_active": 1
+      },
+      "callback_substitutes": [],
+      "case": "expire_null_callback",
+      "maximum_entry_instructions": 137,
+      "pending": [],
+      "slot_15_canary_preserved": true
+    },
+    {
+      "asset_callback_result": {
+        "application_callback_substitutes": [],
+        "descriptors": [],
+        "distinct_instruction_addresses": 13,
+        "initial_retry_byte": 0,
+        "main_frame_lengths": [],
+        "main_frame_sha256": [],
+        "radio_payload_lengths": [],
+        "radio_payload_sha256": [],
+        "saved_settings_bytes_read": 0,
+        "second_retry_byte": 0,
+        "settings_and_output_flags_preserved_with_callbacks_substituted": true,
+        "timer_calls": [],
+        "transfer_active": 1
+      },
+      "callback_substitutes": [],
+      "case": "expiry_ignores_inactive",
+      "maximum_entry_instructions": 125,
+      "pending": [],
+      "slot_15_canary_preserved": true
+    },
+    {
+      "asset_callback_result": {
+        "application_callback_substitutes": [],
+        "descriptors": [
+          {
+            "callback": "0803058d",
+            "lane": 0,
+            "length_or_command_raw": 61,
+            "pointer": 0,
+            "serializer": "00000000",
+            "timeout_argument": 1000
+          }
+        ],
+        "distinct_instruction_addresses": 84,
+        "initial_retry_byte": 0,
+        "main_frame_lengths": [],
+        "main_frame_sha256": [],
+        "radio_payload_lengths": [],
+        "radio_payload_sha256": [],
+        "saved_settings_bytes_read": 0,
+        "second_retry_byte": 0,
+        "settings_and_output_flags_preserved_with_callbacks_substituted": true,
+        "timer_calls": [],
+        "transfer_active": 1
+      },
+      "callback_substitutes": [],
+      "case": "asset_status_zero_requeues",
+      "maximum_entry_instructions": 84,
+      "pending": [],
+      "slot_15_canary_preserved": true
+    },
+    {
+      "asset_callback_result": {
+        "application_callback_substitutes": [],
+        "descriptors": [],
+        "distinct_instruction_addresses": 56,
+        "initial_retry_byte": 0,
+        "main_frame_lengths": [],
+        "main_frame_sha256": [],
+        "radio_payload_lengths": [],
+        "radio_payload_sha256": [],
+        "saved_settings_bytes_read": 0,
+        "second_retry_byte": 0,
+        "settings_and_output_flags_preserved_with_callbacks_substituted": true,
+        "timer_calls": [],
+        "transfer_active": 1
+      },
+      "callback_substitutes": [],
+      "case": "asset_status_two_waits",
+      "maximum_entry_instructions": 56,
+      "pending": [],
+      "slot_15_canary_preserved": true
+    },
+    {
+      "asset_callback_result": {
+        "application_callback_substitutes": [
+          {
+            "reason_argument": 1,
+            "success_argument": 0
+          }
+        ],
+        "descriptors": [],
+        "distinct_instruction_addresses": 85,
+        "initial_retry_byte": 0,
+        "main_frame_lengths": [],
+        "main_frame_sha256": [],
+        "radio_payload_lengths": [],
+        "radio_payload_sha256": [],
+        "saved_settings_bytes_read": 0,
+        "second_retry_byte": 0,
+        "settings_and_output_flags_preserved_with_callbacks_substituted": true,
+        "timer_calls": [
+          {
+            "id": 9,
+            "operation": "stop"
+          },
+          {
+            "id": 0,
+            "operation": "stop"
+          }
+        ],
+        "transfer_active": 0
+      },
+      "callback_substitutes": [],
+      "case": "asset_status_one_fails",
+      "maximum_entry_instructions": 86,
+      "pending": [],
+      "slot_15_canary_preserved": true
+    },
+    {
+      "asset_callback_result": {
+        "application_callback_substitutes": [
+          {
+            "reason_argument": 1,
+            "success_argument": 0
+          }
+        ],
+        "descriptors": [],
+        "distinct_instruction_addresses": 85,
+        "initial_retry_byte": 0,
+        "main_frame_lengths": [],
+        "main_frame_sha256": [],
+        "radio_payload_lengths": [],
+        "radio_payload_sha256": [],
+        "saved_settings_bytes_read": 0,
+        "second_retry_byte": 0,
+        "settings_and_output_flags_preserved_with_callbacks_substituted": true,
+        "timer_calls": [
+          {
+            "id": 9,
+            "operation": "stop"
+          },
+          {
+            "id": 0,
+            "operation": "stop"
+          }
+        ],
+        "transfer_active": 0
+      },
+      "callback_substitutes": [],
+      "case": "asset_status_255_fails",
+      "maximum_entry_instructions": 86,
+      "pending": [],
+      "slot_15_canary_preserved": true
+    },
+    {
+      "asset_callback_result": {
+        "application_callback_substitutes": [],
+        "descriptors": [
+          {
+            "callback": "0803058d",
+            "lane": 0,
+            "length_or_command_raw": 61,
+            "pointer": 0,
+            "serializer": "00000000",
+            "timeout_argument": 1000
+          }
+        ],
+        "distinct_instruction_addresses": 62,
+        "initial_retry_byte": 0,
+        "main_frame_lengths": [],
+        "main_frame_sha256": [],
+        "radio_payload_lengths": [],
+        "radio_payload_sha256": [],
+        "saved_settings_bytes_read": 0,
+        "second_retry_byte": 0,
+        "settings_and_output_flags_preserved_with_callbacks_substituted": true,
+        "timer_calls": [],
+        "transfer_active": 1
+      },
+      "callback_substitutes": [],
+      "case": "expired_asset_request_requeues_without_re_registration",
+      "maximum_entry_instructions": 174,
+      "pending": [],
+      "slot_15_canary_preserved": true
+    }
+  ],
+  "station_commands_sent": 0
+}

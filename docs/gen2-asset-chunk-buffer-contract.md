@@ -122,6 +122,11 @@ trim the staged payload locally. Final receiver application, final callback
 Controller ACK bodies and radio ACK arguments are not passed through a real
 transport/parser in these suites.
 
+The later [completion and matching proof](gen2-asset-completion-and-matching.md)
+executes the final callback and following point-0016 poll, and separately
+executes MAIN's pending radio-request registration, matching and expiry.
+Receiver application and the radio's ACK parser remain excluded.
+
 All MAIN cases preserve **415 saved-setting bytes and eight output flags**,
 with zero saved-setting reads. Application callbacks and queues are substituted;
 this does not establish their live effects or a complete settings exporter.
@@ -145,9 +150,10 @@ observed entry uses **68,642**. ROM/MMIO are read-only and writes are restricted
 to synthetic RAM, with saved settings/output writes rejected. Negative guards
 cover excluded setup/startup/final callbacks, fixture limits and protected copies.
 
-Remaining concrete boundaries: the task/header path activating the registered
-radio callbacks, controller final point-0014 callback/application, and the
-083d/083e framing/parser and pending-request matching. Chunked HTTP mode and
+Remaining concrete boundaries after that continuation: the task/header path
+activating the registered radio callbacks, receiver asset application and the
+083d/083e framing/parser. MAIN pending-request matching now has a separate
+bounded proof; the real enqueue/worker loop remains excluded. Chunked HTTP mode and
 other admitted radio chunk sizes need separate analysis. Complete saved-file
 readback still requires an independent producer; this download/forwarding route
 does not justify restoration or a station filename probe.

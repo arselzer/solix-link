@@ -138,6 +138,12 @@ and chunk responses. It resolves the controller's fixed 1,024-byte staging
 copy and final-request construction; final application and end-to-end framing
 remain excluded. The observed direction remains download and forwarding.
 
+The [completion and matching continuation](gen2-asset-completion-and-matching.md)
+adds **55 cases** for final receipt, the following point-0016 completion poll,
+and MAIN pending-request registration/matching/expiry. Application success is
+reported only after the supplied completion response; receiver commit, radio
+ingress and a saved-state producer remain unproved.
+
 ## Reproduction
 
 ```sh

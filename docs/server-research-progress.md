@@ -297,3 +297,54 @@ phone/profile access, network/service operation, deployment, push, merge or
 automation activation occurred. Hardware requirements and the previous
 unavailable C1000 advertisements are unchanged; the observer and live gateway
 remain untouched.
+
+## Final asset receipt, completion polling and request matching — 2026-10-04
+
+This follows local checkpoint **`126442f`** on `server/research-20261004`.
+The [new proof](gen2-asset-completion-and-matching.md) adds **55 synthetic
+instruction cases and ten negative guards**, using public A1763 main
+**1.1.4.9**, 198,656 bytes, SHA-256
+`21ffb746c1e07ecaa9817fa7017807585a00bedbca3f136c650129bb52a4a0c9`.
+Only analysis tools, synthetic metadata and documentation change.
+
+- **25 completion cases:** actual final callback `08017bd0` accepts supplied
+  receipt bytes, then queues point 0016 with timeout argument 10. Receipt does
+  not invoke application success. Actual `08017b4c` requires completion state
+  1, calls a substituted success callback and resets. Final-reply failures
+  retry and fail/reset on the fourth; incomplete polls requeue and execute a
+  wrapper preparing timer period argument 20,000. Units, timer execution and
+  receiver commit remain unproved. The host-delivered three-request sequence
+  verifies serialized frames and callback ordering without a running worker.
+- **30 matching cases:** actual fifteen-slot registration, function-10 reply
+  dispatch/matching, countdown expiry and selected actual 003d response
+  callbacks execute. Matching consumes the first active command/function slot;
+  callbacks run before clearing. Registration's update branch compares the
+  stored command to both incoming command and incoming function. Repeated
+  synthetic 003d/0010 registrations therefore occupy two slots. This behavior
+  is pinned to the tested image; the real worker and ingress remain excluded.
+
+Both suites preserve 415 saved-setting bytes/eight output flags and read zero
+saved-setting bytes. Application callbacks, queues, timer services, libc,
+logging and delivery remain substitutes. No complete settings exporter,
+charging-pause encoder, account-free ingress or electrical behavior is claimed.
+Public artifacts contain synthetic structural metadata and hashes; exploratory
+disassembly and verification records remain ignored with private permissions.
+
+Both new complete result/manifest pairs independently reproduce, including
+source hashes. Python **3.14.4**, Unicorn **2.1.4**. Entry bounds are 100,000
+(completion, maximum 68,642 for the earlier chunk CRC) and 3,000 (matching,
+maximum 307). Earlier proof/product/browser gates were not rerun for these
+analysis-only additions. AGENTS.md is unchanged.
+
+Next offline work: locate receiver handlers/resource commit for points
+0013/0014/0016; connect radio 083e parsing to its ACK callback argument;
+follow the full task/header activation boundary; and continue SDK runtime
+`context+160` provenance toward the unresolved pause encoder. A saved-state
+producer and physical counter/charging calibration remain independent needs.
+Original C1000 charging measurements still require battery below full with a
+noncritical load and independent metering. Gen 2 energy calibration requires
+paired counters/power/timing and a separately authorized retention test.
+
+**Zero station commands were sent.** No new BLE scan, profile/phone access,
+network/service operation, deployment, push, merge or automation activation
+occurred. No live observer, gateway, AP, HA or station setting was changed.

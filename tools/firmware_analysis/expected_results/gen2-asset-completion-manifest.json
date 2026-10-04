@@ -1,0 +1,13 @@
+{
+  "firmware_sha256": "21ffb746c1e07ecaa9817fa7017807585a00bedbca3f136c650129bb52a4a0c9",
+  "python": "3.14.4",
+  "sources": {
+    "emulate_clock_semantics.py": "945b649c3b5cec00d816041e783641085ccfbdb5f80efc2ed2c4e15f3bae30f2",
+    "emulate_gen2_asset_chunk_consumer.py": "7266a63cef4d89d45d4957f9816ee2ff678e235aff6cb24ddbb60f7f81ba1a2d",
+    "emulate_gen2_asset_completion.py": "5cae1ab0813c0f3dc9b53811f977ae71d52162c5d40c2981b870a225ac791abb",
+    "emulate_gen2_asset_transfer_start.py": "a41f12a929ac1b9cdf7000bae3812f9d56da6745533bb8708afb8ecc7cb1cb3e",
+    "emulate_uart_request_worker.py": "499234889687fcced89b4a0d2d998717cf423024de7e8e7058c8771f0575da12",
+    "replay_io.py": "731d795a5ec37e2cf12b809b7122eaf7a29d84c21a2ecd43fafa3e2f8d962d30"
+  },
+  "unicorn": "2.1.4"
+}

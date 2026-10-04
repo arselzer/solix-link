@@ -489,3 +489,20 @@ final application and real transport remain excluded. Compare both
 `gen2-asset-chunk-consumer-*.json` artifacts. Set `SOLIX_ANALYSIS_OUTPUT` to the
 output directory for either tool. See
 [buffer and consumer limits](../../docs/gen2-asset-chunk-buffer-contract.md).
+
+`emulate_gen2_asset_completion.py --output-dir /private/output/completion`
+adds **25 cases** for final receipt, point-0016 completion polling, retry/reset,
+fixed serialization and the timer-period wrapper, with five negative guards.
+Application callbacks, queue/timer services and delivery are substitutes;
+receiver application/commit stays excluded. Compare both
+`gen2-asset-completion-*.json` artifacts. Its entry bound is 100,000 for the
+earlier chunk CRC in the host-delivered sequence.
+
+`emulate_gen2_asset_request_matching.py --output-dir /private/output/matching`
+adds **30 cases** for actual fifteen-slot registration, function-10 matching,
+expiry and selected actual 003d asset responses, with five negative guards.
+Contexts/registration arguments are host seeded; ingress, authentication,
+radio ACK parsing and worker execution remain excluded. Compare both
+`gen2-asset-request-matching-*.json` artifacts. Its entry bound is 3,000.
+Set `SOLIX_ANALYSIS_OUTPUT` to each output directory. See
+[completion and matching limits](../../docs/gen2-asset-completion-and-matching.md).
