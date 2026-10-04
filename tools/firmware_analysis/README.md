@@ -451,6 +451,24 @@ adds **30 separate cases** for both MAIN replies, timeout cleanup, the radio
 resource descriptor/locator serializer and its reply. Four negative guards
 reject malformed or unbounded inputs. Set `SOLIX_ANALYSIS_OUTPUT` to the same
 directory. Queue/libc/transport/application callbacks are explicit substitutes;
-internal `003d` forwards a string without reading controller settings. Later
-radio/chunk processing and complete export remain unresolved. Compare both
+internal `003d` forwards a string without reading controller settings. The
+radio continuation below resolves selected chunk callbacks; complete export
+remains unresolved. Compare both
 `gen2-asset-transfer-replies-*.json` files with `expected_results/`.
+
+`emulate_radio_asset_download.py --output-dir /private/output/radio-assets`
+adds **34 synthetic cases** for the hash-pinned A1763 radio 0.3.3.0. Set
+`SOLIX_ANALYSIS_OUTPUT` to that directory. Actual RISC-V admission, download
+setup and callback/TLV instructions execute with explicit task/libc/transport
+substitutes. Five negative guards cover inputs and bounded execution. HTTP
+workers, ingress/session, controller and physical transport do not run. See
+[download limits](../../docs/radio-asset-download.md); compare both
+`radio-asset-download-*.json` files with `expected_results/`.
+
+`inspect_android_bulk_copy_context.py` uses the same private input arguments
+as the archive tool. Its **31 exact static checks** and direct-caller inventory
+trace a 32-byte store at an immediate `+160` to a caller-supplied copy source.
+Four negative checks reject altered instruction/span inputs. No native/JNI/VM
+code runs; runtime aliases and the transform key remain unresolved. See
+[copy provenance](../../docs/android-bulk-copy-context.md); compare both
+`android-bulk-copy-context-*.json` files with `expected_results/`.

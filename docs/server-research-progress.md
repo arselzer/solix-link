@@ -109,8 +109,9 @@ identities, credentials, raw vendor code or recovered keys.
    static token coverage does not recover plaintext DEX or a pause command.
 2. **Complete readback:** trace a concrete ordinary/radio producer or generic
    file-export route toward `sysPara`. Both MAIN replies and timeout are now
-   replayed; radio command `003d` and its later chunk/progress events are next
-   precise boundaries. The locator is sent outward, without controller file I/O.
+   replayed; the new continuation below also covers radio command `003d` and
+   selected chunk/progress events. The real HTTP producer/buffer contract and
+   MAIN consumer remain precise boundaries, without controller file export.
    Another status query or side-effecting route cannot justify restoration of
    unreturned fields.
 3. **Preview presentation:** type-check/build Vue source and run the two added
@@ -181,3 +182,68 @@ new proof suite or a whole-program absence claim. Follow an independently
 established constructor, VM writer or bulk-copy destination toward `context+160`
 before attempting the type-3 asset transform. No native code executed and no
 SDK seed/key/record data was published.
+
+## Radio download and SDK copy follow-up — 2026-10-04
+
+Prepared on `server/research-20261004` after local checkpoint `df327d2`.
+This continuation changes analysis tools, synthetic metadata and documentation
+only. Product code, live services, HA, AP, gateway, identities and station
+settings remain unchanged. No new BLE scan or station command was sent.
+
+### Asset download direction and limits
+
+The [radio proof](radio-asset-download.md) adds **34 actual-instruction
+synthetic cases** and **five negative guards**. Hash-pinned A1763 radio
+**0.3.3.0**, supplied with main **1.1.4.9**, admits HTTP/HTTPS prefixes for
+internal 003d, prepares task ID 20, builds 003e controller-bound chunks and
+083d completion statuses. It rejects the bare `sysPara` fixture. This resolves
+another boundary of the MAIN resource path without establishing file export.
+
+The 1,025-byte progress fixture is forwarded as two 1,024-byte chunks, including
+initialized synthetic padding. The actual HTTP buffer allocation/padding
+contract remains unknown; this is not a demonstrated hardware memory flaw.
+Task execution, HTTP/DNS/TLS, ingress/session, controller, transport and ACKs
+remain excluded or substituted. An admission status or completion callback is
+not a verified physical transfer or electrical behavior.
+
+Radio input SHA-256:
+`e291ec115f013953e825cb51b9e457a8731889547ab55b3058640e599e8cfec8`,
+**1,482,800 bytes**. No original C1000 or C2000 equivalence is claimed.
+
+### SDK copy provenance
+
+The [bulk-copy proof](android-bulk-copy-context.md) adds **31 exact static
+instruction checks**, four function-span hashes and four negative checks;
+guest execution remains **zero**. The immediate `+160` store at `dd1ac` copies
+32 bytes from a caller-supplied object. One direct caller and its nested chain
+use stack destinations. Two callers' incoming aliases remain unresolved.
+This does not establish runtime `context+160` initialization, key material,
+plaintext DEX or a charging-pause encoder. APK/library/image pins are unchanged.
+
+### Verification and next work
+
+The two new result/manifest pairs independently reproduce exactly. Earlier
+sixteen artifacts and the 362-test product gate belong to the prior checkpoint;
+they were not rerun for these analysis-only changes. Environment remains Python
+**3.14.4**, Unicorn **2.1.4**, Capstone **5.0.7**. Public artifacts contain
+synthetic hashes and structural metadata, without raw SDK code, records, seeds,
+identities or captured phone data. Raw exploratory disassembly and verification
+records stay ignored with restricted permissions. AGENTS.md is unchanged.
+
+Next useful offline boundaries:
+
+1. Trace task ID 20 through `42013a2a → 42012a98` to the HTTP callback producer
+   and its buffer/tail contract; then trace MAIN's 003e/083d consumer. Neither
+   supplies saved-file readback without independent producer evidence.
+2. Follow an established context constructor/protected VM store or a concrete
+   incoming alias to `dcd60`/`dcf0c`. The tested bulk copy cannot supply a key
+   merely because its destination offset matches 160.
+3. Complete the pending Vue build/browser verification when Node is available;
+   keep preview source and packaged assets clearly distinguished.
+
+Physical requirements are unchanged: original C1000 below full with a
+noncritical load and independent metering; Gen 2 paired power/counter/timing
+samples and export-sign confirmation; separately authorized noncritical
+restart for retention calibration. The two C1000s were absent from the prior
+approved BLE discoveries; readback awaits advertising devices. No person is
+being waited on and the observer/live deployment remain untouched.

@@ -1,0 +1,992 @@
+{
+  "cases": 34,
+  "complete_settings_export": false,
+  "limits": "Bounded A1763 radio asset admission, callbacks and chunk serialization.\n\nActual RISC-V handler, TLV lookup/builders, download-helper setup and selected\nprogress/completion paths execute with synthetic parsed requests. Allocation,\nlibc, mutexes, tasks, time, HTTP cancellation, outer framing/delivery, ACKs and\nlogging are explicit substitutes. No ingress parser/session, HTTP task, DNS,\nTLS, filesystem, controller, firmware boot, device or network runs. Callback\nbuffer length and padding are synthetic assumptions, not an electrical test.",
+  "model": "A1763",
+  "negative_guards": [
+    "short_image",
+    "altered_image",
+    "instruction_outside_allowed_spans",
+    "write_outside_download_state",
+    "unterminated_bounded_locator"
+  ],
+  "per_entry_instruction_limit": 10000,
+  "physical_transport_verified": false,
+  "radio_sha256": "e291ec115f013953e825cb51b9e457a8731889547ab55b3058640e599e8cfec8",
+  "radio_version": "0.3.3.0",
+  "results": [
+    {
+      "async_status_bytes": [],
+      "callback_input_read_extent": 0,
+      "cancellation_substitutes": [],
+      "case": "https",
+      "chunk_frames": [],
+      "current_locator_present": true,
+      "delay_substitute_calls": 0,
+      "distinct_instruction_addresses": 245,
+      "download_task_substitutes": [
+        {
+          "callback_targets": [
+            "4203f2a6",
+            "4203f088"
+          ],
+          "locator_bytes": 29,
+          "locator_sha256": "8a1d7b7b444f8a19bd52e2a83753218c5d3e73b404c13fa5807619eb983f5bce",
+          "start_offset": 0,
+          "task_id_raw": 20
+        }
+      ],
+      "pending_locator_present": false,
+      "reply_statuses": [
+        0
+      ],
+      "stored_chunk_size": 1024,
+      "stored_forward_offset": 0,
+      "stored_timeout_argument": 180000,
+      "synthetic_identity_and_wifi_regions_preserved": true
+    },
+    {
+      "async_status_bytes": [],
+      "callback_input_read_extent": 0,
+      "cancellation_substitutes": [],
+      "case": "http",
+      "chunk_frames": [],
+      "current_locator_present": true,
+      "delay_substitute_calls": 0,
+      "distinct_instruction_addresses": 252,
+      "download_task_substitutes": [
+        {
+          "callback_targets": [
+            "4203f2a6",
+            "4203f088"
+          ],
+          "locator_bytes": 24,
+          "locator_sha256": "abd77d1728d3711a2ce6be9d72cabaf884e74e770d7dde7c44c17abeecaa6a93",
+          "start_offset": 0,
+          "task_id_raw": 20
+        }
+      ],
+      "pending_locator_present": false,
+      "reply_statuses": [
+        0
+      ],
+      "stored_chunk_size": 1024,
+      "stored_forward_offset": 0,
+      "stored_timeout_argument": 180000,
+      "synthetic_identity_and_wifi_regions_preserved": true
+    },
+    {
+      "async_status_bytes": [],
+      "callback_input_read_extent": 0,
+      "cancellation_substitutes": [],
+      "case": "unqualified_filename",
+      "chunk_frames": [],
+      "current_locator_present": false,
+      "delay_substitute_calls": 0,
+      "distinct_instruction_addresses": 109,
+      "download_task_substitutes": [],
+      "pending_locator_present": false,
+      "reply_statuses": [
+        1
+      ],
+      "stored_chunk_size": 1024,
+      "stored_forward_offset": 0,
+      "stored_timeout_argument": 180000,
+      "synthetic_identity_and_wifi_regions_preserved": true
+    },
+    {
+      "async_status_bytes": [],
+      "callback_input_read_extent": 0,
+      "cancellation_substitutes": [],
+      "case": "ftp_scheme",
+      "chunk_frames": [],
+      "current_locator_present": false,
+      "delay_substitute_calls": 0,
+      "distinct_instruction_addresses": 125,
+      "download_task_substitutes": [],
+      "pending_locator_present": false,
+      "reply_statuses": [
+        1
+      ],
+      "stored_chunk_size": 1024,
+      "stored_forward_offset": 0,
+      "stored_timeout_argument": 180000,
+      "synthetic_identity_and_wifi_regions_preserved": true
+    },
+    {
+      "async_status_bytes": [],
+      "callback_input_read_extent": 0,
+      "cancellation_substitutes": [],
+      "case": "upper_case_scheme",
+      "chunk_frames": [],
+      "current_locator_present": false,
+      "delay_substitute_calls": 0,
+      "distinct_instruction_addresses": 125,
+      "download_task_substitutes": [],
+      "pending_locator_present": false,
+      "reply_statuses": [
+        1
+      ],
+      "stored_chunk_size": 1024,
+      "stored_forward_offset": 0,
+      "stored_timeout_argument": 180000,
+      "synthetic_identity_and_wifi_regions_preserved": true
+    },
+    {
+      "async_status_bytes": [],
+      "callback_input_read_extent": 0,
+      "cancellation_substitutes": [],
+      "case": "prefix_only_validation",
+      "chunk_frames": [],
+      "current_locator_present": true,
+      "delay_substitute_calls": 0,
+      "distinct_instruction_addresses": 252,
+      "download_task_substitutes": [
+        {
+          "callback_targets": [
+            "4203f2a6",
+            "4203f088"
+          ],
+          "locator_bytes": 8,
+          "locator_sha256": "ccdf1a30a22a3a18e97be2d74f6c2983b8e85cdef57b7e62b0e74d06687a6499",
+          "start_offset": 0,
+          "task_id_raw": 20
+        }
+      ],
+      "pending_locator_present": false,
+      "reply_statuses": [
+        0
+      ],
+      "stored_chunk_size": 1024,
+      "stored_forward_offset": 0,
+      "stored_timeout_argument": 180000,
+      "synthetic_identity_and_wifi_regions_preserved": true
+    },
+    {
+      "async_status_bytes": [],
+      "callback_input_read_extent": 0,
+      "cancellation_substitutes": [],
+      "case": "short_locator",
+      "chunk_frames": [],
+      "current_locator_present": false,
+      "delay_substitute_calls": 0,
+      "distinct_instruction_addresses": 109,
+      "download_task_substitutes": [],
+      "pending_locator_present": false,
+      "reply_statuses": [
+        1
+      ],
+      "stored_chunk_size": 1024,
+      "stored_forward_offset": 0,
+      "stored_timeout_argument": 180000,
+      "synthetic_identity_and_wifi_regions_preserved": true
+    },
+    {
+      "async_status_bytes": [],
+      "callback_input_read_extent": 0,
+      "cancellation_substitutes": [],
+      "case": "locator_512",
+      "chunk_frames": [],
+      "current_locator_present": true,
+      "delay_substitute_calls": 0,
+      "distinct_instruction_addresses": 252,
+      "download_task_substitutes": [
+        {
+          "callback_targets": [
+            "4203f2a6",
+            "4203f088"
+          ],
+          "locator_bytes": 512,
+          "locator_sha256": "b417698f213e5d97c642ba5a7356dad80534578325d4c1d3b97050c38c87d868",
+          "start_offset": 0,
+          "task_id_raw": 20
+        }
+      ],
+      "pending_locator_present": false,
+      "reply_statuses": [
+        0
+      ],
+      "stored_chunk_size": 1024,
+      "stored_forward_offset": 0,
+      "stored_timeout_argument": 180000,
+      "synthetic_identity_and_wifi_regions_preserved": true
+    },
+    {
+      "async_status_bytes": [],
+      "callback_input_read_extent": 0,
+      "cancellation_substitutes": [],
+      "case": "locator_513",
+      "chunk_frames": [],
+      "current_locator_present": false,
+      "delay_substitute_calls": 0,
+      "distinct_instruction_addresses": 109,
+      "download_task_substitutes": [],
+      "pending_locator_present": false,
+      "reply_statuses": [
+        1
+      ],
+      "stored_chunk_size": 1024,
+      "stored_forward_offset": 0,
+      "stored_timeout_argument": 180000,
+      "synthetic_identity_and_wifi_regions_preserved": true
+    },
+    {
+      "async_status_bytes": [],
+      "callback_input_read_extent": 0,
+      "cancellation_substitutes": [],
+      "case": "missing_a1",
+      "chunk_frames": [],
+      "current_locator_present": false,
+      "delay_substitute_calls": 0,
+      "distinct_instruction_addresses": 67,
+      "download_task_substitutes": [],
+      "pending_locator_present": false,
+      "reply_statuses": [
+        1
+      ],
+      "stored_chunk_size": 1024,
+      "stored_forward_offset": 0,
+      "stored_timeout_argument": 180000,
+      "synthetic_identity_and_wifi_regions_preserved": true
+    },
+    {
+      "async_status_bytes": [],
+      "callback_input_read_extent": 0,
+      "cancellation_substitutes": [],
+      "case": "missing_a2",
+      "chunk_frames": [],
+      "current_locator_present": false,
+      "delay_substitute_calls": 0,
+      "distinct_instruction_addresses": 91,
+      "download_task_substitutes": [],
+      "pending_locator_present": false,
+      "reply_statuses": [
+        1
+      ],
+      "stored_chunk_size": 1024,
+      "stored_forward_offset": 0,
+      "stored_timeout_argument": 180000,
+      "synthetic_identity_and_wifi_regions_preserved": true
+    },
+    {
+      "async_status_bytes": [],
+      "callback_input_read_extent": 0,
+      "cancellation_substitutes": [],
+      "case": "chunk_zero",
+      "chunk_frames": [],
+      "current_locator_present": false,
+      "delay_substitute_calls": 0,
+      "distinct_instruction_addresses": 96,
+      "download_task_substitutes": [],
+      "pending_locator_present": false,
+      "reply_statuses": [
+        1
+      ],
+      "stored_chunk_size": 0,
+      "stored_forward_offset": 0,
+      "stored_timeout_argument": 180000,
+      "synthetic_identity_and_wifi_regions_preserved": true
+    },
+    {
+      "async_status_bytes": [],
+      "callback_input_read_extent": 0,
+      "cancellation_substitutes": [],
+      "case": "chunk_300",
+      "chunk_frames": [],
+      "current_locator_present": false,
+      "delay_substitute_calls": 0,
+      "distinct_instruction_addresses": 96,
+      "download_task_substitutes": [],
+      "pending_locator_present": false,
+      "reply_statuses": [
+        1
+      ],
+      "stored_chunk_size": 300,
+      "stored_forward_offset": 0,
+      "stored_timeout_argument": 180000,
+      "synthetic_identity_and_wifi_regions_preserved": true
+    },
+    {
+      "async_status_bytes": [],
+      "callback_input_read_extent": 0,
+      "cancellation_substitutes": [],
+      "case": "chunk_512",
+      "chunk_frames": [],
+      "current_locator_present": true,
+      "delay_substitute_calls": 0,
+      "distinct_instruction_addresses": 245,
+      "download_task_substitutes": [
+        {
+          "callback_targets": [
+            "4203f2a6",
+            "4203f088"
+          ],
+          "locator_bytes": 29,
+          "locator_sha256": "8a1d7b7b444f8a19bd52e2a83753218c5d3e73b404c13fa5807619eb983f5bce",
+          "start_offset": 0,
+          "task_id_raw": 20
+        }
+      ],
+      "pending_locator_present": false,
+      "reply_statuses": [
+        0
+      ],
+      "stored_chunk_size": 512,
+      "stored_forward_offset": 0,
+      "stored_timeout_argument": 180000,
+      "synthetic_identity_and_wifi_regions_preserved": true
+    },
+    {
+      "async_status_bytes": [],
+      "callback_input_read_extent": 0,
+      "cancellation_substitutes": [],
+      "case": "chunk_2048",
+      "chunk_frames": [],
+      "current_locator_present": true,
+      "delay_substitute_calls": 0,
+      "distinct_instruction_addresses": 245,
+      "download_task_substitutes": [
+        {
+          "callback_targets": [
+            "4203f2a6",
+            "4203f088"
+          ],
+          "locator_bytes": 29,
+          "locator_sha256": "8a1d7b7b444f8a19bd52e2a83753218c5d3e73b404c13fa5807619eb983f5bce",
+          "start_offset": 0,
+          "task_id_raw": 20
+        }
+      ],
+      "pending_locator_present": false,
+      "reply_statuses": [
+        0
+      ],
+      "stored_chunk_size": 2048,
+      "stored_forward_offset": 0,
+      "stored_timeout_argument": 180000,
+      "synthetic_identity_and_wifi_regions_preserved": true
+    },
+    {
+      "async_status_bytes": [],
+      "callback_input_read_extent": 0,
+      "cancellation_substitutes": [],
+      "case": "chunk_4096",
+      "chunk_frames": [],
+      "current_locator_present": false,
+      "delay_substitute_calls": 0,
+      "distinct_instruction_addresses": 96,
+      "download_task_substitutes": [],
+      "pending_locator_present": false,
+      "reply_statuses": [
+        1
+      ],
+      "stored_chunk_size": 4096,
+      "stored_forward_offset": 0,
+      "stored_timeout_argument": 180000,
+      "synthetic_identity_and_wifi_regions_preserved": true
+    },
+    {
+      "async_status_bytes": [],
+      "callback_input_read_extent": 0,
+      "cancellation_substitutes": [],
+      "case": "start_offset",
+      "chunk_frames": [],
+      "current_locator_present": true,
+      "delay_substitute_calls": 0,
+      "distinct_instruction_addresses": 245,
+      "download_task_substitutes": [
+        {
+          "callback_targets": [
+            "4203f2a6",
+            "4203f088"
+          ],
+          "locator_bytes": 29,
+          "locator_sha256": "8a1d7b7b444f8a19bd52e2a83753218c5d3e73b404c13fa5807619eb983f5bce",
+          "start_offset": 3072,
+          "task_id_raw": 20
+        }
+      ],
+      "pending_locator_present": false,
+      "reply_statuses": [
+        0
+      ],
+      "stored_chunk_size": 1024,
+      "stored_forward_offset": 0,
+      "stored_timeout_argument": 180000,
+      "synthetic_identity_and_wifi_regions_preserved": true
+    },
+    {
+      "async_status_bytes": [],
+      "callback_input_read_extent": 0,
+      "cancellation_substitutes": [],
+      "case": "timeout_override",
+      "chunk_frames": [],
+      "current_locator_present": true,
+      "delay_substitute_calls": 0,
+      "distinct_instruction_addresses": 261,
+      "download_task_substitutes": [
+        {
+          "callback_targets": [
+            "4203f2a6",
+            "4203f088"
+          ],
+          "locator_bytes": 29,
+          "locator_sha256": "8a1d7b7b444f8a19bd52e2a83753218c5d3e73b404c13fa5807619eb983f5bce",
+          "start_offset": 0,
+          "task_id_raw": 20
+        }
+      ],
+      "pending_locator_present": false,
+      "reply_statuses": [
+        0
+      ],
+      "stored_chunk_size": 1024,
+      "stored_forward_offset": 0,
+      "stored_timeout_argument": 7000,
+      "synthetic_identity_and_wifi_regions_preserved": true
+    },
+    {
+      "async_status_bytes": [],
+      "callback_input_read_extent": 0,
+      "cancellation_substitutes": [],
+      "case": "task_failure",
+      "chunk_frames": [],
+      "current_locator_present": true,
+      "delay_substitute_calls": 0,
+      "distinct_instruction_addresses": 261,
+      "download_task_substitutes": [
+        {
+          "callback_targets": [
+            "4203f2a6",
+            "4203f088"
+          ],
+          "locator_bytes": 29,
+          "locator_sha256": "8a1d7b7b444f8a19bd52e2a83753218c5d3e73b404c13fa5807619eb983f5bce",
+          "start_offset": 0,
+          "task_id_raw": 20
+        }
+      ],
+      "pending_locator_present": false,
+      "reply_statuses": [
+        1
+      ],
+      "stored_chunk_size": 1024,
+      "stored_forward_offset": 0,
+      "stored_timeout_argument": 180000,
+      "synthetic_identity_and_wifi_regions_preserved": true
+    },
+    {
+      "async_status_bytes": [],
+      "callback_input_read_extent": 0,
+      "cancellation_substitutes": [],
+      "case": "mutex_failure",
+      "chunk_frames": [],
+      "current_locator_present": false,
+      "delay_substitute_calls": 0,
+      "distinct_instruction_addresses": 129,
+      "download_task_substitutes": [],
+      "pending_locator_present": false,
+      "reply_statuses": [
+        1
+      ],
+      "stored_chunk_size": 1024,
+      "stored_forward_offset": 0,
+      "stored_timeout_argument": 180000,
+      "synthetic_identity_and_wifi_regions_preserved": true
+    },
+    {
+      "async_status_bytes": [],
+      "callback_input_read_extent": 0,
+      "cancellation_substitutes": [],
+      "case": "allocation_failure",
+      "chunk_frames": [],
+      "current_locator_present": false,
+      "delay_substitute_calls": 0,
+      "distinct_instruction_addresses": 141,
+      "download_task_substitutes": [],
+      "pending_locator_present": false,
+      "reply_statuses": [
+        1
+      ],
+      "stored_chunk_size": 1024,
+      "stored_forward_offset": 0,
+      "stored_timeout_argument": 180000,
+      "synthetic_identity_and_wifi_regions_preserved": true
+    },
+    {
+      "async_status_bytes": [],
+      "callback_input_read_extent": 0,
+      "cancellation_substitutes": [],
+      "case": "progress",
+      "chunk_frames": [],
+      "current_locator_present": true,
+      "delay_substitute_calls": 0,
+      "distinct_instruction_addresses": 316,
+      "download_task_substitutes": [
+        {
+          "callback_targets": [
+            "4203f2a6",
+            "4203f088"
+          ],
+          "locator_bytes": 29,
+          "locator_sha256": "8a1d7b7b444f8a19bd52e2a83753218c5d3e73b404c13fa5807619eb983f5bce",
+          "start_offset": 0,
+          "task_id_raw": 20
+        }
+      ],
+      "pending_locator_present": false,
+      "reply_statuses": [
+        0
+      ],
+      "stored_chunk_size": 1024,
+      "stored_forward_offset": 0,
+      "stored_timeout_argument": 180000,
+      "synthetic_callback_length": 0,
+      "synthetic_identity_and_wifi_regions_preserved": true
+    },
+    {
+      "async_status_bytes": [],
+      "callback_input_read_extent": 1024,
+      "cancellation_substitutes": [],
+      "case": "progress",
+      "chunk_frames": [
+        {
+          "body_bytes": 1039,
+          "body_sha256": "ae908d75e4d7e74e737adbca7748f50965f624b67b372c84a51c21f396aa2343",
+          "chunk_length_u16_le": 1024,
+          "offset_u32_le": 0,
+          "total_u32_le": 1024
+        }
+      ],
+      "current_locator_present": true,
+      "delay_substitute_calls": 1,
+      "distinct_instruction_addresses": 478,
+      "download_task_substitutes": [
+        {
+          "callback_targets": [
+            "4203f2a6",
+            "4203f088"
+          ],
+          "locator_bytes": 29,
+          "locator_sha256": "8a1d7b7b444f8a19bd52e2a83753218c5d3e73b404c13fa5807619eb983f5bce",
+          "start_offset": 0,
+          "task_id_raw": 20
+        }
+      ],
+      "pending_locator_present": false,
+      "reply_statuses": [
+        0
+      ],
+      "stored_chunk_size": 1024,
+      "stored_forward_offset": 1024,
+      "stored_timeout_argument": 180000,
+      "synthetic_callback_length": 1024,
+      "synthetic_identity_and_wifi_regions_preserved": true
+    },
+    {
+      "async_status_bytes": [],
+      "callback_input_read_extent": 2048,
+      "cancellation_substitutes": [],
+      "case": "progress",
+      "chunk_frames": [
+        {
+          "body_bytes": 1039,
+          "body_sha256": "7c4ff92f8346e68e763c0ea74d3be2312931efbe44f491bf86e08aeffc668b0d",
+          "chunk_length_u16_le": 1024,
+          "offset_u32_le": 0,
+          "total_u32_le": 2048
+        },
+        {
+          "body_bytes": 1039,
+          "body_sha256": "de65d845a3a1b2846750d43be9ce4cfef2b924d455bc30925004ae8c9f036f11",
+          "chunk_length_u16_le": 1024,
+          "offset_u32_le": 1024,
+          "total_u32_le": 2048
+        }
+      ],
+      "current_locator_present": true,
+      "delay_substitute_calls": 2,
+      "distinct_instruction_addresses": 478,
+      "download_task_substitutes": [
+        {
+          "callback_targets": [
+            "4203f2a6",
+            "4203f088"
+          ],
+          "locator_bytes": 29,
+          "locator_sha256": "8a1d7b7b444f8a19bd52e2a83753218c5d3e73b404c13fa5807619eb983f5bce",
+          "start_offset": 0,
+          "task_id_raw": 20
+        }
+      ],
+      "pending_locator_present": false,
+      "reply_statuses": [
+        0
+      ],
+      "stored_chunk_size": 1024,
+      "stored_forward_offset": 2048,
+      "stored_timeout_argument": 180000,
+      "synthetic_callback_length": 2048,
+      "synthetic_identity_and_wifi_regions_preserved": true
+    },
+    {
+      "async_status_bytes": [],
+      "callback_input_read_extent": 2048,
+      "cancellation_substitutes": [],
+      "case": "progress",
+      "chunk_frames": [
+        {
+          "body_bytes": 1039,
+          "body_sha256": "d84bc685dfd5f740c301998004b9ebe168b7315be10802a96ca94141c26f5c79",
+          "chunk_length_u16_le": 1024,
+          "offset_u32_le": 0,
+          "total_u32_le": 1025
+        },
+        {
+          "body_bytes": 1039,
+          "body_sha256": "72b6538fe78d3e1f21df1bf5a981c6f3434760ebafc5a420c8af7f261c1cbf65",
+          "chunk_length_u16_le": 1024,
+          "offset_u32_le": 1024,
+          "total_u32_le": 1025
+        }
+      ],
+      "current_locator_present": true,
+      "delay_substitute_calls": 2,
+      "distinct_instruction_addresses": 478,
+      "download_task_substitutes": [
+        {
+          "callback_targets": [
+            "4203f2a6",
+            "4203f088"
+          ],
+          "locator_bytes": 29,
+          "locator_sha256": "8a1d7b7b444f8a19bd52e2a83753218c5d3e73b404c13fa5807619eb983f5bce",
+          "start_offset": 0,
+          "task_id_raw": 20
+        }
+      ],
+      "pending_locator_present": false,
+      "reply_statuses": [
+        0
+      ],
+      "stored_chunk_size": 1024,
+      "stored_forward_offset": 2048,
+      "stored_timeout_argument": 180000,
+      "synthetic_callback_length": 1025,
+      "synthetic_identity_and_wifi_regions_preserved": true
+    },
+    {
+      "async_status_bytes": [],
+      "callback_input_read_extent": 0,
+      "cancellation_substitutes": [
+        "http_cancel_substitute",
+        "task_message_20"
+      ],
+      "case": "progress_timeout",
+      "chunk_frames": [],
+      "current_locator_present": true,
+      "delay_substitute_calls": 0,
+      "distinct_instruction_addresses": 292,
+      "download_task_substitutes": [
+        {
+          "callback_targets": [
+            "4203f2a6",
+            "4203f088"
+          ],
+          "locator_bytes": 29,
+          "locator_sha256": "8a1d7b7b444f8a19bd52e2a83753218c5d3e73b404c13fa5807619eb983f5bce",
+          "start_offset": 0,
+          "task_id_raw": 20
+        }
+      ],
+      "pending_locator_present": false,
+      "reply_statuses": [
+        0
+      ],
+      "stored_chunk_size": 1024,
+      "stored_forward_offset": 0,
+      "stored_timeout_argument": 180000,
+      "synthetic_identity_and_wifi_regions_preserved": true
+    },
+    {
+      "async_status_bytes": [],
+      "callback_input_read_extent": 0,
+      "cancellation_substitutes": [
+        "http_cancel_substitute",
+        "task_message_20"
+      ],
+      "case": "progress_cancel_flag",
+      "chunk_frames": [],
+      "current_locator_present": true,
+      "delay_substitute_calls": 0,
+      "distinct_instruction_addresses": 295,
+      "download_task_substitutes": [
+        {
+          "callback_targets": [
+            "4203f2a6",
+            "4203f088"
+          ],
+          "locator_bytes": 29,
+          "locator_sha256": "8a1d7b7b444f8a19bd52e2a83753218c5d3e73b404c13fa5807619eb983f5bce",
+          "start_offset": 0,
+          "task_id_raw": 20
+        }
+      ],
+      "pending_locator_present": false,
+      "reply_statuses": [
+        0
+      ],
+      "stored_chunk_size": 1024,
+      "stored_forward_offset": 0,
+      "stored_timeout_argument": 180000,
+      "synthetic_identity_and_wifi_regions_preserved": true
+    },
+    {
+      "async_status_bytes": [],
+      "callback_input_read_extent": 0,
+      "cancellation_substitutes": [],
+      "case": "progress_kind3",
+      "chunk_frames": [],
+      "current_locator_present": true,
+      "delay_substitute_calls": 0,
+      "distinct_instruction_addresses": 349,
+      "download_task_substitutes": [
+        {
+          "callback_targets": [
+            "4203f2a6",
+            "4203f088"
+          ],
+          "locator_bytes": 29,
+          "locator_sha256": "8a1d7b7b444f8a19bd52e2a83753218c5d3e73b404c13fa5807619eb983f5bce",
+          "start_offset": 0,
+          "task_id_raw": 20
+        },
+        {
+          "callback_targets": [
+            "4203f2a6",
+            "4203f088"
+          ],
+          "locator_bytes": 29,
+          "locator_sha256": "8a1d7b7b444f8a19bd52e2a83753218c5d3e73b404c13fa5807619eb983f5bce",
+          "start_offset": 0,
+          "task_id_raw": 20
+        }
+      ],
+      "pending_locator_present": false,
+      "reply_statuses": [
+        0
+      ],
+      "stored_chunk_size": 1024,
+      "stored_forward_offset": 0,
+      "stored_timeout_argument": 180000,
+      "synthetic_identity_and_wifi_regions_preserved": true
+    },
+    {
+      "async_status_bytes": [
+        2
+      ],
+      "callback_input_read_extent": 0,
+      "cancellation_substitutes": [],
+      "case": "completion",
+      "chunk_frames": [],
+      "current_locator_present": false,
+      "delay_substitute_calls": 0,
+      "distinct_instruction_addresses": 350,
+      "download_task_substitutes": [
+        {
+          "callback_targets": [
+            "4203f2a6",
+            "4203f088"
+          ],
+          "locator_bytes": 29,
+          "locator_sha256": "8a1d7b7b444f8a19bd52e2a83753218c5d3e73b404c13fa5807619eb983f5bce",
+          "start_offset": 0,
+          "task_id_raw": 20
+        }
+      ],
+      "pending_locator_present": false,
+      "reply_statuses": [
+        0
+      ],
+      "returned": 1,
+      "stored_chunk_size": 1024,
+      "stored_forward_offset": 0,
+      "stored_timeout_argument": 180000,
+      "synthetic_identity_and_wifi_regions_preserved": true,
+      "synthetic_status_argument": 0
+    },
+    {
+      "async_status_bytes": [],
+      "callback_input_read_extent": 0,
+      "cancellation_substitutes": [],
+      "case": "completion",
+      "chunk_frames": [],
+      "current_locator_present": true,
+      "delay_substitute_calls": 0,
+      "distinct_instruction_addresses": 356,
+      "download_task_substitutes": [
+        {
+          "callback_targets": [
+            "4203f2a6",
+            "4203f088"
+          ],
+          "locator_bytes": 29,
+          "locator_sha256": "8a1d7b7b444f8a19bd52e2a83753218c5d3e73b404c13fa5807619eb983f5bce",
+          "start_offset": 0,
+          "task_id_raw": 20
+        },
+        {
+          "callback_targets": [
+            "4203f2a6",
+            "4203f088"
+          ],
+          "locator_bytes": 29,
+          "locator_sha256": "8a1d7b7b444f8a19bd52e2a83753218c5d3e73b404c13fa5807619eb983f5bce",
+          "start_offset": 0,
+          "task_id_raw": 20
+        }
+      ],
+      "pending_locator_present": false,
+      "reply_statuses": [
+        0
+      ],
+      "returned": 0,
+      "stored_chunk_size": 1024,
+      "stored_forward_offset": 0,
+      "stored_timeout_argument": 180000,
+      "synthetic_identity_and_wifi_regions_preserved": true,
+      "synthetic_status_argument": 1
+    },
+    {
+      "async_status_bytes": [],
+      "callback_input_read_extent": 0,
+      "cancellation_substitutes": [],
+      "case": "completion",
+      "chunk_frames": [],
+      "current_locator_present": true,
+      "delay_substitute_calls": 0,
+      "distinct_instruction_addresses": 270,
+      "download_task_substitutes": [
+        {
+          "callback_targets": [
+            "4203f2a6",
+            "4203f088"
+          ],
+          "locator_bytes": 29,
+          "locator_sha256": "8a1d7b7b444f8a19bd52e2a83753218c5d3e73b404c13fa5807619eb983f5bce",
+          "start_offset": 0,
+          "task_id_raw": 20
+        }
+      ],
+      "pending_locator_present": false,
+      "reply_statuses": [
+        0
+      ],
+      "returned": 0,
+      "stored_chunk_size": 1024,
+      "stored_forward_offset": 0,
+      "stored_timeout_argument": 180000,
+      "synthetic_identity_and_wifi_regions_preserved": true,
+      "synthetic_status_argument": 393226
+    },
+    {
+      "async_status_bytes": [],
+      "callback_input_read_extent": 0,
+      "cancellation_substitutes": [],
+      "case": "completion",
+      "chunk_frames": [],
+      "current_locator_present": true,
+      "delay_substitute_calls": 0,
+      "distinct_instruction_addresses": 273,
+      "download_task_substitutes": [
+        {
+          "callback_targets": [
+            "4203f2a6",
+            "4203f088"
+          ],
+          "locator_bytes": 29,
+          "locator_sha256": "8a1d7b7b444f8a19bd52e2a83753218c5d3e73b404c13fa5807619eb983f5bce",
+          "start_offset": 0,
+          "task_id_raw": 20
+        }
+      ],
+      "pending_locator_present": false,
+      "reply_statuses": [
+        0
+      ],
+      "returned": 0,
+      "stored_chunk_size": 1024,
+      "stored_forward_offset": 0,
+      "stored_timeout_argument": 180000,
+      "synthetic_identity_and_wifi_regions_preserved": true,
+      "synthetic_status_argument": 393229
+    },
+    {
+      "async_status_bytes": [],
+      "callback_input_read_extent": 0,
+      "cancellation_substitutes": [],
+      "case": "completion_cancel_flag",
+      "chunk_frames": [],
+      "current_locator_present": false,
+      "delay_substitute_calls": 0,
+      "distinct_instruction_addresses": 317,
+      "download_task_substitutes": [
+        {
+          "callback_targets": [
+            "4203f2a6",
+            "4203f088"
+          ],
+          "locator_bytes": 29,
+          "locator_sha256": "8a1d7b7b444f8a19bd52e2a83753218c5d3e73b404c13fa5807619eb983f5bce",
+          "start_offset": 0,
+          "task_id_raw": 20
+        }
+      ],
+      "pending_locator_present": false,
+      "reply_statuses": [
+        0
+      ],
+      "returned": 1,
+      "stored_chunk_size": 1024,
+      "stored_forward_offset": 0,
+      "stored_timeout_argument": 180000,
+      "synthetic_identity_and_wifi_regions_preserved": true
+    },
+    {
+      "async_status_bytes": [
+        3
+      ],
+      "callback_input_read_extent": 0,
+      "cancellation_substitutes": [
+        "task_message_20"
+      ],
+      "case": "completion_timeout",
+      "chunk_frames": [],
+      "current_locator_present": false,
+      "delay_substitute_calls": 0,
+      "distinct_instruction_addresses": 358,
+      "download_task_substitutes": [
+        {
+          "callback_targets": [
+            "4203f2a6",
+            "4203f088"
+          ],
+          "locator_bytes": 29,
+          "locator_sha256": "8a1d7b7b444f8a19bd52e2a83753218c5d3e73b404c13fa5807619eb983f5bce",
+          "start_offset": 0,
+          "task_id_raw": 20
+        }
+      ],
+      "pending_locator_present": false,
+      "reply_statuses": [
+        0
+      ],
+      "returned": 1,
+      "stored_chunk_size": 1024,
+      "stored_forward_offset": 0,
+      "stored_timeout_argument": 180000,
+      "synthetic_identity_and_wifi_regions_preserved": true
+    }
+  ],
+  "station_commands_sent": 0
+}

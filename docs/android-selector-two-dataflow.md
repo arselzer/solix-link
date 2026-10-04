@@ -53,6 +53,11 @@ The exact **`+0x160` writer/value, selected asset and plaintext SDK** remain ope
 This is not a charging-pause encoder or station command. Follow a concrete
 context-construction/key-writer path next; this record alone cannot resolve it.
 
+The [bulk-copy follow-up](android-bulk-copy-context.md) resolves one immediate
+`+0x160` candidate as copying caller-supplied bytes. A known destination is a
+stack object; other incoming aliases remain unresolved. It supplies no runtime
+key or charging-pause encoder.
+
 ## Reproduction
 
 ```sh

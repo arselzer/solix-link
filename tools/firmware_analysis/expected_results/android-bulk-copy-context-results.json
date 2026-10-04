@@ -1,0 +1,79 @@
+{
+  "caller_provenance": [
+    {
+      "destination": "local_stack_base",
+      "destination_context_alias_proved": false,
+      "function": "0xdcc88",
+      "source": "local_stack_base + 0x270"
+    },
+    {
+      "destination": "original_arg1",
+      "destination_context_alias_proved": false,
+      "function": "0xdcd60",
+      "known_caller_0xdcd40_destination": "caller_local_stack_base",
+      "source": "original_arg0"
+    },
+    {
+      "destination": "original_arg1",
+      "destination_context_alias_proved": false,
+      "function": "0xdcf0c",
+      "source": "original_arg0"
+    }
+  ],
+  "candidate_store": "0xdd1ac",
+  "candidate_store_bytes": 32,
+  "destination_expression": "original_arg0 + 0x160",
+  "direct_branch_callers": [
+    {
+      "address": "0xdccb4",
+      "function": "0xdcc88",
+      "kind": "bl"
+    },
+    {
+      "address": "0xdcd88",
+      "function": "0xdcd60",
+      "kind": "bl"
+    },
+    {
+      "address": "0xdcf3c",
+      "function": "0xdcf0c",
+      "kind": "bl"
+    }
+  ],
+  "fde_functions_scanned": 2040,
+  "function_spans": [
+    {
+      "end": "0xdd1f4",
+      "sha256": "e63a2ad7ff79a108acdef24aa886fb865cb44b72dd219d1ac9f8fe184ea62034",
+      "start": "0xdd14c"
+    },
+    {
+      "end": "0xdcd60",
+      "sha256": "37d2d9f6994224e786630ba324739d407083f76c20050ff5af23c3741c6e8543",
+      "start": "0xdcc88"
+    },
+    {
+      "end": "0xdce84",
+      "sha256": "0696c8dcefe73cac40635bb5d89c249bde5bb4920e08114c82b97352c84584fa",
+      "start": "0xdcd60"
+    },
+    {
+      "end": "0xdcff0",
+      "sha256": "f349afee6ac10bfd613ab3b5ac68c527012f568bd4e6ccd3875351d19ab0d630",
+      "start": "0xdcf0c"
+    }
+  ],
+  "guest_instructions_executed": 0,
+  "limits": "Direct FDE branch inventory only; indirect calls, runtime aliases, called native effects and protected VM stores remain unresolved.",
+  "negative_checks": [
+    "altered_bulk_store",
+    "altered_source_load",
+    "altered_stack_destination",
+    "altered_fde_span"
+  ],
+  "runtime_key_writer_resolved": false,
+  "source_expression": "original_arg1 + 0x150",
+  "static_instruction_checks": 31,
+  "static_instructions_scanned": 169679,
+  "station_commands_sent": 0
+}

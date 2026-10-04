@@ -123,10 +123,14 @@ serialized payload without executing the radio framing layer. ROM/MMIO stay
 read-only, the per-entry bound remains 3000 instructions, and four negative
 guards reject invalid locator/string/instruction inputs. No station runs.
 
-The next precise boundaries are the radio's **`003d` handler**, its later
-progress/chunk events, and an independent external producer returning complete
-controller settings. This locator path alone supplies no fresh saved-file export
-and no reason to probe a live station with `sysPara`.
+The [radio continuation](radio-asset-download.md) now replays **34 separate
+cases** for 003d admission, download setup, 003e chunk construction and 083d
+completion events. It admits HTTP/HTTPS prefixes and forwards synthetic
+downloaded data toward the controller. The real HTTP worker, callback buffer
+contract, MAIN consumer and end-to-end null-payload retry remain unresolved.
+An independent read-only producer returning complete controller settings is
+still required. This locator path supplies no fresh saved-file export and no
+reason to probe a live station with `sysPara`.
 
 ## Reproduction
 
