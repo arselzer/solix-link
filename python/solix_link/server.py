@@ -9,6 +9,7 @@ import mimetypes
 import os
 import re
 import sqlite3
+from collections.abc import Callable
 from contextlib import asynccontextmanager
 from pathlib import Path
 
@@ -18,6 +19,7 @@ import uvicorn
 
 from .commands import validate_command
 from .charging_policy import ChargingPolicyRequestError, MAX_PREVIEW_BYTES, preview_charging_policy
+from .adaptive_policy import preview_adaptive_policy
 from .diagnostics import gateway_diagnostics
 from .manager import MonitorService
 from .tou import PowerFlowTimeout
@@ -191,8 +193,7 @@ def create_app(service: MonitorService, token: str | None = None, *, allow_contr
         except (OSError, ValueError, sqlite3.Error):
             return JSONResponse({"error": "HistoryUnavailable"}, status_code=503)
 
-    @app.post("/devices/{name}/charging-preview")
-    async def charging_preview(name: str, request: Request):
+    async def evaluate_preview(name: str, request: Request, preview: Callable[[object, object], dict]):
         if name not in service.devices:
             return JSONResponse({"error": "UnknownDevice", "commands_sent": 0}, status_code=404)
         try:
@@ -209,10 +210,18 @@ def create_app(service: MonitorService, token: str | None = None, *, allow_contr
                     result[key] = value
                 return result
             body = json.loads(raw, object_pairs_hook=unique_object)
-            return preview_charging_policy(service.snapshot(name), body)
+            return preview(service.snapshot(name), body)
         except (ChargingPolicyRequestError, ValueError, UnicodeError, RecursionError):
             return JSONResponse({"error": "InvalidChargingPreview", "commands_sent": 0,
                                  "settings_may_have_changed": False}, status_code=400)
+
+    @app.post("/devices/{name}/charging-preview")
+    async def charging_preview(name: str, request: Request):
+        return await evaluate_preview(name, request, preview_charging_policy)
+
+    @app.post("/devices/{name}/adaptive-preview")
+    async def adaptive_preview(name: str, request: Request):
+        return await evaluate_preview(name, request, preview_adaptive_policy)
 
     @app.post("/devices/{name}/commands")
     async def command(name: str, request: Request):

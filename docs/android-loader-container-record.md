@@ -5,6 +5,13 @@ for the same retained Android APK. It follows the ClassLoader preparation
 record into a native container reader. It does not recover a charging-pause
 packet or establish device/model support.
 
+The later [archive-callback proof](android-archive-callback.md) resolves the
+type-3 interface callback to a ZIP entry reader. The runtime key and selected
+asset filename remain unresolved; earlier batch limits below are preserved.
+
+The subsequent [selector-2 analysis](android-selector-two-record.md) completes
+the next 410-byte record's static coverage; its context/key alias remains open.
+
 ## Pinned scope and reproduction
 
 The APK SHA-256 is

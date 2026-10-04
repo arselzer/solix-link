@@ -1,0 +1,310 @@
+{
+  "cases": 11,
+  "complete_settings_export": false,
+  "firmware_sha256": "21ffb746c1e07ecaa9817fa7017807585a00bedbca3f136c650129bb52a4a0c9",
+  "instruction_limit_per_entry": 3000,
+  "internal_frame": {
+    "argument_raw": 0,
+    "filename_field_established": false,
+    "header_words_le": [
+      "0010",
+      "0005",
+      "0009",
+      "0010"
+    ],
+    "payload_bytes": 7,
+    "point_raw": "0098",
+    "request_marker_raw": 1
+  },
+  "limits": "Bounded A1763 asset-transfer startup and internal metadata-frame replay.\n\nActual starter, transfer reset, readiness, descriptor builder, serializer and\nCRC execute with synthetic RAM. Timer APIs, queue insertion, logger, memset\nand UART delivery are explicit substitutes. No worker, file backend, transport,\nradio, firmware boot or station runs. This route changes transfer state.",
+  "main_version": "1.1.4.9",
+  "model": "A1763",
+  "passive_query": false,
+  "physical_transport_verified": false,
+  "results": [
+    {
+      "distinct_instruction_addresses": 161,
+      "existing_timer": false,
+      "frame_bytes": 21,
+      "frame_sha256": "8f3959ec3c2bd07ff474565d1fa22d133dd092196a54e1cff010a246b6291dbe",
+      "input_contents_bytes_read": 0,
+      "queue_requests": 1,
+      "queue_result": 0,
+      "returned": 0,
+      "saved_settings_bytes_read": 0,
+      "settings_and_output_flags_preserved": true,
+      "synthetic_input_variant": 0,
+      "timer_calls": [
+        {
+          "id": 9,
+          "operation": "stop"
+        },
+        {
+          "id": 0,
+          "operation": "stop"
+        },
+        {
+          "callback": "08017add",
+          "operation": "create",
+          "period_argument": 180000
+        },
+        {
+          "id": 7,
+          "operation": "start"
+        }
+      ],
+      "transfer_active": 1
+    },
+    {
+      "distinct_instruction_addresses": 161,
+      "existing_timer": false,
+      "frame_bytes": 21,
+      "frame_sha256": "8f3959ec3c2bd07ff474565d1fa22d133dd092196a54e1cff010a246b6291dbe",
+      "input_contents_bytes_read": 0,
+      "queue_requests": 1,
+      "queue_result": 0,
+      "returned": 0,
+      "saved_settings_bytes_read": 0,
+      "settings_and_output_flags_preserved": true,
+      "synthetic_input_variant": 1,
+      "timer_calls": [
+        {
+          "id": 9,
+          "operation": "stop"
+        },
+        {
+          "id": 0,
+          "operation": "stop"
+        },
+        {
+          "callback": "08017add",
+          "operation": "create",
+          "period_argument": 180000
+        },
+        {
+          "id": 7,
+          "operation": "start"
+        }
+      ],
+      "transfer_active": 1
+    },
+    {
+      "distinct_instruction_addresses": 155,
+      "existing_timer": true,
+      "frame_bytes": 21,
+      "frame_sha256": "8f3959ec3c2bd07ff474565d1fa22d133dd092196a54e1cff010a246b6291dbe",
+      "input_contents_bytes_read": 0,
+      "queue_requests": 1,
+      "queue_result": 0,
+      "returned": 0,
+      "saved_settings_bytes_read": 0,
+      "settings_and_output_flags_preserved": true,
+      "synthetic_input_variant": 0,
+      "timer_calls": [
+        {
+          "id": 9,
+          "operation": "stop"
+        },
+        {
+          "id": 7,
+          "operation": "stop"
+        },
+        {
+          "id": 7,
+          "operation": "start"
+        }
+      ],
+      "transfer_active": 1
+    },
+    {
+      "distinct_instruction_addresses": 155,
+      "existing_timer": true,
+      "frame_bytes": 21,
+      "frame_sha256": "8f3959ec3c2bd07ff474565d1fa22d133dd092196a54e1cff010a246b6291dbe",
+      "input_contents_bytes_read": 0,
+      "queue_requests": 1,
+      "queue_result": 0,
+      "returned": 0,
+      "saved_settings_bytes_read": 0,
+      "settings_and_output_flags_preserved": true,
+      "synthetic_input_variant": 1,
+      "timer_calls": [
+        {
+          "id": 9,
+          "operation": "stop"
+        },
+        {
+          "id": 7,
+          "operation": "stop"
+        },
+        {
+          "id": 7,
+          "operation": "start"
+        }
+      ],
+      "transfer_active": 1
+    },
+    {
+      "distinct_instruction_addresses": 161,
+      "existing_timer": false,
+      "frame_bytes": 21,
+      "frame_sha256": "8f3959ec3c2bd07ff474565d1fa22d133dd092196a54e1cff010a246b6291dbe",
+      "input_contents_bytes_read": 0,
+      "queue_requests": 1,
+      "queue_result": 1,
+      "returned": 1,
+      "saved_settings_bytes_read": 0,
+      "settings_and_output_flags_preserved": true,
+      "synthetic_input_variant": 0,
+      "timer_calls": [
+        {
+          "id": 9,
+          "operation": "stop"
+        },
+        {
+          "id": 0,
+          "operation": "stop"
+        },
+        {
+          "callback": "08017add",
+          "operation": "create",
+          "period_argument": 180000
+        },
+        {
+          "id": 7,
+          "operation": "start"
+        }
+      ],
+      "transfer_active": 1
+    },
+    {
+      "distinct_instruction_addresses": 161,
+      "existing_timer": false,
+      "frame_bytes": 21,
+      "frame_sha256": "8f3959ec3c2bd07ff474565d1fa22d133dd092196a54e1cff010a246b6291dbe",
+      "input_contents_bytes_read": 0,
+      "queue_requests": 1,
+      "queue_result": 1,
+      "returned": 1,
+      "saved_settings_bytes_read": 0,
+      "settings_and_output_flags_preserved": true,
+      "synthetic_input_variant": 1,
+      "timer_calls": [
+        {
+          "id": 9,
+          "operation": "stop"
+        },
+        {
+          "id": 0,
+          "operation": "stop"
+        },
+        {
+          "callback": "08017add",
+          "operation": "create",
+          "period_argument": 180000
+        },
+        {
+          "id": 7,
+          "operation": "start"
+        }
+      ],
+      "transfer_active": 1
+    },
+    {
+      "distinct_instruction_addresses": 155,
+      "existing_timer": true,
+      "frame_bytes": 21,
+      "frame_sha256": "8f3959ec3c2bd07ff474565d1fa22d133dd092196a54e1cff010a246b6291dbe",
+      "input_contents_bytes_read": 0,
+      "queue_requests": 1,
+      "queue_result": 1,
+      "returned": 1,
+      "saved_settings_bytes_read": 0,
+      "settings_and_output_flags_preserved": true,
+      "synthetic_input_variant": 0,
+      "timer_calls": [
+        {
+          "id": 9,
+          "operation": "stop"
+        },
+        {
+          "id": 7,
+          "operation": "stop"
+        },
+        {
+          "id": 7,
+          "operation": "start"
+        }
+      ],
+      "transfer_active": 1
+    },
+    {
+      "distinct_instruction_addresses": 155,
+      "existing_timer": true,
+      "frame_bytes": 21,
+      "frame_sha256": "8f3959ec3c2bd07ff474565d1fa22d133dd092196a54e1cff010a246b6291dbe",
+      "input_contents_bytes_read": 0,
+      "queue_requests": 1,
+      "queue_result": 1,
+      "returned": 1,
+      "saved_settings_bytes_read": 0,
+      "settings_and_output_flags_preserved": true,
+      "synthetic_input_variant": 1,
+      "timer_calls": [
+        {
+          "id": 9,
+          "operation": "stop"
+        },
+        {
+          "id": 7,
+          "operation": "stop"
+        },
+        {
+          "id": 7,
+          "operation": "start"
+        }
+      ],
+      "transfer_active": 1
+    },
+    {
+      "case": "null_pointer",
+      "distinct_instruction_addresses": 8,
+      "frame_bytes": 0,
+      "frame_sha256": null,
+      "input_contents_bytes_read": 0,
+      "queue_requests": 0,
+      "returned": 0,
+      "saved_settings_bytes_read": 0,
+      "settings_and_output_flags_preserved": true,
+      "timer_calls": [],
+      "transfer_active": 0
+    },
+    {
+      "case": "busy",
+      "distinct_instruction_addresses": 11,
+      "frame_bytes": 0,
+      "frame_sha256": null,
+      "input_contents_bytes_read": 0,
+      "queue_requests": 0,
+      "returned": 0,
+      "saved_settings_bytes_read": 0,
+      "settings_and_output_flags_preserved": true,
+      "timer_calls": [],
+      "transfer_active": 1
+    },
+    {
+      "case": "not_ready",
+      "distinct_instruction_addresses": 19,
+      "frame_bytes": 0,
+      "frame_sha256": null,
+      "input_contents_bytes_read": 0,
+      "queue_requests": 0,
+      "returned": 0,
+      "saved_settings_bytes_read": 0,
+      "settings_and_output_flags_preserved": true,
+      "timer_calls": [],
+      "transfer_active": 0
+    }
+  ],
+  "station_commands_sent": 0
+}

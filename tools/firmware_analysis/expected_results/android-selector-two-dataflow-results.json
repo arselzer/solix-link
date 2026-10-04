@@ -1,0 +1,127 @@
+{
+  "additional_instruction_checks": 43,
+  "allocation_success_verified": false,
+  "guest_instructions_executed": 0,
+  "inherited_instruction_checks": 984,
+  "limits": "Bounded static expression flow for the pinned selector-2 loader record.\n\nModels operand widths and local copies, never runtime memory or native calls.\nBoth branch paths are retained. Dereferences and malloc results remain symbolic;\nno allocation success, disjointness, key value or whole-program absence follows.",
+  "max_paths": 2,
+  "negative_checks": [
+    {
+      "case": "frame_byte_view_instruction",
+      "rejected": true
+    },
+    {
+      "case": "native_pointer_return_instruction",
+      "rejected": true
+    },
+    {
+      "case": "local_byte_alias",
+      "rejected": true
+    },
+    {
+      "case": "indirect_store_width",
+      "rejected": true
+    }
+  ],
+  "paths": [
+    {
+      "allocation_calls": [
+        {
+          "size_argument": 96,
+          "token_offset": 329
+        }
+      ],
+      "branch": "non_null",
+      "indirect_stores": [
+        {
+          "target": "add(load64(add(context,0x128)),0x48)",
+          "token_offset": 310,
+          "value": "add32(load32(add(load64(add(context,0x128)),0x48)),0x1)",
+          "width": 4
+        },
+        {
+          "target": "add(load64(add(load64(add(context,0x128)),0x58)),multiply(0x8,sxt32(load32(add(load64(add(context,0x128)),0x48)))))",
+          "token_offset": 373,
+          "value": "malloc@329",
+          "width": 8
+        },
+        {
+          "target": "add(malloc@329,0x28)",
+          "token_offset": 408,
+          "value": "input_pointer",
+          "width": 8
+        }
+      ],
+      "static_steps": 78,
+      "terminal_operand_stack_empty": true
+    },
+    {
+      "allocation_calls": [
+        {
+          "size_argument": 96,
+          "token_offset": 118
+        },
+        {
+          "size_argument": 2040,
+          "token_offset": 210
+        },
+        {
+          "size_argument": 96,
+          "token_offset": 329
+        }
+      ],
+      "branch": "null",
+      "indirect_stores": [
+        {
+          "target": "add(context,0x128)",
+          "token_offset": 135,
+          "value": "malloc@118",
+          "width": 8
+        },
+        {
+          "target": "add(malloc@118,0x38)",
+          "token_offset": 166,
+          "value": "0xff",
+          "width": 4
+        },
+        {
+          "target": "add(malloc@118,0x48)",
+          "token_offset": 197,
+          "value": "0x0",
+          "width": 4
+        },
+        {
+          "target": "add(load64(add(context,0x128)),0x58)",
+          "token_offset": 250,
+          "value": "malloc@210",
+          "width": 8
+        },
+        {
+          "target": "add(load64(add(context,0x128)),0x48)",
+          "token_offset": 310,
+          "value": "add32(load32(add(load64(add(context,0x128)),0x48)),0x1)",
+          "width": 4
+        },
+        {
+          "target": "add(malloc@210,multiply(0x8,sxt32(load32(add(load64(add(context,0x128)),0x48)))))",
+          "token_offset": 373,
+          "value": "malloc@329",
+          "width": 8
+        },
+        {
+          "target": "add(malloc@329,0x28)",
+          "token_offset": 408,
+          "value": "input_pointer",
+          "width": 8
+        }
+      ],
+      "static_steps": 113,
+      "terminal_operand_stack_empty": true
+    }
+  ],
+  "record_sha256": "556013fd0bef4072440062da80d14c2d782e5d6ec66691687107f0c2251477ba",
+  "runtime_aliases_resolved": false,
+  "runtime_key_writer_resolved": false,
+  "runtime_memory_evaluated": false,
+  "station_commands_sent": 0
+}

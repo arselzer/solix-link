@@ -7,18 +7,24 @@ import re
 import time
 
 from .charging_policy import ChargingPolicyRequestError, MAX_PREVIEW_BYTES, preview_charging_policy
+from .adaptive_policy import preview_adaptive_policy
 from .charging_preview_cli import read_document
 
 
 def manual_preview(snapshot: dict, request_file: Path, *, price_value: str = "", price_age: str = "",
-                   export_value: str = "", export_age: str = "", now: float | None = None) -> dict:
+                   export_value: str = "", export_age: str = "", now: float | None = None,
+                   adaptive: bool = False) -> dict:
     """Keep file signals, or replace explicitly paired manual value/age inputs."""
     now = time.time() if now is None else now
     request = read_document(request_file, MAX_PREVIEW_BYTES)
     # Validate the complete original request even when overrides are supplied.
-    preview_charging_policy(snapshot, request, now=now)
+    preview = preview_adaptive_policy if adaptive else preview_charging_policy
+    preview(snapshot, request, now=now)
+    state = request["state"].copy() if adaptive else None
     request = {"config": request["config"].copy(),
                "signals": {key: value.copy() for key, value in request["signals"].items()}}
+    if adaptive:
+        request["state"] = state
     for role, value_text, age_text, minimum, maximum in (
         ("price", price_value, price_age, -1000, 1000),
         ("export", export_value, export_age, -20000, 20000),
@@ -34,4 +40,4 @@ def manual_preview(snapshot: dict, request_file: Path, *, price_value: str = "",
         if not minimum <= value <= maximum or not 0 <= age <= 86400:
             raise ChargingPolicyRequestError()
         request["signals"][role].update(value=value, timestamp=now - age)
-    return preview_charging_policy(snapshot, request, now=now)
+    return preview(snapshot, request, now=now)

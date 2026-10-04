@@ -35,6 +35,10 @@ Home Assistant integration for the local gateway.
   reserve protection and a failure latch; installed automations start disabled.
 - Read-only charging-policy previews in the browser, terminal, API and CLI; proposals
   send no commands and do not activate automations.
+- Opt-in [adaptive surplus/price previews](docs/adaptive-policy-preview.md) in
+  Python, API, CLI and terminal; bounded charging steps and candidate Gen 2 battery-use plans.
+  [Offline timeline replay](docs/policy-timeline-replay.md) exports JSON or standalone SVG.
+  Adaptive Vue source is prepared; its browser bundle still needs rebuilding.
 - Optional private SQLite history with saved battery/AC-power charts, estimated
   AC energy and coverage; gaps and process restarts stop integration. Includes
   [HA diagnostics](docs/home-assistant-history.md) and
@@ -177,6 +181,8 @@ web-dashboard guide. Commit Vue sources and compiled Python assets together.
   resolves radio/app candidates and diagnostic tracking side effects.
   [Additional status replay](docs/gen2-status-export-limits.md) closes the `FA`
   export candidate and demonstrates saved-state collisions.
+  [All 19 ordinary callbacks](docs/gen2-full-status-inventory.md) now have bounded
+  replay evidence; complete settings restoration remains unsupported.
 - [Charging and reserve validation](docs/c1000-charging-and-reserve-validation.md):
   native fast charge, lower charging power, reserve floor and cached reconnect.
 - [Native display/memory validation](docs/c1000-native-preferences-validation.md):
@@ -193,6 +199,20 @@ web-dashboard guide. Commit Vue sources and compiled Python assets together.
   [ClassLoader tracing](docs/android-loader-classloader-boundary.md) and
   [container-record analysis](docs/android-loader-container-record.md) identify
   DEX preparation and its unresolved runtime key without executing Android/JNI code.
+- [Archive callback continuation](docs/android-archive-callback.md): resolves the
+  type-3 `classes.dex` reader; runtime key and charging-pause encoder remain open.
+- [Selector-2 record](docs/android-selector-two-record.md): full static coverage
+  of the next loader record, context access and allocation boundaries.
+  [Dataflow follow-up](docs/android-selector-two-dataflow.md) inventories its
+  pointer-array stores; the runtime transform key remains unresolved.
+- [Factory aggregate](docs/gen2-factory-aggregate-export-limits.md): additional
+  indirect status replay; cache/timer side effects and incomplete settings export.
+  [Asset-transfer startup and replies](docs/gen2-asset-transfer-export-limits.md) supply
+  another bounded file-service trace, with no complete export route established.
+- [Energy boundaries](docs/gen2-energy-epochs.md): actual reset/width-wrap replay
+  and pure offline power comparisons, without calibrated lifetime-energy claims.
+- [Server research progress](docs/server-research-progress.md): current findings,
+  focused verification and remaining hardware requirements.
 - [Original charging gates](docs/c1000-charge-gate-rules.md): input-event
   priority and the second charging channel; no external bypass selector found.
   [Saved-limit validation](docs/c1000-saved-charge-validation.md) distinguishes

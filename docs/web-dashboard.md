@@ -49,6 +49,12 @@ HA helpers, enables automation or sends a setting. Positive-export confirmation
 does not independently validate a sensor. There is no Apply action for proposals.
 See [guards and request schema](charging-policy-preview.md).
 
+Prepared Vue source also offers adaptive solar-surplus and price-driven battery
+use, simulated overrides/latch/cooldown and candidate-plan explanations. The
+server research environment has no Node runtime: **the bundled assets and browser
+screenshots still show the earlier fixed form**. Rebuild and run synthetic browser
+checks before publishing that UI. See [the adaptive contract](adaptive-policy-preview.md).
+
 Controls follow the selected station's advertised capabilities. Each change
 requires a review and explicit confirmation; offline or busy controls are
 disabled. Charging settings and draft hourly tariff plans use the same strict

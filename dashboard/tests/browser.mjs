@@ -154,6 +154,27 @@ try {
   assert.equal(await page.getByTestId('command-review').count(), 0);
   assert.match(await page.getByTestId('gateway-notice').textContent(), /Connected to the local gateway/);
   await page.getByTestId('charging-preview-panel').screenshot({ path: `${root}/docs/images/web-charging-preview.png` });
+  await change({ preview_power_w: 300, preview_slot_count: 0 });
+  await refresh();
+  await page.getByTestId('preview-policy').selectOption('surplus');
+  await page.getByTestId('preview-export').fill('900');
+  await page.getByTestId('run-charging-preview').click();
+  await page.getByTestId('charging-preview-result').filter({ hasText: 'Proposed decision' }).waitFor();
+  assert.match(await page.getByTestId('charging-preview-result').textContent(), /Charging power → 500 W/);
+  assert.equal(posts, beforePreview);
+  assert.equal(await page.getByTestId('command-review').count(), 0);
+  cases++; console.log(`Scenario ${cases} passed`);
+
+  await page.getByTestId('preview-policy').selectOption('price_tou');
+  await page.getByTestId('preview-price').fill('0.50');
+  await page.getByTestId('run-charging-preview').click();
+  await page.getByTestId('charging-preview-result').filter({ hasText: 'peak / battery use' }).waitFor();
+  await page.getByTestId('preview-override').selectOption('hold');
+  await page.getByTestId('run-charging-preview').click();
+  await page.getByTestId('charging-preview-result').filter({ hasText: 'Manual hold blocks proposals' }).waitFor();
+  assert.equal(posts, beforePreview);
+  await page.getByTestId('preview-policy').selectOption('fixed');
+  await change({ preview_power_w: null, preview_slot_count: null });
   await change({ standard: false });
   await refresh();
   cases++; console.log(`Scenario ${cases} passed`);

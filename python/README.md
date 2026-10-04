@@ -64,6 +64,12 @@ the browser and `POST /devices/{name}/charging-preview`. It proposes saved
 watts/reserve without commands or HA changes; see the
 [schema and freshness guards](../docs/charging-policy-preview.md).
 
+The separate [adaptive contract](../docs/adaptive-policy-preview.md) adds bounded
+surplus steps and price-driven TOU candidates through `--adaptive`, terminal F6
+and `POST /devices/{name}/adaptive-preview`. These remain read-only with no
+executor. [Timeline replay](../docs/policy-timeline-replay.md) accepts saved frames
+and exports JSON or SVG; it never fabricates charging/SOC response from a proposal.
+
 ## Terminal dashboard and HA gateway
 
 ```sh

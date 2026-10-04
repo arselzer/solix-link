@@ -27,12 +27,17 @@ def read_document(path: Path, limit: int) -> object:
         raise ChargingPolicyRequestError() from None
 
 
-def offline_preview(snapshot_file: Path, request_file: Path) -> dict:
-    return preview_charging_policy(read_document(snapshot_file, 1_048_576),
-                                   read_document(request_file, MAX_PREVIEW_BYTES))
+def offline_preview(snapshot_file: Path, request_file: Path, *, adaptive: bool = False) -> dict:
+    if adaptive:
+        from .adaptive_policy import preview_adaptive_policy
+        preview = preview_adaptive_policy
+    else:
+        preview = preview_charging_policy
+    return preview(read_document(snapshot_file, 1_048_576),
+                   read_document(request_file, MAX_PREVIEW_BYTES))
 
 
-def native_preview(directory: Path, name: str | None, request_file: Path) -> dict:
+def native_preview(directory: Path, name: str | None, request_file: Path, *, adaptive: bool = False) -> dict:
     from .ap_service_config import load_ap_service
     from .ap_service_monitor import APServiceMonitor
     config = load_ap_service(directory / "ap_service.json")
@@ -40,4 +45,9 @@ def native_preview(directory: Path, name: str | None, request_file: Path) -> dic
     selected = name or config.name
     if selected not in monitor.devices:
         raise ValueError("Unknown configured station")
-    return preview_charging_policy(monitor.snapshot(selected), read_document(request_file, MAX_PREVIEW_BYTES))
+    if adaptive:
+        from .adaptive_policy import preview_adaptive_policy
+        preview = preview_adaptive_policy
+    else:
+        preview = preview_charging_policy
+    return preview(monitor.snapshot(selected), read_document(request_file, MAX_PREVIEW_BYTES))

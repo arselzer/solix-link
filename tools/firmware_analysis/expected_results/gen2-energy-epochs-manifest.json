@@ -1,0 +1,10 @@
+{
+  "firmware_sha256": "21ffb746c1e07ecaa9817fa7017807585a00bedbca3f136c650129bb52a4a0c9",
+  "python": "3.14.4",
+  "unicorn": "2.1.4",
+  "sources": {
+    "emulate_energy_counters.py": "240b5c5f35621c00e93023cb9b52dc94148a65382d7822658fc47bc5ce8a2ab3",
+    "emulate_gen2_energy_epochs.py": "aab66024e3292df8cfe1e390bc559c4aee6ad26a79b0ea9d743225a48b9f1032",
+    "replay_io.py": "731d795a5ec37e2cf12b809b7122eaf7a29d84c21a2ecd43fafa3e2f8d962d30"
+  }
+}

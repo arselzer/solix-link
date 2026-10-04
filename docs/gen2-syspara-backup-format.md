@@ -129,6 +129,14 @@ wrapper, indirect call or generic filesystem service exists. The firmware's
 FTP-named chunk routines do not establish a request accepting this filename;
 no raw filename query or factory probe is proposed.
 
+The subsequent [asset-transfer startup replay](gen2-asset-transfer-export-limits.md)
+executes one FTP-named route and its initial descriptor/serializer. It queues
+a fixed request without reading the pointed-to contents or saved settings,
+and changes transfer/timer state. Its thirty-case reply/timeout continuation
+follows the supplied locator into an outbound radio `003d` request without
+reading controller settings. A complete generic file-export route remains
+unestablished; the radio handler and later chunk events are still unexecuted.
+
 The public radio **0.3.3.0** image has no discovered literal `sysPara`, `sysP`,
 disaster or storm string in its mapped printable data. This is only a string
 search, not absence of support. Its named device-parameter/MQTT-file paths and

@@ -4,6 +4,10 @@ This follow-up uses C1000 Gen 2 A1763 MainMcu **1.1.4.9**, SHA-256
 `21ffb746c1e07ecaa9817fa7017807585a00bedbca3f136c650129bb52a4a0c9`.
 It executes serializers in synthetic RAM only. No station commands were sent.
 
+The later [full inventory](gen2-full-status-inventory.md) executes all 19 ordinary
+callbacks and extends twelve saved-state collisions across the complete set.
+The fifteen-callback limit below describes this earlier batch.
+
 ## The additional FA callback
 
 The ordinary full-status descriptor table contains 19 fields. `FA` is type

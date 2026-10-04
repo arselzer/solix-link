@@ -22,6 +22,8 @@ class Demo:
         self.dc_output = 0
         self.ac_output = 1
         self.ac_countdown = 0
+        self.preview_power_w = None
+        self.preview_slot_count = None
     async def start(self): pass
     async def stop(self): pass
     def supported_commands(self, name):
@@ -49,6 +51,10 @@ class Demo:
                    "tou_schedule_slot_count": 2 if c1000 else 0, "device_timeout_minutes": 0,
                    "software_version": "code 151" if original else "1.1.4.9" if c1000 else "2.1.6.4", "software_version_module": "0.3.3.0"}
         if c1000:
+            if self.preview_power_w is not None:
+                metrics["ac_charging_power_limit_w"] = self.preview_power_w
+            if self.preview_slot_count is not None:
+                metrics["tou_schedule_slot_count"] = self.preview_slot_count
             metrics.update(display_brightness=1, display_timeout_seconds=30, port_memory_enabled=1, pv_weak_light_locked=0,
                            ac_output_timeout_seconds=0, dc_output_timeout_seconds=0,
                            clock_screen_enabled=0, clock_screen_transfer_status_raw=0,

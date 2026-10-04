@@ -1,0 +1,91 @@
+{
+  "model": "A1763",
+  "main_version": "1.1.4.9",
+  "firmware_sha256": "21ffb746c1e07ecaa9817fa7017807585a00bedbca3f136c650129bb52a4a0c9",
+  "selector": 1,
+  "property": "0016",
+  "callback": "0802eec4",
+  "cases": 7,
+  "results": [
+    {
+      "seed": 0,
+      "allocated_upgrade_timer": false,
+      "reply_bytes": 21,
+      "data_bytes": 10,
+      "data_sha256": "01d448afd928065458cf670b60f5a594d735af0172c8d67f22a81680132681ca",
+      "backup_record_bytes_read": 0,
+      "settings_and_output_flags_preserved": true,
+      "upgrade_timer_status": 2,
+      "cache_written_addresses": [
+        "20000228"
+      ],
+      "distinct_instruction_addresses": 259
+    },
+    {
+      "seed": 0,
+      "allocated_upgrade_timer": true,
+      "reply_bytes": 21,
+      "data_bytes": 10,
+      "data_sha256": "01d448afd928065458cf670b60f5a594d735af0172c8d67f22a81680132681ca",
+      "backup_record_bytes_read": 0,
+      "settings_and_output_flags_preserved": true,
+      "upgrade_timer_status": 3,
+      "cache_written_addresses": [
+        "20000228"
+      ],
+      "distinct_instruction_addresses": 272
+    },
+    {
+      "seed": 1,
+      "allocated_upgrade_timer": false,
+      "reply_bytes": 21,
+      "data_bytes": 10,
+      "data_sha256": "01d448afd928065458cf670b60f5a594d735af0172c8d67f22a81680132681ca",
+      "backup_record_bytes_read": 0,
+      "settings_and_output_flags_preserved": true,
+      "upgrade_timer_status": 2,
+      "cache_written_addresses": [
+        "20000228"
+      ],
+      "distinct_instruction_addresses": 259
+    },
+    {
+      "seed": 1,
+      "allocated_upgrade_timer": true,
+      "reply_bytes": 21,
+      "data_bytes": 10,
+      "data_sha256": "01d448afd928065458cf670b60f5a594d735af0172c8d67f22a81680132681ca",
+      "backup_record_bytes_read": 0,
+      "settings_and_output_flags_preserved": true,
+      "upgrade_timer_status": 3,
+      "cache_written_addresses": [
+        "20000228"
+      ],
+      "distinct_instruction_addresses": 272
+    },
+    {
+      "saved_record_offset_changed": 0,
+      "identical_reply": true,
+      "backup_record_bytes_read": 0,
+      "settings_and_output_flags_preserved": true
+    },
+    {
+      "saved_record_offset_changed": 9,
+      "identical_reply": true,
+      "backup_record_bytes_read": 0,
+      "settings_and_output_flags_preserved": true
+    },
+    {
+      "saved_record_offset_changed": 27,
+      "identical_reply": true,
+      "backup_record_bytes_read": 0,
+      "settings_and_output_flags_preserved": true
+    }
+  ],
+  "instruction_limit_per_case": 50000,
+  "station_commands_sent": 0,
+  "complete_settings_export": false,
+  "physical_transport_verified": false,
+  "passive_query": false,
+  "limits": "Bounded replay of factory selector 1/property 0016 with synthetic RAM.\n\nActual aggregate/getters/parser/CRC execute; inherited memory, logger and\nring-service substitutes remain. No transport, firmware boot or station runs.\nThis factory route stops an upgrade timer and refreshes cache: not a passive API."
+}

@@ -128,6 +128,49 @@ def test_headless_history_and_manual_preview_are_fixed_and_read_only(tmp_path):
     asyncio.run(run())
 
 
+def test_terminal_adaptive_selector_renders_candidate_plan_without_transport_writes(tmp_path):
+    pytest.importorskip("textual")
+    from textual.widgets import Input, RichLog, Select
+    from test_adaptive_policy import request as adaptive_request
+    class AdaptiveGateway(FakeGateway):
+        def snapshot(self, name):
+            result = super().snapshot(name)
+            result["metrics"].update(tou_schedule_slot_count=0, backup_reserve_percentage=20)
+            return result
+    async def run():
+        client = AdaptiveGateway()
+        backend = backend_for(client)
+        app = create_app(backend=backend)
+        body = adaptive_request("price_tou")
+        now = time.time()
+        body["state"]["last_changed_at"] = now - 300
+        body["signals"]["price"]["timestamp"] = now
+        path = tmp_path / "adaptive-policy.json"
+        path.write_text(json.dumps(body))
+        raw = path.read_bytes()
+        async with app.run_test(size=(110, 44)) as pilot:
+            await pilot.pause()
+            await pilot.press("ctrl+o")
+            await pilot.pause()
+            await pilot.press("f6")
+            await pilot.pause()
+            app.query_one("#preview-kind", Select).value = "adaptive"
+            app.query_one("#preview-file", Input).value = str(path)
+            await pilot.pause()
+            app.action_preview()
+            await pilot.pause()
+            rendered = log_text(app.query_one("#preview-result", RichLog))
+            assert "BATTERY" in rendered and "Candidate TOU plan" in rendered
+            assert "peak" in rendered and "Commands sent: 0" in rendered
+            assert "PRIVATE" not in rendered and path.read_bytes() == raw
+            app.query_one("#preview-kind", Select).value = "fixed"
+            await pilot.pause()
+            assert "BATTERY" not in log_text(app.query_one("#preview-result", RichLog))
+            assert all(call[0] in ("devices", "snapshot", "history") for call in client.calls)
+            await app.action_quit()
+    asyncio.run(run())
+
+
 def test_late_history_is_discarded_after_disconnect():
     pytest.importorskip("textual")
     from textual.widgets import DataTable

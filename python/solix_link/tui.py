@@ -1049,6 +1049,9 @@ def create_app(config_path: Path = DEFAULT_CONFIG, ap_service_directory: Path | 
                     with TabPane("Preview", id="preview"):
                         with VerticalScroll(id="preview-scroll"):
                             yield Static("Read-only charging policy preview · commands sent: 0\nUses the local clock and current cached snapshot. Simulated armed/latch values in the file do not enable automation.", classes="hint", markup=False)
+                            yield Select([("Fixed charging preview", "fixed"),
+                                          ("Adaptive surplus / price TOU preview", "adaptive")],
+                                         value="fixed", allow_blank=False, id="preview-kind")
                             yield Label("Policy request JSON file (maximum 4 KiB)", classes="form-label")
                             yield Input(placeholder="/path/to/policy-request.json", id="preview-file")
                             yield Static("Optional manual observations: provide value and age together, or leave both blank to keep the file signal. Age 0 explicitly means observed now.", classes="hint", markup=False)
@@ -1532,6 +1535,16 @@ def create_app(config_path: Path = DEFAULT_CONFIG, ap_service_directory: Path | 
             self.query_one("#preview-state", Static).update("Inputs changed; no preview is current.")
             self.update_buttons()
 
+        @on(Select.Changed, "#preview-kind")
+        def preview_kind_changed(self, event: Any) -> None:
+            if not self.is_mounted:
+                return
+            self._preview_generation += 1
+            self.preview_loading = self._has_preview = False
+            self.query_one("#preview-result", RichLog).clear()
+            self.query_one("#preview-state", Static).update("Preview type changed. Use its matching request file; no commands are sent.")
+            self.update_buttons()
+
         def action_preview(self) -> None:
             if backend.target is None or self.selected != backend.target.key:
                 return
@@ -1545,7 +1558,8 @@ def create_app(config_path: Path = DEFAULT_CONFIG, ap_service_directory: Path | 
             fields = {"price_value": self.query_one("#preview-price", Input).value,
                       "price_age": self.query_one("#preview-price-age", Input).value,
                       "export_value": self.query_one("#preview-export", Input).value,
-                      "export_age": self.query_one("#preview-export-age", Input).value}
+                      "export_age": self.query_one("#preview-export-age", Input).value,
+                      "adaptive": self.query_one("#preview-kind", Select).value == "adaptive"}
             async def preview() -> None:
                 try:
                     result = await asyncio.to_thread(manual_preview, snapshot, path, **fields)
@@ -1557,6 +1571,9 @@ def create_app(config_path: Path = DEFAULT_CONFIG, ap_service_directory: Path | 
                     log.write("Reasons: " + ", ".join(result["reasons"]))
                     log.write("Current settings: " + str(result["current_settings"]))
                     log.write("Proposed settings (never applied): " + str(result["proposed_settings"]))
+                    if fields["adaptive"]:
+                        log.write("Candidate TOU plan (never applied): " + str(result["proposed_plan"]))
+                        log.write("Previous-preview state only; no executor or physical prediction.")
                     log.write(f"Telemetry age: {result['telemetry_age_seconds']}s · local clock")
                     self.query_one("#preview-state", Static).update("Preview calculated at " + time.strftime("%H:%M:%S") + " local time; commands sent: 0.")
                     self._has_preview = True

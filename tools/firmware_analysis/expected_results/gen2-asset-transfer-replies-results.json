@@ -1,0 +1,934 @@
+{
+  "cases": 30,
+  "complete_settings_export": false,
+  "firmware_sha256": "21ffb746c1e07ecaa9817fa7017807585a00bedbca3f136c650129bb52a4a0c9",
+  "instruction_limit_per_entry": 3000,
+  "limits": "Bounded A1763 asset replies, timeout, radio request and serializer replay.\n\nActual main-controller instructions execute with synthetic RAM. Timer APIs,\nqueue insertion, libc, allocation, logging, application callbacks, radio\nframing/delivery and UART delivery are explicit substitutes. No queue worker,\nfile backend, radio firmware, network, firmware boot or station runs. Asset\nstate changes are not passive readback; application callbacks may change state\noutside this scope. This is not a generic file export or a transport test.",
+  "main_version": "1.1.4.9",
+  "model": "A1763",
+  "negative_cases_rejected": [
+    "empty_locator",
+    "oversize_locator",
+    "unterminated_libc_input",
+    "unlisted_instruction_entry"
+  ],
+  "passive_query": false,
+  "physical_transport_verified": false,
+  "radio_serializer": {
+    "a1_value_u32_le": 0,
+    "a2_value_u16_le": 1024,
+    "a3_length_encoding": "u16_le",
+    "external_opcode_established": false,
+    "internal_command_raw": "003d",
+    "internal_function_raw": "0010",
+    "source": "supplied locator string"
+  },
+  "results": [
+    {
+      "application_callback_substitutes": [],
+      "case": "success",
+      "descriptors": [
+        {
+          "callback": "08021e31",
+          "lane": 2,
+          "length_or_command_raw": 18,
+          "pointer": 0,
+          "serializer": "080263ed",
+          "timeout_argument": 14000
+        }
+      ],
+      "distinct_instruction_addresses": 58,
+      "initial_retry_byte": 0,
+      "main_frame_lengths": [
+        16
+      ],
+      "main_frame_sha256": [
+        "730a228e6033044c932adafd61610b5db57ece8cc7eea89fb8c21910a25c34de"
+      ],
+      "radio_payload_lengths": [],
+      "radio_payload_sha256": [],
+      "saved_settings_bytes_read": 0,
+      "second_retry_byte": 0,
+      "settings_and_output_flags_preserved_with_callbacks_substituted": true,
+      "stage_raw": 16,
+      "timer_calls": [],
+      "transfer_active": 1
+    },
+    {
+      "application_callback_substitutes": [],
+      "case": "no_response",
+      "descriptors": [
+        {
+          "callback": "08021f05",
+          "lane": 2,
+          "length_or_command_raw": 16,
+          "pointer": 536872176,
+          "serializer": "08026559",
+          "timeout_argument": 600
+        }
+      ],
+      "distinct_instruction_addresses": 114,
+      "initial_retry_byte": 1,
+      "main_frame_lengths": [
+        21
+      ],
+      "main_frame_sha256": [
+        "8f3959ec3c2bd07ff474565d1fa22d133dd092196a54e1cff010a246b6291dbe"
+      ],
+      "radio_payload_lengths": [],
+      "radio_payload_sha256": [],
+      "saved_settings_bytes_read": 0,
+      "second_retry_byte": 0,
+      "settings_and_output_flags_preserved_with_callbacks_substituted": true,
+      "stage_raw": 16,
+      "timer_calls": [],
+      "transfer_active": 1
+    },
+    {
+      "application_callback_substitutes": [],
+      "case": "bad_marker",
+      "descriptors": [
+        {
+          "callback": "08021f05",
+          "lane": 2,
+          "length_or_command_raw": 16,
+          "pointer": 536872176,
+          "serializer": "08026559",
+          "timeout_argument": 600
+        }
+      ],
+      "distinct_instruction_addresses": 117,
+      "initial_retry_byte": 1,
+      "main_frame_lengths": [
+        21
+      ],
+      "main_frame_sha256": [
+        "8f3959ec3c2bd07ff474565d1fa22d133dd092196a54e1cff010a246b6291dbe"
+      ],
+      "radio_payload_lengths": [],
+      "radio_payload_sha256": [],
+      "saved_settings_bytes_read": 0,
+      "second_retry_byte": 0,
+      "settings_and_output_flags_preserved_with_callbacks_substituted": true,
+      "stage_raw": 16,
+      "timer_calls": [],
+      "transfer_active": 1
+    },
+    {
+      "application_callback_substitutes": [],
+      "case": "wrong_point",
+      "descriptors": [
+        {
+          "callback": "08021f05",
+          "lane": 2,
+          "length_or_command_raw": 16,
+          "pointer": 536872176,
+          "serializer": "08026559",
+          "timeout_argument": 600
+        }
+      ],
+      "distinct_instruction_addresses": 123,
+      "initial_retry_byte": 1,
+      "main_frame_lengths": [
+        21
+      ],
+      "main_frame_sha256": [
+        "8f3959ec3c2bd07ff474565d1fa22d133dd092196a54e1cff010a246b6291dbe"
+      ],
+      "radio_payload_lengths": [],
+      "radio_payload_sha256": [],
+      "saved_settings_bytes_read": 0,
+      "second_retry_byte": 0,
+      "settings_and_output_flags_preserved_with_callbacks_substituted": true,
+      "stage_raw": 16,
+      "timer_calls": [],
+      "transfer_active": 1
+    },
+    {
+      "application_callback_substitutes": [],
+      "case": "error_status",
+      "descriptors": [
+        {
+          "callback": "08021f05",
+          "lane": 2,
+          "length_or_command_raw": 16,
+          "pointer": 536872176,
+          "serializer": "08026559",
+          "timeout_argument": 600
+        }
+      ],
+      "distinct_instruction_addresses": 125,
+      "initial_retry_byte": 1,
+      "main_frame_lengths": [
+        21
+      ],
+      "main_frame_sha256": [
+        "8f3959ec3c2bd07ff474565d1fa22d133dd092196a54e1cff010a246b6291dbe"
+      ],
+      "radio_payload_lengths": [],
+      "radio_payload_sha256": [],
+      "saved_settings_bytes_read": 0,
+      "second_retry_byte": 0,
+      "settings_and_output_flags_preserved_with_callbacks_substituted": true,
+      "stage_raw": 16,
+      "timer_calls": [],
+      "transfer_active": 1
+    },
+    {
+      "application_callback_substitutes": [
+        {
+          "reason_argument": 2,
+          "success_argument": 0
+        }
+      ],
+      "case": "fourth_failure",
+      "descriptors": [],
+      "distinct_instruction_addresses": 46,
+      "initial_retry_byte": 0,
+      "main_frame_lengths": [],
+      "main_frame_sha256": [],
+      "radio_payload_lengths": [],
+      "radio_payload_sha256": [],
+      "saved_settings_bytes_read": 0,
+      "second_retry_byte": 0,
+      "settings_and_output_flags_preserved_with_callbacks_substituted": true,
+      "stage_raw": 16,
+      "timer_calls": [
+        {
+          "id": 9,
+          "operation": "stop"
+        },
+        {
+          "id": 0,
+          "operation": "stop"
+        }
+      ],
+      "transfer_active": 0
+    },
+    {
+      "application_callback_substitutes": [],
+      "case": "retry_u8_wrap",
+      "descriptors": [
+        {
+          "callback": "08021f05",
+          "lane": 2,
+          "length_or_command_raw": 16,
+          "pointer": 536872176,
+          "serializer": "08026559",
+          "timeout_argument": 600
+        }
+      ],
+      "distinct_instruction_addresses": 114,
+      "initial_retry_byte": 0,
+      "main_frame_lengths": [
+        21
+      ],
+      "main_frame_sha256": [
+        "8f3959ec3c2bd07ff474565d1fa22d133dd092196a54e1cff010a246b6291dbe"
+      ],
+      "radio_payload_lengths": [],
+      "radio_payload_sha256": [],
+      "saved_settings_bytes_read": 0,
+      "second_retry_byte": 0,
+      "settings_and_output_flags_preserved_with_callbacks_substituted": true,
+      "stage_raw": 16,
+      "timer_calls": [],
+      "transfer_active": 1
+    },
+    {
+      "application_callback_substitutes": [],
+      "case": "fourth_failure_no_callback",
+      "descriptors": [],
+      "distinct_instruction_addresses": 42,
+      "initial_retry_byte": 0,
+      "main_frame_lengths": [],
+      "main_frame_sha256": [],
+      "radio_payload_lengths": [],
+      "radio_payload_sha256": [],
+      "saved_settings_bytes_read": 0,
+      "second_retry_byte": 0,
+      "settings_and_output_flags_preserved_with_callbacks_substituted": true,
+      "stage_raw": 16,
+      "timer_calls": [
+        {
+          "id": 9,
+          "operation": "stop"
+        },
+        {
+          "id": 0,
+          "operation": "stop"
+        }
+      ],
+      "transfer_active": 0
+    },
+    {
+      "application_callback_substitutes": [],
+      "case": "success",
+      "descriptors": [
+        {
+          "callback": "0803058d",
+          "lane": 0,
+          "length_or_command_raw": 61,
+          "pointer": 536969216,
+          "serializer": "080126a9",
+          "timeout_argument": 1000
+        }
+      ],
+      "distinct_instruction_addresses": 159,
+      "initial_retry_byte": 0,
+      "main_frame_lengths": [],
+      "main_frame_sha256": [],
+      "radio_payload_lengths": [
+        28
+      ],
+      "radio_payload_sha256": [
+        "3ca92e6d1ad947c13180874bce6aea316a6ef5a6bf039e0e1dd7e5065bf81d1a"
+      ],
+      "saved_settings_bytes_read": 0,
+      "second_retry_byte": 0,
+      "settings_and_output_flags_preserved_with_callbacks_substituted": true,
+      "stage_raw": 18,
+      "timer_calls": [],
+      "transfer_active": 1
+    },
+    {
+      "application_callback_substitutes": [],
+      "case": "no_response",
+      "descriptors": [
+        {
+          "callback": "08021e31",
+          "lane": 2,
+          "length_or_command_raw": 18,
+          "pointer": 0,
+          "serializer": "080263ed",
+          "timeout_argument": 14000
+        }
+      ],
+      "distinct_instruction_addresses": 53,
+      "initial_retry_byte": 0,
+      "main_frame_lengths": [
+        16
+      ],
+      "main_frame_sha256": [
+        "730a228e6033044c932adafd61610b5db57ece8cc7eea89fb8c21910a25c34de"
+      ],
+      "radio_payload_lengths": [],
+      "radio_payload_sha256": [],
+      "saved_settings_bytes_read": 0,
+      "second_retry_byte": 1,
+      "settings_and_output_flags_preserved_with_callbacks_substituted": true,
+      "stage_raw": 18,
+      "timer_calls": [],
+      "transfer_active": 1
+    },
+    {
+      "application_callback_substitutes": [],
+      "case": "bad_marker",
+      "descriptors": [
+        {
+          "callback": "08021e31",
+          "lane": 2,
+          "length_or_command_raw": 18,
+          "pointer": 0,
+          "serializer": "080263ed",
+          "timeout_argument": 14000
+        }
+      ],
+      "distinct_instruction_addresses": 56,
+      "initial_retry_byte": 0,
+      "main_frame_lengths": [
+        16
+      ],
+      "main_frame_sha256": [
+        "730a228e6033044c932adafd61610b5db57ece8cc7eea89fb8c21910a25c34de"
+      ],
+      "radio_payload_lengths": [],
+      "radio_payload_sha256": [],
+      "saved_settings_bytes_read": 0,
+      "second_retry_byte": 1,
+      "settings_and_output_flags_preserved_with_callbacks_substituted": true,
+      "stage_raw": 18,
+      "timer_calls": [],
+      "transfer_active": 1
+    },
+    {
+      "application_callback_substitutes": [],
+      "case": "wrong_point",
+      "descriptors": [
+        {
+          "callback": "08021e31",
+          "lane": 2,
+          "length_or_command_raw": 18,
+          "pointer": 0,
+          "serializer": "080263ed",
+          "timeout_argument": 14000
+        }
+      ],
+      "distinct_instruction_addresses": 62,
+      "initial_retry_byte": 0,
+      "main_frame_lengths": [
+        16
+      ],
+      "main_frame_sha256": [
+        "730a228e6033044c932adafd61610b5db57ece8cc7eea89fb8c21910a25c34de"
+      ],
+      "radio_payload_lengths": [],
+      "radio_payload_sha256": [],
+      "saved_settings_bytes_read": 0,
+      "second_retry_byte": 1,
+      "settings_and_output_flags_preserved_with_callbacks_substituted": true,
+      "stage_raw": 18,
+      "timer_calls": [],
+      "transfer_active": 1
+    },
+    {
+      "application_callback_substitutes": [],
+      "case": "error_status",
+      "descriptors": [
+        {
+          "callback": "08021e31",
+          "lane": 2,
+          "length_or_command_raw": 18,
+          "pointer": 0,
+          "serializer": "080263ed",
+          "timeout_argument": 14000
+        }
+      ],
+      "distinct_instruction_addresses": 64,
+      "initial_retry_byte": 0,
+      "main_frame_lengths": [
+        16
+      ],
+      "main_frame_sha256": [
+        "730a228e6033044c932adafd61610b5db57ece8cc7eea89fb8c21910a25c34de"
+      ],
+      "radio_payload_lengths": [],
+      "radio_payload_sha256": [],
+      "saved_settings_bytes_read": 0,
+      "second_retry_byte": 1,
+      "settings_and_output_flags_preserved_with_callbacks_substituted": true,
+      "stage_raw": 18,
+      "timer_calls": [],
+      "transfer_active": 1
+    },
+    {
+      "application_callback_substitutes": [
+        {
+          "reason_argument": 3,
+          "success_argument": 0
+        }
+      ],
+      "case": "fourth_failure",
+      "descriptors": [],
+      "distinct_instruction_addresses": 46,
+      "initial_retry_byte": 0,
+      "main_frame_lengths": [],
+      "main_frame_sha256": [],
+      "radio_payload_lengths": [],
+      "radio_payload_sha256": [],
+      "saved_settings_bytes_read": 0,
+      "second_retry_byte": 0,
+      "settings_and_output_flags_preserved_with_callbacks_substituted": true,
+      "stage_raw": 18,
+      "timer_calls": [
+        {
+          "id": 9,
+          "operation": "stop"
+        },
+        {
+          "id": 0,
+          "operation": "stop"
+        }
+      ],
+      "transfer_active": 0
+    },
+    {
+      "application_callback_substitutes": [],
+      "case": "retry_u8_wrap",
+      "descriptors": [
+        {
+          "callback": "08021e31",
+          "lane": 2,
+          "length_or_command_raw": 18,
+          "pointer": 0,
+          "serializer": "080263ed",
+          "timeout_argument": 14000
+        }
+      ],
+      "distinct_instruction_addresses": 53,
+      "initial_retry_byte": 0,
+      "main_frame_lengths": [
+        16
+      ],
+      "main_frame_sha256": [
+        "730a228e6033044c932adafd61610b5db57ece8cc7eea89fb8c21910a25c34de"
+      ],
+      "radio_payload_lengths": [],
+      "radio_payload_sha256": [],
+      "saved_settings_bytes_read": 0,
+      "second_retry_byte": 0,
+      "settings_and_output_flags_preserved_with_callbacks_substituted": true,
+      "stage_raw": 18,
+      "timer_calls": [],
+      "transfer_active": 1
+    },
+    {
+      "application_callback_substitutes": [],
+      "case": "fourth_failure_no_callback",
+      "descriptors": [],
+      "distinct_instruction_addresses": 42,
+      "initial_retry_byte": 0,
+      "main_frame_lengths": [],
+      "main_frame_sha256": [],
+      "radio_payload_lengths": [],
+      "radio_payload_sha256": [],
+      "saved_settings_bytes_read": 0,
+      "second_retry_byte": 0,
+      "settings_and_output_flags_preserved_with_callbacks_substituted": true,
+      "stage_raw": 18,
+      "timer_calls": [
+        {
+          "id": 9,
+          "operation": "stop"
+        },
+        {
+          "id": 0,
+          "operation": "stop"
+        }
+      ],
+      "transfer_active": 0
+    },
+    {
+      "application_callback_substitutes": [],
+      "case": "two_host_delivered_successes",
+      "descriptors": [
+        {
+          "callback": "08021e31",
+          "lane": 2,
+          "length_or_command_raw": 18,
+          "pointer": 0,
+          "serializer": "080263ed",
+          "timeout_argument": 14000
+        },
+        {
+          "callback": "0803058d",
+          "lane": 0,
+          "length_or_command_raw": 61,
+          "pointer": 536969216,
+          "serializer": "080126a9",
+          "timeout_argument": 1000
+        }
+      ],
+      "distinct_instruction_addresses": 214,
+      "initial_retry_byte": 0,
+      "main_frame_lengths": [
+        16
+      ],
+      "main_frame_sha256": [
+        "730a228e6033044c932adafd61610b5db57ece8cc7eea89fb8c21910a25c34de"
+      ],
+      "radio_payload_lengths": [
+        28
+      ],
+      "radio_payload_sha256": [
+        "3ca92e6d1ad947c13180874bce6aea316a6ef5a6bf039e0e1dd7e5065bf81d1a"
+      ],
+      "saved_settings_bytes_read": 0,
+      "second_retry_byte": 0,
+      "settings_and_output_flags_preserved_with_callbacks_substituted": true,
+      "substituted_queue_result": 0,
+      "synthetic_locator": "synthetic-asset",
+      "timer_calls": [],
+      "transfer_active": 1
+    },
+    {
+      "application_callback_substitutes": [],
+      "case": "two_host_delivered_successes",
+      "descriptors": [
+        {
+          "callback": "08021e31",
+          "lane": 2,
+          "length_or_command_raw": 18,
+          "pointer": 0,
+          "serializer": "080263ed",
+          "timeout_argument": 14000
+        },
+        {
+          "callback": "0803058d",
+          "lane": 0,
+          "length_or_command_raw": 61,
+          "pointer": 536969216,
+          "serializer": "080126a9",
+          "timeout_argument": 1000
+        }
+      ],
+      "distinct_instruction_addresses": 214,
+      "initial_retry_byte": 0,
+      "main_frame_lengths": [
+        16
+      ],
+      "main_frame_sha256": [
+        "730a228e6033044c932adafd61610b5db57ece8cc7eea89fb8c21910a25c34de"
+      ],
+      "radio_payload_lengths": [
+        20
+      ],
+      "radio_payload_sha256": [
+        "5a05de5e8e83ba42c358ba211bd11427b139858c909c289f728cf34fe5fb98b0"
+      ],
+      "saved_settings_bytes_read": 0,
+      "second_retry_byte": 0,
+      "settings_and_output_flags_preserved_with_callbacks_substituted": true,
+      "substituted_queue_result": 1,
+      "synthetic_locator": "sysPara",
+      "timer_calls": [],
+      "transfer_active": 1
+    },
+    {
+      "application_callback_substitutes": [],
+      "case": "two_host_delivered_successes",
+      "descriptors": [
+        {
+          "callback": "08021e31",
+          "lane": 2,
+          "length_or_command_raw": 18,
+          "pointer": 0,
+          "serializer": "080263ed",
+          "timeout_argument": 14000
+        },
+        {
+          "callback": "0803058d",
+          "lane": 0,
+          "length_or_command_raw": 61,
+          "pointer": 536969216,
+          "serializer": "080126a9",
+          "timeout_argument": 1000
+        }
+      ],
+      "distinct_instruction_addresses": 214,
+      "initial_retry_byte": 0,
+      "main_frame_lengths": [
+        16
+      ],
+      "main_frame_sha256": [
+        "730a228e6033044c932adafd61610b5db57ece8cc7eea89fb8c21910a25c34de"
+      ],
+      "radio_payload_lengths": [
+        28
+      ],
+      "radio_payload_sha256": [
+        "2335e65c171bb31d65b769c9581d69b3e9d8c1928801b229f96c235a2d34f0de"
+      ],
+      "saved_settings_bytes_read": 0,
+      "second_retry_byte": 0,
+      "settings_and_output_flags_preserved_with_callbacks_substituted": true,
+      "substituted_queue_result": 1,
+      "synthetic_locator": "synthetic-other",
+      "timer_calls": [],
+      "transfer_active": 1
+    },
+    {
+      "application_callback_present": false,
+      "application_callback_substitutes": [],
+      "case": "null_text",
+      "descriptors": [],
+      "distinct_instruction_addresses": 33,
+      "initial_retry_byte": 0,
+      "main_frame_lengths": [],
+      "main_frame_sha256": [],
+      "radio_payload_lengths": [],
+      "radio_payload_sha256": [],
+      "saved_settings_bytes_read": 0,
+      "second_retry_byte": 0,
+      "settings_and_output_flags_preserved_with_callbacks_substituted": true,
+      "timer_calls": [
+        {
+          "id": 9,
+          "operation": "stop"
+        },
+        {
+          "id": 0,
+          "operation": "stop"
+        }
+      ],
+      "transfer_active": 0
+    },
+    {
+      "application_callback_present": false,
+      "application_callback_substitutes": [],
+      "case": "matching_timeout_text",
+      "descriptors": [],
+      "distinct_instruction_addresses": 33,
+      "initial_retry_byte": 0,
+      "main_frame_lengths": [],
+      "main_frame_sha256": [],
+      "radio_payload_lengths": [],
+      "radio_payload_sha256": [],
+      "saved_settings_bytes_read": 0,
+      "second_retry_byte": 0,
+      "settings_and_output_flags_preserved_with_callbacks_substituted": true,
+      "timer_calls": [
+        {
+          "id": 9,
+          "operation": "stop"
+        },
+        {
+          "id": 0,
+          "operation": "stop"
+        }
+      ],
+      "transfer_active": 0
+    },
+    {
+      "application_callback_present": false,
+      "application_callback_substitutes": [],
+      "case": "other_text",
+      "descriptors": [],
+      "distinct_instruction_addresses": 33,
+      "initial_retry_byte": 0,
+      "main_frame_lengths": [],
+      "main_frame_sha256": [],
+      "radio_payload_lengths": [],
+      "radio_payload_sha256": [],
+      "saved_settings_bytes_read": 0,
+      "second_retry_byte": 0,
+      "settings_and_output_flags_preserved_with_callbacks_substituted": true,
+      "timer_calls": [
+        {
+          "id": 9,
+          "operation": "stop"
+        },
+        {
+          "id": 0,
+          "operation": "stop"
+        }
+      ],
+      "transfer_active": 0
+    },
+    {
+      "application_callback_present": true,
+      "application_callback_substitutes": [
+        {
+          "reason_argument": 7,
+          "success_argument": 0
+        }
+      ],
+      "case": "null_text",
+      "descriptors": [],
+      "distinct_instruction_addresses": 37,
+      "initial_retry_byte": 0,
+      "main_frame_lengths": [],
+      "main_frame_sha256": [],
+      "radio_payload_lengths": [],
+      "radio_payload_sha256": [],
+      "saved_settings_bytes_read": 0,
+      "second_retry_byte": 0,
+      "settings_and_output_flags_preserved_with_callbacks_substituted": true,
+      "timer_calls": [
+        {
+          "id": 9,
+          "operation": "stop"
+        },
+        {
+          "id": 0,
+          "operation": "stop"
+        }
+      ],
+      "transfer_active": 0
+    },
+    {
+      "application_callback_present": true,
+      "application_callback_substitutes": [
+        {
+          "reason_argument": 6,
+          "success_argument": 0
+        }
+      ],
+      "case": "matching_timeout_text",
+      "descriptors": [],
+      "distinct_instruction_addresses": 44,
+      "initial_retry_byte": 0,
+      "main_frame_lengths": [],
+      "main_frame_sha256": [],
+      "radio_payload_lengths": [],
+      "radio_payload_sha256": [],
+      "saved_settings_bytes_read": 0,
+      "second_retry_byte": 0,
+      "settings_and_output_flags_preserved_with_callbacks_substituted": true,
+      "timer_calls": [
+        {
+          "id": 9,
+          "operation": "stop"
+        },
+        {
+          "id": 0,
+          "operation": "stop"
+        }
+      ],
+      "transfer_active": 0
+    },
+    {
+      "application_callback_present": true,
+      "application_callback_substitutes": [
+        {
+          "reason_argument": 7,
+          "success_argument": 0
+        }
+      ],
+      "case": "other_text",
+      "descriptors": [],
+      "distinct_instruction_addresses": 43,
+      "initial_retry_byte": 0,
+      "main_frame_lengths": [],
+      "main_frame_sha256": [],
+      "radio_payload_lengths": [],
+      "radio_payload_sha256": [],
+      "saved_settings_bytes_read": 0,
+      "second_retry_byte": 0,
+      "settings_and_output_flags_preserved_with_callbacks_substituted": true,
+      "timer_calls": [
+        {
+          "id": 9,
+          "operation": "stop"
+        },
+        {
+          "id": 0,
+          "operation": "stop"
+        }
+      ],
+      "transfer_active": 0
+    },
+    {
+      "application_callback_substitutes": [],
+      "case": "radio_reply",
+      "descriptors": [
+        {
+          "callback": "0803058d",
+          "lane": 0,
+          "length_or_command_raw": 61,
+          "pointer": 0,
+          "serializer": "00000000",
+          "timeout_argument": 1000
+        }
+      ],
+      "distinct_instruction_addresses": 35,
+      "initial_retry_byte": 0,
+      "main_frame_lengths": [],
+      "main_frame_sha256": [],
+      "radio_payload_lengths": [],
+      "radio_payload_sha256": [],
+      "saved_settings_bytes_read": 0,
+      "second_retry_byte": 0,
+      "settings_and_output_flags_preserved_with_callbacks_substituted": true,
+      "status_raw": null,
+      "timer_calls": [],
+      "transfer_active": 1
+    },
+    {
+      "application_callback_substitutes": [],
+      "case": "radio_reply",
+      "descriptors": [
+        {
+          "callback": "0803058d",
+          "lane": 0,
+          "length_or_command_raw": 61,
+          "pointer": 0,
+          "serializer": "00000000",
+          "timeout_argument": 1000
+        }
+      ],
+      "distinct_instruction_addresses": 41,
+      "initial_retry_byte": 0,
+      "main_frame_lengths": [],
+      "main_frame_sha256": [],
+      "radio_payload_lengths": [],
+      "radio_payload_sha256": [],
+      "saved_settings_bytes_read": 0,
+      "second_retry_byte": 0,
+      "settings_and_output_flags_preserved_with_callbacks_substituted": true,
+      "status_raw": 0,
+      "timer_calls": [],
+      "transfer_active": 1
+    },
+    {
+      "application_callback_substitutes": [
+        {
+          "reason_argument": 1,
+          "success_argument": 0
+        }
+      ],
+      "case": "radio_reply",
+      "descriptors": [],
+      "distinct_instruction_addresses": 42,
+      "initial_retry_byte": 0,
+      "main_frame_lengths": [],
+      "main_frame_sha256": [],
+      "radio_payload_lengths": [],
+      "radio_payload_sha256": [],
+      "saved_settings_bytes_read": 0,
+      "second_retry_byte": 0,
+      "settings_and_output_flags_preserved_with_callbacks_substituted": true,
+      "status_raw": 1,
+      "timer_calls": [
+        {
+          "id": 9,
+          "operation": "stop"
+        },
+        {
+          "id": 0,
+          "operation": "stop"
+        }
+      ],
+      "transfer_active": 0
+    },
+    {
+      "application_callback_substitutes": [],
+      "case": "radio_reply",
+      "descriptors": [],
+      "distinct_instruction_addresses": 13,
+      "initial_retry_byte": 0,
+      "main_frame_lengths": [],
+      "main_frame_sha256": [],
+      "radio_payload_lengths": [],
+      "radio_payload_sha256": [],
+      "saved_settings_bytes_read": 0,
+      "second_retry_byte": 0,
+      "settings_and_output_flags_preserved_with_callbacks_substituted": true,
+      "status_raw": 2,
+      "timer_calls": [],
+      "transfer_active": 1
+    },
+    {
+      "application_callback_substitutes": [
+        {
+          "reason_argument": 1,
+          "success_argument": 0
+        }
+      ],
+      "case": "radio_reply",
+      "descriptors": [],
+      "distinct_instruction_addresses": 42,
+      "initial_retry_byte": 0,
+      "main_frame_lengths": [],
+      "main_frame_sha256": [],
+      "radio_payload_lengths": [],
+      "radio_payload_sha256": [],
+      "saved_settings_bytes_read": 0,
+      "second_retry_byte": 0,
+      "settings_and_output_flags_preserved_with_callbacks_substituted": true,
+      "status_raw": 255,
+      "timer_calls": [
+        {
+          "id": 9,
+          "operation": "stop"
+        },
+        {
+          "id": 0,
+          "operation": "stop"
+        }
+      ],
+      "transfer_active": 0
+    }
+  ],
+  "station_commands_sent": 0
+}

@@ -1,0 +1,21 @@
+{
+  "apk_sha256": "27986f94a992f3aac1189be746d310553e99909ed81dfbb1abd5880f71662110",
+  "capstone": "5.0.7",
+  "guest_instructions_executed": 0,
+  "image_sha256": "b4c434ffec580a371ece4f7ddc2f410f40d49ce73c3c2e09158194e1bd15dd57",
+  "initialized_image_sha256": "14c73475f02e708a07d982b65d5fcea65792c8d477ba293ca95187f461e6e06f",
+  "packed_library_sha256": "4fd13d12d64e6d451f5b567c173917225c1b1e2deb97abdeca10110b8dc4f379",
+  "python": "3.14.4",
+  "raw_records_or_keys_exported": false,
+  "sources": {
+    "inspect_android_archive_callback.py": "93ad9dfc23abec992d68b2186ceebcb62377332ed68681cd1f4ff5dd445bceac",
+    "inspect_android_loader_carriers.py": "040926a17b4c6e9a45b4c6dc7dafbf38d4a98f447e8bb559a7daa47474078a6e",
+    "inspect_android_loader_classloader.py": "2fb49c0e10919498f820d6bd310d2e12ae1cd4d783a79f8b98e98773f8b21c8b",
+    "inspect_android_loader_container_record.py": "2906571d38a6fb6a2c19c7cc20521fcb1b70c0f4ab5d7f9b8d37fcf278814f27",
+    "inspect_android_loader_record_two.py": "ed3cccfaa8734e158a795e86c4de71672af21dff2c151fec333a3b7042fe09d3",
+    "inspect_android_loader_strings.py": "37a4ad759373a9f0945e0d3f3dd5734311f6506f0139e3496a1757c63e261f2b",
+    "inspect_android_loader_vm_boundary.py": "beda9b69d4c806136deb1d945cb99ab487add9bbaf24800aab73283692c49c68",
+    "inspect_android_selector_two.py": "63989b06cb7412162bc6ef07d87e3ef42bf1b480e5b4b25de5711e5ab44120c0",
+    "inspect_android_selector_two_dataflow.py": "f0b3ee278b9a42fee7479d43363bd6e1c2741f974e40d0bbb316b3450f991bf3"
+  }
+}

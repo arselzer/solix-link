@@ -1,0 +1,10 @@
+{
+  "firmware_sha256": "21ffb746c1e07ecaa9817fa7017807585a00bedbca3f136c650129bb52a4a0c9",
+  "python": "3.14.4",
+  "unicorn": "2.1.4",
+  "sources": {
+    "emulate_gen2_diagnostic_getters.py": "e87006b13ab1f35fb86c1e03e529e5c2fdd310058eef403648d95216230d7575",
+    "emulate_gen2_factory_aggregate.py": "1f96f402a949528f5187f4d7f10b27f3ca9113a70927b8a5133db5f691a4ad1a",
+    "replay_io.py": "731d795a5ec37e2cf12b809b7122eaf7a29d84c21a2ecd43fafa3e2f8d962d30"
+  }
+}

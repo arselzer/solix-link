@@ -1,0 +1,260 @@
+{
+  "schema_version": 1,
+  "request": {
+    "config": {
+      "kind": "surplus",
+      "armed": true,
+      "command_latch": false,
+      "cooldown": 180,
+      "manual_override": "none",
+      "minimum_reserve": 20,
+      "idle_watts": 300,
+      "maximum_watts": 1000,
+      "export_start": 600,
+      "export_stop": 300,
+      "export_max_age": 30,
+      "target_export_w": 100,
+      "deadband_w": 50,
+      "maximum_step_w": 200
+    },
+    "signals": {
+      "export": {
+        "value": 900,
+        "timestamp": 1000,
+        "unit": "W",
+        "positive_means": "export"
+      }
+    },
+    "state": {
+      "previous_decision": "grid",
+      "last_changed_at": 700
+    }
+  },
+  "frames": [
+    {
+      "timestamp": 1000,
+      "snapshot": {
+        "model": "c1000_gen2",
+        "protocol": "native_mqtt",
+        "connected": true,
+        "available": true,
+        "error": null,
+        "last_seen_timestamp": 1000,
+        "metrics": {
+          "battery_percentage": 60,
+          "ac_input_connected": 1,
+          "ac_output_enabled": 1,
+          "ac_fast_charge_enabled": 0,
+          "usage_mode": "standard",
+          "active_tariff": "none",
+          "tou_schedule_slot_count": 0,
+          "ac_charging_power_limit_w": 300,
+          "backup_reserve_percentage": 20,
+          "max_charge_percentage": 100,
+          "min_charge_percentage": 1
+        }
+      },
+      "signals": {
+        "export": {
+          "value": 900,
+          "timestamp": 1000,
+          "unit": "W",
+          "positive_means": "export"
+        }
+      }
+    },
+    {
+      "timestamp": 1060,
+      "snapshot": {
+        "model": "c1000_gen2",
+        "protocol": "native_mqtt",
+        "connected": true,
+        "available": true,
+        "error": null,
+        "last_seen_timestamp": 1060,
+        "metrics": {
+          "battery_percentage": 60,
+          "ac_input_connected": 1,
+          "ac_output_enabled": 1,
+          "ac_fast_charge_enabled": 0,
+          "usage_mode": "standard",
+          "active_tariff": "none",
+          "tou_schedule_slot_count": 0,
+          "ac_charging_power_limit_w": 300,
+          "backup_reserve_percentage": 20,
+          "max_charge_percentage": 100,
+          "min_charge_percentage": 1
+        }
+      },
+      "signals": {
+        "export": {
+          "value": 100,
+          "timestamp": 1060,
+          "unit": "W",
+          "positive_means": "export"
+        }
+      }
+    },
+    {
+      "timestamp": 1180,
+      "snapshot": {
+        "model": "c1000_gen2",
+        "protocol": "native_mqtt",
+        "connected": true,
+        "available": true,
+        "error": null,
+        "last_seen_timestamp": 1180,
+        "metrics": {
+          "battery_percentage": 60,
+          "ac_input_connected": 1,
+          "ac_output_enabled": 1,
+          "ac_fast_charge_enabled": 0,
+          "usage_mode": "standard",
+          "active_tariff": "none",
+          "tou_schedule_slot_count": 0,
+          "ac_charging_power_limit_w": 500,
+          "backup_reserve_percentage": 20,
+          "max_charge_percentage": 100,
+          "min_charge_percentage": 1
+        }
+      },
+      "signals": {
+        "export": {
+          "value": 100,
+          "timestamp": 1180,
+          "unit": "W",
+          "positive_means": "export"
+        }
+      }
+    },
+    {
+      "timestamp": 1360,
+      "snapshot": {
+        "model": "c1000_gen2",
+        "protocol": "native_mqtt",
+        "connected": true,
+        "available": true,
+        "error": null,
+        "last_seen_timestamp": 1360,
+        "metrics": {
+          "battery_percentage": 60,
+          "ac_input_connected": 1,
+          "ac_output_enabled": 1,
+          "ac_fast_charge_enabled": 0,
+          "usage_mode": "standard",
+          "active_tariff": "none",
+          "tou_schedule_slot_count": 0,
+          "ac_charging_power_limit_w": 300,
+          "backup_reserve_percentage": 20,
+          "max_charge_percentage": 100,
+          "min_charge_percentage": 1
+        }
+      },
+      "signals": {
+        "export": {
+          "value": 100,
+          "timestamp": 1360,
+          "unit": "W",
+          "positive_means": "export"
+        }
+      }
+    },
+    {
+      "timestamp": 1540,
+      "snapshot": {
+        "model": "c1000_gen2",
+        "protocol": "native_mqtt",
+        "connected": true,
+        "available": true,
+        "error": null,
+        "last_seen_timestamp": 1500,
+        "metrics": {
+          "battery_percentage": 60,
+          "ac_input_connected": 1,
+          "ac_output_enabled": 1,
+          "ac_fast_charge_enabled": 0,
+          "usage_mode": "standard",
+          "active_tariff": "none",
+          "tou_schedule_slot_count": 0,
+          "ac_charging_power_limit_w": 300,
+          "backup_reserve_percentage": 20,
+          "max_charge_percentage": 100,
+          "min_charge_percentage": 1
+        }
+      },
+      "signals": {
+        "export": {
+          "value": 900,
+          "timestamp": 1540,
+          "unit": "W",
+          "positive_means": "export"
+        }
+      }
+    },
+    {
+      "timestamp": 1720,
+      "snapshot": {
+        "model": "c1000_gen2",
+        "protocol": "native_mqtt",
+        "connected": true,
+        "available": true,
+        "error": null,
+        "last_seen_timestamp": 1720,
+        "metrics": {
+          "battery_percentage": 19,
+          "ac_input_connected": 1,
+          "ac_output_enabled": 1,
+          "ac_fast_charge_enabled": 0,
+          "usage_mode": "standard",
+          "active_tariff": "none",
+          "tou_schedule_slot_count": 0,
+          "ac_charging_power_limit_w": 300,
+          "backup_reserve_percentage": 20,
+          "max_charge_percentage": 100,
+          "min_charge_percentage": 1
+        }
+      },
+      "signals": {
+        "export": {
+          "value": 900,
+          "timestamp": 1720,
+          "unit": "W",
+          "positive_means": "export"
+        }
+      }
+    },
+    {
+      "timestamp": 1900,
+      "snapshot": {
+        "model": "c1000_gen2",
+        "protocol": "native_mqtt",
+        "connected": true,
+        "available": true,
+        "error": null,
+        "last_seen_timestamp": 1900,
+        "metrics": {
+          "battery_percentage": 60,
+          "ac_input_connected": 1,
+          "ac_output_enabled": 1,
+          "ac_fast_charge_enabled": 0,
+          "usage_mode": "standard",
+          "active_tariff": "none",
+          "tou_schedule_slot_count": 0,
+          "ac_charging_power_limit_w": 300,
+          "backup_reserve_percentage": 20,
+          "max_charge_percentage": 100,
+          "min_charge_percentage": 1
+        }
+      },
+      "signals": {
+        "export": {
+          "value": 900,
+          "timestamp": 1900,
+          "unit": "W",
+          "positive_means": "export"
+        }
+      },
+      "manual_override": "hold"
+    }
+  ]
+}

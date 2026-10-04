@@ -48,6 +48,12 @@ policy settings and selected price/export observations. Its armed, latch and
 cooldown inputs are **simulated assumptions**; they do not change HA helpers or
 enable an automation.
 
+Select **Adaptive surplus / price TOU preview** for the separate
+[adaptive request contract](adaptive-policy-preview.md). The file also supplies
+previous-preview state. F6 displays candidate plans without applying them;
+manual value/age overrides still require the original file to be valid. Switching
+preview type invalidates the result. The fixed preview remains the default.
+
 Optional manual observations require both a value and age in seconds. Leaving
 both blank preserves the file signal. Age `0` explicitly means observed now.
 Price uses the file's own units, within -1000–1000; export accepts -20000–20000 W,
@@ -65,6 +71,8 @@ the gateway's clock. Clock skew can produce stale/future blocked reasons; no
 fresh timestamp is invented. Only native MQTT Gen 2 profiles are eligible.
 
 ![Synthetic terminal preview](images/tui-charging-preview.svg)
+
+![Synthetic adaptive terminal preview](images/tui-adaptive-preview.svg)
 
 ## Line fallback and scripts
 

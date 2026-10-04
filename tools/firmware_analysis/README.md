@@ -382,8 +382,10 @@ python3 tools/firmware_analysis/inspect_android_loader_container_record.py \
 
 Compare each complete result and manifest against `expected_results/`. The
 retained `ijiami.dat` has a type-3 header; the candidate callback requests
-`classes.dex`. Its runtime key, callback and actual filename selection remain
-unresolved. These tools perform no transform or Android/JNI/VM execution.
+`classes.dex`. Its runtime key and actual filename selection remain unresolved.
+The later [archive callback proof](../../docs/android-archive-callback.md)
+resolves the callback to an archive entry reader. These tools perform no
+transform or Android/JNI/VM execution.
 
 ## Additional saved-state export checks
 
@@ -398,3 +400,57 @@ retain declared harness substitutes, and demonstrate distinct saved settings
 with identical responses. FA reads no saved settings and retains some caller
 buffer bits. See [response limits](../../docs/gen2-status-export-limits.md);
 no complete export, physical behavior or additional model support is claimed.
+
+## Server continuation: archive, full status and counter epochs
+
+```sh
+python3 tools/firmware_analysis/inspect_android_archive_callback.py \
+  --base-apk /private/path/base.apk --images-dir /private/path/images \
+  --initialized-image /private/path/libexec.so.decoded-strings-memory.bin \
+  --output-dir /private/output/archive-callback
+python3 tools/firmware_analysis/emulate_gen2_full_status_inventory.py \
+  --output-dir /private/output/status-inventory
+python3 tools/firmware_analysis/emulate_gen2_energy_epochs.py \
+  --output-dir /private/output/energy-epochs
+```
+
+Compare corresponding result/manifest pairs with `expected_results/`.
+The archive proof adds 44 exact static instruction checks and zero guest
+execution. The status suite executes 240 synthetic cases across all 19
+callbacks, including twelve complete-response collisions. The epoch suite
+adds 13 actual-instruction reset/encoded-wrap cases. These counts are distinct;
+none is a physical test. See [progress](../../docs/server-research-progress.md).
+
+`inspect_android_selector_two.py` takes the same private input arguments as
+the archive tool and covers all 406 body bytes of the next 410-byte record:
+127 static states, 984 exact instruction checks, three unexecuted allocator
+calls. No runtime key or plaintext SDK is recovered; see
+[the selector boundary](../../docs/android-selector-two-record.md).
+
+`emulate_gen2_factory_aggregate.py --output-dir /private/output/factory-aggregate`
+adds seven synthetic cases for factory selector 1/property 0016. Set
+`SOLIX_ANALYSIS_OUTPUT` to that output directory before running. Its ten-byte
+aggregate excludes saved backup records and has cache/timer side effects;
+see [the export limits](../../docs/gen2-factory-aggregate-export-limits.md).
+
+`inspect_android_selector_two_dataflow.py` takes the same private SDK input
+arguments. It adds 43 exact checks and inventories both symbolic paths' stores
+without evaluating memory/native effects. The direct writer is `context+128`;
+runtime aliases and the `+160` key remain unresolved. See
+[dataflow limits](../../docs/android-selector-two-dataflow.md).
+
+`emulate_gen2_asset_transfer_start.py --output-dir /private/output/asset-transfer-start`
+adds 11 actual-instruction cases for an FTP-named startup route, internal
+descriptor/serializer and CRC. Set `SOLIX_ANALYSIS_OUTPUT` to that output
+directory. The fixed first request reads no saved settings and startup changes
+transfer/timer state; no external export query is implemented. See
+[asset-transfer limits](../../docs/gen2-asset-transfer-export-limits.md).
+
+`emulate_gen2_asset_transfer_replies.py --output-dir /private/output/asset-transfer-replies`
+adds **30 separate cases** for both MAIN replies, timeout cleanup, the radio
+resource descriptor/locator serializer and its reply. Four negative guards
+reject malformed or unbounded inputs. Set `SOLIX_ANALYSIS_OUTPUT` to the same
+directory. Queue/libc/transport/application callbacks are explicit substitutes;
+internal `003d` forwards a string without reading controller settings. Later
+radio/chunk processing and complete export remain unresolved. Compare both
+`gen2-asset-transfer-replies-*.json` files with `expected_results/`.

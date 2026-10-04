@@ -139,6 +139,7 @@ def add_commands(subcommands) -> None:
     preview.add_argument("--directory", type=Path, required=True)
     preview.add_argument("--name", help="Configured station; defaults to the primary profile")
     preview.add_argument("--request-file", type=Path, required=True)
+    preview.add_argument("--adaptive", action="store_true", help="Opt in to read-only surplus/TOU proposals")
 
 
 def _device(args, name: str):
@@ -265,7 +266,7 @@ def dispatch(args) -> None:
                    history_file=args.history_file, history_retention_days=args.history_retention_days)
     elif args.command == "ap-service-charging-preview":
         from .charging_preview_cli import native_preview
-        print(json.dumps(native_preview(args.directory, args.name, args.request_file), indent=2))
+        print(json.dumps(native_preview(args.directory, args.name, args.request_file, adaptive=args.adaptive), indent=2))
     else:
         command = {"ap-service-status": "status", "ap-service-readiness": "readiness", "ap-service-set-charge-power": "set-charge-power",
                    "ap-service-wireless-state": "wireless-state",

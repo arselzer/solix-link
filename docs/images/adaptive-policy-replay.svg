@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="621" viewBox="0 0 1000 621" role="img" aria-labelledby="title desc">
+<title id="title">Adaptive policy replay</title>
+<desc id="desc">Read-only proposals from supplied snapshots. Zero commands, no predicted electrical behavior.</desc>
+<rect width="100%" height="100%" fill="#0c1424"/>
+<g font-family="system-ui, sans-serif" fill="#e1eaf7">
+<text x="24" y="34" font-size="23">Adaptive policy replay · commands sent: 0</text>
+<text x="24" y="61" font-size="14">Supplied snapshots · previous-preview state · no battery/grid-flow prediction</text>
+<text x="24" y="94" font-size="14">Elapsed</text><text x="132" y="94" font-size="14">Decision</text>
+<text x="270" y="94" font-size="14">Proposals / blocking reasons</text>
+<rect x="16" y="106" width="968" height="60" rx="7" fill="#13233a"/>
+<text x="24" y="125" font-size="14">0s</text>
+<text x="132" y="125" font-size="14" fill="#77dfc2">charge</text>
+<text x="270" y="125" font-size="13">Charging limit → 500 W</text>
+<text x="270" y="147" font-size="11" fill="#a8b8ce">surplus_step_proposed, saved_limit_is_not_measured_battery_power</text>
+<rect x="16" y="174" width="968" height="60" rx="7" fill="#13233a"/>
+<text x="24" y="193" font-size="14">60s</text>
+<text x="132" y="193" font-size="14" fill="#ef8d83">blocked</text>
+<text x="270" y="193" font-size="13">No setting or plan proposal</text>
+<text x="270" y="215" font-size="11" fill="#a8b8ce">cooldown_active</text>
+<rect x="16" y="242" width="968" height="60" rx="7" fill="#13233a"/>
+<text x="24" y="261" font-size="14">180s</text>
+<text x="132" y="261" font-size="14" fill="#89addb">idle</text>
+<text x="270" y="261" font-size="13">Charging limit → 300 W</text>
+<text x="270" y="283" font-size="11" fill="#a8b8ce">no_export_opportunity, saved_limit_is_not_measured_battery_power</text>
+<rect x="16" y="310" width="968" height="60" rx="7" fill="#13233a"/>
+<text x="24" y="329" font-size="14">360s</text>
+<text x="132" y="329" font-size="14" fill="#89addb">idle</text>
+<text x="270" y="329" font-size="13">No setting or plan proposal</text>
+<text x="270" y="351" font-size="11" fill="#a8b8ce">no_export_opportunity, saved_limit_is_not_measured_battery_power</text>
+<rect x="16" y="378" width="968" height="60" rx="7" fill="#13233a"/>
+<text x="24" y="397" font-size="14">540s</text>
+<text x="132" y="397" font-size="14" fill="#ef8d83">blocked</text>
+<text x="270" y="397" font-size="13">No setting or plan proposal</text>
+<text x="270" y="419" font-size="11" fill="#a8b8ce">telemetry_stale</text>
+<rect x="16" y="446" width="968" height="60" rx="7" fill="#13233a"/>
+<text x="24" y="465" font-size="14">720s</text>
+<text x="132" y="465" font-size="14" fill="#dfb65f">emergency</text>
+<text x="270" y="465" font-size="13">Charging limit → 500 W</text>
+<text x="270" y="487" font-size="11" fill="#a8b8ce">below_effective_reserve, saved_limit_is_not_measured_battery_power</text>
+<rect x="16" y="514" width="968" height="60" rx="7" fill="#13233a"/>
+<text x="24" y="533" font-size="14">900s</text>
+<text x="132" y="533" font-size="14" fill="#ef8d83">blocked</text>
+<text x="270" y="533" font-size="13">No setting or plan proposal</text>
+<text x="270" y="555" font-size="11" fill="#a8b8ce">manual_hold</text>
+</g></svg>

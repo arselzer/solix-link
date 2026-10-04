@@ -58,13 +58,15 @@ Read-only additions use the same Bearer token and work without `--allow-control`
 | Route | Purpose |
 | --- | --- |
 | `POST /devices/{name}/charging-preview` | Evaluate a bounded manual price/export request against cached native Gen 2 telemetry; returns proposals with zero commands |
+| `POST /devices/{name}/adaptive-preview` | Evaluate the separate surplus/price TOU contract against cached status; returns settings and candidate plans with no executor |
 | `GET/HEAD /history` | Report optional recorder availability and bounded storage statistics |
 | `GET/HEAD /devices/{name}/history?since=...&until=...&limit=1000` | Query saved readings and estimated AC energy/coverage; timestamps are Unix seconds |
 
 History is disabled unless `serve` or `ap-service-serve` receives
 `--history-file /private/history/readings.sqlite3`; retention defaults to seven
 days. See [history semantics](persistent-history.md) and
-[preview schema and limits](charging-policy-preview.md). Neither route sends
+[preview schema and limits](charging-policy-preview.md) and
+[adaptive contract](adaptive-policy-preview.md). These routes send no
 station requests or enables the prepared HA charging automation.
 
 GET `/devices` returns stations, freshness, `power_flow`, metrics and the

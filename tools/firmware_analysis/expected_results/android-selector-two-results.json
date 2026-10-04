@@ -1,0 +1,95 @@
+{
+  "allocation_call_sites": 3,
+  "allocator_import": "malloc",
+  "descriptor": "0x10c440",
+  "guest_instructions_executed": 0,
+  "inherited_instruction_checks": 974,
+  "new_handler": {
+    "end": "0xc1700",
+    "index": "0x67",
+    "instruction_checks": 10,
+    "meaning": "add_words",
+    "sha256": "7e0a51913d62121474d8ea3361425dfdf3eed0cdcd24f22a6e52dfe27bc933a8",
+    "start": "0xc163c"
+  },
+  "record": {
+    "bytes": 410,
+    "covered_body_bytes": 406,
+    "distinct_token_offsets": 127,
+    "initial_context_field_offset": "0x128",
+    "initial_frame_words": 3,
+    "native_pointer_tokens": [
+      {
+        "index": 28,
+        "offset": 6
+      },
+      {
+        "index": 32,
+        "offset": 106
+      },
+      {
+        "index": 32,
+        "offset": 198
+      },
+      {
+        "index": 32,
+        "offset": 317
+      }
+    ],
+    "native_thunk_tokens": [
+      {
+        "index": 41,
+        "offset": 118
+      },
+      {
+        "index": 42,
+        "offset": 210
+      },
+      {
+        "index": 43,
+        "offset": 329
+      }
+    ],
+    "runtime_memory_evaluated": false,
+    "sha256": "556013fd0bef4072440062da80d14c2d782e5d6ec66691687107f0c2251477ba",
+    "static_states": 127,
+    "symbolic_branches": true,
+    "terminal_kind": "return_void",
+    "terminal_offset": 409,
+    "unknown_handlers": 0
+  },
+  "runtime_key_writer_resolved": false,
+  "selected_asset_filename_resolved": false,
+  "selected_relocations": 5,
+  "selector": 2,
+  "station_commands_sent": 0,
+  "thunks": [
+    {
+      "end": "0xe2c20",
+      "index": 41,
+      "indirect_call_sites": [
+        "0xe2bf8"
+      ],
+      "sha256": "3047de3cd44fc1e278c61cf23c24c2e6cfb21b0440669a56554acd04009476b6",
+      "start": "0xe2bac"
+    },
+    {
+      "end": "0xe2c94",
+      "index": 42,
+      "indirect_call_sites": [
+        "0xe2c6c"
+      ],
+      "sha256": "3047de3cd44fc1e278c61cf23c24c2e6cfb21b0440669a56554acd04009476b6",
+      "start": "0xe2c20"
+    },
+    {
+      "end": "0xe2d08",
+      "index": 43,
+      "indirect_call_sites": [
+        "0xe2ce0"
+      ],
+      "sha256": "3047de3cd44fc1e278c61cf23c24c2e6cfb21b0440669a56554acd04009476b6",
+      "start": "0xe2c94"
+    }
+  ]
+}

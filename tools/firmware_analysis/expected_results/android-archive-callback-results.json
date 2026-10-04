@@ -1,0 +1,292 @@
+{
+  "archive_eocd_signature": "504b0506",
+  "callback_execution_verified": false,
+  "callback_slot": "0x20",
+  "callback_target": "0x54e6c",
+  "context_interface_offset": "0x48",
+  "distinct_symbol_table_base": "0x11a0f8",
+  "entry_name": "classes.dex",
+  "false_key_writer_candidates": [
+    "0x6e9b4",
+    "0x6e9cc"
+  ],
+  "fde_functions_scanned": 2040,
+  "function_spans": [
+    {
+      "end": "0x54998",
+      "sha256": "ad087a64f5b93acdf40a63e27eb26f6997082130234fec634efccf7e694e9f0f",
+      "start": "0x54954"
+    },
+    {
+      "end": "0x54f44",
+      "sha256": "421172b57e4e2dcb7c159f9c2961c7892be2a8a59a445be46bf8e3f0efe4d1eb",
+      "start": "0x54e6c"
+    },
+    {
+      "end": "0x82808",
+      "sha256": "dbc7c7816e2e54656c3859b45b9efd2ac487b968ef2206f8b6c16ef9a2335e6f",
+      "start": "0x827a4"
+    },
+    {
+      "end": "0x82918",
+      "sha256": "543c54304e73e0135ea6993a4824270f9a58ad1c3aac839b9bcbb0dcc5720fc0",
+      "start": "0x82840"
+    },
+    {
+      "end": "0x82920",
+      "sha256": "ca9be5891608b757b7bc8d84905b452237de4af4115e73ad7cd6348b92859bf1",
+      "start": "0x82918"
+    },
+    {
+      "end": "0x82ac0",
+      "sha256": "06ac27e305dcd52a7b6d3e4a8aa19e3c0a40a66c3ab294b85d6ecaf41e659dac",
+      "start": "0x82970"
+    },
+    {
+      "end": "0x82ebc",
+      "sha256": "a31cd7cde4c10927197b030fdd277c9da5f0487fd52734568f80791a693e454a",
+      "start": "0x82b50"
+    },
+    {
+      "end": "0x6f174",
+      "sha256": "49d7ee592b2203c0e54ad548b5170482422d134ab6315ec785ea9519548a1175",
+      "start": "0x6e2cc"
+    }
+  ],
+  "guest_instructions_executed": 0,
+  "immediate_160_candidates": [
+    {
+      "address": "0x427fc",
+      "function": "0x42610",
+      "mnemonic": "stp"
+    },
+    {
+      "address": "0x491ac",
+      "function": "0x48c34",
+      "mnemonic": "stp"
+    },
+    {
+      "address": "0x68d18",
+      "function": "0x68ae8",
+      "mnemonic": "stp"
+    },
+    {
+      "address": "0x6e228",
+      "function": "0x6e180",
+      "mnemonic": "ldr"
+    },
+    {
+      "address": "0x6e9b4",
+      "function": "0x6e2cc",
+      "mnemonic": "str"
+    },
+    {
+      "address": "0x6e9cc",
+      "function": "0x6e2cc",
+      "mnemonic": "str"
+    },
+    {
+      "address": "0x6f0dc",
+      "function": "0x6e2cc",
+      "mnemonic": "stp"
+    },
+    {
+      "address": "0x736e0",
+      "function": "0x73538",
+      "mnemonic": "stp"
+    },
+    {
+      "address": "0x79a24",
+      "function": "0x79550",
+      "mnemonic": "stp"
+    },
+    {
+      "address": "0x8a7b4",
+      "function": "0x8a3b4",
+      "mnemonic": "stp"
+    },
+    {
+      "address": "0x8b434",
+      "function": "0x8aebc",
+      "mnemonic": "stp"
+    },
+    {
+      "address": "0x8c14c",
+      "function": "0x8c110",
+      "mnemonic": "ldr"
+    },
+    {
+      "address": "0x8cf00",
+      "function": "0x8cd50",
+      "mnemonic": "ldr"
+    },
+    {
+      "address": "0x8d0bc",
+      "function": "0x8d070",
+      "mnemonic": "ldr"
+    },
+    {
+      "address": "0x8d0e4",
+      "function": "0x8d070",
+      "mnemonic": "ldr"
+    },
+    {
+      "address": "0x8d39c",
+      "function": "0x8d2d8",
+      "mnemonic": "ldr"
+    },
+    {
+      "address": "0x97c2c",
+      "function": "0x97bd8",
+      "mnemonic": "stp"
+    },
+    {
+      "address": "0x99774",
+      "function": "0x99708",
+      "mnemonic": "ldr"
+    },
+    {
+      "address": "0xabc64",
+      "function": "0xabbd4",
+      "mnemonic": "stp"
+    },
+    {
+      "address": "0xabd90",
+      "function": "0xabbd4",
+      "mnemonic": "stp"
+    },
+    {
+      "address": "0xac248",
+      "function": "0xac1f4",
+      "mnemonic": "ldr"
+    },
+    {
+      "address": "0xac860",
+      "function": "0xac71c",
+      "mnemonic": "ldr"
+    },
+    {
+      "address": "0xb2284",
+      "function": "0xb20fc",
+      "mnemonic": "stp"
+    },
+    {
+      "address": "0xb3850",
+      "function": "0xb366c",
+      "mnemonic": "ldr"
+    },
+    {
+      "address": "0xb5184",
+      "function": "0xb5000",
+      "mnemonic": "ldr"
+    },
+    {
+      "address": "0xb6d8c",
+      "function": "0xb6d44",
+      "mnemonic": "ldr"
+    },
+    {
+      "address": "0xb7634",
+      "function": "0xb75e0",
+      "mnemonic": "ldr"
+    },
+    {
+      "address": "0xb7adc",
+      "function": "0xb7998",
+      "mnemonic": "ldr"
+    },
+    {
+      "address": "0xba220",
+      "function": "0xba13c",
+      "mnemonic": "stp"
+    },
+    {
+      "address": "0xbc940",
+      "function": "0xbc778",
+      "mnemonic": "stp"
+    },
+    {
+      "address": "0xdd1ac",
+      "function": "0xdd14c",
+      "mnemonic": "stp"
+    },
+    {
+      "address": "0xdde7c",
+      "function": "0xdde48",
+      "mnemonic": "ldr"
+    }
+  ],
+  "imports": [
+    {
+      "name": "malloc",
+      "plt": "0xeeb00",
+      "relocation_type": 1026
+    },
+    {
+      "name": "pthread_mutex_lock",
+      "plt": "0xeec00",
+      "relocation_type": 1026
+    },
+    {
+      "name": "pthread_mutex_unlock",
+      "plt": "0xeec10",
+      "relocation_type": 1026
+    },
+    {
+      "name": "memcpy",
+      "plt": "0xeed20",
+      "relocation_type": 1026
+    },
+    {
+      "name": "strlen",
+      "plt": "0xeea80",
+      "relocation_type": 1026
+    },
+    {
+      "name": "memcmp",
+      "plt": "0xeeac0",
+      "relocation_type": 1026
+    }
+  ],
+  "interface_relative_relocations": [
+    {
+      "address": "0xfe768",
+      "target": "0x54998"
+    },
+    {
+      "address": "0xfe770",
+      "target": "0x54a60"
+    },
+    {
+      "address": "0xfe778",
+      "target": "0x54b4c"
+    },
+    {
+      "address": "0xfe780",
+      "target": "0x54d20"
+    },
+    {
+      "address": "0xfe788",
+      "target": "0x54e6c"
+    },
+    {
+      "address": "0xfe790",
+      "target": "0x54f44"
+    },
+    {
+      "address": "0xfe798",
+      "target": "0x550c4"
+    },
+    {
+      "address": "0xfe7a0",
+      "target": "0x55218"
+    }
+  ],
+  "interface_table": "0xfe768",
+  "runtime_key_writer_resolved": false,
+  "scan_limits": "FDE-bounded immediate operands only; no complete alias/VM/copy writer analysis",
+  "static_instruction_checks": 44,
+  "static_instructions_scanned": 169679,
+  "station_commands_sent": 0,
+  "stored_and_raw_deflate_branches_identified": true
+}

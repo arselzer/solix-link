@@ -6,6 +6,11 @@ It returns fixed reason codes and proposed settings with `dry_run: true` and
 `commands_sent: 0`. It never polls a station, sends a command, persists policy
 state or activates an HA automation. Original C1000 and C300 are unsupported.
 
+The separate [adaptive preview](adaptive-policy-preview.md) adds opt-in offline
+surplus steps and price-driven TOU proposals. It does not change this contract,
+the original HTTP preview contract or the HA charging blueprint. Terminal and
+prepared Vue source select the adaptive contract explicitly.
+
 ## CLI and browser
 
 ```sh

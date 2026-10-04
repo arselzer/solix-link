@@ -1,0 +1,156 @@
+{
+  "model": "A1763",
+  "main_version": "1.1.4.9",
+  "firmware_sha256": "21ffb746c1e07ecaa9817fa7017807585a00bedbca3f136c650129bb52a4a0c9",
+  "cases": 13,
+  "results": [
+    {
+      "group": "reset",
+      "initial_fill": 17,
+      "sample_phase_before": 0,
+      "cleared_accounting_bytes": 216,
+      "following_64_bytes_preserved": true,
+      "sample_phase_and_report_counter_preserved": true,
+      "next_callback_ac_input_sum": 0,
+      "output_flags_preserved": true,
+      "persistence_copy_boundary_calls": 1,
+      "flash_executed": false
+    },
+    {
+      "group": "reset",
+      "initial_fill": 17,
+      "sample_phase_before": 1,
+      "cleared_accounting_bytes": 216,
+      "following_64_bytes_preserved": true,
+      "sample_phase_and_report_counter_preserved": true,
+      "next_callback_ac_input_sum": 0,
+      "output_flags_preserved": true,
+      "persistence_copy_boundary_calls": 1,
+      "flash_executed": false
+    },
+    {
+      "group": "reset",
+      "initial_fill": 17,
+      "sample_phase_before": 9,
+      "cleared_accounting_bytes": 216,
+      "following_64_bytes_preserved": true,
+      "sample_phase_and_report_counter_preserved": true,
+      "next_callback_ac_input_sum": 360,
+      "output_flags_preserved": true,
+      "persistence_copy_boundary_calls": 1,
+      "flash_executed": false
+    },
+    {
+      "group": "reset",
+      "initial_fill": 85,
+      "sample_phase_before": 0,
+      "cleared_accounting_bytes": 216,
+      "following_64_bytes_preserved": true,
+      "sample_phase_and_report_counter_preserved": true,
+      "next_callback_ac_input_sum": 0,
+      "output_flags_preserved": true,
+      "persistence_copy_boundary_calls": 1,
+      "flash_executed": false
+    },
+    {
+      "group": "reset",
+      "initial_fill": 85,
+      "sample_phase_before": 1,
+      "cleared_accounting_bytes": 216,
+      "following_64_bytes_preserved": true,
+      "sample_phase_and_report_counter_preserved": true,
+      "next_callback_ac_input_sum": 0,
+      "output_flags_preserved": true,
+      "persistence_copy_boundary_calls": 1,
+      "flash_executed": false
+    },
+    {
+      "group": "reset",
+      "initial_fill": 85,
+      "sample_phase_before": 9,
+      "cleared_accounting_bytes": 216,
+      "following_64_bytes_preserved": true,
+      "sample_phase_and_report_counter_preserved": true,
+      "next_callback_ac_input_sum": 360,
+      "output_flags_preserved": true,
+      "persistence_copy_boundary_calls": 1,
+      "flash_executed": false
+    },
+    {
+      "group": "reset",
+      "initial_fill": 255,
+      "sample_phase_before": 0,
+      "cleared_accounting_bytes": 216,
+      "following_64_bytes_preserved": true,
+      "sample_phase_and_report_counter_preserved": true,
+      "next_callback_ac_input_sum": 0,
+      "output_flags_preserved": true,
+      "persistence_copy_boundary_calls": 1,
+      "flash_executed": false
+    },
+    {
+      "group": "reset",
+      "initial_fill": 255,
+      "sample_phase_before": 1,
+      "cleared_accounting_bytes": 216,
+      "following_64_bytes_preserved": true,
+      "sample_phase_and_report_counter_preserved": true,
+      "next_callback_ac_input_sum": 0,
+      "output_flags_preserved": true,
+      "persistence_copy_boundary_calls": 1,
+      "flash_executed": false
+    },
+    {
+      "group": "reset",
+      "initial_fill": 255,
+      "sample_phase_before": 9,
+      "cleared_accounting_bytes": 216,
+      "following_64_bytes_preserved": true,
+      "sample_phase_and_report_counter_preserved": true,
+      "next_callback_ac_input_sum": 360,
+      "output_flags_preserved": true,
+      "persistence_copy_boundary_calls": 1,
+      "flash_executed": false
+    },
+    {
+      "group": "encoded_wrap",
+      "accounting_group": 0,
+      "encoded_before": 4294967295,
+      "encoded_after": 0,
+      "internal_sum_increased": true,
+      "internal_sum_reset": false
+    },
+    {
+      "group": "encoded_wrap",
+      "accounting_group": 1,
+      "encoded_before": 4294967295,
+      "encoded_after": 0,
+      "internal_sum_increased": true,
+      "internal_sum_reset": false
+    },
+    {
+      "group": "encoded_wrap",
+      "accounting_group": 2,
+      "encoded_before": 4294967295,
+      "encoded_after": 0,
+      "internal_sum_increased": true,
+      "internal_sum_reset": false
+    },
+    {
+      "group": "encoded_wrap",
+      "accounting_group": 3,
+      "encoded_before": 4294967295,
+      "encoded_after": 0,
+      "internal_sum_increased": true,
+      "internal_sum_reset": false
+    }
+  ],
+  "reset_handler": "08029868",
+  "direct_thumb_bl_candidate_sites": [
+    "08029888"
+  ],
+  "reset_caller_semantics_verified": false,
+  "physical_units_verified": false,
+  "limits": "Replay A1763 counter reset and encoded width boundaries in synthetic RAM.\n\nOriginal reset, accumulator and report encoding execute. Inherited statistics,\npersistence and protobuf callback substitutes remain; no flash or station runs.",
+  "station_commands_sent": 0
+}

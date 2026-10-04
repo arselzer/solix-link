@@ -84,6 +84,11 @@ def parser() -> argparse.ArgumentParser:
     preview = subcommands.add_parser("charging-preview", help="Explain a charging policy from saved JSON; sends no commands")
     preview.add_argument("--snapshot-file", type=Path, required=True)
     preview.add_argument("--request-file", type=Path, required=True)
+    preview.add_argument("--adaptive", action="store_true", help="Opt in to offline surplus/TOU proposals; no executor")
+
+    replay = subcommands.add_parser("policy-replay", help="Replay saved adaptive-preview frames; no commands or physical prediction")
+    replay.add_argument("--timeline-file", type=Path, required=True)
+    replay.add_argument("--format", choices=("json", "svg"), default="json", help="JSON decisions or a standalone SVG visualization")
 
     mqtt = subcommands.add_parser("mqtt-bridge", help="Publish BLE status and supported settings through a local MQTT broker")
     mqtt.add_argument("--config", type=Path, default=DEFAULT_CONFIG)
@@ -476,7 +481,15 @@ def main(argv: list[str] | None = None) -> int:
                        history_file=args.history_file, history_retention_days=args.history_retention_days)
         elif args.command == "charging-preview":
             from .charging_preview_cli import offline_preview
-            print(json.dumps(offline_preview(args.snapshot_file, args.request_file), indent=2))
+            print(json.dumps(offline_preview(args.snapshot_file, args.request_file, adaptive=args.adaptive), indent=2))
+        elif args.command == "policy-replay":
+            from .charging_preview_cli import read_document
+            from .policy_replay import MAX_REPLAY_BYTES, adaptive_timeline_svg, replay_adaptive_timeline
+            document = read_document(args.timeline_file, MAX_REPLAY_BYTES)
+            if args.format == "svg":
+                print(adaptive_timeline_svg(document), end="")
+            else:
+                print(json.dumps(replay_adaptive_timeline(document), indent=2))
         elif args.command == "mqtt-bridge":
             from .mqtt_bridge import MqttBridge
             asyncio.run(MqttBridge(

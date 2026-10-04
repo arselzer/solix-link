@@ -7,6 +7,10 @@ of the C1000 Gen 2 general energy report as **nominal Wh accounting**, but does
 not establish calibrated physical Wh or lifetime-counter guarantees. Keep
 SDK fields named `*_energy_raw` and `units_verified=False`.
 
+The later [epoch follow-up](gen2-energy-epochs.md) executes explicit reset and
+report-width wrap boundaries and adds pure offline comparison helpers. It does
+not resolve physical scaling, actual reset events or MCU snapshot timestamps.
+
 The executed input is **A1763 main 1.1.4.9**. Radio **0.3.3.0** was also
 inspected statically. The C2000 **2.1.6.4** timing comparison below uses an
 already retained capture; its firmware remains unavailable. The later C1000
