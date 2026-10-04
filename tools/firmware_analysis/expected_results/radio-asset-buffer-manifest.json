@@ -1,0 +1,10 @@
+{
+  "python": "3.14.4",
+  "radio_sha256": "e291ec115f013953e825cb51b9e457a8731889547ab55b3058640e599e8cfec8",
+  "sources": {
+    "emulate_radio_asset_buffer.py": "02b5d08f62a04244fdb55c01b6210222055f71480fae987b7df9a861462f2def",
+    "emulate_radio_asset_download.py": "7025edecaddcf6ccc120b23e90c35e47b9281ed8cb806d5553d628577b1a1d0c",
+    "emulate_radio_update_status.py": "1d91f0750c08444b99d8f36662b5f432ad3152100c64191c9547dfbb7aa899d1"
+  },
+  "unicorn": "2.1.4"
+}

@@ -132,6 +132,12 @@ An independent read-only producer returning complete controller settings is
 still required. This locator path supplies no fresh saved-file export and no
 reason to probe a live station with `sysPara`.
 
+The [next continuation](gen2-asset-chunk-buffer-contract.md) adds **43 cases**
+for seeded HTTP buffers, task registration, ACK callback, MAIN chunk forwarding
+and chunk responses. It resolves the controller's fixed 1,024-byte staging
+copy and final-request construction; final application and end-to-end framing
+remain excluded. The observed direction remains download and forwarding.
+
 ## Reproduction
 
 ```sh

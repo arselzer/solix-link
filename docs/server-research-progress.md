@@ -247,3 +247,53 @@ samples and export-sign confirmation; separately authorized noncritical
 restart for retention calibration. The two C1000s were absent from the prior
 approved BLE discoveries; readback awaits advertising devices. No person is
 being waited on and the observer/live deployment remain untouched.
+
+## HTTP buffers and MAIN chunk consumer — 2026-10-04
+
+This follows local checkpoint **`b746860`** on `server/research-20261004`.
+The [new bounded proof](gen2-asset-chunk-buffer-contract.md) adds **43 synthetic
+instruction cases and eight negative guards**, using the same A1763 main
+**1.1.4.9** and radio **0.3.3.0** image hashes above.
+
+- **19 radio cases:** two task-ID-20 descriptor registrations, fourteen seeded
+  Content-Length allocation/read/callback cases and three ACK-callback cases.
+  Actual allocation decisions use 2,048 bytes with a 1,024-byte fallback and
+  clear once. Tested final default chunks stay within that allocation; after
+  reuse, their padding contains bytes from earlier reads. Deliberate positive
+  short reads exit without forwarding in this selected branch. HTTP setup,
+  real reads, task services, timers, transport and delivery remain substituted
+  or excluded. The actual ACK callback, rather than a host-written flag, runs.
+- **24 MAIN cases:** a callback-registration prefix, function-10 003e dispatch,
+  parsed TLV lookup, chunk staging, MAIN descriptors/serializers and bitwise CRC,
+  chunk replies and ACK construction. The consumer stages exactly 1,024 bytes
+  and emits a 1,040-byte MAIN frame. A valid reply clears pending, builds 083e
+  ACK status 0, and queues point 0014 when offset plus recorded length reaches
+  total. Missing replies retry; the fourth resets with a substituted failure
+  callback and ACK status 1. Final receiver application/commit remains excluded.
+
+MAIN preserves 415 saved-setting bytes and eight output flags with zero saved
+reads; application callbacks/queue execution are substituted. This continues
+to support an asset download/forwarding interpretation, without recovering a
+saved-file exporter or charging-pause command. The two suites do not run an
+end-to-end radio framing/parser or a physical/electrical test. No hardware
+memory vulnerability follows from the initialized/reused-tail observation.
+
+Environment remains Python **3.14.4**, Unicorn **2.1.4**. Radio entries are capped
+at 10,000 instructions; MAIN at 100,000 for its actual bitwise CRC over 1,038
+bytes. The largest observed MAIN entry uses **68,642** instructions. Both new
+result/manifest pairs independently reproduce exactly, including source hashes.
+Earlier product test gates and proof suites were not rerun for these analysis
+changes. Raw disassembly and verification records stay ignored/private; public
+artifacts contain synthetic metadata and hashes. AGENTS.md remains unchanged.
+
+Next precise boundaries are full task/header activation of the registered
+callbacks, controller point-0014 completion/application, and 083d/083e
+framing/parser and request matching. Chunked HTTP mode and other radio chunk
+sizes remain separate limits. Runtime SDK `context+160` provenance and a
+read-only complete saved-state producer also remain open.
+
+**Zero station commands were sent in this continuation.** No new BLE discovery,
+phone/profile access, network/service operation, deployment, push, merge or
+automation activation occurred. Hardware requirements and the previous
+unavailable C1000 advertisements are unchanged; the observer and live gateway
+remain untouched.

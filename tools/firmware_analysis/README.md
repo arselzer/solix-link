@@ -472,3 +472,20 @@ Four negative checks reject altered instruction/span inputs. No native/JNI/VM
 code runs; runtime aliases and the transform key remain unresolved. See
 [copy provenance](../../docs/android-bulk-copy-context.md); compare both
 `android-bulk-copy-context-*.json` files with `expected_results/`.
+
+`emulate_radio_asset_buffer.py --output-dir /private/output/asset-buffer`
+adds **19 cases**: 14 seeded Content-Length buffer/read/callback cases,
+three actual ACK-callback cases and two task-registration cases. Four negative
+guards reject excluded setup, fixture bounds and copies outside the HTTP
+allocation. HTTP reads/services and delivery remain substituted; no sockets
+or worker startup run. Compare both `radio-asset-buffer-*.json` artifacts.
+
+`emulate_gen2_asset_chunk_consumer.py --output-dir /private/output/asset-consumer`
+adds **24 cases** for callback registration prefix, internal 003e dispatch,
+fixed 1,024-byte staging, actual MAIN serialization/CRC and chunk replies.
+Four negative guards reject excluded startup/final callbacks and protected
+inputs/writes. MAIN's 100,000-instruction bound accommodates its bitwise CRC;
+final application and real transport remain excluded. Compare both
+`gen2-asset-chunk-consumer-*.json` artifacts. Set `SOLIX_ANALYSIS_OUTPUT` to the
+output directory for either tool. See
+[buffer and consumer limits](../../docs/gen2-asset-chunk-buffer-contract.md).

@@ -1,0 +1,780 @@
+{
+  "cases": 24,
+  "complete_settings_export": false,
+  "firmware_sha256": "21ffb746c1e07ecaa9817fa7017807585a00bedbca3f136c650129bb52a4a0c9",
+  "instruction_limit_per_entry": 100000,
+  "limits": "Bounded MAIN asset-chunk consumer, serializer and chunk-reply replay.\n\nActual callback registration prefix, internal dispatch, parsed TLV lookup,\nchunk staging, MAIN descriptors/serializers, CRC and radio ACK TLV construction\nrun in synthetic RAM. Parsing/session, queue execution, timer APIs, memory\nhelpers, transport, logging and application callbacks are substitutes. No file\nbackend, final application/asset commit, firmware boot or station executes.",
+  "main_version": "1.1.4.9",
+  "model": "A1763",
+  "negative_guards": [
+    "reported_length_outside_u16",
+    "firmware_startup_excluded",
+    "final_application_callback_excluded",
+    "saved_settings_write_excluded"
+  ],
+  "physical_transport_verified": false,
+  "results": [
+    {
+      "application_callback_substitutes": [],
+      "case": "ordinary_chunk",
+      "chunk_pending": 1,
+      "distinct_instruction_addresses": 277,
+      "frames": [
+        {
+          "block_index_u16_le": 0,
+          "bytes": 1040,
+          "header_words_le": [
+            16,
+            5,
+            1028,
+            19
+          ],
+          "sha256": "3869a0922eca6ef5426321ccfe4e745d1584dd6dc8e7a8f440d9a722d6d1b936"
+        }
+      ],
+      "immediate_error_response_statuses": [],
+      "maximum_entry_instructions": 68642,
+      "queued_points_raw": [
+        19
+      ],
+      "radio_083e_ack_statuses": [],
+      "retry_byte": 0,
+      "saved_settings_and_output_flags_preserved": true,
+      "saved_settings_bytes_read": 0,
+      "stored_offset": 0,
+      "stored_reported_length": 1024,
+      "stored_total": 2048,
+      "transfer_active": 1
+    },
+    {
+      "application_callback_substitutes": [],
+      "case": "final_padded_chunk",
+      "chunk_pending": 1,
+      "distinct_instruction_addresses": 277,
+      "frames": [
+        {
+          "block_index_u16_le": 0,
+          "bytes": 1040,
+          "header_words_le": [
+            16,
+            5,
+            1028,
+            19
+          ],
+          "sha256": "3869a0922eca6ef5426321ccfe4e745d1584dd6dc8e7a8f440d9a722d6d1b936"
+        }
+      ],
+      "immediate_error_response_statuses": [],
+      "maximum_entry_instructions": 68642,
+      "queued_points_raw": [
+        19
+      ],
+      "radio_083e_ack_statuses": [],
+      "retry_byte": 0,
+      "saved_settings_and_output_flags_preserved": true,
+      "saved_settings_bytes_read": 0,
+      "stored_offset": 0,
+      "stored_reported_length": 1024,
+      "stored_total": 1,
+      "transfer_active": 1
+    },
+    {
+      "application_callback_substitutes": [],
+      "case": "second_block",
+      "chunk_pending": 1,
+      "distinct_instruction_addresses": 277,
+      "frames": [
+        {
+          "block_index_u16_le": 1,
+          "bytes": 1040,
+          "header_words_le": [
+            16,
+            5,
+            1028,
+            19
+          ],
+          "sha256": "5456094a943651f12cf35386fff90a0b82585857b2c32d754aa003aa067c761b"
+        }
+      ],
+      "immediate_error_response_statuses": [],
+      "maximum_entry_instructions": 68555,
+      "queued_points_raw": [
+        19
+      ],
+      "radio_083e_ack_statuses": [],
+      "retry_byte": 0,
+      "saved_settings_and_output_flags_preserved": true,
+      "saved_settings_bytes_read": 0,
+      "stored_offset": 1024,
+      "stored_reported_length": 1024,
+      "stored_total": 2048,
+      "transfer_active": 1
+    },
+    {
+      "application_callback_substitutes": [],
+      "case": "reported_one",
+      "chunk_pending": 1,
+      "distinct_instruction_addresses": 277,
+      "frames": [
+        {
+          "block_index_u16_le": 0,
+          "bytes": 1040,
+          "header_words_le": [
+            16,
+            5,
+            1028,
+            19
+          ],
+          "sha256": "3869a0922eca6ef5426321ccfe4e745d1584dd6dc8e7a8f440d9a722d6d1b936"
+        }
+      ],
+      "immediate_error_response_statuses": [],
+      "maximum_entry_instructions": 68642,
+      "queued_points_raw": [
+        19
+      ],
+      "radio_083e_ack_statuses": [],
+      "retry_byte": 0,
+      "saved_settings_and_output_flags_preserved": true,
+      "saved_settings_bytes_read": 0,
+      "stored_offset": 0,
+      "stored_reported_length": 1,
+      "stored_total": 2048,
+      "transfer_active": 1
+    },
+    {
+      "application_callback_substitutes": [],
+      "case": "reported_2048",
+      "chunk_pending": 1,
+      "distinct_instruction_addresses": 277,
+      "frames": [
+        {
+          "block_index_u16_le": 0,
+          "bytes": 1040,
+          "header_words_le": [
+            16,
+            5,
+            1028,
+            19
+          ],
+          "sha256": "3869a0922eca6ef5426321ccfe4e745d1584dd6dc8e7a8f440d9a722d6d1b936"
+        }
+      ],
+      "immediate_error_response_statuses": [],
+      "maximum_entry_instructions": 68642,
+      "queued_points_raw": [
+        19
+      ],
+      "radio_083e_ack_statuses": [],
+      "retry_byte": 0,
+      "saved_settings_and_output_flags_preserved": true,
+      "saved_settings_bytes_read": 0,
+      "stored_offset": 0,
+      "stored_reported_length": 2048,
+      "stored_total": 2048,
+      "transfer_active": 1
+    },
+    {
+      "application_callback_substitutes": [],
+      "case": "maximum_total",
+      "chunk_pending": 1,
+      "distinct_instruction_addresses": 277,
+      "frames": [
+        {
+          "block_index_u16_le": 0,
+          "bytes": 1040,
+          "header_words_le": [
+            16,
+            5,
+            1028,
+            19
+          ],
+          "sha256": "3869a0922eca6ef5426321ccfe4e745d1584dd6dc8e7a8f440d9a722d6d1b936"
+        }
+      ],
+      "immediate_error_response_statuses": [],
+      "maximum_entry_instructions": 68642,
+      "queued_points_raw": [
+        19
+      ],
+      "radio_083e_ack_statuses": [],
+      "retry_byte": 0,
+      "saved_settings_and_output_flags_preserved": true,
+      "saved_settings_bytes_read": 0,
+      "stored_offset": 0,
+      "stored_reported_length": 1024,
+      "stored_total": 163840,
+      "transfer_active": 1
+    },
+    {
+      "application_callback_substitutes": [
+        {
+          "reason_argument": 1,
+          "success_argument": 0
+        }
+      ],
+      "case": "total_too_large",
+      "chunk_pending": 0,
+      "distinct_instruction_addresses": 169,
+      "frames": [],
+      "immediate_error_response_statuses": [
+        1
+      ],
+      "maximum_entry_instructions": 237,
+      "queued_points_raw": [],
+      "radio_083e_ack_statuses": [],
+      "retry_byte": 0,
+      "saved_settings_and_output_flags_preserved": true,
+      "saved_settings_bytes_read": 0,
+      "stored_offset": 0,
+      "stored_reported_length": 0,
+      "stored_total": 0,
+      "transfer_active": 0
+    },
+    {
+      "application_callback_substitutes": [
+        {
+          "reason_argument": 1,
+          "success_argument": 0
+        }
+      ],
+      "case": "zero_total",
+      "chunk_pending": 0,
+      "distinct_instruction_addresses": 172,
+      "frames": [],
+      "immediate_error_response_statuses": [
+        1
+      ],
+      "maximum_entry_instructions": 240,
+      "queued_points_raw": [],
+      "radio_083e_ack_statuses": [],
+      "retry_byte": 0,
+      "saved_settings_and_output_flags_preserved": true,
+      "saved_settings_bytes_read": 0,
+      "stored_offset": 0,
+      "stored_reported_length": 0,
+      "stored_total": 0,
+      "transfer_active": 0
+    },
+    {
+      "application_callback_substitutes": [
+        {
+          "reason_argument": 1,
+          "success_argument": 0
+        }
+      ],
+      "case": "offset_at_end",
+      "chunk_pending": 0,
+      "distinct_instruction_addresses": 172,
+      "frames": [],
+      "immediate_error_response_statuses": [
+        1
+      ],
+      "maximum_entry_instructions": 240,
+      "queued_points_raw": [],
+      "radio_083e_ack_statuses": [],
+      "retry_byte": 0,
+      "saved_settings_and_output_flags_preserved": true,
+      "saved_settings_bytes_read": 0,
+      "stored_offset": 0,
+      "stored_reported_length": 0,
+      "stored_total": 0,
+      "transfer_active": 0
+    },
+    {
+      "application_callback_substitutes": [],
+      "case": "missing_a1_retains_zero_offset",
+      "chunk_pending": 1,
+      "distinct_instruction_addresses": 269,
+      "frames": [
+        {
+          "block_index_u16_le": 0,
+          "bytes": 1040,
+          "header_words_le": [
+            16,
+            5,
+            1028,
+            19
+          ],
+          "sha256": "3869a0922eca6ef5426321ccfe4e745d1584dd6dc8e7a8f440d9a722d6d1b936"
+        }
+      ],
+      "immediate_error_response_statuses": [],
+      "maximum_entry_instructions": 68642,
+      "queued_points_raw": [
+        19
+      ],
+      "radio_083e_ack_statuses": [],
+      "retry_byte": 0,
+      "saved_settings_and_output_flags_preserved": true,
+      "saved_settings_bytes_read": 0,
+      "stored_offset": 0,
+      "stored_reported_length": 1024,
+      "stored_total": 2048,
+      "transfer_active": 1
+    },
+    {
+      "application_callback_substitutes": [
+        {
+          "reason_argument": 1,
+          "success_argument": 0
+        }
+      ],
+      "case": "missing_a2_retains_zero_total",
+      "chunk_pending": 0,
+      "distinct_instruction_addresses": 164,
+      "frames": [],
+      "immediate_error_response_statuses": [
+        1
+      ],
+      "maximum_entry_instructions": 913,
+      "queued_points_raw": [],
+      "radio_083e_ack_statuses": [],
+      "retry_byte": 0,
+      "saved_settings_and_output_flags_preserved": true,
+      "saved_settings_bytes_read": 0,
+      "stored_offset": 0,
+      "stored_reported_length": 0,
+      "stored_total": 0,
+      "transfer_active": 0
+    },
+    {
+      "application_callback_substitutes": [],
+      "case": "missing_a3",
+      "chunk_pending": 0,
+      "distinct_instruction_addresses": 143,
+      "frames": [],
+      "immediate_error_response_statuses": [],
+      "maximum_entry_instructions": 912,
+      "queued_points_raw": [],
+      "radio_083e_ack_statuses": [],
+      "retry_byte": 0,
+      "saved_settings_and_output_flags_preserved": true,
+      "saved_settings_bytes_read": 0,
+      "stored_offset": 0,
+      "stored_reported_length": 0,
+      "stored_total": 2048,
+      "transfer_active": 1
+    },
+    {
+      "application_callback_substitutes": [],
+      "case": "inactive",
+      "chunk_pending": 0,
+      "distinct_instruction_addresses": 71,
+      "frames": [],
+      "immediate_error_response_statuses": [],
+      "maximum_entry_instructions": 120,
+      "queued_points_raw": [],
+      "radio_083e_ack_statuses": [],
+      "retry_byte": 0,
+      "saved_settings_and_output_flags_preserved": true,
+      "saved_settings_bytes_read": 0,
+      "stored_offset": 0,
+      "stored_reported_length": 0,
+      "stored_total": 0,
+      "transfer_active": 0
+    },
+    {
+      "application_callback_substitutes": [],
+      "case": "pending",
+      "chunk_pending": 1,
+      "distinct_instruction_addresses": 75,
+      "frames": [],
+      "immediate_error_response_statuses": [],
+      "maximum_entry_instructions": 124,
+      "queued_points_raw": [],
+      "radio_083e_ack_statuses": [],
+      "retry_byte": 0,
+      "saved_settings_and_output_flags_preserved": true,
+      "saved_settings_bytes_read": 0,
+      "stored_offset": 0,
+      "stored_reported_length": 0,
+      "stored_total": 0,
+      "transfer_active": 1
+    },
+    {
+      "application_callback_substitutes": [],
+      "case": "ack_more_data",
+      "chunk_pending": 0,
+      "distinct_instruction_addresses": 365,
+      "frames": [
+        {
+          "block_index_u16_le": 0,
+          "bytes": 1040,
+          "header_words_le": [
+            16,
+            5,
+            1028,
+            19
+          ],
+          "sha256": "3869a0922eca6ef5426321ccfe4e745d1584dd6dc8e7a8f440d9a722d6d1b936"
+        }
+      ],
+      "immediate_error_response_statuses": [],
+      "maximum_entry_instructions": 68642,
+      "queued_points_raw": [
+        19
+      ],
+      "radio_083e_ack_statuses": [
+        0
+      ],
+      "retry_byte": 0,
+      "saved_settings_and_output_flags_preserved": true,
+      "saved_settings_bytes_read": 0,
+      "stored_offset": 0,
+      "stored_reported_length": 1024,
+      "stored_total": 2048,
+      "transfer_active": 1
+    },
+    {
+      "application_callback_substitutes": [],
+      "case": "ack_final",
+      "chunk_pending": 0,
+      "distinct_instruction_addresses": 398,
+      "frames": [
+        {
+          "block_index_u16_le": 0,
+          "bytes": 1040,
+          "header_words_le": [
+            16,
+            5,
+            1028,
+            19
+          ],
+          "sha256": "3869a0922eca6ef5426321ccfe4e745d1584dd6dc8e7a8f440d9a722d6d1b936"
+        },
+        {
+          "block_index_u16_le": null,
+          "bytes": 16,
+          "header_words_le": [
+            16,
+            5,
+            4,
+            20
+          ],
+          "sha256": "2d7dc1c260b3fdc1d45bcab17e30456034ab8764fd6ac6f5729db3cd869cb862"
+        }
+      ],
+      "immediate_error_response_statuses": [],
+      "maximum_entry_instructions": 68642,
+      "queued_points_raw": [
+        19,
+        20
+      ],
+      "radio_083e_ack_statuses": [
+        0
+      ],
+      "retry_byte": 0,
+      "saved_settings_and_output_flags_preserved": true,
+      "saved_settings_bytes_read": 0,
+      "stored_offset": 0,
+      "stored_reported_length": 1024,
+      "stored_total": 1024,
+      "transfer_active": 1
+    },
+    {
+      "application_callback_substitutes": [],
+      "case": "ack_final_padding",
+      "chunk_pending": 0,
+      "distinct_instruction_addresses": 398,
+      "frames": [
+        {
+          "block_index_u16_le": 0,
+          "bytes": 1040,
+          "header_words_le": [
+            16,
+            5,
+            1028,
+            19
+          ],
+          "sha256": "3869a0922eca6ef5426321ccfe4e745d1584dd6dc8e7a8f440d9a722d6d1b936"
+        },
+        {
+          "block_index_u16_le": null,
+          "bytes": 16,
+          "header_words_le": [
+            16,
+            5,
+            4,
+            20
+          ],
+          "sha256": "2d7dc1c260b3fdc1d45bcab17e30456034ab8764fd6ac6f5729db3cd869cb862"
+        }
+      ],
+      "immediate_error_response_statuses": [],
+      "maximum_entry_instructions": 68642,
+      "queued_points_raw": [
+        19,
+        20
+      ],
+      "radio_083e_ack_statuses": [
+        0
+      ],
+      "retry_byte": 0,
+      "saved_settings_and_output_flags_preserved": true,
+      "saved_settings_bytes_read": 0,
+      "stored_offset": 0,
+      "stored_reported_length": 1024,
+      "stored_total": 1,
+      "transfer_active": 1
+    },
+    {
+      "application_callback_substitutes": [],
+      "case": "ack_reported_one_more_data",
+      "chunk_pending": 0,
+      "distinct_instruction_addresses": 365,
+      "frames": [
+        {
+          "block_index_u16_le": 0,
+          "bytes": 1040,
+          "header_words_le": [
+            16,
+            5,
+            1028,
+            19
+          ],
+          "sha256": "3869a0922eca6ef5426321ccfe4e745d1584dd6dc8e7a8f440d9a722d6d1b936"
+        }
+      ],
+      "immediate_error_response_statuses": [],
+      "maximum_entry_instructions": 68642,
+      "queued_points_raw": [
+        19
+      ],
+      "radio_083e_ack_statuses": [
+        0
+      ],
+      "retry_byte": 0,
+      "saved_settings_and_output_flags_preserved": true,
+      "saved_settings_bytes_read": 0,
+      "stored_offset": 0,
+      "stored_reported_length": 1,
+      "stored_total": 2048,
+      "transfer_active": 1
+    },
+    {
+      "application_callback_substitutes": [],
+      "case": "retry_first",
+      "chunk_pending": 1,
+      "distinct_instruction_addresses": 303,
+      "frames": [
+        {
+          "block_index_u16_le": 0,
+          "bytes": 1040,
+          "header_words_le": [
+            16,
+            5,
+            1028,
+            19
+          ],
+          "sha256": "3869a0922eca6ef5426321ccfe4e745d1584dd6dc8e7a8f440d9a722d6d1b936"
+        },
+        {
+          "block_index_u16_le": 0,
+          "bytes": 1040,
+          "header_words_le": [
+            16,
+            5,
+            1028,
+            19
+          ],
+          "sha256": "3869a0922eca6ef5426321ccfe4e745d1584dd6dc8e7a8f440d9a722d6d1b936"
+        }
+      ],
+      "immediate_error_response_statuses": [],
+      "maximum_entry_instructions": 68642,
+      "queued_points_raw": [
+        19,
+        19
+      ],
+      "radio_083e_ack_statuses": [],
+      "retry_byte": 1,
+      "saved_settings_and_output_flags_preserved": true,
+      "saved_settings_bytes_read": 0,
+      "stored_offset": 0,
+      "stored_reported_length": 1024,
+      "stored_total": 2048,
+      "transfer_active": 1
+    },
+    {
+      "application_callback_substitutes": [
+        {
+          "reason_argument": 4,
+          "success_argument": 0
+        }
+      ],
+      "case": "retry_fourth",
+      "chunk_pending": 0,
+      "distinct_instruction_addresses": 384,
+      "frames": [
+        {
+          "block_index_u16_le": 0,
+          "bytes": 1040,
+          "header_words_le": [
+            16,
+            5,
+            1028,
+            19
+          ],
+          "sha256": "3869a0922eca6ef5426321ccfe4e745d1584dd6dc8e7a8f440d9a722d6d1b936"
+        }
+      ],
+      "immediate_error_response_statuses": [],
+      "maximum_entry_instructions": 68642,
+      "queued_points_raw": [
+        19
+      ],
+      "radio_083e_ack_statuses": [
+        1
+      ],
+      "retry_byte": 0,
+      "saved_settings_and_output_flags_preserved": true,
+      "saved_settings_bytes_read": 0,
+      "stored_offset": 0,
+      "stored_reported_length": 0,
+      "stored_total": 0,
+      "transfer_active": 0
+    },
+    {
+      "application_callback_substitutes": [],
+      "case": "retry_byte_wrap",
+      "chunk_pending": 1,
+      "distinct_instruction_addresses": 303,
+      "frames": [
+        {
+          "block_index_u16_le": 0,
+          "bytes": 1040,
+          "header_words_le": [
+            16,
+            5,
+            1028,
+            19
+          ],
+          "sha256": "3869a0922eca6ef5426321ccfe4e745d1584dd6dc8e7a8f440d9a722d6d1b936"
+        },
+        {
+          "block_index_u16_le": 0,
+          "bytes": 1040,
+          "header_words_le": [
+            16,
+            5,
+            1028,
+            19
+          ],
+          "sha256": "3869a0922eca6ef5426321ccfe4e745d1584dd6dc8e7a8f440d9a722d6d1b936"
+        }
+      ],
+      "immediate_error_response_statuses": [],
+      "maximum_entry_instructions": 68642,
+      "queued_points_raw": [
+        19,
+        19
+      ],
+      "radio_083e_ack_statuses": [],
+      "retry_byte": 0,
+      "saved_settings_and_output_flags_preserved": true,
+      "saved_settings_bytes_read": 0,
+      "stored_offset": 0,
+      "stored_reported_length": 1024,
+      "stored_total": 2048,
+      "transfer_active": 1
+    },
+    {
+      "application_callback_substitutes": [],
+      "case": "bad_point",
+      "chunk_pending": 1,
+      "distinct_instruction_addresses": 293,
+      "frames": [
+        {
+          "block_index_u16_le": 0,
+          "bytes": 1040,
+          "header_words_le": [
+            16,
+            5,
+            1028,
+            19
+          ],
+          "sha256": "3869a0922eca6ef5426321ccfe4e745d1584dd6dc8e7a8f440d9a722d6d1b936"
+        }
+      ],
+      "immediate_error_response_statuses": [],
+      "maximum_entry_instructions": 68642,
+      "queued_points_raw": [
+        19
+      ],
+      "radio_083e_ack_statuses": [],
+      "retry_byte": 0,
+      "saved_settings_and_output_flags_preserved": true,
+      "saved_settings_bytes_read": 0,
+      "stored_offset": 0,
+      "stored_reported_length": 1024,
+      "stored_total": 2048,
+      "transfer_active": 1
+    },
+    {
+      "application_callback_substitutes": [],
+      "case": "bad_status",
+      "chunk_pending": 1,
+      "distinct_instruction_addresses": 296,
+      "frames": [
+        {
+          "block_index_u16_le": 0,
+          "bytes": 1040,
+          "header_words_le": [
+            16,
+            5,
+            1028,
+            19
+          ],
+          "sha256": "3869a0922eca6ef5426321ccfe4e745d1584dd6dc8e7a8f440d9a722d6d1b936"
+        }
+      ],
+      "immediate_error_response_statuses": [],
+      "maximum_entry_instructions": 68642,
+      "queued_points_raw": [
+        19
+      ],
+      "radio_083e_ack_statuses": [],
+      "retry_byte": 0,
+      "saved_settings_and_output_flags_preserved": true,
+      "saved_settings_bytes_read": 0,
+      "stored_offset": 0,
+      "stored_reported_length": 1024,
+      "stored_total": 2048,
+      "transfer_active": 1
+    },
+    {
+      "application_callback_substitutes": [],
+      "case": "bad_marker",
+      "chunk_pending": 1,
+      "distinct_instruction_addresses": 287,
+      "frames": [
+        {
+          "block_index_u16_le": 0,
+          "bytes": 1040,
+          "header_words_le": [
+            16,
+            5,
+            1028,
+            19
+          ],
+          "sha256": "3869a0922eca6ef5426321ccfe4e745d1584dd6dc8e7a8f440d9a722d6d1b936"
+        }
+      ],
+      "immediate_error_response_statuses": [],
+      "maximum_entry_instructions": 68642,
+      "queued_points_raw": [
+        19
+      ],
+      "radio_083e_ack_statuses": [],
+      "retry_byte": 0,
+      "saved_settings_and_output_flags_preserved": true,
+      "saved_settings_bytes_read": 0,
+      "stored_offset": 0,
+      "stored_reported_length": 1024,
+      "stored_total": 2048,
+      "transfer_active": 1
+    }
+  ],
+  "station_commands_sent": 0
+}

@@ -75,6 +75,12 @@ the offset to 2,048. The fixture deliberately supplies initialized padding.
 The real HTTP buffer allocation/padding contract is unknown; this does not
 establish an out-of-bounds access or information disclosure on hardware.
 
+The [buffer/consumer continuation](gen2-asset-chunk-buffer-contract.md) narrows
+that boundary for a seeded Content-Length branch with the default 1,024-byte
+chunk: actual allocation decisions and callbacks use a cleared 2,048-byte
+buffer or a 1,024-byte fallback. Reused partial tails retain prior bytes, and
+all tested copies remain within that allocation. Other branches remain open.
+
 | Synthetic callback condition | Executed outcome |
 | --- | --- |
 | Progress elapsed 180,001 or cancel flag | No chunk; invokes cancellation/task-service substitutes |
@@ -104,9 +110,11 @@ short/changed firmware, instructions/writes outside the allowlists and
 unterminated bounded locator text. Independent runs reproduce both artifacts.
 Outputs contain synthetic hashes/metadata, not captured credentials or frames.
 
-The next download boundaries are task ID 20's real HTTP producer/buffer contract
-and the MAIN consumer for 003e/083d. Main's null-payload retry descriptor has not
-been transported end to end. A distinct read-only producer returning complete
+The follow-up also replays task-20 registration, the bounded HTTP producer,
+MAIN 003e consumer, chunk ACK and final-request construction. Full task/header
+selection, final application and 083d/083e framing/matching remain open. Main's
+null-payload retry descriptor has not been transported end to end.
+A distinct read-only producer returning complete
 controller settings is still needed before offering backup restoration. Do not
 probe stations with filenames or expose this state-changing download route as
 a saved-settings query.

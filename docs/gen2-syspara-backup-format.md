@@ -134,8 +134,10 @@ executes one FTP-named route and its initial descriptor/serializer. It queues
 a fixed request without reading the pointed-to contents or saved settings,
 and changes transfer/timer state. Its thirty-case reply/timeout continuation
 follows the supplied locator into an outbound radio `003d` request without
-reading controller settings. A complete generic file-export route remains
-unestablished; the radio handler and later chunk events are still unexecuted.
+reading controller settings. Later [radio admission](radio-asset-download.md)
+and [buffer/controller replays](gen2-asset-chunk-buffer-contract.md) follow
+HTTP asset download and MAIN chunk forwarding. A complete generic file-export
+route remains unestablished; no saved-file producer is supplied by those paths.
 
 The public radio **0.3.3.0** image has no discovered literal `sysPara`, `sysP`,
 disaster or storm string in its mapped printable data. This is only a string

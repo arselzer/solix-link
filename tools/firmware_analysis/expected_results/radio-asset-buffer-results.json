@@ -1,0 +1,1223 @@
+{
+  "ack_callback_cases": [
+    {
+      "callback_argument1_raw": 0,
+      "stored_ack_flag": 1
+    },
+    {
+      "callback_argument1_raw": 1,
+      "stored_ack_flag": 2
+    },
+    {
+      "callback_argument1_raw": 4294967295,
+      "stored_ack_flag": 2
+    }
+  ],
+  "buffer_cases": 14,
+  "cases": 19,
+  "http_setup_executed": false,
+  "instruction_limit_per_entry": 10000,
+  "limits": "Replay bounded HTTP buffer/callback blocks with synthetic Content-Length state.\n\nActual RISC-V task-registration descriptor, allocation decisions, read-loop branches, callback bridges,\nasset chunk serialization and ACK callback run. HTTP setup, socket/TLS reads,\nallocator/free, memset/memcpy, time, timers, transport and ACK delivery are\nexplicit substitutes. Entry\nregisters/header state are host-seeded; no worker startup, DNS/TLS, task engine,\ncontroller, firmware boot or station runs. This is not an electrical test.",
+  "model": "A1763",
+  "negative_guards": [
+    "content_length_0_outside_fixture_bound",
+    "content_length_8193_outside_fixture_bound",
+    "http_setup_entry_excluded",
+    "copy_outside_http_allocation"
+  ],
+  "physical_transport_verified": false,
+  "radio_sha256": "e291ec115f013953e825cb51b9e457a8731889547ab55b3058640e599e8cfec8",
+  "radio_version": "0.3.3.0",
+  "results": [
+    {
+      "allocated_buffer_bytes": 2048,
+      "allocation_fallback": false,
+      "async_status_bytes": [],
+      "buffer_clear_substitutes": [
+        {
+          "bytes": 2048,
+          "position": 0
+        }
+      ],
+      "callback_arguments": [
+        {
+          "kind_raw": 0,
+          "length": 1,
+          "padding_all_zero": true,
+          "padding_bytes": 2047,
+          "padding_sha256": "48c58cb7e4833bdaaf08e6ff3b78343eab33a3098b01e27aa6396d9a82cb4442",
+          "remaining": 0
+        }
+      ],
+      "callback_input_read_extent": 1024,
+      "cancellation_substitutes": [],
+      "chunk_frames": [
+        {
+          "body_bytes": 1039,
+          "body_sha256": "731a2252ed66722d75ff05b7f62582330da32a9d1cad3196ec3a9ecd9dbc92d5",
+          "chunk_length_u16_le": 1024,
+          "offset_u32_le": 0,
+          "total_u32_le": 1
+        }
+      ],
+      "current_locator_present": true,
+      "delay_substitute_calls": 1,
+      "distinct_instruction_addresses": 647,
+      "download_task_substitutes": [
+        {
+          "callback_targets": [
+            "4203f2a6",
+            "4203f088"
+          ],
+          "locator_bytes": 29,
+          "locator_sha256": "8a1d7b7b444f8a19bd52e2a83753218c5d3e73b404c13fa5807619eb983f5bce",
+          "start_offset": 0,
+          "task_id_raw": 20
+        }
+      ],
+      "input_copies_within_http_allocation": true,
+      "pending_locator_present": false,
+      "reply_statuses": [
+        0
+      ],
+      "short_read": false,
+      "socket_read_substitutes": [
+        {
+          "position": 0,
+          "requested": 1,
+          "returned": 1
+        }
+      ],
+      "stopped_before_http_cleanup": true,
+      "stored_chunk_size": 1024,
+      "stored_forward_offset": 1024,
+      "stored_timeout_argument": 180000,
+      "synthetic_content_length": 1,
+      "synthetic_identity_and_wifi_regions_preserved": true,
+      "synthetic_success_ack_callback_deliveries": 1
+    },
+    {
+      "allocated_buffer_bytes": 2048,
+      "allocation_fallback": false,
+      "async_status_bytes": [],
+      "buffer_clear_substitutes": [
+        {
+          "bytes": 2048,
+          "position": 0
+        }
+      ],
+      "callback_arguments": [
+        {
+          "kind_raw": 0,
+          "length": 1024,
+          "padding_all_zero": true,
+          "padding_bytes": 1024,
+          "padding_sha256": "5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+          "remaining": 0
+        }
+      ],
+      "callback_input_read_extent": 1024,
+      "cancellation_substitutes": [],
+      "chunk_frames": [
+        {
+          "body_bytes": 1039,
+          "body_sha256": "ae908d75e4d7e74e737adbca7748f50965f624b67b372c84a51c21f396aa2343",
+          "chunk_length_u16_le": 1024,
+          "offset_u32_le": 0,
+          "total_u32_le": 1024
+        }
+      ],
+      "current_locator_present": true,
+      "delay_substitute_calls": 1,
+      "distinct_instruction_addresses": 647,
+      "download_task_substitutes": [
+        {
+          "callback_targets": [
+            "4203f2a6",
+            "4203f088"
+          ],
+          "locator_bytes": 29,
+          "locator_sha256": "8a1d7b7b444f8a19bd52e2a83753218c5d3e73b404c13fa5807619eb983f5bce",
+          "start_offset": 0,
+          "task_id_raw": 20
+        }
+      ],
+      "input_copies_within_http_allocation": true,
+      "pending_locator_present": false,
+      "reply_statuses": [
+        0
+      ],
+      "short_read": false,
+      "socket_read_substitutes": [
+        {
+          "position": 0,
+          "requested": 1024,
+          "returned": 1024
+        }
+      ],
+      "stopped_before_http_cleanup": true,
+      "stored_chunk_size": 1024,
+      "stored_forward_offset": 1024,
+      "stored_timeout_argument": 180000,
+      "synthetic_content_length": 1024,
+      "synthetic_identity_and_wifi_regions_preserved": true,
+      "synthetic_success_ack_callback_deliveries": 1
+    },
+    {
+      "allocated_buffer_bytes": 2048,
+      "allocation_fallback": false,
+      "async_status_bytes": [],
+      "buffer_clear_substitutes": [
+        {
+          "bytes": 2048,
+          "position": 0
+        }
+      ],
+      "callback_arguments": [
+        {
+          "kind_raw": 0,
+          "length": 1025,
+          "padding_all_zero": true,
+          "padding_bytes": 1023,
+          "padding_sha256": "5724796860baa23469b3118eff2567c96a0b64b7dadaf99eafb7ba3c65b9aa56",
+          "remaining": 0
+        }
+      ],
+      "callback_input_read_extent": 2048,
+      "cancellation_substitutes": [],
+      "chunk_frames": [
+        {
+          "body_bytes": 1039,
+          "body_sha256": "d84bc685dfd5f740c301998004b9ebe168b7315be10802a96ca94141c26f5c79",
+          "chunk_length_u16_le": 1024,
+          "offset_u32_le": 0,
+          "total_u32_le": 1025
+        },
+        {
+          "body_bytes": 1039,
+          "body_sha256": "a2ecf6ece581784dcfe6c92f207f35072e8adbe8669b26a193a3f7bde12ea004",
+          "chunk_length_u16_le": 1024,
+          "offset_u32_le": 1024,
+          "total_u32_le": 1025
+        }
+      ],
+      "current_locator_present": true,
+      "delay_substitute_calls": 2,
+      "distinct_instruction_addresses": 647,
+      "download_task_substitutes": [
+        {
+          "callback_targets": [
+            "4203f2a6",
+            "4203f088"
+          ],
+          "locator_bytes": 29,
+          "locator_sha256": "8a1d7b7b444f8a19bd52e2a83753218c5d3e73b404c13fa5807619eb983f5bce",
+          "start_offset": 0,
+          "task_id_raw": 20
+        }
+      ],
+      "input_copies_within_http_allocation": true,
+      "pending_locator_present": false,
+      "reply_statuses": [
+        0
+      ],
+      "short_read": false,
+      "socket_read_substitutes": [
+        {
+          "position": 0,
+          "requested": 1025,
+          "returned": 1025
+        }
+      ],
+      "stopped_before_http_cleanup": true,
+      "stored_chunk_size": 1024,
+      "stored_forward_offset": 2048,
+      "stored_timeout_argument": 180000,
+      "synthetic_content_length": 1025,
+      "synthetic_identity_and_wifi_regions_preserved": true,
+      "synthetic_success_ack_callback_deliveries": 2
+    },
+    {
+      "allocated_buffer_bytes": 2048,
+      "allocation_fallback": false,
+      "async_status_bytes": [],
+      "buffer_clear_substitutes": [
+        {
+          "bytes": 2048,
+          "position": 0
+        }
+      ],
+      "callback_arguments": [
+        {
+          "kind_raw": 0,
+          "length": 2048,
+          "padding_all_zero": true,
+          "padding_bytes": 0,
+          "padding_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "remaining": 0
+        }
+      ],
+      "callback_input_read_extent": 2048,
+      "cancellation_substitutes": [],
+      "chunk_frames": [
+        {
+          "body_bytes": 1039,
+          "body_sha256": "7c4ff92f8346e68e763c0ea74d3be2312931efbe44f491bf86e08aeffc668b0d",
+          "chunk_length_u16_le": 1024,
+          "offset_u32_le": 0,
+          "total_u32_le": 2048
+        },
+        {
+          "body_bytes": 1039,
+          "body_sha256": "c5d15c27ed4b995040aefe2bfada1bac51d8bc9ba490d3cee0b5c9ae3b4d903a",
+          "chunk_length_u16_le": 1024,
+          "offset_u32_le": 1024,
+          "total_u32_le": 2048
+        }
+      ],
+      "current_locator_present": true,
+      "delay_substitute_calls": 2,
+      "distinct_instruction_addresses": 647,
+      "download_task_substitutes": [
+        {
+          "callback_targets": [
+            "4203f2a6",
+            "4203f088"
+          ],
+          "locator_bytes": 29,
+          "locator_sha256": "8a1d7b7b444f8a19bd52e2a83753218c5d3e73b404c13fa5807619eb983f5bce",
+          "start_offset": 0,
+          "task_id_raw": 20
+        }
+      ],
+      "input_copies_within_http_allocation": true,
+      "pending_locator_present": false,
+      "reply_statuses": [
+        0
+      ],
+      "short_read": false,
+      "socket_read_substitutes": [
+        {
+          "position": 0,
+          "requested": 2048,
+          "returned": 2048
+        }
+      ],
+      "stopped_before_http_cleanup": true,
+      "stored_chunk_size": 1024,
+      "stored_forward_offset": 2048,
+      "stored_timeout_argument": 180000,
+      "synthetic_content_length": 2048,
+      "synthetic_identity_and_wifi_regions_preserved": true,
+      "synthetic_success_ack_callback_deliveries": 2
+    },
+    {
+      "allocated_buffer_bytes": 2048,
+      "allocation_fallback": false,
+      "async_status_bytes": [],
+      "buffer_clear_substitutes": [
+        {
+          "bytes": 2048,
+          "position": 0
+        }
+      ],
+      "callback_arguments": [
+        {
+          "kind_raw": 0,
+          "length": 2048,
+          "padding_all_zero": true,
+          "padding_bytes": 0,
+          "padding_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "remaining": 1
+        },
+        {
+          "kind_raw": 0,
+          "length": 1,
+          "padding_all_zero": false,
+          "padding_bytes": 2047,
+          "padding_sha256": "2a3d2339edd062273f609d16f7c5fd973ed20e36da2993838fd5049acd28c478",
+          "remaining": 0
+        }
+      ],
+      "callback_input_read_extent": 2048,
+      "cancellation_substitutes": [],
+      "chunk_frames": [
+        {
+          "body_bytes": 1039,
+          "body_sha256": "f4aa3d1e914bf2993249fcee23f6329884d31fa6a219a4ab1f7ccbba7c270bba",
+          "chunk_length_u16_le": 1024,
+          "offset_u32_le": 0,
+          "total_u32_le": 2049
+        },
+        {
+          "body_bytes": 1039,
+          "body_sha256": "8bdef78e89e4b873bb7394bcc6cd2b50ac61ac6a922a999b57e2056b8bfb436c",
+          "chunk_length_u16_le": 1024,
+          "offset_u32_le": 1024,
+          "total_u32_le": 2049
+        },
+        {
+          "body_bytes": 1039,
+          "body_sha256": "3053851f790d035c73e12ff9bffaf575838083693710dfada7ba0fb1a49dabcf",
+          "chunk_length_u16_le": 1024,
+          "offset_u32_le": 2048,
+          "total_u32_le": 2049
+        }
+      ],
+      "current_locator_present": true,
+      "delay_substitute_calls": 3,
+      "distinct_instruction_addresses": 648,
+      "download_task_substitutes": [
+        {
+          "callback_targets": [
+            "4203f2a6",
+            "4203f088"
+          ],
+          "locator_bytes": 29,
+          "locator_sha256": "8a1d7b7b444f8a19bd52e2a83753218c5d3e73b404c13fa5807619eb983f5bce",
+          "start_offset": 0,
+          "task_id_raw": 20
+        }
+      ],
+      "input_copies_within_http_allocation": true,
+      "pending_locator_present": false,
+      "reply_statuses": [
+        0
+      ],
+      "short_read": false,
+      "socket_read_substitutes": [
+        {
+          "position": 0,
+          "requested": 2048,
+          "returned": 2048
+        },
+        {
+          "position": 2048,
+          "requested": 1,
+          "returned": 1
+        }
+      ],
+      "stopped_before_http_cleanup": true,
+      "stored_chunk_size": 1024,
+      "stored_forward_offset": 3072,
+      "stored_timeout_argument": 180000,
+      "synthetic_content_length": 2049,
+      "synthetic_identity_and_wifi_regions_preserved": true,
+      "synthetic_success_ack_callback_deliveries": 3
+    },
+    {
+      "allocated_buffer_bytes": 2048,
+      "allocation_fallback": false,
+      "async_status_bytes": [],
+      "buffer_clear_substitutes": [
+        {
+          "bytes": 2048,
+          "position": 0
+        }
+      ],
+      "callback_arguments": [
+        {
+          "kind_raw": 0,
+          "length": 2048,
+          "padding_all_zero": true,
+          "padding_bytes": 0,
+          "padding_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "remaining": 2049
+        },
+        {
+          "kind_raw": 0,
+          "length": 2048,
+          "padding_all_zero": true,
+          "padding_bytes": 0,
+          "padding_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "remaining": 1
+        },
+        {
+          "kind_raw": 0,
+          "length": 1,
+          "padding_all_zero": false,
+          "padding_bytes": 2047,
+          "padding_sha256": "c9454b5c0cbb29ed0a131fbfc8abb5e62b9f9be5d799eaff6526b020b366cfe9",
+          "remaining": 0
+        }
+      ],
+      "callback_input_read_extent": 2048,
+      "cancellation_substitutes": [],
+      "chunk_frames": [
+        {
+          "body_bytes": 1039,
+          "body_sha256": "405e0ad1daa9967dfad04de0a298ba259b29982f061eb5772a12db1b0d0e144f",
+          "chunk_length_u16_le": 1024,
+          "offset_u32_le": 0,
+          "total_u32_le": 4097
+        },
+        {
+          "body_bytes": 1039,
+          "body_sha256": "9c6e80add89144cbac442b10ee2e7ea434bd61dd6a1cbfc8f531027ba3d3fd73",
+          "chunk_length_u16_le": 1024,
+          "offset_u32_le": 1024,
+          "total_u32_le": 4097
+        },
+        {
+          "body_bytes": 1039,
+          "body_sha256": "974cd41036c329babd8c8f24ab32d8787287ce2b4e07082e87e1bf08d903bab3",
+          "chunk_length_u16_le": 1024,
+          "offset_u32_le": 2048,
+          "total_u32_le": 4097
+        },
+        {
+          "body_bytes": 1039,
+          "body_sha256": "ef04ae1573c638e54edbf2e36f415112c1c756d5fbc80c4d2d33e730e2c734e4",
+          "chunk_length_u16_le": 1024,
+          "offset_u32_le": 3072,
+          "total_u32_le": 4097
+        },
+        {
+          "body_bytes": 1039,
+          "body_sha256": "4914f7338adf4cdf44dc6ee5ade5d2243ab083fdbff30ade01fa9f264e60e1f1",
+          "chunk_length_u16_le": 1024,
+          "offset_u32_le": 4096,
+          "total_u32_le": 4097
+        }
+      ],
+      "current_locator_present": true,
+      "delay_substitute_calls": 5,
+      "distinct_instruction_addresses": 648,
+      "download_task_substitutes": [
+        {
+          "callback_targets": [
+            "4203f2a6",
+            "4203f088"
+          ],
+          "locator_bytes": 29,
+          "locator_sha256": "8a1d7b7b444f8a19bd52e2a83753218c5d3e73b404c13fa5807619eb983f5bce",
+          "start_offset": 0,
+          "task_id_raw": 20
+        }
+      ],
+      "input_copies_within_http_allocation": true,
+      "pending_locator_present": false,
+      "reply_statuses": [
+        0
+      ],
+      "short_read": false,
+      "socket_read_substitutes": [
+        {
+          "position": 0,
+          "requested": 2048,
+          "returned": 2048
+        },
+        {
+          "position": 2048,
+          "requested": 2048,
+          "returned": 2048
+        },
+        {
+          "position": 4096,
+          "requested": 1,
+          "returned": 1
+        }
+      ],
+      "stopped_before_http_cleanup": true,
+      "stored_chunk_size": 1024,
+      "stored_forward_offset": 5120,
+      "stored_timeout_argument": 180000,
+      "synthetic_content_length": 4097,
+      "synthetic_identity_and_wifi_regions_preserved": true,
+      "synthetic_success_ack_callback_deliveries": 5
+    },
+    {
+      "allocated_buffer_bytes": 1024,
+      "allocation_fallback": true,
+      "async_status_bytes": [],
+      "buffer_clear_substitutes": [
+        {
+          "bytes": 1024,
+          "position": 0
+        }
+      ],
+      "callback_arguments": [
+        {
+          "kind_raw": 0,
+          "length": 1,
+          "padding_all_zero": true,
+          "padding_bytes": 1023,
+          "padding_sha256": "5724796860baa23469b3118eff2567c96a0b64b7dadaf99eafb7ba3c65b9aa56",
+          "remaining": 0
+        }
+      ],
+      "callback_input_read_extent": 1024,
+      "cancellation_substitutes": [],
+      "chunk_frames": [
+        {
+          "body_bytes": 1039,
+          "body_sha256": "731a2252ed66722d75ff05b7f62582330da32a9d1cad3196ec3a9ecd9dbc92d5",
+          "chunk_length_u16_le": 1024,
+          "offset_u32_le": 0,
+          "total_u32_le": 1
+        }
+      ],
+      "current_locator_present": true,
+      "delay_substitute_calls": 1,
+      "distinct_instruction_addresses": 660,
+      "download_task_substitutes": [
+        {
+          "callback_targets": [
+            "4203f2a6",
+            "4203f088"
+          ],
+          "locator_bytes": 29,
+          "locator_sha256": "8a1d7b7b444f8a19bd52e2a83753218c5d3e73b404c13fa5807619eb983f5bce",
+          "start_offset": 0,
+          "task_id_raw": 20
+        }
+      ],
+      "input_copies_within_http_allocation": true,
+      "pending_locator_present": false,
+      "reply_statuses": [
+        0
+      ],
+      "short_read": false,
+      "socket_read_substitutes": [
+        {
+          "position": 0,
+          "requested": 1,
+          "returned": 1
+        }
+      ],
+      "stopped_before_http_cleanup": true,
+      "stored_chunk_size": 1024,
+      "stored_forward_offset": 1024,
+      "stored_timeout_argument": 180000,
+      "synthetic_content_length": 1,
+      "synthetic_identity_and_wifi_regions_preserved": true,
+      "synthetic_success_ack_callback_deliveries": 1
+    },
+    {
+      "allocated_buffer_bytes": 1024,
+      "allocation_fallback": true,
+      "async_status_bytes": [],
+      "buffer_clear_substitutes": [
+        {
+          "bytes": 1024,
+          "position": 0
+        }
+      ],
+      "callback_arguments": [
+        {
+          "kind_raw": 0,
+          "length": 1024,
+          "padding_all_zero": true,
+          "padding_bytes": 0,
+          "padding_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "remaining": 0
+        }
+      ],
+      "callback_input_read_extent": 1024,
+      "cancellation_substitutes": [],
+      "chunk_frames": [
+        {
+          "body_bytes": 1039,
+          "body_sha256": "ae908d75e4d7e74e737adbca7748f50965f624b67b372c84a51c21f396aa2343",
+          "chunk_length_u16_le": 1024,
+          "offset_u32_le": 0,
+          "total_u32_le": 1024
+        }
+      ],
+      "current_locator_present": true,
+      "delay_substitute_calls": 1,
+      "distinct_instruction_addresses": 660,
+      "download_task_substitutes": [
+        {
+          "callback_targets": [
+            "4203f2a6",
+            "4203f088"
+          ],
+          "locator_bytes": 29,
+          "locator_sha256": "8a1d7b7b444f8a19bd52e2a83753218c5d3e73b404c13fa5807619eb983f5bce",
+          "start_offset": 0,
+          "task_id_raw": 20
+        }
+      ],
+      "input_copies_within_http_allocation": true,
+      "pending_locator_present": false,
+      "reply_statuses": [
+        0
+      ],
+      "short_read": false,
+      "socket_read_substitutes": [
+        {
+          "position": 0,
+          "requested": 1024,
+          "returned": 1024
+        }
+      ],
+      "stopped_before_http_cleanup": true,
+      "stored_chunk_size": 1024,
+      "stored_forward_offset": 1024,
+      "stored_timeout_argument": 180000,
+      "synthetic_content_length": 1024,
+      "synthetic_identity_and_wifi_regions_preserved": true,
+      "synthetic_success_ack_callback_deliveries": 1
+    },
+    {
+      "allocated_buffer_bytes": 1024,
+      "allocation_fallback": true,
+      "async_status_bytes": [],
+      "buffer_clear_substitutes": [
+        {
+          "bytes": 1024,
+          "position": 0
+        }
+      ],
+      "callback_arguments": [
+        {
+          "kind_raw": 0,
+          "length": 1024,
+          "padding_all_zero": true,
+          "padding_bytes": 0,
+          "padding_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "remaining": 1
+        },
+        {
+          "kind_raw": 0,
+          "length": 1,
+          "padding_all_zero": false,
+          "padding_bytes": 1023,
+          "padding_sha256": "9e8af5babcc413ba11c289b8d716662c526d8b3ba71be4f3465714307e192173",
+          "remaining": 0
+        }
+      ],
+      "callback_input_read_extent": 1024,
+      "cancellation_substitutes": [],
+      "chunk_frames": [
+        {
+          "body_bytes": 1039,
+          "body_sha256": "d84bc685dfd5f740c301998004b9ebe168b7315be10802a96ca94141c26f5c79",
+          "chunk_length_u16_le": 1024,
+          "offset_u32_le": 0,
+          "total_u32_le": 1025
+        },
+        {
+          "body_bytes": 1039,
+          "body_sha256": "e481bddba5988d475c19a2355de0345b69dcb1b77b32de2600ce10db2db82890",
+          "chunk_length_u16_le": 1024,
+          "offset_u32_le": 1024,
+          "total_u32_le": 1025
+        }
+      ],
+      "current_locator_present": true,
+      "delay_substitute_calls": 2,
+      "distinct_instruction_addresses": 661,
+      "download_task_substitutes": [
+        {
+          "callback_targets": [
+            "4203f2a6",
+            "4203f088"
+          ],
+          "locator_bytes": 29,
+          "locator_sha256": "8a1d7b7b444f8a19bd52e2a83753218c5d3e73b404c13fa5807619eb983f5bce",
+          "start_offset": 0,
+          "task_id_raw": 20
+        }
+      ],
+      "input_copies_within_http_allocation": true,
+      "pending_locator_present": false,
+      "reply_statuses": [
+        0
+      ],
+      "short_read": false,
+      "socket_read_substitutes": [
+        {
+          "position": 0,
+          "requested": 1024,
+          "returned": 1024
+        },
+        {
+          "position": 1024,
+          "requested": 1,
+          "returned": 1
+        }
+      ],
+      "stopped_before_http_cleanup": true,
+      "stored_chunk_size": 1024,
+      "stored_forward_offset": 2048,
+      "stored_timeout_argument": 180000,
+      "synthetic_content_length": 1025,
+      "synthetic_identity_and_wifi_regions_preserved": true,
+      "synthetic_success_ack_callback_deliveries": 2
+    },
+    {
+      "allocated_buffer_bytes": 1024,
+      "allocation_fallback": true,
+      "async_status_bytes": [],
+      "buffer_clear_substitutes": [
+        {
+          "bytes": 1024,
+          "position": 0
+        }
+      ],
+      "callback_arguments": [
+        {
+          "kind_raw": 0,
+          "length": 1024,
+          "padding_all_zero": true,
+          "padding_bytes": 0,
+          "padding_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "remaining": 1024
+        },
+        {
+          "kind_raw": 0,
+          "length": 1024,
+          "padding_all_zero": true,
+          "padding_bytes": 0,
+          "padding_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "remaining": 0
+        }
+      ],
+      "callback_input_read_extent": 1024,
+      "cancellation_substitutes": [],
+      "chunk_frames": [
+        {
+          "body_bytes": 1039,
+          "body_sha256": "7c4ff92f8346e68e763c0ea74d3be2312931efbe44f491bf86e08aeffc668b0d",
+          "chunk_length_u16_le": 1024,
+          "offset_u32_le": 0,
+          "total_u32_le": 2048
+        },
+        {
+          "body_bytes": 1039,
+          "body_sha256": "c5d15c27ed4b995040aefe2bfada1bac51d8bc9ba490d3cee0b5c9ae3b4d903a",
+          "chunk_length_u16_le": 1024,
+          "offset_u32_le": 1024,
+          "total_u32_le": 2048
+        }
+      ],
+      "current_locator_present": true,
+      "delay_substitute_calls": 2,
+      "distinct_instruction_addresses": 661,
+      "download_task_substitutes": [
+        {
+          "callback_targets": [
+            "4203f2a6",
+            "4203f088"
+          ],
+          "locator_bytes": 29,
+          "locator_sha256": "8a1d7b7b444f8a19bd52e2a83753218c5d3e73b404c13fa5807619eb983f5bce",
+          "start_offset": 0,
+          "task_id_raw": 20
+        }
+      ],
+      "input_copies_within_http_allocation": true,
+      "pending_locator_present": false,
+      "reply_statuses": [
+        0
+      ],
+      "short_read": false,
+      "socket_read_substitutes": [
+        {
+          "position": 0,
+          "requested": 1024,
+          "returned": 1024
+        },
+        {
+          "position": 1024,
+          "requested": 1024,
+          "returned": 1024
+        }
+      ],
+      "stopped_before_http_cleanup": true,
+      "stored_chunk_size": 1024,
+      "stored_forward_offset": 2048,
+      "stored_timeout_argument": 180000,
+      "synthetic_content_length": 2048,
+      "synthetic_identity_and_wifi_regions_preserved": true,
+      "synthetic_success_ack_callback_deliveries": 2
+    },
+    {
+      "allocated_buffer_bytes": 1024,
+      "allocation_fallback": true,
+      "async_status_bytes": [],
+      "buffer_clear_substitutes": [
+        {
+          "bytes": 1024,
+          "position": 0
+        }
+      ],
+      "callback_arguments": [
+        {
+          "kind_raw": 0,
+          "length": 1024,
+          "padding_all_zero": true,
+          "padding_bytes": 0,
+          "padding_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "remaining": 1025
+        },
+        {
+          "kind_raw": 0,
+          "length": 1024,
+          "padding_all_zero": true,
+          "padding_bytes": 0,
+          "padding_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "remaining": 1
+        },
+        {
+          "kind_raw": 0,
+          "length": 1,
+          "padding_all_zero": false,
+          "padding_bytes": 1023,
+          "padding_sha256": "72946b9e4a0bcdcca61244708013ffd99605537f0357ae8651f31c469cfa19e4",
+          "remaining": 0
+        }
+      ],
+      "callback_input_read_extent": 1024,
+      "cancellation_substitutes": [],
+      "chunk_frames": [
+        {
+          "body_bytes": 1039,
+          "body_sha256": "f4aa3d1e914bf2993249fcee23f6329884d31fa6a219a4ab1f7ccbba7c270bba",
+          "chunk_length_u16_le": 1024,
+          "offset_u32_le": 0,
+          "total_u32_le": 2049
+        },
+        {
+          "body_bytes": 1039,
+          "body_sha256": "8bdef78e89e4b873bb7394bcc6cd2b50ac61ac6a922a999b57e2056b8bfb436c",
+          "chunk_length_u16_le": 1024,
+          "offset_u32_le": 1024,
+          "total_u32_le": 2049
+        },
+        {
+          "body_bytes": 1039,
+          "body_sha256": "8f6fd586232b9faeab2836936a30c98c653fe1ad178b3fed28a8a69b69122394",
+          "chunk_length_u16_le": 1024,
+          "offset_u32_le": 2048,
+          "total_u32_le": 2049
+        }
+      ],
+      "current_locator_present": true,
+      "delay_substitute_calls": 3,
+      "distinct_instruction_addresses": 661,
+      "download_task_substitutes": [
+        {
+          "callback_targets": [
+            "4203f2a6",
+            "4203f088"
+          ],
+          "locator_bytes": 29,
+          "locator_sha256": "8a1d7b7b444f8a19bd52e2a83753218c5d3e73b404c13fa5807619eb983f5bce",
+          "start_offset": 0,
+          "task_id_raw": 20
+        }
+      ],
+      "input_copies_within_http_allocation": true,
+      "pending_locator_present": false,
+      "reply_statuses": [
+        0
+      ],
+      "short_read": false,
+      "socket_read_substitutes": [
+        {
+          "position": 0,
+          "requested": 1024,
+          "returned": 1024
+        },
+        {
+          "position": 1024,
+          "requested": 1024,
+          "returned": 1024
+        },
+        {
+          "position": 2048,
+          "requested": 1,
+          "returned": 1
+        }
+      ],
+      "stopped_before_http_cleanup": true,
+      "stored_chunk_size": 1024,
+      "stored_forward_offset": 3072,
+      "stored_timeout_argument": 180000,
+      "synthetic_content_length": 2049,
+      "synthetic_identity_and_wifi_regions_preserved": true,
+      "synthetic_success_ack_callback_deliveries": 3
+    },
+    {
+      "allocated_buffer_bytes": 1024,
+      "allocation_fallback": true,
+      "async_status_bytes": [],
+      "buffer_clear_substitutes": [
+        {
+          "bytes": 1024,
+          "position": 0
+        }
+      ],
+      "callback_arguments": [
+        {
+          "kind_raw": 0,
+          "length": 1024,
+          "padding_all_zero": true,
+          "padding_bytes": 0,
+          "padding_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "remaining": 3073
+        },
+        {
+          "kind_raw": 0,
+          "length": 1024,
+          "padding_all_zero": true,
+          "padding_bytes": 0,
+          "padding_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "remaining": 2049
+        },
+        {
+          "kind_raw": 0,
+          "length": 1024,
+          "padding_all_zero": true,
+          "padding_bytes": 0,
+          "padding_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "remaining": 1025
+        },
+        {
+          "kind_raw": 0,
+          "length": 1024,
+          "padding_all_zero": true,
+          "padding_bytes": 0,
+          "padding_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "remaining": 1
+        },
+        {
+          "kind_raw": 0,
+          "length": 1,
+          "padding_all_zero": false,
+          "padding_bytes": 1023,
+          "padding_sha256": "da1e0edbada6139d7b44e9dc44178202689a9d6aefc817440f85055d82f5ac7c",
+          "remaining": 0
+        }
+      ],
+      "callback_input_read_extent": 1024,
+      "cancellation_substitutes": [],
+      "chunk_frames": [
+        {
+          "body_bytes": 1039,
+          "body_sha256": "405e0ad1daa9967dfad04de0a298ba259b29982f061eb5772a12db1b0d0e144f",
+          "chunk_length_u16_le": 1024,
+          "offset_u32_le": 0,
+          "total_u32_le": 4097
+        },
+        {
+          "body_bytes": 1039,
+          "body_sha256": "9c6e80add89144cbac442b10ee2e7ea434bd61dd6a1cbfc8f531027ba3d3fd73",
+          "chunk_length_u16_le": 1024,
+          "offset_u32_le": 1024,
+          "total_u32_le": 4097
+        },
+        {
+          "body_bytes": 1039,
+          "body_sha256": "974cd41036c329babd8c8f24ab32d8787287ce2b4e07082e87e1bf08d903bab3",
+          "chunk_length_u16_le": 1024,
+          "offset_u32_le": 2048,
+          "total_u32_le": 4097
+        },
+        {
+          "body_bytes": 1039,
+          "body_sha256": "ef04ae1573c638e54edbf2e36f415112c1c756d5fbc80c4d2d33e730e2c734e4",
+          "chunk_length_u16_le": 1024,
+          "offset_u32_le": 3072,
+          "total_u32_le": 4097
+        },
+        {
+          "body_bytes": 1039,
+          "body_sha256": "5ec4c2fe9a50da5ffe4a92d303305c11f22f5ba4507303f5d296bbbcbc947cb4",
+          "chunk_length_u16_le": 1024,
+          "offset_u32_le": 4096,
+          "total_u32_le": 4097
+        }
+      ],
+      "current_locator_present": true,
+      "delay_substitute_calls": 5,
+      "distinct_instruction_addresses": 661,
+      "download_task_substitutes": [
+        {
+          "callback_targets": [
+            "4203f2a6",
+            "4203f088"
+          ],
+          "locator_bytes": 29,
+          "locator_sha256": "8a1d7b7b444f8a19bd52e2a83753218c5d3e73b404c13fa5807619eb983f5bce",
+          "start_offset": 0,
+          "task_id_raw": 20
+        }
+      ],
+      "input_copies_within_http_allocation": true,
+      "pending_locator_present": false,
+      "reply_statuses": [
+        0
+      ],
+      "short_read": false,
+      "socket_read_substitutes": [
+        {
+          "position": 0,
+          "requested": 1024,
+          "returned": 1024
+        },
+        {
+          "position": 1024,
+          "requested": 1024,
+          "returned": 1024
+        },
+        {
+          "position": 2048,
+          "requested": 1024,
+          "returned": 1024
+        },
+        {
+          "position": 3072,
+          "requested": 1024,
+          "returned": 1024
+        },
+        {
+          "position": 4096,
+          "requested": 1,
+          "returned": 1
+        }
+      ],
+      "stopped_before_http_cleanup": true,
+      "stored_chunk_size": 1024,
+      "stored_forward_offset": 5120,
+      "stored_timeout_argument": 180000,
+      "synthetic_content_length": 4097,
+      "synthetic_identity_and_wifi_regions_preserved": true,
+      "synthetic_success_ack_callback_deliveries": 5
+    },
+    {
+      "allocated_buffer_bytes": 2048,
+      "allocation_fallback": false,
+      "async_status_bytes": [],
+      "buffer_clear_substitutes": [
+        {
+          "bytes": 2048,
+          "position": 0
+        }
+      ],
+      "callback_arguments": [],
+      "callback_input_read_extent": 0,
+      "cancellation_substitutes": [],
+      "chunk_frames": [],
+      "current_locator_present": true,
+      "delay_substitute_calls": 0,
+      "distinct_instruction_addresses": 298,
+      "download_task_substitutes": [
+        {
+          "callback_targets": [
+            "4203f2a6",
+            "4203f088"
+          ],
+          "locator_bytes": 29,
+          "locator_sha256": "8a1d7b7b444f8a19bd52e2a83753218c5d3e73b404c13fa5807619eb983f5bce",
+          "start_offset": 0,
+          "task_id_raw": 20
+        }
+      ],
+      "input_copies_within_http_allocation": true,
+      "pending_locator_present": false,
+      "reply_statuses": [
+        0
+      ],
+      "short_read": true,
+      "socket_read_substitutes": [
+        {
+          "position": 0,
+          "requested": 1024,
+          "returned": 1023
+        }
+      ],
+      "stopped_before_http_cleanup": true,
+      "stored_chunk_size": 1024,
+      "stored_forward_offset": 0,
+      "stored_timeout_argument": 180000,
+      "synthetic_content_length": 1024,
+      "synthetic_identity_and_wifi_regions_preserved": true,
+      "synthetic_success_ack_callback_deliveries": 0
+    },
+    {
+      "allocated_buffer_bytes": 2048,
+      "allocation_fallback": false,
+      "async_status_bytes": [],
+      "buffer_clear_substitutes": [
+        {
+          "bytes": 2048,
+          "position": 0
+        }
+      ],
+      "callback_arguments": [],
+      "callback_input_read_extent": 0,
+      "cancellation_substitutes": [],
+      "chunk_frames": [],
+      "current_locator_present": true,
+      "delay_substitute_calls": 0,
+      "distinct_instruction_addresses": 299,
+      "download_task_substitutes": [
+        {
+          "callback_targets": [
+            "4203f2a6",
+            "4203f088"
+          ],
+          "locator_bytes": 29,
+          "locator_sha256": "8a1d7b7b444f8a19bd52e2a83753218c5d3e73b404c13fa5807619eb983f5bce",
+          "start_offset": 0,
+          "task_id_raw": 20
+        }
+      ],
+      "input_copies_within_http_allocation": true,
+      "pending_locator_present": false,
+      "reply_statuses": [
+        0
+      ],
+      "short_read": true,
+      "socket_read_substitutes": [
+        {
+          "position": 0,
+          "requested": 2048,
+          "returned": 2047
+        }
+      ],
+      "stopped_before_http_cleanup": true,
+      "stored_chunk_size": 1024,
+      "stored_forward_offset": 0,
+      "stored_timeout_argument": 180000,
+      "synthetic_content_length": 2049,
+      "synthetic_identity_and_wifi_regions_preserved": true,
+      "synthetic_success_ack_callback_deliveries": 0
+    }
+  ],
+  "station_commands_sent": 0,
+  "task_registration_cases": [
+    {
+      "descriptors": [
+        {
+          "argument1_raw": 2,
+          "completion_bridge": "0x4203ba6a",
+          "descriptor_word0_raw": 2,
+          "locator_callback": "0x4203b98a",
+          "progress_bridge": "0x4203ba1a",
+          "task_id_raw": 20
+        }
+      ],
+      "returned": 0,
+      "substituted_registration_result": 0
+    },
+    {
+      "descriptors": [
+        {
+          "argument1_raw": 2,
+          "completion_bridge": "0x4203ba6a",
+          "descriptor_word0_raw": 2,
+          "locator_callback": "0x4203b98a",
+          "progress_bridge": "0x4203ba1a",
+          "task_id_raw": 20
+        }
+      ],
+      "returned": 5,
+      "substituted_registration_result": 5
+    }
+  ]
+}
