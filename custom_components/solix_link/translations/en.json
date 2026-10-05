@@ -47,6 +47,8 @@
       "ac_fast_charge_enabled": {"name": "Fast charging enabled"},
       "dc_input_active": {"name": "DC/PV input active"},
       "pv_weak_light_locked": {"name": "PV weak-light lock"},
+      "telemetry_available": {"name": "Telemetry available"},
+      "battery_reserve_low": {"name": "Battery reserve low"},
       "disaster_preparation_active": {"name": "Disaster preparation active"},
       "ac_power_saving_mode_enabled": {"name": "AC Smart mode enabled"},
       "dc_power_saving_mode_enabled": {"name": "DC Smart mode enabled"}

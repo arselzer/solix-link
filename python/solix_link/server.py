@@ -9,6 +9,8 @@ import mimetypes
 import os
 import re
 import sqlite3
+import time
+import uuid
 from collections.abc import Callable
 from contextlib import asynccontextmanager
 from pathlib import Path
@@ -25,6 +27,10 @@ from .manager import MonitorService
 from .tou import PowerFlowTimeout
 from .plan_readback import validate_plan_readback
 from .settings_export import export_settings
+from .settings_compare import compare_settings
+from .access import AccessPolicy, Principal, unique_object
+from .commands import COMMAND_FIELDS
+from .activity import ActivityStore, UpsTracker, command_readback
 
 MAX_COMMAND_BYTES = 16384
 WEB_HEADERS = {
@@ -38,10 +44,18 @@ WEB_HEADERS = {
 
 def create_app(service: MonitorService, token: str | None = None, *, allow_control: bool = False,
                web_ui: bool = False, history_file: Path | None = None,
-               history_retention_days: int = 7) -> FastAPI:
+               history_retention_days: int = 7, permissions: AccessPolicy | None = None,
+               activity_file: Path | None = None, activity_retention_days: int = 7) -> FastAPI:
     """Create the gateway; its lifespan owns the single monitoring service."""
-    if allow_control and not token:
+    if permissions is not None and token is not None:
+        raise ValueError("Use scoped permissions or a legacy token, not both")
+    if allow_control and not token and permissions is None:
         raise ValueError("HTTP controls require SOLIX_HTTP_TOKEN or an explicit Bearer token")
+    legacy_principal = Principal(frozenset(service.devices), tuple(
+        (name, frozenset(COMMAND_FIELDS)) for name in service.devices))
+    tracker = UpsTracker()
+    activity_store = ActivityStore(retention_days=activity_retention_days)
+    activity_failed = False
     web_root = Path(__file__).with_name("web")
     assets = {"/" + path.relative_to(web_root).as_posix(): path
               for path in (web_root / "assets").rglob("*") if path.is_file()} if web_ui else {}
@@ -52,6 +66,28 @@ def create_app(service: MonitorService, token: str | None = None, *, allow_contr
 
     history_store = None
     history_failed = False
+
+    async def append_activity(record):
+        nonlocal activity_failed
+        try:
+            if activity_file is None:
+                return activity_store.append(record)
+            return await asyncio.to_thread(activity_store.append, record)
+        except Exception:
+            activity_failed = True
+            return None
+
+    async def record_activity():
+        nonlocal activity_failed
+        while True:
+            try:
+                for record in tracker.observe(service.snapshots()):
+                    if await append_activity(record) is None:
+                        return
+            except Exception:
+                activity_failed = True
+                return
+            await asyncio.sleep(2)
 
     async def record_history():
         nonlocal history_failed
@@ -66,10 +102,15 @@ def create_app(service: MonitorService, token: str | None = None, *, allow_contr
 
     @asynccontextmanager
     async def lifespan(_app: FastAPI):
-        nonlocal history_store, history_failed
-        recorder = None
+        nonlocal history_store, history_failed, activity_store
+        recorder = observer = None
         await service.start()
         try:
+            if activity_file is not None:
+                activity_store.close()
+                activity_store = await asyncio.to_thread(ActivityStore, activity_file,
+                    retention_days=activity_retention_days)
+            observer = asyncio.create_task(record_activity())
             if history_file is not None:
                 from .history import HistoryStore
                 history_failed = False
@@ -78,6 +119,9 @@ def create_app(service: MonitorService, token: str | None = None, *, allow_contr
                 recorder = asyncio.create_task(record_history())
             yield
         finally:
+            if observer is not None:
+                observer.cancel()
+                await asyncio.gather(observer, return_exceptions=True)
             if recorder is not None:
                 recorder.cancel()
                 await asyncio.gather(recorder, return_exceptions=True)
@@ -86,6 +130,7 @@ def create_app(service: MonitorService, token: str | None = None, *, allow_contr
                     await asyncio.to_thread(history_store.close)
                     history_store = None
             finally:
+                activity_store.close()
                 await service.stop()
 
     app = FastAPI(lifespan=lifespan, docs_url=None, redoc_url=None, openapi_url=None)
@@ -94,15 +139,21 @@ def create_app(service: MonitorService, token: str | None = None, *, allow_contr
     async def authorize(request: Request, call_next):
         # Only the bundled shell is public; it contains no station data or token.
         public_asset = request.method in ("GET", "HEAD") and request.url.path in assets
-        if not public_asset and token and not hmac.compare_digest(
-                request.headers.get("Authorization", "").encode(), f"Bearer {token}".encode()):
+        header = request.headers.get("Authorization", "")
+        principal = permissions.authenticate(header) if permissions is not None else legacy_principal
+        if not public_asset and ((permissions is not None and principal is None) or (token and not hmac.compare_digest(
+                header.encode(), f"Bearer {token}".encode()))):
             return JSONResponse({"error": "Unauthorized"}, status_code=401,
                                 headers={"WWW-Authenticate": "Bearer", "Cache-Control": "no-store"})
+        request.state.principal = principal
         response = await call_next(request)
         response.headers["Cache-Control"] = "no-store"
         return response
 
-    def status_with_controls(status: dict) -> dict:
+    def readable(request, name):
+        return name in service.devices and name in request.state.principal.read
+
+    def status_with_controls(status: dict, principal: Principal) -> dict:
         commands = getattr(service, "supported_commands", None)
         config = service.devices.get(status["name"])
         private_fields = {"address", "serial_number", "account_id", "owner_id", "owner_user_id", "client_id", "raw_tlvs"}
@@ -113,29 +164,34 @@ def create_app(service: MonitorService, token: str | None = None, *, allow_contr
         if public.get("error"):
             error_class = str(public["error"]).split(":", 1)[0]
             public["error"] = error_class if re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]*Error", error_class) else "ConnectionError"
+        controls = [command for command in commands(status["name"])
+                    if command in principal.commands(status["name"])] if allow_control and commands else []
         return {**public, "timezone_name": getattr(config, "timezone_name", None),
-                "controls": commands(status["name"]) if allow_control and commands else []}
+                "ups_state": tracker.describe(status), "control_enabled": bool(controls), "controls": controls}
 
-    def snapshots() -> list[dict]:
-        return [status_with_controls(status) for status in service.snapshots()]
+    def snapshots(request) -> list[dict]:
+        return [status_with_controls(status, request.state.principal) for status in service.snapshots()
+                if readable(request, status["name"])]
 
     @app.api_route("/health", methods=["GET", "HEAD"])
-    async def health():
-        devices = service.snapshots()
+    async def health(request: Request):
+        devices = snapshots(request)
         ok = any(device["available"] for device in devices)
         return JSONResponse({"ok": ok, "devices": len(devices), "available": sum(d["available"] for d in devices)},
                             status_code=200 if ok else 503)
 
     @app.api_route("/devices", methods=["GET", "HEAD"])
-    async def all_devices():
-        return {"devices": snapshots()}
+    async def all_devices(request: Request):
+        return {"devices": snapshots(request)}
 
     @app.api_route("/diagnostics", methods=["GET", "HEAD"])
-    async def diagnostics():
-        return gateway_diagnostics(service.snapshots())
+    async def diagnostics(request: Request):
+        return gateway_diagnostics([status for status in service.snapshots() if readable(request, status["name"])])
 
     @app.api_route("/setup-check", methods=["GET", "HEAD"])
-    async def setup_check():
+    async def setup_check(request: Request):
+        if not set(service.devices) <= request.state.principal.read:
+            return JSONResponse({"error": "InsufficientScope"}, status_code=403)
         check = getattr(service, "check_setup", None)
         if check is None:
             return JSONResponse({"error": "SetupCheckUnavailable"}, status_code=404)
@@ -145,23 +201,61 @@ def create_app(service: MonitorService, token: str | None = None, *, allow_contr
             return JSONResponse({"error": "SetupCheckFailed"}, status_code=503)
 
     @app.api_route("/devices/{name}", methods=["GET", "HEAD"])
-    async def one_device(name: str):
-        if name not in service.devices:
+    async def one_device(name: str, request: Request):
+        if not readable(request, name):
             return PlainTextResponse("Unknown device", status_code=404)
-        return status_with_controls(service.snapshot(name))
+        return status_with_controls(service.snapshot(name), request.state.principal)
 
     @app.api_route("/devices/{name}/settings-export", methods=["GET", "HEAD"])
-    async def settings_export(name: str):
-        if name not in service.devices:
+    async def settings_export(name: str, request: Request):
+        if not readable(request, name):
             return PlainTextResponse("Unknown device", status_code=404)
         return export_settings(service.snapshot(name))
 
+    @app.post("/devices/{name}/settings-compare")
+    async def settings_compare(name: str, request: Request):
+        if not readable(request, name):
+            return JSONResponse({"error": "UnknownDevice"}, status_code=404)
+        try:
+            raw = bytearray()
+            async for chunk in request.stream():
+                if len(raw) + len(chunk) > 32768:
+                    return JSONResponse({"error": "ComparisonTooLarge"}, status_code=413)
+                raw.extend(chunk)
+            body = json.loads(raw, object_pairs_hook=unique_object)
+            if type(body) is not dict or set(body) != {"baseline"}:
+                raise ValueError
+            return compare_settings(body["baseline"], export_settings(service.snapshot(name)))
+        except (ValueError, TypeError, UnicodeError, RecursionError):
+            return JSONResponse({"error": "InvalidSettingsComparison", "commands_sent": 0}, status_code=400)
+
+    @app.api_route("/devices/{name}/activity", methods=["GET", "HEAD"])
+    async def activity(name: str, request: Request):
+        if not readable(request, name):
+            return JSONResponse({"error": "UnknownDevice"}, status_code=404)
+        if activity_failed:
+            return JSONResponse({"error": "ActivityUnavailable"}, status_code=503)
+        try:
+            params = request.query_params
+            if set(params) - {"limit", "after"} or len(params.multi_items()) != len(params):
+                raise ValueError
+            args = {key: int(value) for key, value in params.items()}
+            if activity_file is None:
+                return activity_store.query({name}, **args)
+            return await asyncio.to_thread(activity_store.query, {name}, **args)
+        except (ValueError, OverflowError):
+            return JSONResponse({"error": "InvalidActivityQuery"}, status_code=400)
+        except (OSError, sqlite3.Error):
+            return JSONResponse({"error": "ActivityUnavailable"}, status_code=503)
+
     @app.api_route("/history", methods=["GET", "HEAD"])
-    async def history_info():
+    async def history_info(request: Request):
         if history_file is None:
             return {"enabled": False, "estimated": True, "read_only": True}
         if history_store is None or history_failed:
             return JSONResponse({"error": "HistoryUnavailable"}, status_code=503)
+        if not set(service.devices) <= request.state.principal.read:
+            return {"enabled": True, "estimated": True, "read_only": True, "scope_limited": True}
         try:
             return {"enabled": True, "read_only": True, **await asyncio.to_thread(history_store.stats)}
         except (OSError, ValueError, sqlite3.Error):
@@ -169,7 +263,7 @@ def create_app(service: MonitorService, token: str | None = None, *, allow_contr
 
     @app.api_route("/devices/{name}/history", methods=["GET", "HEAD"])
     async def device_history(name: str, request: Request):
-        if name not in service.devices:
+        if not readable(request, name):
             return JSONResponse({"error": "UnknownDevice"}, status_code=404)
         if history_file is None:
             return JSONResponse({"error": "HistoryDisabled"}, status_code=404)
@@ -191,20 +285,20 @@ def create_app(service: MonitorService, token: str | None = None, *, allow_contr
             return JSONResponse({"error": "HistoryUnavailable"}, status_code=503)
 
     @app.api_route("/history/summary", methods=["GET", "HEAD"])
-    async def history_summary():
+    async def history_summary(request: Request):
         if history_file is None:
             return {"schema_version": 1, "enabled": False, "estimated": True, "read_only": True}
         if history_store is None or history_failed:
             return JSONResponse({"error": "HistoryUnavailable"}, status_code=503)
         try:
             summary = await asyncio.to_thread(history_store.summary)
-            summary["stations"] = [item for item in summary["stations"] if item["name"] in service.devices]
+            summary["stations"] = [item for item in summary["stations"] if readable(request, item["name"])]
             return {**summary, "enabled": True, "recording": True, "read_only": True}
         except (OSError, ValueError, sqlite3.Error):
             return JSONResponse({"error": "HistoryUnavailable"}, status_code=503)
 
     async def evaluate_preview(name: str, request: Request, preview: Callable[[object, object], dict]):
-        if name not in service.devices:
+        if not readable(request, name):
             return JSONResponse({"error": "UnknownDevice", "commands_sent": 0}, status_code=404)
         try:
             raw = bytearray()
@@ -237,7 +331,7 @@ def create_app(service: MonitorService, token: str | None = None, *, allow_contr
     async def command(name: str, request: Request):
         if not allow_control:
             return JSONResponse({"error": "ControlsDisabled"}, status_code=403)
-        if name not in service.devices:
+        if not readable(request, name):
             return PlainTextResponse("Unknown device", status_code=404)
         try:
             raw = bytearray()
@@ -245,33 +339,62 @@ def create_app(service: MonitorService, token: str | None = None, *, allow_contr
                 if len(raw) + len(chunk) > MAX_COMMAND_BYTES:
                     return JSONResponse({"error": "CommandTooLarge", "settings_may_have_changed": False}, status_code=413)
                 raw.extend(chunk)
-            body = json.loads(raw)
+            body = json.loads(raw, object_pairs_hook=unique_object)
             if not isinstance(body, dict) or "command" not in body:
                 raise ValueError("Invalid command body")
             action = body.pop("command")
             validate_command(action, body)
-        except (ValueError, UnicodeError):
+        except (ValueError, UnicodeError, RecursionError):
             return JSONResponse({"error": "InvalidCommand", "settings_may_have_changed": False}, status_code=400)
+        if action not in request.state.principal.commands(name):
+            return JSONResponse({"error": "InsufficientScope", "settings_may_have_changed": False}, status_code=403)
         if action not in service.supported_commands(name):
             return JSONResponse({"error": "UnsupportedCommand", "settings_may_have_changed": False}, status_code=403)
+        if activity_failed:
+            return JSONResponse({"error": "ActivityUnavailable", "settings_may_have_changed": False}, status_code=503)
+        command_id = uuid.uuid4().hex
+        before = export_settings(service.snapshot(name))
+        if await append_activity({"name": name, "timestamp": time.time(), "kind": "command_started",
+                "details": {"command_id": command_id, "command": action, "parameters": body}}) is None:
+            return JSONResponse({"error": "ActivityUnavailable", "settings_may_have_changed": False}, status_code=503)
+
+        async def finish(outcome, status, error=None):
+            details = {"command_id": command_id, "command": action, "outcome": outcome,
+                "physical_behavior_verified": False, "readback": command_readback(action, body, status),
+                "comparison": compare_settings(before, export_settings(status))}
+            if error is not None:
+                details["error"] = error
+            return await append_activity({"name": name, "timestamp": time.time(),
+                "kind": "command_finished", "details": details}) is not None
         try:
             result = await service.command(name, action, **body)
-            return JSONResponse(status_with_controls(result))
+            recorded = await finish("completed", result)
+            return JSONResponse({**status_with_controls(result, request.state.principal),
+                "command_result": {"command_id": command_id, "audit_recorded": recorded,
+                                   "physical_behavior_verified": False, "readback": command_readback(action, body, result)}})
+        except asyncio.CancelledError:
+            await finish("outcome_unknown", service.snapshot(name), "CancelledError")
+            raise
         except PowerFlowTimeout as error:
             failed_status = error.snapshot if error.snapshot.get("name") == name else service.snapshot(name)
+            recorded = await finish("outcome_unknown", failed_status, "PowerFlowTimeout")
             return JSONResponse({"error": "PowerFlowTimeout", "settings_may_have_changed": True,
-                                 "device": status_with_controls(failed_status)}, status_code=504)
+                                 "audit_recorded": recorded,
+                                 "device": status_with_controls(failed_status, request.state.principal)}, status_code=504)
         except (ValueError, PermissionError, ConnectionError, TimeoutError, RuntimeError) as error:
             code = 400 if isinstance(error, ValueError) else 403 if isinstance(error, PermissionError) else 504 if isinstance(error, TimeoutError) else 409
+            recorded = await finish("rejected" if isinstance(error, PermissionError) else "outcome_unknown",
+                service.snapshot(name), type(error).__name__)
             return JSONResponse({"error": type(error).__name__, "settings_may_have_changed": not isinstance(error, PermissionError),
-                                 "device": status_with_controls(service.snapshot(name))}, status_code=code)
+                                 "audit_recorded": recorded,
+                                 "device": status_with_controls(service.snapshot(name), request.state.principal)}, status_code=code)
 
     @app.get("/events")
-    async def events():
+    async def events(request: Request):
         async def stream():
             queue = service.subscribe()
             try:
-                initial = json.dumps({"devices": snapshots()}, separators=(",", ":"))
+                initial = json.dumps({"devices": snapshots(request)}, separators=(",", ":"))
                 yield f"event: snapshot\ndata: {initial}\n\n"
                 while True:
                     try:
@@ -279,7 +402,9 @@ def create_app(service: MonitorService, token: str | None = None, *, allow_contr
                     except TimeoutError:
                         yield ": keepalive\n\n"
                         continue
-                    payload = json.dumps(status_with_controls(event), separators=(",", ":"))
+                    if not readable(request, event["name"]):
+                        continue
+                    payload = json.dumps(status_with_controls(event, request.state.principal), separators=(",", ":"))
                     yield f"event: update\ndata: {payload}\n\n"
             finally:
                 service.unsubscribe(queue)
@@ -287,9 +412,9 @@ def create_app(service: MonitorService, token: str | None = None, *, allow_contr
                                  headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"})
 
     @app.api_route("/metrics", methods=["GET", "HEAD"])
-    async def metrics():
+    async def metrics(request: Request):
         lines = []
-        for status in snapshots():
+        for status in snapshots(request):
             name = status["name"].replace("\\", "\\\\").replace('"', '\\"').replace("\n", "\\n")
             label = f'{{device="{name}"}}'
             lines.append(f"solix_gen2_available{label} {int(status['available'])}")
@@ -315,6 +440,11 @@ def create_app(service: MonitorService, token: str | None = None, *, allow_contr
 
 def run_server(service: MonitorService, host: str = "127.0.0.1", port: int = 8765, *, allow_control: bool = False,
                web_ui: bool = False, history_file: Path | None = None,
-               history_retention_days: int = 7) -> None:
-    uvicorn.run(create_app(service, os.environ.get("SOLIX_HTTP_TOKEN"), allow_control=allow_control, web_ui=web_ui,
-                          history_file=history_file, history_retention_days=history_retention_days), host=host, port=port)
+               history_retention_days: int = 7, permissions_file: Path | None = None,
+               activity_file: Path | None = None, activity_retention_days: int = 7) -> None:
+    permissions = AccessPolicy.load(permissions_file, service.devices) if permissions_file is not None else None
+    token = None if permissions is not None else os.environ.get("SOLIX_HTTP_TOKEN")
+    uvicorn.run(create_app(service, token, allow_control=allow_control, web_ui=web_ui,
+                          history_file=history_file, history_retention_days=history_retention_days,
+                          permissions=permissions, activity_file=activity_file,
+                          activity_retention_days=activity_retention_days), host=host, port=port)

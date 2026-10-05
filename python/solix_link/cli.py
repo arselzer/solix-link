@@ -46,6 +46,10 @@ def parser() -> argparse.ArgumentParser:
     export.add_argument("--gateway-token-file", type=Path)
     export.add_argument("--name", help="Exact public station name for gateway reads")
 
+    diff = subcommands.add_parser("settings-diff", help="Compare two sanitized partial exports offline; no restore or commands")
+    diff.add_argument("--before", type=Path, required=True)
+    diff.add_argument("--after", type=Path, required=True)
+
     scan = subcommands.add_parser("scan", help="Find C300 AC, C1000, and C1000/C2000 Gen 2 devices")
     scan.add_argument("--timeout", type=float, default=8)
 
@@ -93,6 +97,9 @@ def parser() -> argparse.ArgumentParser:
     serve.add_argument("--web-ui", action="store_true", help="Serve the optional local dashboard at /")
     serve.add_argument("--history-file", type=Path, help="Opt in to a private SQLite history file; no station requests")
     serve.add_argument("--history-retention-days", type=int, default=7, help="History retention, 1–365 days (default 7)")
+    serve.add_argument("--permissions-file", type=Path, help="Owner-only per-device token scopes; replaces SOLIX_HTTP_TOKEN")
+    serve.add_argument("--activity-file", type=Path, help="Persist sanitized UPS/settings/command events in private SQLite")
+    serve.add_argument("--activity-retention-days", type=int, default=7)
 
     preview = subcommands.add_parser("charging-preview", help="Explain a charging policy from saved JSON; sends no commands")
     preview.add_argument("--snapshot-file", type=Path, required=True)
@@ -489,6 +496,11 @@ def main(argv: list[str] | None = None) -> int:
                 from .gateway_client import GatewayClient
                 snapshot = GatewayClient(args.gateway_url, args.gateway_token_file).snapshot(args.name)
             print(json.dumps(export_settings(snapshot), indent=2))
+        elif args.command == "settings-diff":
+            from .settings_compare import compare_settings
+            from .charging_preview_cli import read_document
+            print(json.dumps(compare_settings(read_document(args.before, 32768),
+                                              read_document(args.after, 32768)), indent=2))
         elif args.command == "scan":
             asyncio.run(_scan(args.timeout))
         elif args.command == "ble-inspect":
@@ -515,7 +527,9 @@ def main(argv: list[str] | None = None) -> int:
             from .server import run_server
             run_server(MonitorService(load_config(args.config)), host=args.host, port=args.port,
                        allow_control=args.allow_control, web_ui=args.web_ui,
-                       history_file=args.history_file, history_retention_days=args.history_retention_days)
+                       history_file=args.history_file, history_retention_days=args.history_retention_days,
+                       permissions_file=args.permissions_file, activity_file=args.activity_file,
+                       activity_retention_days=args.activity_retention_days)
         elif args.command == "charging-preview":
             from .charging_preview_cli import offline_preview
             print(json.dumps(offline_preview(args.snapshot_file, args.request_file, adaptive=args.adaptive), indent=2))

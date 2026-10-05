@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, nextTick, reactive, ref, watch } from 'vue';
 import StationHistory from './StationHistory.vue';
+import StationActivity from './StationActivity.vue';
 import StationControls from './StationControls.vue';
 import GatewayChecks from './GatewayChecks.vue';
 import ChargingPreview from './ChargingPreview.vue';
@@ -124,6 +125,7 @@ function confirm() {
           <StationHistory :key="selected.name" :station="selected" :samples="history" :now="now" :request="gateway.readOnly" />
           <div class="station-details"><span>Upper charge limit <strong>{{ format(numberMetric(selected, 'max_charge_percentage'), '%') }}</strong></span><span>Discharge floor <strong>{{ format(numberMetric(selected, 'min_charge_percentage'), '%') }}</strong></span><span>Reserve <strong>{{ format(numberMetric(selected, 'backup_reserve_percentage'), '%') }}</strong></span><span>Temperature <strong>{{ format(numberMetric(selected, 'temperature_c'), '°C') }}</strong></span><span>Firmware <strong>{{ selected.metrics.software_version ?? '—' }}</strong></span><span v-if="selected.model === 'c1000_gen2' && [0, 1].includes(numberMetric(selected, 'pv_weak_light_locked') ?? -1)" data-testid="pv-weak-light-lock" title="Firmware-derived C1000 Gen 2 flag; physical PV behavior untested.">PV weak-light lock <strong>{{ numberMetric(selected, 'pv_weak_light_locked') === 1 ? 'Active' : 'Inactive' }}</strong></span></div>
           <button class="secondary" data-testid="settings-export" :disabled="busy || polling" @click="gateway.exportSettings(selected.name)">Download partial settings</button>
+          <StationActivity :key="selected.name" :station="selected" :busy="busy" :request="gateway.readOnly" />
           <StationControls v-if="drafts[selected.name]" :station="selected" :draft="drafts[selected.name]!" :writable="writable" :now="now" @propose="proposal = $event" />
           <ChargingPreview :key="selected.name" :station="selected" :busy="busy" :request="gateway.readOnly" />
         </template>

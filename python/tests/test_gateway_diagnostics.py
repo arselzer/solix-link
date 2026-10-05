@@ -64,6 +64,7 @@ def test_gateway_endpoint_is_authenticated_passive_and_uncached(monkeypatch):
     gateway = Gateway()
     snapshot = gateway.snapshot("ups")
     snapshot.update(station())
+    gateway.devices = {snapshot["name"]: object()}
     snapshot["last_seen_timestamp"] = 1000
     gateway.snapshots = lambda: [snapshot]
     monkeypatch.setattr("solix_link.diagnostics.time.time", lambda: 1001)

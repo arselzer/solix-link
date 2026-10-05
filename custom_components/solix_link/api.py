@@ -156,6 +156,19 @@ def parse_snapshot(value: Any) -> dict:
                          if key in METRICS and (numeric(metric) is not None or isinstance(metric, str))}
     if value.get("power_flow") in ("unknown", "battery", "grid", "transitioning"):
         result["power_flow"] = value["power_flow"]
+    state = value.get("ups_state")
+    if (type(state) is dict and type(state.get("schema_version")) is int and state["schema_version"] == 1
+            and type(state.get("telemetry_available")) is bool
+            and all(state.get(key) is None or type(state.get(key)) is bool
+                    for key in ("mains_connected", "battery_reserve_low"))
+            and type(state.get("effective_reserve_percentage")) is int
+            and 1 <= state["effective_reserve_percentage"] <= 100
+            and type(state.get("reserve_hysteresis_percentage")) is int
+            and state["reserve_hysteresis_percentage"] == 5):
+        result["ups_state"] = {key: state.get(key) for key in ("schema_version", "telemetry_available",
+            "mains_connected", "battery_reserve_low", "effective_reserve_percentage", "reserve_hysteresis_percentage")}
+        if not state["telemetry_available"]:
+            result["ups_state"].update(mains_connected=None, battery_reserve_low=None)
     return result
 
 

@@ -1,0 +1,123 @@
+blueprint:
+  name: SOLIX Link - UPS observation alerts
+  description: >-
+    Optional alerts for observed mains loss/recovery, low reserve and lost/restored
+    telemetry. Select three entities belonging to the same SOLIX Link station.
+    Lost telemetry never implies a power failure. Starts disabled and requires a
+    dedicated arming helper. Sends notifications only; no device commands or shutdown.
+    Notification actions can use alert_event and alert_message variables.
+  domain: automation
+  homeassistant:
+    min_version: 2026.7.4
+  input:
+    station:
+      name: SOLIX Link station
+      selector:
+        device:
+          filter:
+            - integration: solix_link
+    armed:
+      name: Alerts enabled helper
+      selector:
+        entity:
+          filter:
+            - domain: input_boolean
+    mains:
+      name: Mains present
+      selector:
+        entity:
+          filter:
+            - domain: binary_sensor
+              integration: solix_link
+    telemetry:
+      name: Telemetry available
+      selector:
+        entity:
+          filter:
+            - domain: binary_sensor
+              integration: solix_link
+    low_reserve:
+      name: Battery reserve low
+      selector:
+        entity:
+          filter:
+            - domain: binary_sensor
+              integration: solix_link
+    notification_actions:
+      name: Notification actions
+      default:
+        - action: persistent_notification.create
+          data:
+            title: SOLIX Link UPS observation
+            message: "{{ alert_message }}"
+      selector:
+        action: {}
+
+initial_state: false
+mode: queued
+max: 10
+variables:
+  station: !input station
+  armed: !input armed
+  mains: !input mains
+  telemetry: !input telemetry
+  low_reserve: !input low_reserve
+trigger:
+  - platform: state
+    entity_id: !input mains
+    from: "on"
+    to: "off"
+    for: "00:00:05"
+    id: mains_lost
+  - platform: state
+    entity_id: !input mains
+    from: "off"
+    to: "on"
+    for: "00:00:05"
+    id: mains_restored
+  - platform: state
+    entity_id: !input telemetry
+    from: "on"
+    to: "off"
+    for: "00:00:30"
+    id: telemetry_lost
+  - platform: state
+    entity_id: !input telemetry
+    from: "off"
+    to: "on"
+    for: "00:00:05"
+    id: telemetry_restored
+  - platform: state
+    entity_id: !input low_reserve
+    from: "off"
+    to: "on"
+    for: "00:00:10"
+    id: battery_low
+  - platform: state
+    entity_id: !input low_reserve
+    from: "on"
+    to: "off"
+    for: "00:00:10"
+    id: battery_recovered
+condition:
+  - condition: template
+    value_template: >-
+      {{ is_state(armed, 'on') and mains != telemetry and mains != low_reserve
+         and telemetry != low_reserve
+         and mains in device_entities(station) and telemetry in device_entities(station)
+         and low_reserve in device_entities(station)
+         and state_attr(mains, 'solix_link_role') == 'ac_input_connected'
+         and state_attr(telemetry, 'solix_link_role') == 'telemetry_available'
+         and state_attr(low_reserve, 'solix_link_role') == 'battery_reserve_low' }}
+action:
+  - variables:
+      alert_event: "{{ trigger.id }}"
+      alert_message: >-
+        {{ {'mains_lost': 'Mains input reported disconnected. Check the station and its load.',
+            'mains_restored': 'Mains input reported connected again.',
+            'telemetry_lost': 'Station telemetry is unavailable. Its electrical state is unknown.',
+            'telemetry_restored': 'Station telemetry is available again.',
+            'battery_low': 'Reported battery percentage is below the configured reserve threshold.',
+            'battery_recovered': 'Reported battery percentage recovered past the reserve hysteresis.'}[trigger.id] }}
+  - choose: []
+    default: !input notification_actions

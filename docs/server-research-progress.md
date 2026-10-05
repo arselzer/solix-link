@@ -1004,3 +1004,107 @@ AGENTS.md is unchanged; preexisting `python/build/` is preserved. Private inputs
 phone data, identities, credentials and raw logs stay ignored. No live HA/AP/
 gateway/network change, automation activation, push or merge occurred. Changes
 are prepared for a local commit only.
+
+## 2026-10-05 — UPS observations, preference comparison and HTTP scopes
+
+Prepared the user's items 1–3 on `server/research-20261004`, based on
+`69c574f0fd73938b5f861582abaf9d1d2d6ed4fb`. This batch changes source, tests,
+documentation and bundled UI assets only. It makes zero station requests or
+commands and does not read station profiles, HA configuration, phone captures
+or credentials. Existing live services and the separate observer remain untouched.
+
+### Implemented
+
+- Cached UPS event tracking: explicit mains flags, distinct-report/five-second
+  debounce, separate telemetry loss/recovery, low-reserve hysteresis, startup
+  baselines and unknown outage timing after gaps. Invalid/regressing reports
+  cannot establish power loss; clock/model/transport changes reset baselines.
+- Bounded activity in session memory by default; optional private SQLite
+  persistence with seven-day/10,000-record limits. Queries expose bounded
+  station-scoped cursors. Persistence rejects unsafe files and concurrent writers.
+- Sanitized partial-settings comparison in Python, API, offline CLI and browser.
+  Missing/new fields and incompatible models are explicit. TOU equality excludes
+  reporting timestamps; incomplete exports still cannot restore a station.
+- HTTP command start/result correlation, sanitized parameters/errors, cached
+  readback matches and setting differences. No completion/ACK/value equality is
+  labeled physical verification. Pre-execution audit failure blocks the command;
+  post-execution failure preserves the result and marks the missing audit.
+- Separate owner-file tokens with explicit device read scopes and command write
+  scopes. All JSON, diagnostics, health, history, metrics and SSE routes filter
+  reads. Partial readers cannot run whole-profile setup checks. Scoped startup
+  replaces the legacy environment token; existing single-token startup is retained.
+- HA telemetry-availability/reserve diagnostics and a notification-only alert
+  blueprint, initially disabled. The communication entity remains available/Off
+  during coordinator failure. Reserve/mains become unknown with stale telemetry.
+  The blueprint checks entity roles/device ownership and sends no station commands.
+- Browser Activity panel with command results, UPS/settings filters and an
+  in-memory partial baseline. Compiled assets and synthetic screenshots updated.
+
+Public contracts, privacy rules and examples:
+[UPS activity and permissions](ups-activity-and-permissions.md).
+
+### C2000 HA configuration boundary
+
+Native C2000 already has charging watts, charge cap, backup reserve, hourly TOU
+and return-to-grid support; it is not categorically read-only in HA. HA requires
+a configured token, gateway-advertised command and required telemetry. Missing
+common charging numbers indicate those prerequisites need inspection, not that
+the source lacks C2000 charging controls. No live configuration was inspected here.
+
+The native allowlists remain **16 families for C1000 Gen 2 versus five for
+C2000 Gen 2**. A1763 main1.1.4.9 preference encoders/readback/preservation evidence
+is not transferable to A1783 main2.1.6.4. C2000 general preferences and automatic
+charging-override readback remain unestablished. Smart/timeout can stop outputs
+indirectly, so no new C2000 preferences or output-changing controls were added.
+The adaptive surplus executor retains its C1000 Gen 2/1.1.4.9 qualification.
+
+### Focused verification
+
+**679 Python/HA tests passed in 5.64 seconds**. Selected:
+`test_activity.py`, `test_access_activity_server.py`, `test_gateway.py`,
+`test_server_web.py`, `test_server_readonly_features.py`, `test_settings_export.py`,
+`test_gateway_client.py`, `test_gateway_diagnostics.py`, `test_history.py`,
+`test_history_summary.py`, `test_ap_service_cli.py`, `test_freshness_entities.py`,
+`test_gateway_contract.py`, `test_history_contract.py`,
+`test_ups_alerts_blueprint.py`, `test_surplus_blueprint.py`,
+`test_charging_blueprint.py`. They cover scope leaks including concurrent tokens
+and SSE updates, audit failure before/after execution, privacy/retention/restart,
+stale/unknown states, read-only comparison and existing gateway/HA contracts.
+Two old direct SSE tests now supply the middleware-established request principal;
+the diagnostics fixture now declares its synthetic station in the configured
+scope. Existing model-specific Fast discovery assertions are retained alongside
+the new telemetry entity. Initial failures were fixture expectations, not live
+device tests, and are resolved in the final gate.
+
+`npm run build:dashboard` passed Vue/TypeScript checks and Vite compilation.
+**29 browser scenarios passed** on a temporary loopback-only synthetic gateway.
+The new activity/comparison scenario asserts the command POST count does not
+increase, settings are model-local and baselines are discarded on station changes.
+Browser errors/external request lists were empty. Screenshots contain synthetic
+data only. These tests do not execute HA's real automation engine or verify
+electrical behavior. Older broad counts are not claimed rerun.
+
+Runtime: Python **3.14.4**, pytest **9.1.1**, FastAPI **0.142.2**, Bleak **3.0.2**,
+Textual **8.2.8**, Node **22.20.0**, Playwright **1.63.0**, Vite **8.0.3**,
+Vue **3.5.32** and TypeScript **5.9.3**. Source/bundle SHA-256 hashes, exact test
+selection and sanitized verification metadata are retained in the ignored
+`.solix-private/server-research/ups-features-20261005/` folder. No new firmware
+replay or physical experiment occurred; existing versioned firmware evidence
+is cited with its original scope.
+
+### Deployment and hardware requirements
+
+These changes are locally prepared and not deployed, pushed, merged or activated.
+Deploy gateway assets/source and HA component deliberately before checking the
+new entities. Configure separate private tokens; keep C2000 writes absent from
+monitor-only clients. The alert blueprint needs a dedicated helper and explicit
+enablement. Original C1000 has no established mains flag and cannot provide that
+alert input; communication/reserve observations remain separate.
+
+A controlled C1000-only mains/telemetry/reserve trial can validate the new event
+timing after deployment. C2000 preference parity still needs its actual controller
+firmware and safe model-specific readback, with AC-output preservation established
+before exposing any candidate. Original charging rate, true pause, calibrated
+battery energy, full restoration, account-free identity replacement and qualified
+local OTA retain the previously documented physical/recovery requirements.
+AGENTS.md and the preexisting untracked `python/build/` remain unchanged.

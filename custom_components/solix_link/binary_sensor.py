@@ -4,12 +4,15 @@ from homeassistant.components.binary_sensor import BinarySensorDeviceClass, Bina
 from homeassistant.core import callback
 from homeassistant.const import EntityCategory
 
-from .api import binary_state
+from .api import binary_state, snapshot_available
 from .coordinator import SolixConfigEntry
 from .entity import SolixEntity
 
 PARALLEL_UPDATES = 0
 DESCRIPTIONS = (
+    BinarySensorEntityDescription(key="telemetry_available", translation_key="telemetry_available",
+                                  entity_category=EntityCategory.DIAGNOSTIC),
+    BinarySensorEntityDescription(key="battery_reserve_low", translation_key="battery_reserve_low"),
     BinarySensorEntityDescription(key="ac_input_connected", translation_key="mains_present",
                                   device_class=BinarySensorDeviceClass.POWER),
     BinarySensorEntityDescription(key="ac_output_enabled", translation_key="ac_output_enabled",
@@ -50,7 +53,9 @@ async def async_setup_entry(hass, entry: SolixConfigEntry, async_add_entities) -
                 # Original C1000 already has supported switches for these.
                 if key in ("ac_power_saving_mode_enabled", "dc_power_saving_mode_enabled") and snapshot.get("model") not in ("c1000_gen2", "c2000_gen2"):
                     continue
-                if key in snapshot["metrics"] and (name, key) not in added:
+                present = (key in snapshot["metrics"] or key == "telemetry_available"
+                           or key == "battery_reserve_low" and "ups_state" in snapshot)
+                if present and (name, key) not in added:
                     added.add((name, key))
                     entities.append(SolixBinarySensor(coordinator, name, description))
         if entities:
@@ -71,13 +76,36 @@ class SolixBinarySensor(SolixEntity, BinarySensorEntity):
 
     @property
     def is_on(self) -> bool | None:
+        if self.entity_description.key == "telemetry_available":
+            state = self.snapshot.get("ups_state")
+            return (self.coordinator.last_update_success and snapshot_available(self.snapshot,
+                max_age=30 if self.snapshot.get("protocol") == "native_mqtt" else 90)
+                and (state is None or state.get("telemetry_available") is True))
+        if self.entity_description.key == "battery_reserve_low":
+            return self.snapshot.get("ups_state", {}).get("battery_reserve_low")
         return binary_state(self.snapshot.get("metrics", {}).get(self.entity_description.key))
 
     @property
     def available(self) -> bool:
+        if self.entity_description.key == "telemetry_available":
+            return bool(self.snapshot)
+        if self.entity_description.key == "battery_reserve_low":
+            return (self.coordinator.last_update_success
+                and self.snapshot.get("ups_state", {}).get("telemetry_available") is True and snapshot_available(self.snapshot,
+                max_age=30 if self.snapshot.get("protocol") == "native_mqtt" else 90) and self.is_on is not None)
         if self.entity_description.key in ("pv_weak_light_locked", "disaster_preparation_active") and self.snapshot.get("model") != "c1000_gen2":
             return False
         if self.entity_description.key == "ac_fast_charge_enabled" and (self.snapshot.get("model") != "c2000_gen2"
                                                                        or self.snapshot.get("protocol") != "native_mqtt"):
             return False
         return super().available and self.is_on is not None
+
+    @property
+    def extra_state_attributes(self) -> dict:
+        attributes = super().extra_state_attributes
+        if self.entity_description.key == "battery_reserve_low":
+            state = self.snapshot.get("ups_state", {})
+            attributes = {**attributes, "reserve_percentage": state.get("effective_reserve_percentage"),
+                "hysteresis_percentage": state.get("reserve_hysteresis_percentage"),
+                "provenance": "Cached battery percentage and reported reserve; not a battery-energy measurement."}
+        return attributes

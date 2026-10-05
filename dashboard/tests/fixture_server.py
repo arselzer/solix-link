@@ -23,6 +23,7 @@ class Demo:
         self.ac_output = 1
         self.ac_countdown = 0
         self.preview_power_w = None
+        self.comparison_power_w = None
         self.preview_slot_count = None
         self.plan_readback = None
     async def start(self): pass
@@ -69,6 +70,8 @@ class Demo:
                         "battery_status", "ac_off_grid_alert_enabled"):
                 metrics.pop(key)
         metrics.update(self.overrides[name])
+        if c1000 and self.comparison_power_w is not None:
+            metrics["ac_charging_power_limit_w"] = self.comparison_power_w
         return {"name":name,"model":"c1000" if original else "c1000_gen2" if c1000 else "c2000_gen2","protocol":"native_mqtt" if local else "prime" if updated else "legacy" if original else "native_mqtt",
                 "connected":self.connected,"available":self.available,"last_seen_timestamp":self.last_seen or now - 2,
                 "metrics":metrics,"power_flow":"unknown" if original else "battery" if c1000 else "grid",
@@ -100,7 +103,8 @@ class Demo:
 service=Demo()
 history_directory=tempfile.TemporaryDirectory(prefix="solix-synthetic-history-")
 app=create_app(service,token="demo-token-not-secret",allow_control=True,web_ui=True,
-               history_file=Path(history_directory.name)/"history.sqlite")
+               history_file=Path(history_directory.name)/"history.sqlite",
+               activity_file=Path(history_directory.name)/"activity.sqlite")
 @app.post("/fixture")
 async def fixture(body:dict):
     for key,value in body.items(): setattr(service,key,value)

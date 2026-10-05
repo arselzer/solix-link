@@ -48,6 +48,13 @@ display preference. See [preference candidates](gen2-preference-candidates.md).
 
 ## Implemented but awaiting validation
 
+- **UPS observations and access separation:** cached mains/communication/reserve
+  events, partial preference differences, HTTP command result/readback history,
+  an optional disabled HA alert blueprint and per-device read/command tokens are
+  implemented and tested synthetically. Source remains undeployed; these do not
+  add station controls or establish physical power behavior. See
+  [activity and permissions](ups-activity-and-permissions.md).
+
 - **Account-free setup across the fleet:** C1000 Gen 2 generated BLE/native IDs
   work on tested hardware. Original C1000 generated Prime/native IDs and C2000
   generated native ID remain unverified. Local MQTT still uses matching local

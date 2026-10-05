@@ -674,6 +674,33 @@ try {
   assert.equal(await page.locator('#ac-power-saving').isDisabled(), true);
   cases++; console.log(`Scenario ${cases} passed`);
 
+  // Activity and partial comparisons use cached routes, never a command POST.
+  const beforeActivity = (await recorded()).length;
+  const activityPanel = page.getByTestId('station-activity');
+  await activityPanel.locator('summary').click();
+  await activityPanel.getByText('Private persisted history', { exact: false }).waitFor();
+  await activityPanel.getByTestId('settings-baseline').click();
+  await page.waitForFunction(() => !document.querySelector('[data-testid="settings-compare"]')?.disabled);
+  const activitySnapshot = await fetch(`${base}/devices`, { headers: { Authorization: authorization } }).then((response) => response.json());
+  const changedWatts = activitySnapshot.devices.find((station) => station.name === 'Office · C1000 Gen 2').metrics.ac_charging_power_limit_w === 400 ? 300 : 400;
+  await change({ comparison_power_w: changedWatts });
+  await activityPanel.getByTestId('settings-compare').click();
+  await activityPanel.getByTestId('settings-differences').filter({ hasText: 'ac_charging_power_limit_w' }).waitFor();
+  assert.match(await activityPanel.getByTestId('settings-differences').textContent(), new RegExp(String(changedWatts)));
+  assert.equal((await recorded()).length, beforeActivity);
+  await activityPanel.getByRole('combobox').selectOption('commands');
+  assert.match(await activityPanel.getByTestId('activity-records').textContent(), /electrical behavior unverified/);
+  assert.match(await activityPanel.getByTestId('activity-records').textContent(), /cached values/);
+  await mkdir(`${root}/docs/images`, { recursive: true });
+  await activityPanel.screenshot({ path: `${root}/docs/images/web-dashboard-activity.png` });
+  await page.getByTestId('station-select').selectOption('Server · C2000 Gen 2');
+  assert.equal(await page.getByTestId('station-activity').getByTestId('settings-compare').isDisabled(), true);
+  await page.getByTestId('station-select').selectOption('Office · C1000 Gen 2');
+  assert.equal(await page.getByTestId('station-activity').getByTestId('settings-compare').isDisabled(), true);
+  assert.equal((await recorded()).length, beforeActivity);
+  await change({ comparison_power_w: null });
+  cases++; console.log(`Scenario ${cases} passed`);
+
   // Controlled browser clock and synthetic read-only responses produce a chart
   // without waiting 20 real minutes or contacting a station.
   const initial = await fetch(`${base}/devices`, { headers: { Authorization: authorization } }).then((response) => response.json());

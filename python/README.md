@@ -81,6 +81,12 @@ can execute bounded steps when explicitly enabled; preview calls remain pure.
 
 ## Terminal dashboard and HA gateway
 
+The gateway provides [UPS activity and scoped tokens](../docs/ups-activity-and-permissions.md).
+Use `--permissions-file` for per-station read/command access and `--activity-file`
+to persist sanitized observations and HTTP command results. The browser has an
+Activity/settings comparison panel; `settings-diff --before FILE --after FILE`
+compares partial exports offline. The optional HA alert blueprint starts disabled.
+
 ```sh
 solix-link tui --config /path/to/config.json
 solix-link tui --ap-service-directory /path/to/.solix-private/local-mqtt

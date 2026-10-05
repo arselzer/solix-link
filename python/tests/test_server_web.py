@@ -5,6 +5,17 @@ from types import SimpleNamespace
 from http_helpers import api_client
 from test_gateway import Gateway
 from solix_link import server
+from solix_link.access import Principal
+from starlette.requests import Request
+
+
+def stream_request(gateway):
+    # Direct generator tests supply the request principal normally established
+    # by the HTTP authentication middleware (covered separately).
+    request = Request({"type": "http", "method": "GET", "path": "/events", "headers": []})
+    request.state.principal = Principal(frozenset(gateway.devices), tuple(
+        (name, frozenset(gateway.supported_commands(name))) for name in gateway.devices))
+    return request
 
 
 def test_optional_shell_is_public_but_all_station_routes_stay_protected(tmp_path, monkeypatch):
@@ -70,7 +81,7 @@ def test_sse_initial_update_and_disconnect_release_subscription():
     async def run():
         app = server.create_app(gateway)
         endpoint = next(route.endpoint for route in app.routes if route.path == "/events")
-        response = await endpoint()
+        response = await endpoint(stream_request(gateway))
         stream = response.body_iterator
         assert "event: snapshot" in await anext(stream)
         queue.put_nowait(gateway.snapshot("ups"))
@@ -119,7 +130,7 @@ def test_private_ble_fields_and_error_details_are_filtered_from_every_public_rou
             assert "123456789" not in text and "PRIVATE-SYNTHETIC" not in text
             assert all(field not in text for field in private_fields)
         endpoint = next(route.endpoint for route in app.routes if route.path == "/events")
-        stream = (await endpoint()).body_iterator
+        stream = (await endpoint(stream_request(gateway))).body_iterator
         import json
         try:
             initial = await anext(stream)

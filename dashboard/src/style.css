@@ -194,3 +194,12 @@ main { width: min(1320px, 100%); margin: 0 auto; padding: 32px 28px 0; }
   .page-footer { flex-direction: column; gap: 8px; padding-top: 8px; }
 }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+.activity-panel { margin: 16px 0 22px; padding: 23px; }
+.activity-panel summary { cursor: pointer; font-weight: 600; font-size: 17px; }
+.activity-panel > p { margin: 14px 0; color: #879bb1; font-size: 12px; line-height: 1.8; }
+.activity-panel h3 { margin: 22px 0 12px; font-size: 15px; }
+.activity-actions { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; }
+.activity-actions label { display: flex; align-items: center; gap: .5rem; }
+.activity-records { max-height: 24rem; overflow: auto; padding-left: 1.5rem; }
+.activity-records li { padding: 12px 0; overflow-wrap: anywhere; font-size: 13px; line-height: 1.7; }
+.activity-records time { display: block; font-size: 11px; color: #879bb1; }

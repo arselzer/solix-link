@@ -135,6 +135,9 @@ def add_commands(subcommands) -> None:
     serve.add_argument("--web-ui", action="store_true", help="Serve the optional local dashboard at /")
     serve.add_argument("--history-file", type=Path, help="Opt in to a private SQLite history file; no station requests")
     serve.add_argument("--history-retention-days", type=int, default=7, help="History retention, 1–365 days (default 7)")
+    serve.add_argument("--permissions-file", type=Path, help="Owner-only per-device token scopes; replaces SOLIX_HTTP_TOKEN")
+    serve.add_argument("--activity-file", type=Path, help="Persist sanitized UPS/settings/command events in private SQLite")
+    serve.add_argument("--activity-retention-days", type=int, default=7)
     preview = subcommands.add_parser("ap-service-charging-preview", help="Explain a charging policy using cached AP status; no worker or station requests")
     preview.add_argument("--directory", type=Path, required=True)
     preview.add_argument("--name", help="Configured station; defaults to the primary profile")
@@ -263,7 +266,9 @@ def dispatch(args) -> None:
         from .server import run_server
         run_server(APServiceMonitor(load_ap_service(args.directory / "ap_service.json"), args.directory), args.host, args.port,
                    allow_control=args.allow_control, web_ui=args.web_ui,
-                   history_file=args.history_file, history_retention_days=args.history_retention_days)
+                   history_file=args.history_file, history_retention_days=args.history_retention_days,
+                   permissions_file=args.permissions_file, activity_file=args.activity_file,
+                   activity_retention_days=args.activity_retention_days)
     elif args.command == "ap-service-charging-preview":
         from .charging_preview_cli import native_preview
         print(json.dumps(native_preview(args.directory, args.name, args.request_file, adaptive=args.adaptive), indent=2))

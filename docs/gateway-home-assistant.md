@@ -55,8 +55,17 @@ see [gateway diagnostics](gateway-diagnostics.md) and
 
 Read-only additions use the same Bearer token and work without `--allow-control`:
 
+Use `--permissions-file` for separate monitoring/control tokens with explicit
+device and command scopes. This replaces the environment token; all data
+routes, metrics and SSE honor its read scopes. Optional UPS/activity persistence,
+HA alerts, partial settings comparisons and audit limits are documented in
+[UPS activity and permissions](ups-activity-and-permissions.md).
+
 | Route | Purpose |
 | --- | --- |
+| `GET/HEAD /devices/{name}/activity?limit=100&after=0` | Bounded cached UPS/settings events and sanitized HTTP command results |
+| `GET/HEAD /devices/{name}/settings-export` | Sanitized partial preferences; no restoration |
+| `POST /devices/{name}/settings-compare` | Compare a supplied partial baseline against cached preferences; sends no commands |
 | `POST /devices/{name}/charging-preview` | Evaluate a bounded manual price/export request against cached native Gen 2 telemetry; returns proposals with zero commands |
 | `POST /devices/{name}/adaptive-preview` | Evaluate the separate surplus/price TOU contract against cached status; returns settings and candidate plans with no executor |
 | `GET/HEAD /history` | Report optional recorder availability and bounded storage statistics |

@@ -219,11 +219,53 @@ def test_fast_flag_discovery_is_native_c2000_only(platform, model, protocol, exp
     entry = SimpleNamespace(runtime_data=source, async_on_unload=lambda callback: None)
     entities = []
     asyncio.run(platform.binary.async_setup_entry(None, entry, entities.extend))
-    assert len(entities) == expected
+    assert sum(entity.entity_description.key == "telemetry_available" for entity in entities) == 1
+    flags = [entity for entity in entities if entity.entity_description.key == "ac_fast_charge_enabled"]
+    assert len(flags) == expected
     if expected:
-        assert entities[0].entity_description.key == "ac_fast_charge_enabled"
+        assert flags[0].entity_description.key == "ac_fast_charge_enabled"
         source.listeners[0]()
-        assert len(entities) == 1
+        assert len(entities) == 2
+
+
+@pytest.mark.parametrize("fresh,success,expected", [(True, True, True), (False, True, False), (True, False, False)])
+def test_telemetry_alert_flag_remains_available_during_communication_loss(platform, fresh, success, expected):
+    source = coordinator({"station": snapshot(last_seen_timestamp=NOW-(1 if fresh else 31))})
+    source.last_update_success = success
+    description = next(item for item in platform.binary.DESCRIPTIONS if item.key == "telemetry_available")
+    entity = platform.binary.SolixBinarySensor(source, "station", description)
+    assert entity.available is True and entity.is_on is expected
+    assert entity.extra_state_attributes["solix_link_role"] == "telemetry_available"
+    source.data = {}
+    assert not entity.available
+
+
+def test_ups_state_parser_is_bounded_detached_and_does_not_import_identity(platform):
+    public = dict(schema_version=1, telemetry_available=True, mains_connected=True,
+        battery_reserve_low=False, effective_reserve_percentage=20, reserve_hysteresis_percentage=5,
+        account_id="PRIVATE")
+    value = snapshot(ups_state=public)
+    parsed = platform.api.parse_snapshot(value)
+    assert "PRIVATE" not in json.dumps(parsed)
+    public["battery_reserve_low"] = True
+    assert parsed["ups_state"]["battery_reserve_low"] is False
+    for changes in ({"effective_reserve_percentage":True}, {"effective_reserve_percentage":101},
+                    {"telemetry_available":1}, {"battery_reserve_low":"on"}, {"reserve_hysteresis_percentage":6}):
+        assert "ups_state" not in platform.api.parse_snapshot(snapshot(ups_state={**public, **changes}))
+    unavailable = platform.api.parse_snapshot(snapshot(ups_state={**public, "telemetry_available":False}))["ups_state"]
+    assert unavailable["battery_reserve_low"] is None and unavailable["mains_connected"] is None
+
+
+@pytest.mark.parametrize("age,available", [(1,True), (30,True), (31,False)])
+def test_reserve_alert_is_unavailable_on_stale_telemetry_and_is_read_only(platform, age, available):
+    public = dict(schema_version=1, telemetry_available=True, mains_connected=True,
+        battery_reserve_low=True, effective_reserve_percentage=30, reserve_hysteresis_percentage=5)
+    source = coordinator({"station":snapshot(last_seen_timestamp=NOW-age, ups_state=public)})
+    description = next(item for item in platform.binary.DESCRIPTIONS if item.key == "battery_reserve_low")
+    entity = platform.binary.SolixBinarySensor(source, "station", description)
+    assert entity.is_on is True and entity.available is available
+    assert entity.extra_state_attributes["reserve_percentage"] == 30
+    assert not hasattr(entity, "async_turn_on")
 
 
 @pytest.mark.parametrize("changes", [{"last_seen_timestamp": NOW-91}, {"connected": False}, {"available": False}])

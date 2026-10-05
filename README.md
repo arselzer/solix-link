@@ -31,6 +31,8 @@ Home Assistant integration for the local gateway.
   via `ap-service-wifi-rssi` and [radio flags](docs/c1000-gen2-native-wireless-state-validation.md)
   via `ap-service-wireless-state`; flags do not report physical advertising.
 - Authenticated JSON HTTP, SSE and Prometheus for multiple stations.
+- [UPS observations, settings comparisons and command history](docs/ups-activity-and-permissions.md),
+  optional disabled HA alerts, and per-device monitoring/control tokens.
 - Opt-in Home Assistant price/solar charging blueprint with telemetry freshness,
   reserve protection and a failure latch; installed automations start disabled.
 - Opt-in [adaptive surplus charging blueprint](docs/home-assistant-surplus-charging.md)
