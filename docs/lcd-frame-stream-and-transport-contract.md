@@ -206,3 +206,7 @@ verified receiver readback and bounded recovery; ACK, marker clearing, header
 acceptance and zero returns are insufficient. True charging pause, complete
 settings export, original C1000 charging measurements and physical Gen 2 energy
 calibration remain open. **Zero station commands were sent.**
+
+Follow-up: [pixel reads, image-size math and transfer cleanup](lcd-pixel-reads-and-transfer-cleanup.md)
+executes selected row requests and nested cleanup with supplied file state and
+RAM register blocks. It does not render images or access stations.

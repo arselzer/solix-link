@@ -568,3 +568,12 @@ host fixtures; no real MMIO, rendering, programming, reset or station executes.
 Compare both `lcd-frame-stream-*.json` artifacts with `expected_results/`;
 new entries are bounded at 10,000, the reused index reader at 100,000, observed
 maximum 721. See [frame streams and transport returns](../../docs/lcd-frame-stream-and-transport-contract.md).
+
+`emulate_lcd_pixel_and_cleanup.py` adds 94 synthetic cases and fifteen guards for
+actual file pixel-row requests, seek/read dispatch, image-size math, full-transfer
+and cleanup. Decoder/file/buffer state, clock/status/data and SPI/DMA register
+blocks are supplied; no real DMA/MMIO, display, program/erase or station runs.
+Compare both `lcd-pixel-cleanup-*.json` artifacts with `expected_results/`;
+bound 10,000 and observed maximum 295. The size helper uses a host PC termination
+boundary before its supplied return sentinel. See
+[pixel reads and cleanup](../../docs/lcd-pixel-reads-and-transfer-cleanup.md).

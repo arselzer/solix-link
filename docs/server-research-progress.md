@@ -723,3 +723,66 @@ separately authorized retention testing. Charging automation remains disabled.
 **Zero station commands were sent.** No BLE scan, station/profile/phone read,
 MQTT/cloud request, network/service change, observer query, deployment, push,
 merge or automation activation occurred. C2000 and live settings are untouched.
+
+## LCD pixel rows, image-size calculations and cleanup — 2026-10-05
+
+This follows local checkpoint **`712d135`** on `server/research-20261004`.
+The [pixel/cleanup proof](lcd-pixel-reads-and-transfer-cleanup.md) adds **94
+synthetic instruction cases and fifteen rejection guards**, with independently
+identical result/manifest artifacts. Only analysis tools, sanitized synthetic
+metadata and documentation change.
+
+- Actual selected pixel-acquisition callback `08017604` uses header offset eight
+  as the file source stride, adds twelve header bytes, and requests rows through
+  actual seek/read dispatch. Decoder/file/buffer state is supplied; allocation
+  and whole initialization are excluded. The caller passes no byte-count pointer
+  and tests only read status. Short/empty rows can return one and publish an
+  unchanged or partly updated row buffer. Exact bytes and preserved suffixes are
+  independently checked; no physical display fault is claimed.
+- Formats 15..19 and separate color/alpha format 20 reproduce the earlier
+  indexed-extent boundary. Host fixtures including twelve header bytes obtain
+  complete row counts, without patching or updating a receiver. Partial rows,
+  column subregions, padded output, unsupported format and area-end behavior
+  are checked. EOF status success differs from the callback's explicit area end.
+- Actual size helper `080076d8` uses stride × height, adds half-stride × height
+  for format 20, and adds 8/16/64/1,024 for formats 7/8/9/10. Absent/supplied
+  stride callbacks, explicit/odd stride and wrap are checked. Its callback
+  remains substituted; remaining flag names, offset ten and default callback
+  provenance are unresolved. Static buffer/flag branches are recorded separately.
+- Actual full-transfer wrapper `080158bc` preserves neither send nor receive
+  return through release. Ready, invalid-send and timeout paths return synthetic
+  channel 255 or supplied end-callback seven. Neither is assigned a real error
+  meaning. With DMA context absent, actual disable helpers leave a timeout's
+  channel busy byte set. With supplied contexts pointing only to RAM, actual
+  helpers clear both busy bytes and selected SPI/DMA control bits.
+- Busy-before-transfer cases exercise raw deadline 3,000 with equality still
+  waiting. Receive-busy is a snapshot while send-busy is reread; explicit host
+  flag changes distinguish those paths. No actual interrupt, DMA, concurrent
+  task or physical recovery runs.
+
+Pins: A1763 LCD container **0.1.9.6**, supplied with main **1.1.4.9**,
+925,696 bytes, SHA-256
+`c314816f396d6b6958a6a398476eafa182f7c368802569803b60bd6a4e6dc97d`;
+application SHA-256
+`f5683c2f7c9a5bdab638123a7a0a547d3d549e513e18fc10918ed979b83459c6`.
+Python **3.14.4**, Unicorn **2.1.4**, static Capstone **5.0.7**.
+Bound **10,000 instructions per entry**, observed maximum **295**. The size
+helper uses a host PC boundary before the supplied return sentinel to handle
+Unicorn's conditional-POP stopping behavior, without executing sentinel code
+or normalizing CPU state. Guards, independent reproduction, source hashes,
+syntax/JSON/whitespace and unchanged AGENTS.md are checked. Raw analysis stays
+private/ignored with restricted permissions. Product/HA/browser gates are not
+rerun because product and live deployment are unchanged.
+
+Next offline targets: bounded page-program return propagation and timeout
+reentry; default stride callback provenance and remaining header flags. Special
+installation/recovery still needs a pinned bootloader. True charging pause/SDK
+runtime provenance, complete settings export and physical energy calibration
+remain open. Original C1000 charging requires a battery below full and an
+independently metered noncritical load; Gen 2 counters need paired power/counter/
+time samples and separately authorized retention testing. Automation remains
+disabled, and the separate observation services are left untouched.
+
+**Zero station commands were sent.** No BLE scan, station/profile/phone read,
+MQTT/cloud request, network/service change, observer query, deployment, push,
+merge or automation activation occurred. C2000 and live settings are untouched.
