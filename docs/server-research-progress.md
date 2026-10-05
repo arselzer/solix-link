@@ -1108,3 +1108,103 @@ before exposing any candidate. Original charging rate, true pause, calibrated
 battery energy, full restoration, account-free identity replacement and qualified
 local OTA retain the previously documented physical/recovery requirements.
 AGENTS.md and the preexisting untracked `python/build/` remain unchanged.
+
+## 2026-10-05 — Control explanations, fleet view and HTTP coordination
+
+User-selected items 1–3 are implemented from local baseline
+`5032ec2db8f303521672f1f413fe7d533491aee2` on
+`server/research-20261004`. This batch is source work and synthetic verification;
+zero live station commands, BLE checks, device/cloud requests, HA inspection,
+network changes, service restarts or deployment actions occurred.
+
+### Implemented behavior
+
+- Cached `control_availability` reports in snapshots and a scoped GET/HEAD
+  route, with model/transport, token, gateway/worker, freshness, setting,
+  firmware and active-command reasons. A GET-only CLI/SDK reader filters
+  unknown/private fields. Browser explanations and the HA **Blocked controls**
+  diagnostic use the same report. Unsupported model/transport controls are
+  excluded from its count; the full reasons remain available in attributes.
+- Browser fleet cards show every scoped station's SOC, input/output, supply,
+  permissions and reserve/mains observations. Stale/offline readings are
+  unknown. Selection sends no write; chained-device power is not summed.
+- Per-station HTTP admission rejects overlapping writes without queueing.
+  Browser review and HA's fresh pre-command GET supply expected cached settings
+  and a server-instance ticket. Changed/missing/stale expectations prevent
+  execution. A bounded one-hour request cache records success and unknown
+  outcomes; an identical envelope returns the original result without another
+  executor or audit call. A GET-only result lookup never resends a command.
+  Cancellation releases admission and retains an unknown outcome.
+
+Existing model/transport allowlists remain unchanged: C1000 Gen 2 native has
+sixteen families and C2000 native five. No C2000 preference parity or output
+write was added. Cached readiness is advisory; value-dependent, preservation
+and independently fresh raw backend checks remain decisive. Expected settings
+are not atomic firmware compare-and-swap. Direct SDK/socket clients, separate
+gateways and multi-worker ASGI deployments are outside this process-local
+coordination. Missing/expired records and restart never prove nonexecution.
+
+### Verification and compatibility correction
+
+**1,357 Python/HA tests passed in 32.93 seconds**. The final selection was:
+`test_command_coordination.py`, `test_coordinated_server.py`,
+`test_control_availability_cli.py`, `test_gateway.py`,
+`test_access_activity_server.py`, `test_settings_export.py`, `test_activity.py`,
+`test_server_web.py`, `test_server_readonly_features.py`,
+`test_gateway_client.py`, `test_gateway_diagnostics.py`,
+`test_original_mqtt_server.py`, `test_ap_service.py`,
+`test_ap_service_fleet.py`, `test_ap_service_models.py`,
+`test_ap_service_check.py`, `test_ap_service_cli.py`, `test_tui_gateway.py`, and
+all `home_assistant_tests/`. HA tests use scoped platform doubles/contracts,
+not a running HA instance or its automation engine.
+
+Coverage includes same-station races, different-station independence, exact
+success/error replay, cache saturation, stale/changed/missing expectations,
+independent plan freshness, gateway restart/expiry, cancellation, malformed
+metadata, token isolation, private-field filtering, legacy client fallback
+and single-POST HA behavior.
+
+The broader gate initially found **66 failures** in existing synthetic
+original-C1000 mutual-TLS cases on Python 3.14: strict client verification
+rejected newly generated certificates without authority-key identifiers.
+Fresh initialization now includes subject/authority-key identifiers and leaf
+TLS key usage, with verification retained. **116 targeted certificate/MQTT
+tests passed**, followed by the fully passing final gate above. This is a
+generation compatibility fix; no existing or deployed certificate was read,
+rotated or replaced. Physical device provisioning with the larger response
+has not been tested.
+
+`npm run build:dashboard` passed Vue/TypeScript checking and Vite compilation.
+**32 browser scenarios passed** against a temporary loopback-only synthetic
+gateway. New checks cover five fleet cards, model/transport explanations,
+stale-card unknowns, changed settings during review, and successful lookup of
+rejected requests/missing records with no extra command POST. Browser errors
+and external-request lists were empty. Updated screenshots contain only
+synthetic data; packaged assets include the verified UI.
+
+Runtime: Python **3.14.4**, pytest **9.1.1**, FastAPI **0.142.2**, Bleak **3.0.2**,
+Textual **8.2.8**, cryptography **50.0.2**, Node **22.20.0**, Playwright **1.63.0**,
+Vite **8.0.3**, Vue **3.5.32** and TypeScript **5.9.3**. Source/bundle hashes,
+exact commands and the final JUnit report are retained with private permissions
+in `.solix-private/server-research/fleet-coordination-20261005/`.
+
+### Deployment and remaining evidence
+
+Changes remain local, with no push, merge, deployment or automation activation.
+Deploy the gateway/UI and HA source together to obtain guarded
+browser/HA requests; older gateways keep the prior client behavior. CLI
+`control-availability` requires an updated gateway. Run one HTTP gateway
+process for its station set. The observation services and live deployment
+remain unchanged.
+
+No new firmware replay or electrical trial occurred. A controlled C1000-only
+integration test after deployment can confirm real cached-setting freshness
+and command completion/recovery timing. C2000 remains protected; preference
+parity requires its own readback/preservation evidence. Original charging
+rate, true charging pause, calibrated battery energy, full restoration,
+account-free identity replacement and local OTA retain their previously
+documented physical and recovery requirements. AGENTS.md is unchanged, and
+the preexisting untracked `python/build/` is excluded from this work.
+
+Public feature contracts and synthetic screenshots:
+[control readiness and coordination](control-readiness-and-coordination.md).

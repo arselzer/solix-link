@@ -33,6 +33,8 @@ Home Assistant integration for the local gateway.
 - Authenticated JSON HTTP, SSE and Prometheus for multiple stations.
 - [UPS observations, settings comparisons and command history](docs/ups-activity-and-permissions.md),
   optional disabled HA alerts, and per-device monitoring/control tokens.
+- [Fleet overview, control explanations and coordinated HTTP writes](docs/control-readiness-and-coordination.md),
+  with expected-setting checks, recorded-result lookup and bounded request deduplication.
 - Opt-in Home Assistant price/solar charging blueprint with telemetry freshness,
   reserve protection and a failure latch; installed automations start disabled.
 - Opt-in [adaptive surplus charging blueprint](docs/home-assistant-surplus-charging.md)

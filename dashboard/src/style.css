@@ -203,3 +203,18 @@ main { width: min(1320px, 100%); margin: 0 auto; padding: 32px 28px 0; }
 .activity-records { max-height: 24rem; overflow: auto; padding-left: 1.5rem; }
 .activity-records li { padding: 12px 0; overflow-wrap: anywhere; font-size: 13px; line-height: 1.7; }
 .activity-records time { display: block; font-size: 11px; color: #879bb1; }
+.fleet-panel, .availability-panel { padding: 23px; margin-bottom: 22px; }
+.fleet-panel h2, .availability-panel summary { font-size: 17px; }
+.fleet-panel .panel-heading > span { font-size: 12px; color: #879bb1; }
+.fleet-note, .fleet-card > p, .availability-panel > p { font-size: 12px; color: #879bb1; line-height: 1.8; margin: 12px 0; }
+.fleet-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr)); gap: 14px; }
+.fleet-card { border: 1px solid #344151; border-radius: 9px; padding: 16px; }
+.fleet-selected { border-color: var(--mint); }
+.fleet-card h3 { margin: 0; font-size: 14px; overflow-wrap: anywhere; }
+.fleet-card dl { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; font-size: 13px; }
+.fleet-card dt { font-size: 11px; color: #879bb1; }.fleet-card dd { margin: 4px 0; }
+.fleet-alerts { color: #f3c68b; font-size: 12px; line-height: 1.8; padding-left: 18px; }
+.fleet-stale dl { color: #879bb1; }.availability-panel summary { cursor: pointer; font-weight: 600; }
+.availability-filter { display: flex; gap: 8px; align-items: center; margin-bottom: 15px; }
+.availability-table { overflow-x: auto; }.availability-table table { width: 100%; font-size: 12px; border-collapse: collapse; }
+.availability-table th, .availability-table td { padding: 12px; border-bottom: 1px solid #344151; text-align: left; overflow-wrap: anywhere; }

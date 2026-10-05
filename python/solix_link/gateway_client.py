@@ -181,6 +181,17 @@ class GatewayClient:
             raise GatewayReadError("Use an exact bounded public station name")
         return self._station(self._get("/devices/" + quote(name, safe="")), name)
 
+    def control_availability(self, name: str) -> dict:
+        if not _name(name):
+            raise GatewayReadError("Use an exact bounded public station name")
+        from .control_availability import parse_control_availability
+        try:
+            return parse_control_availability(self._get("/devices/" + quote(name, safe="") + "/control-availability"))
+        except ValueError as error:
+            if isinstance(error, GatewayReadError):
+                raise
+            raise GatewayReadError("Gateway returned invalid cached control explanations") from None
+
     def history(self, name: str, *, since: float | None = None, until: float | None = None,
                 limit: int = 200) -> dict:
         if (not _name(name) or type(limit) is not int or not 1 <= limit <= 2000

@@ -31,6 +31,9 @@ from .settings_compare import compare_settings
 from .access import AccessPolicy, Principal, unique_object
 from .commands import COMMAND_FIELDS
 from .activity import ActivityStore, UpsTracker, command_readback
+from .control_availability import control_availability
+from .command_coordination import (CommandCoordinator, CoordinationError,
+    validate_preconditions, check_preconditions, make_preconditions)
 
 MAX_COMMAND_BYTES = 16384
 WEB_HEADERS = {
@@ -54,6 +57,7 @@ def create_app(service: MonitorService, token: str | None = None, *, allow_contr
     legacy_principal = Principal(frozenset(service.devices), tuple(
         (name, frozenset(COMMAND_FIELDS)) for name in service.devices))
     tracker = UpsTracker()
+    coordinator = CommandCoordinator()
     activity_store = ActivityStore(retention_days=activity_retention_days)
     activity_failed = False
     web_root = Path(__file__).with_name("web")
@@ -167,7 +171,11 @@ def create_app(service: MonitorService, token: str | None = None, *, allow_contr
         controls = [command for command in commands(status["name"])
                     if command in principal.commands(status["name"])] if allow_control and commands else []
         return {**public, "timezone_name": getattr(config, "timezone_name", None),
-                "ups_state": tracker.describe(status), "control_enabled": bool(controls), "controls": controls}
+                "ups_state": tracker.describe(status), "control_enabled": bool(controls), "controls": controls,
+                "command_context": {**coordinator.context(status["name"]), "expected": make_preconditions(status)},
+                "control_availability": control_availability(status,
+                    commands(status["name"]) if commands else (), principal.commands(status["name"]),
+                    gateway_enabled=allow_control, busy=status["name"] in coordinator.busy)}
 
     def snapshots(request) -> list[dict]:
         return [status_with_controls(status, request.state.principal) for status in service.snapshots()
@@ -211,6 +219,21 @@ def create_app(service: MonitorService, token: str | None = None, *, allow_contr
         if not readable(request, name):
             return PlainTextResponse("Unknown device", status_code=404)
         return export_settings(service.snapshot(name))
+
+    @app.api_route("/devices/{name}/control-availability", methods=["GET", "HEAD"])
+    async def availability(name: str, request: Request):
+        if not readable(request, name):
+            return JSONResponse({"error": "UnknownDevice"}, status_code=404)
+        return status_with_controls(service.snapshot(name), request.state.principal)["control_availability"]
+
+    @app.api_route("/devices/{name}/command-results/{request_id}", methods=["GET", "HEAD"])
+    async def command_result(name: str, request_id: str, request: Request):
+        if not readable(request, name):
+            return JSONResponse({"error": "UnknownDevice"}, status_code=404)
+        result = coordinator.result(request.state.principal, name, request_id)
+        if result is None:
+            return JSONResponse({"error": "RequestNotRecorded"}, status_code=404)
+        return result
 
     @app.post("/devices/{name}/settings-compare")
     async def settings_compare(name: str, request: Request):
@@ -342,6 +365,12 @@ def create_app(service: MonitorService, token: str | None = None, *, allow_contr
             body = json.loads(raw, object_pairs_hook=unique_object)
             if not isinstance(body, dict) or "command" not in body:
                 raise ValueError("Invalid command body")
+            has_expected, has_ticket = "expected" in body, "coordination" in body
+            expected, ticket = body.pop("expected", None), body.pop("coordination", None)
+            if has_expected:
+                validate_preconditions(expected)
+            if has_ticket and ticket is None:
+                raise ValueError
             action = body.pop("command")
             validate_command(action, body)
         except (ValueError, UnicodeError, RecursionError):
@@ -350,12 +379,55 @@ def create_app(service: MonitorService, token: str | None = None, *, allow_contr
             return JSONResponse({"error": "InsufficientScope", "settings_may_have_changed": False}, status_code=403)
         if action not in service.supported_commands(name):
             return JSONResponse({"error": "UnsupportedCommand", "settings_may_have_changed": False}, status_code=403)
+        payload = {"command": action, **body, "expected": expected}
+        try:
+            key, previous = coordinator.begin(request.state.principal, name, payload, ticket)
+        except CoordinationError as error:
+            return JSONResponse({"error": error.code, "settings_may_have_changed": error.changed}, status_code=409)
+        if previous is not None:
+            status, result = previous
+            result["coordination"]["replayed"] = True
+            return JSONResponse(result, status_code=status)
+        response = None
+        try:
+            current = service.snapshot(name)
+            if not check_preconditions(expected, current):
+                response = JSONResponse({"error": "PreconditionFailed", "settings_may_have_changed": False}, status_code=409)
+            else:
+                response = await execute_command(name, action, body, request.state.principal, ticket)
+        except asyncio.CancelledError:
+            response = JSONResponse({"error": "CommandCancelled", "settings_may_have_changed": True}, status_code=504)
+            raise
+        except Exception:
+            response = JSONResponse({"error": "CommandResultUnknown", "settings_may_have_changed": True}, status_code=500)
+        finally:
+            if response is None:
+                response = JSONResponse({"error": "CommandResultUnknown", "settings_may_have_changed": True}, status_code=500)
+            content = json.loads(response.body)
+            content["coordination"] = {"schema_version": 1,
+                "request_id": ticket["request_id"] if ticket is not None else None,
+                "replayed": False, "preconditions_checked": expected is not None}
+            if "command_context" in content:
+                content["command_context"]["busy"] = False
+            if isinstance(content.get("device"), dict) and "command_context" in content["device"]:
+                content["device"]["command_context"]["busy"] = False
+            for device in (content, content.get("device")):
+                if isinstance(device, dict):
+                    report = device.get("control_availability", {})
+                    for row in report.get("commands", []):
+                        row["reasons"] = [reason for reason in row["reasons"] if reason != "command_in_progress"]
+                        row["ready"] = not row["reasons"]
+            coordinator.finish(name, key, response.status_code, content)
+        return JSONResponse(content, status_code=response.status_code)
+
+    async def execute_command(name, action, body, principal, ticket):
         if activity_failed:
             return JSONResponse({"error": "ActivityUnavailable", "settings_may_have_changed": False}, status_code=503)
         command_id = uuid.uuid4().hex
         before = export_settings(service.snapshot(name))
         if await append_activity({"name": name, "timestamp": time.time(), "kind": "command_started",
-                "details": {"command_id": command_id, "command": action, "parameters": body}}) is None:
+                "details": {"command_id": command_id, "command": action, "parameters": body,
+                            "request_id": ticket["request_id"] if ticket is not None else None}}) is None:
             return JSONResponse({"error": "ActivityUnavailable", "settings_may_have_changed": False}, status_code=503)
 
         async def finish(outcome, status, error=None):
@@ -369,7 +441,7 @@ def create_app(service: MonitorService, token: str | None = None, *, allow_contr
         try:
             result = await service.command(name, action, **body)
             recorded = await finish("completed", result)
-            return JSONResponse({**status_with_controls(result, request.state.principal),
+            return JSONResponse({**status_with_controls(result, principal),
                 "command_result": {"command_id": command_id, "audit_recorded": recorded,
                                    "physical_behavior_verified": False, "readback": command_readback(action, body, result)}})
         except asyncio.CancelledError:
@@ -380,14 +452,18 @@ def create_app(service: MonitorService, token: str | None = None, *, allow_contr
             recorded = await finish("outcome_unknown", failed_status, "PowerFlowTimeout")
             return JSONResponse({"error": "PowerFlowTimeout", "settings_may_have_changed": True,
                                  "audit_recorded": recorded,
-                                 "device": status_with_controls(failed_status, request.state.principal)}, status_code=504)
+                                 "device": status_with_controls(failed_status, principal)}, status_code=504)
         except (ValueError, PermissionError, ConnectionError, TimeoutError, RuntimeError) as error:
             code = 400 if isinstance(error, ValueError) else 403 if isinstance(error, PermissionError) else 504 if isinstance(error, TimeoutError) else 409
             recorded = await finish("rejected" if isinstance(error, PermissionError) else "outcome_unknown",
                 service.snapshot(name), type(error).__name__)
             return JSONResponse({"error": type(error).__name__, "settings_may_have_changed": not isinstance(error, PermissionError),
                                  "audit_recorded": recorded,
-                                 "device": status_with_controls(service.snapshot(name), request.state.principal)}, status_code=code)
+                                 "device": status_with_controls(service.snapshot(name), principal)}, status_code=code)
+        except Exception:
+            recorded = await finish("outcome_unknown", service.snapshot(name), "CommandResultUnknown")
+            return JSONResponse({"error": "CommandResultUnknown", "settings_may_have_changed": True,
+                                 "audit_recorded": recorded}, status_code=500)
 
     @app.get("/events")
     async def events(request: Request):

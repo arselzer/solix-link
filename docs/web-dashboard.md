@@ -32,6 +32,13 @@ are separate; serving this dashboard does not give the station internet access.
 
 ## Monitoring and controls
 
+The fleet overview shows every scoped station's battery, power and supply state;
+stale/offline values are unknown. **Why controls are available or blocked**
+explains cached prerequisites and model/transport differences. Confirmation
+captures expected settings, and **Check recorded result** performs a GET without
+resending an uncertain command. See [readiness and coordination](control-readiness-and-coordination.md)
+for screenshots and the limits of cached evidence.
+
 Select a station to see battery, input/output power, supply state, freshness
 and history. The browser polls cached gateway status every five seconds;
 it does not open another station connection. Session history stays in browser

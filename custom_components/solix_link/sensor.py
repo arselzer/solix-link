@@ -14,6 +14,8 @@ from .history import history_available
 
 PARALLEL_UPDATES = 0
 DESCRIPTIONS = (
+    SensorEntityDescription(key="control_availability", translation_key="control_availability",
+                            entity_category=EntityCategory.DIAGNOSTIC, entity_registry_enabled_default=True),
     SensorEntityDescription(key="battery_percentage", translation_key="battery", device_class=SensorDeviceClass.BATTERY,
                             native_unit_of_measurement=PERCENTAGE, state_class=SensorStateClass.MEASUREMENT),
     SensorEntityDescription(key="temperature_c", translation_key="temperature", device_class=SensorDeviceClass.TEMPERATURE,
@@ -82,7 +84,7 @@ async def async_setup_entry(hass, entry: SolixConfigEntry, async_add_entities) -
                     continue
                 if key == "ac_frequency_raw" and snapshot.get("model") != "c2000_gen2":
                     continue
-                present = key in (snapshot if key in ("power_flow", "last_seen_timestamp") else snapshot["metrics"])
+                present = key in (snapshot if key in ("power_flow", "last_seen_timestamp", "control_availability") else snapshot["metrics"])
                 if present and (name, key) not in added:
                     added.add((name, key))
                     entities.append(SolixSensor(coordinator, name, description))
@@ -106,6 +108,10 @@ class SolixSensor(SolixEntity, SensorEntity):
     @property
     def native_value(self):
         key = self.entity_description.key
+        if key == "control_availability":
+            report = self.snapshot.get(key)
+            return sum(not row["ready"] for row in report["commands"]
+                       if not {"model_unsupported", "transport_unsupported"}.intersection(row["reasons"])) if report is not None else None
         if key == "last_seen_timestamp":
             try:
                 value = numeric(self.snapshot.get(key))
@@ -128,11 +134,19 @@ class SolixSensor(SolixEntity, SensorEntity):
 
     @property
     def available(self) -> bool:
+        if self.entity_description.key == "control_availability":
+            return self.native_value is not None and self.coordinator.last_update_success
         return self.native_value is not None and super().available
 
     @property
     def extra_state_attributes(self) -> dict:
         attributes = dict(super().extra_state_attributes)
+        if self.entity_description.key == "control_availability":
+            report = self.snapshot.get("control_availability")
+            if report is not None:
+                attributes.update(preflight_only=True, backend_validation_required=True,
+                    commands=[{**row, "reasons": list(row["reasons"]), "missing_metrics": list(row["missing_metrics"])}
+                              for row in report["commands"]])
         if self.entity_description.key == "usage_mode":
             plan = parse_tou_plan(self.snapshot.get("tou_plan_readback"))
             if plan is not None:

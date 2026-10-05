@@ -2,7 +2,7 @@
 
 from .tou import TouPeriod, validate_periods
 from .protocol import Model, validate_device_timeout
-from .c1000_capabilities import original_native_commands
+from .c1000_capabilities import original_native_commands, original_prime_commands
 
 COMMAND_FIELDS = {
     "set-charge-power": {"watts": int},
@@ -36,6 +36,27 @@ def native_commands_for_model(model: Model) -> tuple[str, ...]:
         return NATIVE_COMMANDS + NATIVE_C1000_COMMANDS
     if model == Model.C2000_GEN2:
         return NATIVE_COMMANDS
+    return ()
+
+
+def commands_for_transport(model: Model, protocol: str) -> tuple[str, ...]:
+    """Shared gateway allowlist, independent of token/worker enablement."""
+    if protocol == "native_mqtt":
+        return native_commands_for_model(model)
+    if model in (Model.C300, Model.C1000):
+        if protocol == "prime":
+            return tuple(original_prime_commands()) if model == Model.C1000 else ()
+        if protocol == "legacy":
+            return ("set-charge-power", "set-display-timeout", "set-light") + (
+                ("set-device-timeout", "set-temperature-unit", "set-fast-charge", "set-ac-power-saving", "set-dc-power-saving")
+                if model == Model.C1000 else ())
+        return ()
+    if protocol != "prime":
+        return ()
+    if model == Model.C2000_GEN2:
+        return ("set-charge-power", "set-charge-cap", "set-display-timeout")
+    if model == Model.C1000_GEN2:
+        return ("set-charge-power", "set-display-timeout", "set-fast-charge", "set-device-timeout")
     return ()
 
 

@@ -92,6 +92,25 @@ try {
   assert.equal(await page.getByRole('button', { name: /AC output/i }).count(), 0);
   cases++; console.log(`Scenario ${cases} passed`);
 
+  // Fleet cards and explanations consume the same cached device response.
+  const fleet = page.getByTestId('fleet-overview');
+  assert.equal(await fleet.locator('.fleet-card').count(), 5);
+  assert.match(await fleet.textContent(), /5\/5 with fresh telemetry/);
+  assert.match(await fleet.textContent(), /Chained supplies can count the same load/);
+  const initialPosts = posts;
+  await fleet.locator('[data-station="Server · C2000 Gen 2"]').getByRole('button', { name: 'View station' }).click();
+  const explanations = page.getByTestId('control-availability');
+  await explanations.locator('summary').click();
+  await explanations.getByRole('checkbox', { name: 'Include unsupported controls' }).check();
+  assert.match(await explanations.locator('tr').filter({ hasText: 'set-display-timeout' }).textContent(), /Unavailable on this transport/);
+  assert.match(await explanations.locator('tr').filter({ hasText: 'set-clock-brightness' }).textContent(), /Not established for this model/);
+  await mkdir(`${root}/docs/images`, { recursive: true });
+  await explanations.screenshot({ path: `${root}/docs/images/web-control-availability.png` });
+  await fleet.screenshot({ path: `${root}/docs/images/web-fleet-overview.png` });
+  await fleet.locator('[data-station="Office · C1000 Gen 2"]').getByRole('button', { name: 'View station' }).click();
+  assert.equal(posts, initialPosts);
+  cases++; console.log(`Scenario ${cases} passed`);
+
   const savedPlanPosts = posts;
   const planNow = await page.evaluate(() => Date.now() / 1000);
   const freshPlan = { schema_version: 1, enabled: false, source: 'status_d9', reported_at: planNow - 2,
@@ -390,6 +409,9 @@ try {
   await refresh();
   await page.getByText('Stale / unavailable', { exact: true }).waitFor();
   assert.equal(await page.locator('#charging-power').isDisabled(), true);
+  assert.match(await fleet.textContent(), /0\/5 with fresh telemetry/);
+  assert.equal(await fleet.locator('.fleet-card dd').filter({ hasText: /^Unknown$/ }).count(), 20);
+  assert.equal(await fleet.getByText('Telemetry unavailable · power state unknown', { exact: true }).count(), 5);
   await change({ available: true });
   await refresh();
   cases++; console.log(`Scenario ${cases} passed`);
@@ -404,6 +426,12 @@ try {
   assert.equal(posts, 12);
   assert.equal((await recorded()).length, 11);
   assert.equal((await page.textContent('body')).includes('PRIVATE-ERROR-TEXT'), false);
+  cases++; console.log(`Scenario ${cases} passed`);
+
+  await page.getByTestId('check-command-result').click();
+  await page.getByTestId('gateway-notice').filter({ hasText: 'This request has no available record' }).waitFor();
+  assert.equal(posts, 12);
+  assert.equal((await recorded()).length, 11);
   cases++; console.log(`Scenario ${cases} passed`);
 
   let release;
@@ -699,6 +727,27 @@ try {
   assert.equal(await page.getByTestId('station-activity').getByTestId('settings-compare').isDisabled(), true);
   assert.equal((await recorded()).length, beforeActivity);
   await change({ comparison_power_w: null });
+  cases++; console.log(`Scenario ${cases} passed`);
+
+  // Review captures expected settings before another client changes the cache.
+  await refresh();
+  const beforeReview = (await recorded()).length;
+  const beforeReviewPosts = posts;
+  const reviewSnapshot = await fetch(`${base}/devices`, { headers: { Authorization: authorization } }).then((response) => response.json());
+  const reviewWatts = reviewSnapshot.devices.find((station) => station.name === 'Office · C1000 Gen 2').metrics.ac_charging_power_limit_w;
+  await page.locator('#charging-power').selectOption('500');
+  await propose('charging-power');
+  await change({ comparison_power_w: reviewWatts === 300 ? 400 : 300 });
+  await page.getByTestId('confirm-command').click();
+  await page.getByTestId('gateway-notice').filter({ hasText: 'Settings changed during review' }).waitFor();
+  assert.equal((await recorded()).length, beforeReview);
+  assert.equal(posts, beforeReviewPosts + 1);
+  await page.getByTestId('check-command-result').click();
+  await page.getByTestId('gateway-notice').filter({ hasText: 'no command was resent' }).waitFor();
+  assert.equal(posts, beforeReviewPosts + 1);
+  assert.equal((await recorded()).length, beforeReview);
+  await change({ comparison_power_w: null });
+  await refresh();
   cases++; console.log(`Scenario ${cases} passed`);
 
   // Controlled browser clock and synthetic read-only responses produce a chart

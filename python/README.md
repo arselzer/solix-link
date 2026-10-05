@@ -918,6 +918,8 @@ The server provides:
 | `/setup-check` | Saved AP profiles/certificates; native gateway only, no changes |
 | `/devices` | JSON status for all configured stations |
 | `/devices/c2000` | JSON status and latest metrics for one station |
+| `/devices/{name}/control-availability` | Scoped cached control reasons; also `solix-link control-availability` |
+| `/devices/{name}/command-results/{request_id}` | Current token's recorded command outcome; GET only |
 | `/events` | Server-sent events with snapshots and live updates |
 | `/metrics` | Prometheus numeric metrics and availability |
 | `POST /devices/{name}/commands` | Explicit model-supported settings; disabled by default, mandatory bearer token |
@@ -929,6 +931,10 @@ header. The service reconnects BLE automatically and marks readings
 unavailable when the station stops reporting.
 
 Native charging commands additionally require a control-enabled AP-service worker.
+HTTP writes are serialized per station. The browser and HA client include
+expected-setting checks and a bounded request ID; uncertain writes are not
+retried automatically. See [fleet and coordination](../docs/control-readiness-and-coordination.md)
+for cached readiness limits and the one-hour, single-process replay window.
 All command fields/types are validated; no HTTP AC-output, timer, firmware or
 arbitrary opcode control is exposed. Timeouts can leave changed settings;
 inspect fresh status before retrying. See [deployment and command schemas](../docs/gateway-home-assistant.md).

@@ -39,6 +39,11 @@ def parser() -> argparse.ArgumentParser:
     gateway_history.add_argument("--until", type=float, help="UNIX seconds; default gateway clock")
     gateway_history.add_argument("--limit", type=int, default=200, help="1–2000 points (default 200)")
 
+    availability = subcommands.add_parser("control-availability", help="Explain cached gateway control prerequisites; GET only")
+    availability.add_argument("--gateway-url", required=True)
+    availability.add_argument("--gateway-token-file", type=Path)
+    availability.add_argument("--name", required=True, help="Exact public station name")
+
     export = subcommands.add_parser("settings-export", help="Export cached preferences as partial JSON; no station commands or restore")
     source = export.add_mutually_exclusive_group(required=True)
     source.add_argument("--snapshot-file", type=Path)
@@ -479,6 +484,10 @@ def main(argv: list[str] | None = None) -> int:
             from .gateway_client import GatewayClient
             client = GatewayClient(args.gateway_url, args.gateway_token_file)
             print(json.dumps(client.history(args.name, since=args.since, until=args.until, limit=args.limit), indent=2))
+        elif args.command == "control-availability":
+            from .gateway_client import GatewayClient
+            report = GatewayClient(args.gateway_url, args.gateway_token_file).control_availability(args.name)
+            print(json.dumps(report, indent=2))
         elif args.command == "settings-export":
             from .settings_export import export_settings
             if args.snapshot_file:

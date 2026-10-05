@@ -37,6 +37,9 @@ def test_shared_network_unique_certificates_and_no_secret_repr(fleet):
     child = profiles[second.name][1]
     assert (directory / "ca.pem").read_bytes() == (child / "ca.pem").read_bytes()
     assert (directory / "server.pem").read_bytes() == (child / "server.pem").read_bytes()
+    ca = x509.load_pem_x509_certificate((directory / "ca.pem").read_bytes())
+    second_cert = x509.load_pem_x509_certificate((child / "client.pem").read_bytes())
+    assert second_cert.extensions.get_extension_for_class(x509.AuthorityKeyIdentifier).value.key_identifier == ca.extensions.get_extension_for_class(x509.SubjectKeyIdentifier).value.digest
     certificates = [x509.load_pem_x509_certificate((path / "client.pem").read_bytes()).fingerprint(hashes.SHA256()) for _, path in profiles.values()]
     assert certificates[0] != certificates[1]
     assert not (child / "ca-key.pem").exists()

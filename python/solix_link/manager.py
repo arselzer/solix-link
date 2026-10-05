@@ -10,8 +10,8 @@ from typing import Any
 from .client import SolixMonitor
 from .config import DeviceConfig
 from .protocol import Model
-from .c1000_capabilities import original_prime_commands, original_prime_operation_supported
-from .commands import validate_command
+from .c1000_capabilities import original_prime_operation_supported
+from .commands import validate_command, commands_for_transport
 from .tou import power_flow
 
 
@@ -163,17 +163,7 @@ class MonitorService:
 
     def supported_commands(self, name: str) -> list[str]:
         device = self.devices[name]
-        if device.model in (Model.C300, Model.C1000):
-            if device.protocol != "legacy":
-                return original_prime_commands() if device.model == Model.C1000 else []
-            return ["set-charge-power", "set-display-timeout", "set-light"] + (
-                ["set-device-timeout", "set-temperature-unit", "set-fast-charge", "set-ac-power-saving",
-                 "set-dc-power-saving"] if device.model == Model.C1000 and device.protocol == "legacy" else [])
-        if device.protocol != "prime":
-            return []
-        if device.model == Model.C2000_GEN2:
-            return ["set-charge-power", "set-charge-cap", "set-display-timeout"]
-        return ["set-charge-power", "set-display-timeout", "set-fast-charge", "set-device-timeout"]
+        return list(commands_for_transport(device.model, device.protocol))
 
     async def command(self, name: str, command: str, **values) -> dict:
         validate_command(command, values)

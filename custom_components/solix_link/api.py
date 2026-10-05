@@ -5,7 +5,9 @@ from __future__ import annotations
 import asyncio
 import hashlib
 import math
+import re
 import time
+import uuid
 from typing import Any
 from urllib.parse import quote, urlsplit, urlunsplit
 
@@ -133,6 +135,79 @@ def parse_tou_plan(value: Any) -> dict | None:
             "reported_at": value["reported_at"], "source": "status_d9"}
 
 
+CONTROL_REASONS = frozenset({"model_unsupported", "transport_unsupported", "gateway_controls_disabled",
+    "token_scope_denied", "worker_controls_disabled", "not_advertised", "telemetry_unavailable",
+    "missing_or_invalid_metrics", "firmware_unqualified", "output_must_be_off",
+    "countdown_must_be_inactive", "standard_mode_required", "clock_must_be_inactive", "command_in_progress"})
+EXPECTED_METRICS = frozenset({"ac_charging_power_limit_w", "max_charge_percentage", "min_charge_percentage",
+    "backup_reserve_percentage", "display_timeout_seconds", "display_brightness", "device_timeout_minutes",
+    "clock_screen_first_brightness_flag_raw", "clock_screen_second_brightness_flag_raw", "port_memory_enabled",
+    "ac_fast_charge_enabled", "temperature_unit_fahrenheit", "ac_off_grid_alert_enabled", "light_mode",
+    "ac_power_saving_mode_enabled", "dc_power_saving_mode_enabled", "ac_input_connected", "ac_output_enabled",
+    "dc_output_enabled", "usage_mode", "active_tariff", "tou_schedule_slot_count", "clock_screen_enabled",
+    "clock_screen_transfer_status_raw", "ac_output_timeout_seconds", "dc_output_timeout_seconds",
+    "disaster_preparation_active",
+    "software_version", "software_version_module"})
+
+
+def parse_control_availability(value: Any, model: str, protocol: str) -> dict | None:
+    if (type(value) is not dict or type(value.get("schema_version")) is not int or value["schema_version"] != 1
+            or value.get("preflight_only") is not True or value.get("backend_validation_required") is not True
+            or value.get("model") != model or value.get("protocol") != protocol
+            or type(value.get("commands")) is not list or len(value["commands"]) > len(COMMANDS)):
+        return None
+    rows, seen = [], set()
+    for row in value["commands"]:
+        if (type(row) is not dict or type(row.get("command")) is not str or row["command"] not in COMMANDS
+                or row["command"] in seen or any(type(row.get(key)) is not bool for key in ("advertised", "permitted", "ready"))
+                or type(row.get("reasons")) is not list or len(row["reasons"]) > len(CONTROL_REASONS)
+                or any(type(reason) is not str or reason not in CONTROL_REASONS for reason in row["reasons"])
+                or type(row.get("missing_metrics")) is not list or len(row["missing_metrics"]) > len(EXPECTED_METRICS)
+                or any(type(key) is not str or key not in EXPECTED_METRICS for key in row["missing_metrics"])):
+            return None
+        seen.add(row["command"])
+        rows.append({"command": row["command"], "advertised": row["advertised"], "permitted": row["permitted"],
+            "ready": row["ready"] and row["advertised"] and row["permitted"] and not row["reasons"] and not row["missing_metrics"],
+            "reasons": list(row["reasons"]), "missing_metrics": list(row["missing_metrics"])})
+    return {"schema_version": 1, "preflight_only": True, "backend_validation_required": True, "commands": rows}
+
+
+def parse_command_context(value: Any, model: str, protocol: str) -> dict | None:
+    if (type(value) is not dict or type(value.get("schema_version")) is not int or value["schema_version"] != 1
+            or value.get("preconditions_supported") is not True or type(value.get("busy")) is not bool
+            or type(value.get("gateway_instance")) is not str or not re.fullmatch(r"[0-9a-f]{32}", value["gateway_instance"])
+            or type(value.get("issued_at")) not in (int, float) or not 0 <= value["issued_at"] <= 253402300799
+            or not math.isfinite(value["issued_at"]) or type(value.get("request_window_seconds")) is not int
+            or value["request_window_seconds"] != 3600):
+        return None
+    expected = value.get("expected")
+    if (type(expected) is not dict or not {"model", "protocol", "metrics"} <= expected.keys()
+            or set(expected) - {"model", "protocol", "metrics", "tou_plan_readback"}
+            or expected["model"] != model or expected["protocol"] != protocol or type(expected["metrics"]) is not dict
+            or any(key not in EXPECTED_METRICS for key in expected["metrics"])):
+        return None
+    metrics = {}
+    for key, metric in expected["metrics"].items():
+        if key in ("software_version", "software_version_module"):
+            valid = type(metric) is str and len(metric) <= 24 and re.fullmatch(r"\d{1,3}(?:\.\d{1,3}){1,4}", metric, flags=re.ASCII)
+        elif key in ("usage_mode", "active_tariff"):
+            choices = ("standard", "time_of_use") if key == "usage_mode" else ("none", "peak", "mid_peak", "off_peak")
+            valid = type(metric) is str and metric in choices
+        else:
+            valid = type(metric) is int and 0 <= metric <= 604800
+        if not valid:
+            return None
+        metrics[key] = metric
+    copied = {"model": model, "protocol": protocol, "metrics": metrics}
+    if "tou_plan_readback" in expected:
+        plan = parse_tou_plan(expected["tou_plan_readback"])
+        if model not in NATIVE_MODELS or protocol != "native_mqtt" or plan is None:
+            return None
+        copied["tou_plan_readback"] = plan
+    return {"schema_version": 1, "gateway_instance": value["gateway_instance"], "issued_at": value["issued_at"],
+        "request_window_seconds": 3600, "preconditions_supported": True, "busy": value["busy"], "expected": copied}
+
+
 def parse_snapshot(value: Any) -> dict:
     """Validate the gateway contract and discard identity/raw diagnostic fields."""
     if not isinstance(value, dict):
@@ -156,6 +231,10 @@ def parse_snapshot(value: Any) -> dict:
                          if key in METRICS and (numeric(metric) is not None or isinstance(metric, str))}
     if value.get("power_flow") in ("unknown", "battery", "grid", "transitioning"):
         result["power_flow"] = value["power_flow"]
+    for key, parser in (("control_availability", parse_control_availability), ("command_context", parse_command_context)):
+        parsed = parser(value.get(key), value["model"], value["protocol"])
+        if parsed is not None:
+            result[key] = parsed
     state = value.get("ups_state")
     if (type(state) is dict and type(state.get("schema_version")) is int and state["schema_version"] == 1
             and type(state.get("telemetry_available")) is bool
@@ -544,7 +623,12 @@ class GatewayClient:
             raise GatewayAuthError("A gateway token is required for controls")
         snapshot = await self.async_device(name)
         validate_command(snapshot, payload)
-        raw = await self._request("POST", f"/devices/{quote(name, safe='')}/commands", payload)
+        body = dict(payload)
+        context = snapshot.get("command_context")
+        if context is not None:
+            body.update(expected=context["expected"], coordination={"request_id": uuid.uuid4().hex,
+                "gateway_instance": context["gateway_instance"], "issued_at": context["issued_at"]})
+        raw = await self._request("POST", f"/devices/{quote(name, safe='')}/commands", body)
         try:
             result = parse_snapshot(raw)
         except GatewayError as err:

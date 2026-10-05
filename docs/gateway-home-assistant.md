@@ -63,6 +63,8 @@ HA alerts, partial settings comparisons and audit limits are documented in
 
 | Route | Purpose |
 | --- | --- |
+| `GET/HEAD /devices/{name}/control-availability` | Cached, scoped explanations for unavailable controls |
+| `GET/HEAD /devices/{name}/command-results/{request_id}` | Current token's recorded HTTP outcome; never resends a command |
 | `GET/HEAD /devices/{name}/activity?limit=100&after=0` | Bounded cached UPS/settings events and sanitized HTTP command results |
 | `GET/HEAD /devices/{name}/settings-export` | Sanitized partial preferences; no restoration |
 | `POST /devices/{name}/settings-compare` | Compare a supplied partial baseline against cached preferences; sends no commands |
@@ -70,6 +72,12 @@ HA alerts, partial settings comparisons and audit limits are documented in
 | `POST /devices/{name}/adaptive-preview` | Evaluate the separate surplus/price TOU contract against cached status; returns settings and candidate plans with no executor |
 | `GET/HEAD /history` | Report optional recorder availability and bounded storage statistics |
 | `GET/HEAD /devices/{name}/history?since=...&until=...&limit=1000` | Query saved readings and estimated AC energy/coverage; timestamps are Unix seconds |
+
+HTTP writes are serialized per station. Optional `expected` and `coordination`
+fields add cached precondition checks and restart-aware request deduplication;
+the updated browser and HA client supply them. See
+[command coordination](control-readiness-and-coordination.md) for envelopes,
+fixed conflict codes, the one-hour memory window and single-process limits.
 
 History is disabled unless `serve` or `ap-service-serve` receives
 `--history-file /private/history/readings.sqlite3`; retention defaults to seven

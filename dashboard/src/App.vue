@@ -2,6 +2,8 @@
 import { computed, nextTick, reactive, ref, watch } from 'vue';
 import StationHistory from './StationHistory.vue';
 import StationActivity from './StationActivity.vue';
+import FleetOverview from './FleetOverview.vue';
+import ControlAvailability from './ControlAvailability.vue';
 import StationControls from './StationControls.vue';
 import GatewayChecks from './GatewayChecks.vue';
 import ChargingPreview from './ChargingPreview.vue';
@@ -10,7 +12,7 @@ import type { Draft, Proposal } from './types';
 import { useGateway } from './useGateway';
 
 const gateway = useGateway();
-const { stations, histories, session, online, connecting, polling, busy, checking, checks, notice, noticeKind, now } = gateway;
+const { stations, histories, session, online, connecting, polling, busy, checking, checkingResult, lastCommand, checks, notice, noticeKind, now } = gateway;
 const checksOpen = ref(false);
 const tokenInput = ref('');
 const selectedName = ref('');
@@ -40,7 +42,8 @@ const flow = computed(() => {
 });
 const confirmationStation = computed(() => proposal.value ? stations.value.find((station) => station.name === proposal.value!.station) : null);
 const canConfirm = computed(() => !!confirmationStation.value && gateway.fresh(confirmationStation.value)
-  && !busy.value && !polling.value && !!proposal.value && confirmationStation.value.controls.includes(proposal.value.body.command));
+  && !busy.value && !polling.value && !confirmationStation.value.command_context?.busy
+  && !!proposal.value && confirmationStation.value.controls.includes(proposal.value.body.command));
 const format = (value: number | null, suffix = '') => value === null ? '—' : `${Math.round(value)}${suffix}`;
 
 watch(stations, (values) => {
@@ -87,6 +90,18 @@ function confirm() {
   cancel();
   void gateway.send(station, body);
 }
+
+function review(value: Proposal) {
+  const station = stations.value.find((candidate) => candidate.name === value.station);
+  const context = station?.command_context;
+  if (context?.schema_version === 1 && context.preconditions_supported && /^[0-9a-f]{32}$/.test(context.gateway_instance)
+      && typeof context.issued_at === 'number' && Number.isFinite(context.issued_at) && context.expected) {
+    const bytes = crypto.getRandomValues(new Uint8Array(16));
+    const requestId = Array.from(bytes, (byte) => byte.toString(16).padStart(2, '0')).join('');
+    proposal.value = { ...value, body: { ...value.body, expected: JSON.parse(JSON.stringify(context.expected)),
+      coordination: { request_id: requestId, gateway_instance: context.gateway_instance, issued_at: context.issued_at } } };
+  } else proposal.value = value;
+}
 </script>
 
 <template>
@@ -103,7 +118,7 @@ function confirm() {
     </header>
 
     <main>
-      <div v-if="notice" class="notice" :class="noticeKind" role="status" aria-live="polite" data-testid="gateway-notice"><span>{{ notice }}</span><button class="notice-close" aria-label="Dismiss notice" @click="notice = ''">×</button></div>
+      <div v-if="notice" class="notice" :class="noticeKind" role="status" aria-live="polite" data-testid="gateway-notice"><span>{{ notice }}</span><button v-if="lastCommand && session" class="quiet" data-testid="check-command-result" :disabled="busy || checkingResult" @click="gateway.checkCommandResult">{{ checkingResult ? 'Checking…' : 'Check recorded result' }}</button><button class="notice-close" aria-label="Dismiss notice" @click="notice = ''">×</button></div>
 
       <section v-if="!session" class="welcome-grid">
         <div class="welcome-copy"><p class="eyebrow">Your power. Your network.</p><h1>Stay connected<br>to your energy.</h1><p class="welcome-description">Live station readings, charging settings and hourly plans — through your local SOLIX Link gateway.</p><div class="welcome-features"><span><span class="feature-icon">◉</span> Live power & battery</span><span><span class="feature-icon">⌁</span> Local connections</span><span><span class="feature-icon">✓</span> Confirmed controls</span></div></div>
@@ -111,6 +126,7 @@ function confirm() {
       </section>
 
       <template v-else>
+        <FleetOverview :stations="stations" :selected="selectedName" :now="now" :online="online" :busy="busy" @select="selectedName = $event" />
         <div class="workspace-heading"><div><p class="eyebrow">Station dashboard</p><h1>{{ selected?.name || 'Your stations' }}</h1><p>{{ selected ? modelLabel(selected.model) : connecting ? 'Connecting to the gateway…' : 'No configured stations reported by this gateway.' }}</p></div>
           <div class="station-picker"><label for="station-select">Select station</label><select id="station-select" v-model="selectedName" data-testid="station-select" :disabled="busy || !stations.length"><option v-for="station in stations" :key="station.name" :value="station.name">{{ station.name }} · {{ modelLabel(station.model) }}</option></select></div></div>
 
@@ -126,7 +142,8 @@ function confirm() {
           <div class="station-details"><span>Upper charge limit <strong>{{ format(numberMetric(selected, 'max_charge_percentage'), '%') }}</strong></span><span>Discharge floor <strong>{{ format(numberMetric(selected, 'min_charge_percentage'), '%') }}</strong></span><span>Reserve <strong>{{ format(numberMetric(selected, 'backup_reserve_percentage'), '%') }}</strong></span><span>Temperature <strong>{{ format(numberMetric(selected, 'temperature_c'), '°C') }}</strong></span><span>Firmware <strong>{{ selected.metrics.software_version ?? '—' }}</strong></span><span v-if="selected.model === 'c1000_gen2' && [0, 1].includes(numberMetric(selected, 'pv_weak_light_locked') ?? -1)" data-testid="pv-weak-light-lock" title="Firmware-derived C1000 Gen 2 flag; physical PV behavior untested.">PV weak-light lock <strong>{{ numberMetric(selected, 'pv_weak_light_locked') === 1 ? 'Active' : 'Inactive' }}</strong></span></div>
           <button class="secondary" data-testid="settings-export" :disabled="busy || polling" @click="gateway.exportSettings(selected.name)">Download partial settings</button>
           <StationActivity :key="selected.name" :station="selected" :busy="busy" :request="gateway.readOnly" />
-          <StationControls v-if="drafts[selected.name]" :station="selected" :draft="drafts[selected.name]!" :writable="writable" :now="now" @propose="proposal = $event" />
+          <ControlAvailability :key="selected.name" :station="selected" :fresh="fresh" />
+          <StationControls v-if="drafts[selected.name]" :station="selected" :draft="drafts[selected.name]!" :writable="writable && !selected.command_context?.busy" :now="now" @propose="review" />
           <ChargingPreview :key="selected.name" :station="selected" :busy="busy" :request="gateway.readOnly" />
         </template>
         <section v-else-if="!connecting" class="panel empty-stations"><h2>No stations configured</h2><p>Add a station to your SOLIX Link gateway, then refresh this page.</p><button class="secondary" :disabled="polling" @click="gateway.refresh">Refresh stations</button></section>

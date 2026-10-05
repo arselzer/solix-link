@@ -22,6 +22,11 @@ Authorization header. Treat HA configuration backups as containing credentials.
 
 ## Entities and actions
 
+- **Blocked controls** diagnostic: cached permission/prerequisite reasons with
+  a count for the configured model/transport; requires an updated gateway.
+  The client supplies expected settings and a request ID when supported,
+  sends one POST and never retries an uncertain write automatically. See
+  [control readiness and coordination](../../docs/control-readiness-and-coordination.md).
 - Binary sensors: mains present and AC output enabled, when explicit 0/1
   telemetry is available. Unknown/stale values become unavailable. The Gen 2
   mains transition was verified by unplug/replug on C1000; C2000 is checked

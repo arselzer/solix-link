@@ -38,6 +38,13 @@ def test_private_bootstrap_certificates_and_no_overwrite(ap_service):
     assert decrypt_device_credential(config.device_serial, response["private_key"]) == (directory / "client-key.pem").read_bytes()
     cert = x509.load_pem_x509_certificate((directory / "server.pem").read_bytes())
     assert config.broker_host in cert.extensions.get_extension_for_class(x509.SubjectAlternativeName).value.get_values_for_type(x509.DNSName)
+    ca = x509.load_pem_x509_certificate((directory / "ca.pem").read_bytes())
+    issuer_id = ca.extensions.get_extension_for_class(x509.SubjectKeyIdentifier).value.digest
+    for filename in ("server.pem", "client.pem"):
+        leaf = x509.load_pem_x509_certificate((directory / filename).read_bytes())
+        assert leaf.extensions.get_extension_for_class(x509.AuthorityKeyIdentifier).value.key_identifier == issuer_id
+        usage = leaf.extensions.get_extension_for_class(x509.KeyUsage)
+        assert usage.critical and usage.value.digital_signature and not usage.value.key_cert_sign
     assert config.account_id not in repr(config) and config.passphrase not in repr(config)
     before = (directory / "client-key.pem").read_bytes()
     with pytest.raises(FileExistsError):

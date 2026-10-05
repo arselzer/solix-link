@@ -52,6 +52,11 @@ def _valid(key: str, value: object, model: str) -> bool:
     return False
 
 
+def valid_preference(key: str, value: object, model: str) -> bool:
+    """Validate a known scalar shape without asserting transport support."""
+    return type(model) is str and model in FIELDS and _valid(key, value, model)
+
+
 def export_settings(snapshot: object, *, now: float | None = None) -> dict:
     """Copy only known preference fields; omit names, IDs, outputs and raw bytes.
 

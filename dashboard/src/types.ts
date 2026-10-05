@@ -18,6 +18,11 @@ export interface Station {
   power_flow?: string;
   timezone_name?: string | null;
   tou_plan_readback?: TouPlanReadback | null;
+  ups_state?: { battery_reserve_low?: boolean | null };
+  command_context?: { schema_version: 1; gateway_instance: string; issued_at: number;
+    request_window_seconds: number; busy: boolean; preconditions_supported: boolean; expected: Record<string, unknown> };
+  control_availability?: { schema_version: 1; commands: { command: string; advertised: boolean;
+    permitted: boolean; ready: boolean; reasons: string[]; missing_metrics: string[] }[] };
   controls: string[];
   metrics: Record<string, Metric>;
 }

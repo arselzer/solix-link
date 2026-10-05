@@ -13,6 +13,8 @@ export function useGateway() {
   const polling = ref(false);
   const busy = ref(false);
   const checking = ref(false);
+  const checkingResult = ref(false);
+  const lastCommand = ref<{ name: string; requestId: string } | null>(null);
   const checks = ref<{ diagnostics: unknown; setup: unknown } | null>(null);
   const notice = ref('');
   const noticeKind = ref<'success' | 'error' | 'info'>('info');
@@ -52,6 +54,8 @@ export function useGateway() {
     token = '';
     session.value = online.value = connecting.value = polling.value = busy.value = false;
     checking.value = false;
+    checkingResult.value = false;
+    lastCommand.value = null;
     checks.value = null;
     if (timer) clearInterval(timer);
     timer = undefined;
@@ -84,14 +88,25 @@ export function useGateway() {
       if (!response.ok) {
         if (body && !readOnly) {
           let changed = true;
+          let reason = '';
           try {
             const failure = await response.json();
             if (failure && typeof failure === 'object' && failure.settings_may_have_changed === false) changed = false;
+            const explanations: Record<string, string> = {
+              PreconditionFailed: 'Settings changed during review. Refresh and review again.',
+              DeviceBusy: 'Another command is running for this station.',
+              GatewayInstanceChanged: 'The gateway restarted. Refresh and review again.',
+              RequestTicketExpired: 'This command review expired. Refresh and review again.',
+              RequestIdConflict: 'This request ID was already used for a different command.',
+              CommandInProgress: 'This request is already running. Check its recorded result.',
+              RequestCacheFull: 'The gateway request cache is full. No new request was admitted.',
+            };
+            reason = explanations[failure?.error] ?? '';
           } catch { /* Do not display arbitrary server response text. */ }
           if (currentGeneration !== generation) return null;
-          message(!changed ? 'The command was rejected without changing settings. Check the gateway permissions and fresh status.' : response.status === 504
+          message(!changed ? `The command was rejected without changing settings. ${reason || 'Check the gateway permissions and fresh status.'}` : reason || (response.status === 504
             ? 'Confirmation timed out. A setting may have changed; fresh status is being checked. Do not retry automatically.'
-            : 'The gateway could not confirm this command. Fresh status is being checked; a setting may have changed.', 'error');
+            : 'The gateway could not confirm this command. Fresh status is being checked; a setting may have changed.'), 'error');
         } else if (!quiet) {
           message('The gateway is unavailable. Readings and controls are paused.', 'error');
         }
@@ -167,13 +182,17 @@ export function useGateway() {
     if (busy.value || polling.value || !fresh(station) || !station.controls.includes(body.command)) return;
     const currentGeneration = generation;
     busy.value = true;
+    const ticket = body.coordination as { request_id?: unknown } | undefined;
+    lastCommand.value = typeof ticket?.request_id === 'string' ? { name: station.name, requestId: ticket.request_id } : null;
     message('Applying command and waiting for station confirmation…');
     const result = await request(`/devices/${encodeURIComponent(station.name)}/commands`, body);
     if (currentGeneration !== generation) return;
     if (isStation(result)) {
       stations.value = stations.value.map((current) => current.name === result.name ? result : current);
       append(result);
-      message('Command confirmed by fresh station telemetry.', 'success');
+      const replayed = (result as Station & { coordination?: { replayed?: boolean } }).coordination?.replayed;
+      message(replayed ? 'Previously recorded command result. Current telemetry is being refreshed.'
+        : 'Command confirmed by the gateway. Electrical behavior is not independently verified.', 'success');
     } else if (result !== null) {
       message('The response did not confirm the command. A setting may have changed; check fresh status.', 'error');
     }
@@ -203,6 +222,22 @@ export function useGateway() {
     return request(path, body, true, true);
   }
 
+  async function checkCommandResult() {
+    if (!lastCommand.value || busy.value || checkingResult.value || !session.value) return;
+    const revision = generation;
+    const last = { ...lastCommand.value };
+    checkingResult.value = true;
+    const result = await readOnly(`/devices/${encodeURIComponent(last.name)}/command-results/${encodeURIComponent(last.requestId)}`);
+    if (revision !== generation) return;
+    checkingResult.value = false;
+    const report = result as { schema_version?: unknown; state?: unknown; http_status?: unknown } | null;
+    if (report?.schema_version === 1 && report.state === 'in_progress') message('The recorded request is still running. No command was resent.');
+    else if (report?.schema_version === 1 && report.state === 'finished') message(report.http_status === 200
+      ? 'The recorded request completed. Refresh current telemetry; electrical behavior remains unverified.'
+      : 'The recorded request did not complete successfully. Check activity and fresh settings; no command was resent.', report.http_status === 200 ? 'info' : 'error');
+    else message('This request has no available record here. Its outcome remains unknown; no command was resent.', 'error');
+  }
+
   async function exportSettings(name: string) {
     const value = await readOnly(`/devices/${encodeURIComponent(name)}/settings-export`);
     if (!value || typeof value !== 'object' || !('complete' in value) || value.complete !== false
@@ -220,6 +255,6 @@ export function useGateway() {
   }
 
   onUnmounted(() => disconnect(true));
-  return { stations, histories, session, online, connecting, polling, busy, checking, checks, notice, noticeKind, now,
-    active: computed(() => session.value && online.value), connect, disconnect, refresh, send, fresh, checkGateway, readOnly, exportSettings };
+  return { stations, histories, session, online, connecting, polling, busy, checking, checkingResult, lastCommand, checks, notice, noticeKind, now,
+    active: computed(() => session.value && online.value), connect, disconnect, refresh, send, fresh, checkGateway, readOnly, exportSettings, checkCommandResult };
 }
