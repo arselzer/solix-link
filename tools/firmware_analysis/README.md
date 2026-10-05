@@ -522,3 +522,13 @@ Ordinary chunk storage, final resource commit, progress math and boot remain
 excluded. Compare both `lcd-asset-status-*.json` artifacts. Its entry bound is
 10,000; set `SOLIX_ANALYSIS_OUTPUT` to the private output directory. See
 [radio ACK and LCD status](../../docs/radio-asset-ack-and-lcd-status.md).
+
+`emulate_lcd_asset_transfer.py --output-dir /private/output/lcd-transfer`
+adds **37 synthetic cases and eight guards** for descriptor admission, chunk
+ordering/page splitting, final byte sum and first-entry CRC decisions. SPI,
+storage, allocation and delivery remain substitutes; erase, name handling,
+commit and boot remain excluded. Public container metadata and both payload
+CRCs are separately inspected on the host. Compare both
+`lcd-asset-transfer-*.json` artifacts with `expected_results/`; the bound is
+100,000 per entry. Set `SOLIX_ANALYSIS_OUTPUT` to the output directory. See
+[LCD transfer validation](../../docs/lcd-asset-transfer-validation.md).

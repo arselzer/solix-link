@@ -158,3 +158,8 @@ the resource format/checksum before a complete transfer replay. Radio task/heade
 activation and default-size fragmentation remain separate boundaries. True
 charging pause, complete saved-state readback and physical energy calibration
 remain open; this resource route does not resolve them.
+
+The [LCD transfer continuation](lcd-asset-transfer-validation.md) executes
+descriptor admission, chunk ordering/page construction, whole-byte-sum checking
+and first-entry CRC decisions with synthetic SPI/storage. Name handling,
+preparation/erase and commit remain excluded.

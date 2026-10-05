@@ -25,10 +25,15 @@ When needed it registers timer callback `08017add` with period argument
 
 Builder `0801c504` queues callback `08021f05`, serializer `08026559`, timeout
 argument **600** and descriptor length **16**. The seven-byte payload is fixed:
-marker `1`, little-endian point `0098`, and a four-byte zero argument. The actual
+marker `1`, little-endian field `0098`, and a four-byte zero argument. The actual
 serializer emits a **21-byte `MAIN` frame**, with little-endian header words
 `0010, 0005, 0009, 0010` and an independently checked CRC-16. These internal
 fields do not establish an external BLE/MQTT opcode or generic filename API.
+
+The later [LCD receiver continuation](lcd-asset-transfer-validation.md) identifies
+that payload as marker 1, block count 152 and argument zero. It executes transfer
+state, staging and selected validation branches; name handling and commit remain
+excluded.
 
 Eight cases vary queue return 0/1, existing timer and two synthetic pointed-to
 contents (`clock_asset` and `sysPara`). All produce the same complete frame.

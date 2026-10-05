@@ -402,3 +402,60 @@ load; Gen 2 paired power/counter/timing samples and separate retention testing.
 capture read, MQTT/cloud access, network/service change, observer query,
 deployment, push, merge or automation activation occurred. C2000 and all live
 settings remain untouched.
+
+## LCD descriptor, chunk staging and first-entry validation — 2026-10-05
+
+This follows local checkpoint **`8bbcb90`** on `server/research-20261004`.
+The [LCD transfer proof](lcd-asset-transfer-validation.md) adds **37 synthetic
+instruction cases and eight negative guards**; its complete result/manifest
+pair independently reproduces, including source hashes. Only analysis source,
+synthetic metadata and documentation change.
+
+- Actual point-0010 admission accepts markers 0/1 and tested counts 1–4,096,
+  copies the seven-byte descriptor, initializes mode 1, byte offset zero and
+  previous block `ffffffff`, and serializes `10 00 aa ee`. MAIN's fixed
+  `01 98 00 00 00 00 00` is marker 1/count 152/argument zero.
+- Actual chunk ordering and page wrapper execute. Duplicate blocks acknowledge
+  without rewriting; higher tested blocks append at the byte offset even when
+  a block number is skipped; older tested blocks reject. Actual 256-byte page
+  splitting is captured at substituted programming calls, with data/storage
+  hashes checked against independent fixtures. Real flash behavior is unproved.
+- Marker 0 compares the accumulated staged-byte sum with its argument;
+  mismatches emit `14 00 04 00` and clear mode. Marker 1 skips this whole-sum
+  stage but proceeds to per-entry CRC validation. Actual first-entry bitwise
+  CRC matches host CRC-16/MODBUS; altered CRCs branch to rejection. Stops precede
+  name handling/error cleanup, descriptor iteration or resource commit.
+- Separate host inspection recovers both public container descriptors,
+  `pps_lcd`/`pps_lcd_res`, and verifies CRCs `a038`/`4f00`. Application/resource
+  payload lengths are 214,016/710,656. This is not receiver replay of that
+  container or an installation proof. Descriptor version bytes remain raw.
+
+Input pins: A1763 LCD container **0.1.9.6**, supplied with main **1.1.4.9**,
+925,696 bytes, SHA-256
+`c314816f396d6b6958a6a398476eafa182f7c368802569803b60bd6a4e6dc97d`;
+application SHA-256
+`f5683c2f7c9a5bdab638123a7a0a547d3d549e513e18fc10918ed979b83459c6`;
+resource payload SHA-256
+`f61823dde70028254b74a534f88ed249f21136a776acdfd1d0420bc0a20c247c`.
+Python **3.14.4**, Unicorn **2.1.4**. Per-entry bound **100,000**, observed
+maximum **75,118**. Synthetic SPI channel 255 skips real channel selection;
+its control register is RAM. PRIMASK instructions execute without interrupts
+and restoration is asserted. Real SPI/MMIO, preparation/erase, internal-flash
+operations, file/resource commit and boot are excluded. The 4,096-byte host
+array bounds are not claimed as firmware offset validation.
+
+Public artifacts contain synthetic hashes/structural metadata and public input
+descriptors. Raw static exploration stays private/ignored with restricted
+permissions. Focused replays, source hashes, syntax/JSON/whitespace and unchanged
+AGENTS.md are verified; earlier product/browser gates were not rerun.
+
+Next offline boundary: name/size selection at `0802d9c6`, then descriptor
+iteration, cleanup and precise file/flash commit substitutes. Establish recovery
+and destination before exposing a transfer API. Radio task/header activation,
+SDK runtime `context+160` provenance/true pause and complete saved-state readback
+remain open. Original C1000 charging and Gen 2 counter calibration still require
+the previously documented independent physical measurements.
+
+**Zero station commands were sent.** No BLE scan, station/profile/phone access,
+MQTT/cloud request, network/service change, observer query, deployment, push,
+merge or automation activation occurred. C2000 and all live settings are untouched.

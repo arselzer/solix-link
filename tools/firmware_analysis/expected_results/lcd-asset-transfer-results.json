@@ -1,0 +1,1377 @@
+{
+  "application_sha256": "f5683c2f7c9a5bdab638123a7a0a547d3d549e513e18fc10918ed979b83459c6",
+  "cases": 37,
+  "complete_settings_export": false,
+  "instruction_limit_per_entry": 100000,
+  "lcd_manifest_version": "0.1.9.6",
+  "lcd_sha256": "c314816f396d6b6958a6a398476eafa182f7c368802569803b60bd6a4e6dc97d",
+  "limits": "Bounded A1763 LCD transfer descriptor and chunk/page construction replay.\n\nActual selected MAIN ingress/CRC, descriptor validation/copy, chunk ordering,\npage splitting, final byte-sum/first-entry CRC checking and reply construction\nexecute on synthetic RAM. Page programming, SPI command/address/read, libc, logs,\nUI signals and UART send are substitutes. Preparation/erase, resource name/commit\nhandling, progress math, real SPI, boot and stations are excluded. SPI channel 255\nand its control register are synthetic RAM fixtures; real channel selection and\nMMIO do not execute.\nHost storage is a bounded synthetic byte array, not flash or a device filesystem.",
+  "maximum_entry_instructions": 75118,
+  "model": "A1763",
+  "negative_guards": [
+    "payload_fixture_bounds",
+    "truncated_descriptor_fixture_excluded",
+    "truncated_chunk_fixture_excluded",
+    "zero_chunk_fixture_excluded",
+    "real_spi_page_driver_excluded",
+    "hardware_write_excluded",
+    "unrelated_ram_write_excluded",
+    "retained_context_write_excluded"
+  ],
+  "physical_storage_verified": false,
+  "public_container_host_metadata": {
+    "entries": [
+      {
+        "descriptor_file_offset": 12,
+        "host_computed_crc16_modbus": 41016,
+        "name": "pps_lcd",
+        "payload_bytes": 214016,
+        "payload_offset": 1024,
+        "payload_sha256": "f5683c2f7c9a5bdab638123a7a0a547d3d549e513e18fc10918ed979b83459c6",
+        "stored_crc_raw": 41016,
+        "version_field_bytes": [
+          26,
+          1,
+          29,
+          1
+        ]
+      },
+      {
+        "descriptor_file_offset": 44,
+        "host_computed_crc16_modbus": 20224,
+        "name": "pps_lcd_res",
+        "payload_bytes": 710656,
+        "payload_offset": 215040,
+        "payload_sha256": "f61823dde70028254b74a534f88ed249f21136a776acdfd1d0420bc0a20c247c",
+        "stored_crc_raw": 20224,
+        "version_field_bytes": [
+          25,
+          10,
+          24,
+          1
+        ]
+      }
+    ],
+    "evidence_kind": "host inspection of public container",
+    "receiver_commit_verified": false
+  },
+  "receiver_application_verified": false,
+  "results": [
+    {
+      "argument_fixture": 0,
+      "blocks_fixture": 152,
+      "case": "start",
+      "first_entry_crc_comparison": null,
+      "input_frame_bytes": 21,
+      "input_frame_sha256": "8f3959ec3c2bd07ff474565d1fa22d133dd092196a54e1cff010a246b6291dbe",
+      "input_point_raw": 16,
+      "instructions": 476,
+      "last_block_raw": 4294967295,
+      "marker_fixture": 1,
+      "page_program_substitutes": [],
+      "physical_storage_verified": false,
+      "primask_restored": true,
+      "resource_header_read_substitute_bytes": 0,
+      "response_frame_sha256": [
+        "7e5a7afa247c4e8a7b3fc63515891ba27cf9d6af64d35e4058ca286b532bfcae"
+      ],
+      "responses": [
+        [
+          16,
+          0,
+          170,
+          238
+        ]
+      ],
+      "retained_descriptor_sha256": "8469998e0a8423accdf3fd8ccab720c42a7c411b9882099d70fcc6cd570eb507",
+      "spi_command_substitutes": [],
+      "spi_read_substitute_bytes": 0,
+      "staged_bytes_raw": 0,
+      "staged_storage_sha256": "f47a8ec3e9aff2318d896942282ad4fe37d6391c82914f54a5da8a37de1300c6",
+      "state_flag": 0,
+      "state_mode": 1,
+      "stopped_boundary": null,
+      "ui_signal_substitutes": []
+    },
+    {
+      "argument_fixture": 123,
+      "blocks_fixture": 1,
+      "case": "start",
+      "first_entry_crc_comparison": null,
+      "input_frame_bytes": 21,
+      "input_frame_sha256": "fc09213301975c79d06bc59bb8c492250b76c18068491a3a83d642eb541e50db",
+      "input_point_raw": 16,
+      "instructions": 480,
+      "last_block_raw": 4294967295,
+      "marker_fixture": 0,
+      "page_program_substitutes": [],
+      "physical_storage_verified": false,
+      "primask_restored": true,
+      "resource_header_read_substitute_bytes": 0,
+      "response_frame_sha256": [
+        "7e5a7afa247c4e8a7b3fc63515891ba27cf9d6af64d35e4058ca286b532bfcae"
+      ],
+      "responses": [
+        [
+          16,
+          0,
+          170,
+          238
+        ]
+      ],
+      "retained_descriptor_sha256": "73d8d497797f77896a8b6e5a33e3689c8b8a49ba4301071e2cb6b7c58d1bc8ea",
+      "spi_command_substitutes": [],
+      "spi_read_substitute_bytes": 0,
+      "staged_bytes_raw": 0,
+      "staged_storage_sha256": "f47a8ec3e9aff2318d896942282ad4fe37d6391c82914f54a5da8a37de1300c6",
+      "state_flag": 0,
+      "state_mode": 1,
+      "stopped_boundary": null,
+      "ui_signal_substitutes": [
+        {
+          "signal_argument": 13,
+          "value_argument": 1
+        }
+      ]
+    },
+    {
+      "argument_fixture": 4294967295,
+      "blocks_fixture": 4096,
+      "case": "start",
+      "first_entry_crc_comparison": null,
+      "input_frame_bytes": 21,
+      "input_frame_sha256": "77e8c4ffc53704df6eba6eea564785e5f25a15f36a20997c47b123267ab573f4",
+      "input_point_raw": 16,
+      "instructions": 476,
+      "last_block_raw": 4294967295,
+      "marker_fixture": 1,
+      "page_program_substitutes": [],
+      "physical_storage_verified": false,
+      "primask_restored": true,
+      "resource_header_read_substitute_bytes": 0,
+      "response_frame_sha256": [
+        "7e5a7afa247c4e8a7b3fc63515891ba27cf9d6af64d35e4058ca286b532bfcae"
+      ],
+      "responses": [
+        [
+          16,
+          0,
+          170,
+          238
+        ]
+      ],
+      "retained_descriptor_sha256": "27e09f27bfb3ead1d31e52e6372e290092e8080378fab810b9ec7832b43ce8d4",
+      "spi_command_substitutes": [],
+      "spi_read_substitute_bytes": 0,
+      "staged_bytes_raw": 0,
+      "staged_storage_sha256": "f47a8ec3e9aff2318d896942282ad4fe37d6391c82914f54a5da8a37de1300c6",
+      "state_flag": 0,
+      "state_mode": 1,
+      "stopped_boundary": null,
+      "ui_signal_substitutes": []
+    },
+    {
+      "argument_fixture": 0,
+      "blocks_fixture": 0,
+      "case": "start",
+      "first_entry_crc_comparison": null,
+      "input_frame_bytes": 21,
+      "input_frame_sha256": "85809ddb3e1088134e6ec623b048de4cf644817bc22ab9047bcc42d7618ea884",
+      "input_point_raw": 16,
+      "instructions": 467,
+      "last_block_raw": 0,
+      "marker_fixture": 1,
+      "page_program_substitutes": [],
+      "physical_storage_verified": false,
+      "primask_restored": true,
+      "resource_header_read_substitute_bytes": 0,
+      "response_frame_sha256": [
+        "a079db99ef824631b937f94394fdacec30d5e5777d3ed6c65188006ea6ed96a4"
+      ],
+      "responses": [
+        [
+          16,
+          0,
+          3,
+          0
+        ]
+      ],
+      "retained_descriptor_sha256": "837885c8f8091aeaeb9ec3c3f85a6ff470a415e610b8ba3e49f9b33c9cf9d619",
+      "spi_command_substitutes": [],
+      "spi_read_substitute_bytes": 0,
+      "staged_bytes_raw": 0,
+      "staged_storage_sha256": "f47a8ec3e9aff2318d896942282ad4fe37d6391c82914f54a5da8a37de1300c6",
+      "state_flag": 0,
+      "state_mode": 0,
+      "stopped_boundary": null,
+      "ui_signal_substitutes": []
+    },
+    {
+      "argument_fixture": 0,
+      "blocks_fixture": 4097,
+      "case": "start",
+      "first_entry_crc_comparison": null,
+      "input_frame_bytes": 21,
+      "input_frame_sha256": "3529a097962ec752c01f10dedc230a17d8b50a23cd8d7ddb8e395b1605b7a459",
+      "input_point_raw": 16,
+      "instructions": 467,
+      "last_block_raw": 0,
+      "marker_fixture": 1,
+      "page_program_substitutes": [],
+      "physical_storage_verified": false,
+      "primask_restored": true,
+      "resource_header_read_substitute_bytes": 0,
+      "response_frame_sha256": [
+        "a079db99ef824631b937f94394fdacec30d5e5777d3ed6c65188006ea6ed96a4"
+      ],
+      "responses": [
+        [
+          16,
+          0,
+          3,
+          0
+        ]
+      ],
+      "retained_descriptor_sha256": "837885c8f8091aeaeb9ec3c3f85a6ff470a415e610b8ba3e49f9b33c9cf9d619",
+      "spi_command_substitutes": [],
+      "spi_read_substitute_bytes": 0,
+      "staged_bytes_raw": 0,
+      "staged_storage_sha256": "f47a8ec3e9aff2318d896942282ad4fe37d6391c82914f54a5da8a37de1300c6",
+      "state_flag": 0,
+      "state_mode": 0,
+      "stopped_boundary": null,
+      "ui_signal_substitutes": []
+    },
+    {
+      "argument_fixture": 0,
+      "blocks_fixture": 152,
+      "case": "start",
+      "first_entry_crc_comparison": null,
+      "input_frame_bytes": 21,
+      "input_frame_sha256": "4060aa60e8bd2fa182122621e3376ef7148dee593a800193d4724612b04084cc",
+      "input_point_raw": 16,
+      "instructions": 462,
+      "last_block_raw": 0,
+      "marker_fixture": 2,
+      "page_program_substitutes": [],
+      "physical_storage_verified": false,
+      "primask_restored": true,
+      "resource_header_read_substitute_bytes": 0,
+      "response_frame_sha256": [
+        "9cbef989ee297c7b96ddca83ed468b008e662ea2bbedbad6eac589936da37b5e"
+      ],
+      "responses": [
+        [
+          16,
+          0,
+          2,
+          0
+        ]
+      ],
+      "retained_descriptor_sha256": "837885c8f8091aeaeb9ec3c3f85a6ff470a415e610b8ba3e49f9b33c9cf9d619",
+      "spi_command_substitutes": [],
+      "spi_read_substitute_bytes": 0,
+      "staged_bytes_raw": 0,
+      "staged_storage_sha256": "f47a8ec3e9aff2318d896942282ad4fe37d6391c82914f54a5da8a37de1300c6",
+      "state_flag": 0,
+      "state_mode": 0,
+      "stopped_boundary": null,
+      "ui_signal_substitutes": []
+    },
+    {
+      "argument_fixture": 0,
+      "blocks_fixture": 152,
+      "case": "start",
+      "first_entry_crc_comparison": null,
+      "input_frame_bytes": 21,
+      "input_frame_sha256": "5eba331e5c467a40b0084e64b9c04be071ef8ea4f531e47d2cab5cd55a3ba924",
+      "input_point_raw": 16,
+      "instructions": 462,
+      "last_block_raw": 0,
+      "marker_fixture": 255,
+      "page_program_substitutes": [],
+      "physical_storage_verified": false,
+      "primask_restored": true,
+      "resource_header_read_substitute_bytes": 0,
+      "response_frame_sha256": [
+        "9cbef989ee297c7b96ddca83ed468b008e662ea2bbedbad6eac589936da37b5e"
+      ],
+      "responses": [
+        [
+          16,
+          0,
+          2,
+          0
+        ]
+      ],
+      "retained_descriptor_sha256": "837885c8f8091aeaeb9ec3c3f85a6ff470a415e610b8ba3e49f9b33c9cf9d619",
+      "spi_command_substitutes": [],
+      "spi_read_substitute_bytes": 0,
+      "staged_bytes_raw": 0,
+      "staged_storage_sha256": "f47a8ec3e9aff2318d896942282ad4fe37d6391c82914f54a5da8a37de1300c6",
+      "state_flag": 0,
+      "state_mode": 0,
+      "stopped_boundary": null,
+      "ui_signal_substitutes": []
+    },
+    {
+      "case": "first_chunk",
+      "data_bytes": 1,
+      "first_entry_crc_comparison": null,
+      "input_frame_bytes": 17,
+      "input_frame_sha256": "220748ad414d54166553b0f6c7545af9b4d0b6279550fe3c89c53f553630f18b",
+      "input_point_raw": 19,
+      "instructions": 475,
+      "last_block_raw": 0,
+      "page_program_substitutes": [
+        {
+          "address_raw": 12582912,
+          "bytes": 1,
+          "data_sha256": "ca358758f6d27e6cf45272937977a748fd88391db679ceda7dc7bf1f005ee879"
+        }
+      ],
+      "physical_storage_verified": false,
+      "primask_restored": true,
+      "resource_header_read_substitute_bytes": 0,
+      "response_frame_sha256": [
+        "ac0e5ca36e47128b2a2721f726dec0dad349b2ee82a759b0e9c245027ad54a23"
+      ],
+      "responses": [
+        [
+          19,
+          0,
+          170,
+          238
+        ]
+      ],
+      "retained_descriptor_sha256": "8469998e0a8423accdf3fd8ccab720c42a7c411b9882099d70fcc6cd570eb507",
+      "spi_command_substitutes": [],
+      "spi_read_substitute_bytes": 0,
+      "staged_bytes_raw": 1,
+      "staged_storage_sha256": "22d1b60f0879a3fc102b4e1580060ac079a0ae9dc1fd45cca8b5eaf75273714e",
+      "state_flag": 0,
+      "state_mode": 1,
+      "stopped_boundary": null
+    },
+    {
+      "case": "first_chunk",
+      "data_bytes": 255,
+      "first_entry_crc_comparison": null,
+      "input_frame_bytes": 271,
+      "input_frame_sha256": "6e17273dbec1520401baca4c4e728659ca8b4c4dbbafd2913ec2689871bd9a26",
+      "input_point_raw": 19,
+      "instructions": 2761,
+      "last_block_raw": 0,
+      "page_program_substitutes": [
+        {
+          "address_raw": 12582912,
+          "bytes": 255,
+          "data_sha256": "14475d6017bd3cf8246b0260692355287a8c6ab4007783036cb3c15828438a6e"
+        }
+      ],
+      "physical_storage_verified": false,
+      "primask_restored": true,
+      "resource_header_read_substitute_bytes": 0,
+      "response_frame_sha256": [
+        "ac0e5ca36e47128b2a2721f726dec0dad349b2ee82a759b0e9c245027ad54a23"
+      ],
+      "responses": [
+        [
+          19,
+          0,
+          170,
+          238
+        ]
+      ],
+      "retained_descriptor_sha256": "8469998e0a8423accdf3fd8ccab720c42a7c411b9882099d70fcc6cd570eb507",
+      "spi_command_substitutes": [],
+      "spi_read_substitute_bytes": 0,
+      "staged_bytes_raw": 255,
+      "staged_storage_sha256": "81d9847b2cc337ccb5f642e48f1ec1647398bcfcb3209eb7fe7a6c4258a2675f",
+      "state_flag": 0,
+      "state_mode": 1,
+      "stopped_boundary": null
+    },
+    {
+      "case": "first_chunk",
+      "data_bytes": 256,
+      "first_entry_crc_comparison": null,
+      "input_frame_bytes": 272,
+      "input_frame_sha256": "fa1acc63ba99de82664a53932685aedc8c184542bea02468dacd8647aa8bb21b",
+      "input_point_raw": 19,
+      "instructions": 2778,
+      "last_block_raw": 0,
+      "page_program_substitutes": [
+        {
+          "address_raw": 12582912,
+          "bytes": 256,
+          "data_sha256": "cdccadec2e3d63179d626e775826e4c35a194fbb508814b0914c405b895499da"
+        }
+      ],
+      "physical_storage_verified": false,
+      "primask_restored": true,
+      "resource_header_read_substitute_bytes": 0,
+      "response_frame_sha256": [
+        "ac0e5ca36e47128b2a2721f726dec0dad349b2ee82a759b0e9c245027ad54a23"
+      ],
+      "responses": [
+        [
+          19,
+          0,
+          170,
+          238
+        ]
+      ],
+      "retained_descriptor_sha256": "8469998e0a8423accdf3fd8ccab720c42a7c411b9882099d70fcc6cd570eb507",
+      "spi_command_substitutes": [],
+      "spi_read_substitute_bytes": 0,
+      "staged_bytes_raw": 256,
+      "staged_storage_sha256": "47ff58f9113d76ba03406af76ddf0abaeaf63612d79da1441d655ffeff61dce3",
+      "state_flag": 0,
+      "state_mode": 1,
+      "stopped_boundary": null
+    },
+    {
+      "case": "first_chunk",
+      "data_bytes": 257,
+      "first_entry_crc_comparison": null,
+      "input_frame_bytes": 273,
+      "input_frame_sha256": "5a90d08517cd07232111a1169c05a483925a2564280de160c8830b7277e9d167",
+      "input_point_raw": 19,
+      "instructions": 2795,
+      "last_block_raw": 0,
+      "page_program_substitutes": [
+        {
+          "address_raw": 12582912,
+          "bytes": 256,
+          "data_sha256": "cdccadec2e3d63179d626e775826e4c35a194fbb508814b0914c405b895499da"
+        },
+        {
+          "address_raw": 12583168,
+          "bytes": 1,
+          "data_sha256": "ca358758f6d27e6cf45272937977a748fd88391db679ceda7dc7bf1f005ee879"
+        }
+      ],
+      "physical_storage_verified": false,
+      "primask_restored": true,
+      "resource_header_read_substitute_bytes": 0,
+      "response_frame_sha256": [
+        "ac0e5ca36e47128b2a2721f726dec0dad349b2ee82a759b0e9c245027ad54a23"
+      ],
+      "responses": [
+        [
+          19,
+          0,
+          170,
+          238
+        ]
+      ],
+      "retained_descriptor_sha256": "8469998e0a8423accdf3fd8ccab720c42a7c411b9882099d70fcc6cd570eb507",
+      "spi_command_substitutes": [],
+      "spi_read_substitute_bytes": 0,
+      "staged_bytes_raw": 257,
+      "staged_storage_sha256": "14043ac76d63d442d1b36e6ff99ba88ee671cf43a2084c439cdcae13f53188d4",
+      "state_flag": 0,
+      "state_mode": 1,
+      "stopped_boundary": null
+    },
+    {
+      "case": "first_chunk",
+      "data_bytes": 1024,
+      "first_entry_crc_comparison": null,
+      "input_frame_bytes": 1040,
+      "input_frame_sha256": "38772031480af4e03ed397ba2dc519fe18c639f49a4639b071dd9078b05a34e0",
+      "input_point_raw": 19,
+      "instructions": 9723,
+      "last_block_raw": 0,
+      "page_program_substitutes": [
+        {
+          "address_raw": 12582912,
+          "bytes": 256,
+          "data_sha256": "cdccadec2e3d63179d626e775826e4c35a194fbb508814b0914c405b895499da"
+        },
+        {
+          "address_raw": 12583168,
+          "bytes": 256,
+          "data_sha256": "cdccadec2e3d63179d626e775826e4c35a194fbb508814b0914c405b895499da"
+        },
+        {
+          "address_raw": 12583424,
+          "bytes": 256,
+          "data_sha256": "cdccadec2e3d63179d626e775826e4c35a194fbb508814b0914c405b895499da"
+        },
+        {
+          "address_raw": 12583680,
+          "bytes": 256,
+          "data_sha256": "cdccadec2e3d63179d626e775826e4c35a194fbb508814b0914c405b895499da"
+        }
+      ],
+      "physical_storage_verified": false,
+      "primask_restored": true,
+      "resource_header_read_substitute_bytes": 0,
+      "response_frame_sha256": [
+        "ac0e5ca36e47128b2a2721f726dec0dad349b2ee82a759b0e9c245027ad54a23"
+      ],
+      "responses": [
+        [
+          19,
+          0,
+          170,
+          238
+        ]
+      ],
+      "retained_descriptor_sha256": "8469998e0a8423accdf3fd8ccab720c42a7c411b9882099d70fcc6cd570eb507",
+      "spi_command_substitutes": [],
+      "spi_read_substitute_bytes": 0,
+      "staged_bytes_raw": 1024,
+      "staged_storage_sha256": "4493a4c2be2c1e770a4e9b3ffbf5980d2c221e9216784d7d1a76e6bd318c91e2",
+      "state_flag": 0,
+      "state_mode": 1,
+      "stopped_boundary": null
+    },
+    {
+      "case": "duplicate_block",
+      "first_entry_crc_comparison": null,
+      "input_frame_bytes": 1040,
+      "input_frame_sha256": "7a974a3ceaba9251d50d3dc28dea5164a34a8fff2f9b4d49f8d58b90a219328e",
+      "input_point_raw": 19,
+      "instructions": 9671,
+      "last_block_raw": 0,
+      "page_program_substitutes": [],
+      "physical_storage_verified": false,
+      "primask_restored": true,
+      "resource_header_read_substitute_bytes": 0,
+      "response_frame_sha256": [
+        "ac0e5ca36e47128b2a2721f726dec0dad349b2ee82a759b0e9c245027ad54a23"
+      ],
+      "responses": [
+        [
+          19,
+          0,
+          170,
+          238
+        ]
+      ],
+      "retained_descriptor_sha256": "8469998e0a8423accdf3fd8ccab720c42a7c411b9882099d70fcc6cd570eb507",
+      "spi_command_substitutes": [],
+      "spi_read_substitute_bytes": 0,
+      "staged_bytes_raw": 1024,
+      "staged_storage_sha256": "4493a4c2be2c1e770a4e9b3ffbf5980d2c221e9216784d7d1a76e6bd318c91e2",
+      "state_flag": 0,
+      "state_mode": 1,
+      "stopped_boundary": null
+    },
+    {
+      "case": "next_block",
+      "first_entry_crc_comparison": null,
+      "input_frame_bytes": 1040,
+      "input_frame_sha256": "c95e415f1b66726a1b8568161c29e723b9299663bbc61a2c6900c334e4d96467",
+      "input_point_raw": 19,
+      "instructions": 9723,
+      "last_block_raw": 1,
+      "page_program_substitutes": [
+        {
+          "address_raw": 12583936,
+          "bytes": 256,
+          "data_sha256": "6297511301201e8a9c5cb55279352198c8b3006d7b7f935f3d21a6dc37140aa9"
+        },
+        {
+          "address_raw": 12584192,
+          "bytes": 256,
+          "data_sha256": "6297511301201e8a9c5cb55279352198c8b3006d7b7f935f3d21a6dc37140aa9"
+        },
+        {
+          "address_raw": 12584448,
+          "bytes": 256,
+          "data_sha256": "6297511301201e8a9c5cb55279352198c8b3006d7b7f935f3d21a6dc37140aa9"
+        },
+        {
+          "address_raw": 12584704,
+          "bytes": 256,
+          "data_sha256": "6297511301201e8a9c5cb55279352198c8b3006d7b7f935f3d21a6dc37140aa9"
+        }
+      ],
+      "physical_storage_verified": false,
+      "primask_restored": true,
+      "resource_header_read_substitute_bytes": 0,
+      "response_frame_sha256": [
+        "ac0e5ca36e47128b2a2721f726dec0dad349b2ee82a759b0e9c245027ad54a23"
+      ],
+      "responses": [
+        [
+          19,
+          0,
+          170,
+          238
+        ]
+      ],
+      "retained_descriptor_sha256": "8469998e0a8423accdf3fd8ccab720c42a7c411b9882099d70fcc6cd570eb507",
+      "spi_command_substitutes": [],
+      "spi_read_substitute_bytes": 0,
+      "staged_bytes_raw": 2048,
+      "staged_storage_sha256": "32bb060b9491384b41b5f81c69f1852332d16c527bd4fbaed9f7cc8c1ee69aa3",
+      "state_flag": 0,
+      "state_mode": 1,
+      "stopped_boundary": null
+    },
+    {
+      "case": "skipped_block",
+      "first_entry_crc_comparison": null,
+      "input_frame_bytes": 1040,
+      "input_frame_sha256": "5ea46963d6a196d06c82996d127adf0de506a4c9ae527361cb2ef2eeeabf3003",
+      "input_point_raw": 19,
+      "instructions": 9723,
+      "last_block_raw": 2,
+      "page_program_substitutes": [
+        {
+          "address_raw": 12583936,
+          "bytes": 256,
+          "data_sha256": "6297511301201e8a9c5cb55279352198c8b3006d7b7f935f3d21a6dc37140aa9"
+        },
+        {
+          "address_raw": 12584192,
+          "bytes": 256,
+          "data_sha256": "6297511301201e8a9c5cb55279352198c8b3006d7b7f935f3d21a6dc37140aa9"
+        },
+        {
+          "address_raw": 12584448,
+          "bytes": 256,
+          "data_sha256": "6297511301201e8a9c5cb55279352198c8b3006d7b7f935f3d21a6dc37140aa9"
+        },
+        {
+          "address_raw": 12584704,
+          "bytes": 256,
+          "data_sha256": "6297511301201e8a9c5cb55279352198c8b3006d7b7f935f3d21a6dc37140aa9"
+        }
+      ],
+      "physical_storage_verified": false,
+      "primask_restored": true,
+      "resource_header_read_substitute_bytes": 0,
+      "response_frame_sha256": [
+        "ac0e5ca36e47128b2a2721f726dec0dad349b2ee82a759b0e9c245027ad54a23"
+      ],
+      "responses": [
+        [
+          19,
+          0,
+          170,
+          238
+        ]
+      ],
+      "retained_descriptor_sha256": "8469998e0a8423accdf3fd8ccab720c42a7c411b9882099d70fcc6cd570eb507",
+      "spi_command_substitutes": [],
+      "spi_read_substitute_bytes": 0,
+      "staged_bytes_raw": 2048,
+      "staged_storage_sha256": "32bb060b9491384b41b5f81c69f1852332d16c527bd4fbaed9f7cc8c1ee69aa3",
+      "state_flag": 0,
+      "state_mode": 1,
+      "stopped_boundary": null
+    },
+    {
+      "case": "older_block_rejected",
+      "first_entry_crc_comparison": null,
+      "input_frame_bytes": 272,
+      "input_frame_sha256": "ef3b869fb0cfd53dacc080cc3b10cf5a7eb50db0359a104789bcf06bc0b3169d",
+      "input_point_raw": 19,
+      "instructions": 2740,
+      "last_block_raw": 2,
+      "page_program_substitutes": [],
+      "physical_storage_verified": false,
+      "primask_restored": true,
+      "resource_header_read_substitute_bytes": 0,
+      "response_frame_sha256": [
+        "a55c3b3cd3a93ec6dd2ecbd97ae5025c128f636256f3adbbd128b34eea27770d"
+      ],
+      "responses": [
+        [
+          19,
+          0,
+          1,
+          0
+        ]
+      ],
+      "retained_descriptor_sha256": "8469998e0a8423accdf3fd8ccab720c42a7c411b9882099d70fcc6cd570eb507",
+      "spi_command_substitutes": [],
+      "spi_read_substitute_bytes": 0,
+      "staged_bytes_raw": 256,
+      "staged_storage_sha256": "47ff58f9113d76ba03406af76ddf0abaeaf63612d79da1441d655ffeff61dce3",
+      "state_flag": 0,
+      "state_mode": 1,
+      "stopped_boundary": null
+    },
+    {
+      "case": "unaligned_page_split",
+      "first_entry_crc_comparison": null,
+      "input_frame_bytes": 273,
+      "input_frame_sha256": "c4fab492fe93c5ddd1e380631dc15e80181a16f990b404eb232c8dbaaf3c77a5",
+      "input_point_raw": 19,
+      "instructions": 2799,
+      "last_block_raw": 1,
+      "page_program_substitutes": [
+        {
+          "address_raw": 12582913,
+          "bytes": 255,
+          "data_sha256": "c34476265782812e006d5304f16cecec7e101fb0a3c94943361a0cdf5d2d5c21"
+        },
+        {
+          "address_raw": 12583168,
+          "bytes": 2,
+          "data_sha256": "b36f217aa04d8d06de3e672ed73e561868a5a230160382a23b9a19df76f9b0ef"
+        }
+      ],
+      "physical_storage_verified": false,
+      "primask_restored": true,
+      "resource_header_read_substitute_bytes": 0,
+      "response_frame_sha256": [
+        "ac0e5ca36e47128b2a2721f726dec0dad349b2ee82a759b0e9c245027ad54a23"
+      ],
+      "responses": [
+        [
+          19,
+          0,
+          170,
+          238
+        ]
+      ],
+      "retained_descriptor_sha256": "8469998e0a8423accdf3fd8ccab720c42a7c411b9882099d70fcc6cd570eb507",
+      "spi_command_substitutes": [],
+      "spi_read_substitute_bytes": 0,
+      "staged_bytes_raw": 258,
+      "staged_storage_sha256": "d7bd359e1bb756b4ee75901008b014fa92f66fe55be585016d8d4ec022460881",
+      "state_flag": 0,
+      "state_mode": 1,
+      "stopped_boundary": null
+    },
+    {
+      "case": "bad_chunk_crc",
+      "first_entry_crc_comparison": null,
+      "input_frame_bytes": 1040,
+      "input_frame_sha256": "2c882059dfd80a77bbab40e5cc9c62bbfd3de9710bc36d3477823c1ed7ad7046",
+      "input_point_raw": 19,
+      "instructions": 9409,
+      "last_block_raw": 4294967295,
+      "page_program_substitutes": [],
+      "physical_storage_verified": false,
+      "primask_restored": true,
+      "resource_header_read_substitute_bytes": 0,
+      "response_frame_sha256": [],
+      "responses": [],
+      "retained_descriptor_sha256": "8469998e0a8423accdf3fd8ccab720c42a7c411b9882099d70fcc6cd570eb507",
+      "spi_command_substitutes": [],
+      "spi_read_substitute_bytes": 0,
+      "staged_bytes_raw": 0,
+      "staged_storage_sha256": "f47a8ec3e9aff2318d896942282ad4fe37d6391c82914f54a5da8a37de1300c6",
+      "state_flag": 0,
+      "state_mode": 1,
+      "stopped_boundary": null
+    },
+    {
+      "case": "excluded_transfer_stage",
+      "first_entry_crc_comparison": null,
+      "input_frame_bytes": 16,
+      "input_frame_sha256": "730a228e6033044c932adafd61610b5db57ece8cc7eea89fb8c21910a25c34de",
+      "input_point_raw": 18,
+      "instructions": 192,
+      "last_block_raw": 4294967295,
+      "page_program_substitutes": [],
+      "physical_storage_verified": false,
+      "primask_restored": true,
+      "resource_header_read_substitute_bytes": 0,
+      "response_frame_sha256": [],
+      "responses": [],
+      "retained_descriptor_sha256": "8469998e0a8423accdf3fd8ccab720c42a7c411b9882099d70fcc6cd570eb507",
+      "spi_command_substitutes": [],
+      "spi_read_substitute_bytes": 0,
+      "staged_bytes_raw": 0,
+      "staged_storage_sha256": "f47a8ec3e9aff2318d896942282ad4fe37d6391c82914f54a5da8a37de1300c6",
+      "state_flag": 0,
+      "state_mode": 1,
+      "stopped_boundary": "preparation_erase_excluded"
+    },
+    {
+      "case": "excluded_transfer_stage",
+      "first_entry_crc_comparison": null,
+      "input_frame_bytes": 16,
+      "input_frame_sha256": "2d7dc1c260b3fdc1d45bcab17e30456034ab8764fd6ac6f5729db3cd869cb862",
+      "input_point_raw": 20,
+      "instructions": 197,
+      "last_block_raw": 4294967295,
+      "page_program_substitutes": [],
+      "physical_storage_verified": false,
+      "primask_restored": true,
+      "resource_header_read_substitute_bytes": 0,
+      "response_frame_sha256": [],
+      "responses": [],
+      "retained_descriptor_sha256": "8469998e0a8423accdf3fd8ccab720c42a7c411b9882099d70fcc6cd570eb507",
+      "spi_command_substitutes": [],
+      "spi_read_substitute_bytes": 0,
+      "staged_bytes_raw": 0,
+      "staged_storage_sha256": "f47a8ec3e9aff2318d896942282ad4fe37d6391c82914f54a5da8a37de1300c6",
+      "state_flag": 0,
+      "state_mode": 1,
+      "stopped_boundary": "final_resource_commit_excluded"
+    },
+    {
+      "case": "excluded_transfer_stage",
+      "first_entry_crc_comparison": null,
+      "input_frame_bytes": 16,
+      "input_frame_sha256": "02ed7561bd18ec59f79c70ffb07520e42a29779818bda448d1bc9d8fc4cd1416",
+      "input_point_raw": 22,
+      "instructions": 199,
+      "last_block_raw": 4294967295,
+      "page_program_substitutes": [],
+      "physical_storage_verified": false,
+      "primask_restored": true,
+      "resource_header_read_substitute_bytes": 0,
+      "response_frame_sha256": [],
+      "responses": [],
+      "retained_descriptor_sha256": "8469998e0a8423accdf3fd8ccab720c42a7c411b9882099d70fcc6cd570eb507",
+      "spi_command_substitutes": [],
+      "spi_read_substitute_bytes": 0,
+      "staged_bytes_raw": 0,
+      "staged_storage_sha256": "f47a8ec3e9aff2318d896942282ad4fe37d6391c82914f54a5da8a37de1300c6",
+      "state_flag": 0,
+      "state_mode": 1,
+      "stopped_boundary": "floating_point_progress_excluded"
+    },
+    {
+      "case": "final_byte_sum",
+      "data_bytes": 0,
+      "first_entry_crc_comparison": null,
+      "input_frame_bytes": 16,
+      "input_frame_sha256": "2d7dc1c260b3fdc1d45bcab17e30456034ab8764fd6ac6f5729db3cd869cb862",
+      "input_point_raw": 20,
+      "instructions": 304,
+      "last_block_raw": 4294967295,
+      "page_program_substitutes": [],
+      "physical_storage_verified": false,
+      "primask_restored": true,
+      "resource_header_read_substitute_bytes": 0,
+      "response_frame_sha256": [],
+      "responses": [],
+      "retained_descriptor_sha256": "fdcc920ba9e704f16a0b57088fdff0c258c1e87c07ac928c127460b5433d94b3",
+      "spi_command_substitutes": [
+        {
+          "bytes": 1,
+          "sha256": "8254c329a92850f6d539dd376f4816ee2764517da5e0235514af433164480d7a"
+        },
+        {
+          "bytes": 4,
+          "sha256": "e51245c8418dd3f3629da3001ddfed530dc7b5d85c74ecc4acf507e073938422"
+        }
+      ],
+      "spi_read_substitute_bytes": 0,
+      "staged_bytes_raw": 0,
+      "staged_storage_sha256": "f47a8ec3e9aff2318d896942282ad4fe37d6391c82914f54a5da8a37de1300c6",
+      "state_flag": 0,
+      "state_mode": 1,
+      "stopped_boundary": "resource_header_validation_excluded",
+      "sum_fixture_matches": true
+    },
+    {
+      "case": "final_byte_sum",
+      "data_bytes": 1,
+      "first_entry_crc_comparison": null,
+      "input_frame_bytes": 16,
+      "input_frame_sha256": "2d7dc1c260b3fdc1d45bcab17e30456034ab8764fd6ac6f5729db3cd869cb862",
+      "input_point_raw": 20,
+      "instructions": 317,
+      "last_block_raw": 0,
+      "page_program_substitutes": [],
+      "physical_storage_verified": false,
+      "primask_restored": true,
+      "resource_header_read_substitute_bytes": 0,
+      "response_frame_sha256": [],
+      "responses": [],
+      "retained_descriptor_sha256": "aabb6a9f00b6099436e71d4d89fe77f71b7acfc0cf7059501bc3e376ce33c559",
+      "spi_command_substitutes": [
+        {
+          "bytes": 1,
+          "sha256": "8254c329a92850f6d539dd376f4816ee2764517da5e0235514af433164480d7a"
+        },
+        {
+          "bytes": 4,
+          "sha256": "e51245c8418dd3f3629da3001ddfed530dc7b5d85c74ecc4acf507e073938422"
+        }
+      ],
+      "spi_read_substitute_bytes": 1,
+      "staged_bytes_raw": 1,
+      "staged_storage_sha256": "22d1b60f0879a3fc102b4e1580060ac079a0ae9dc1fd45cca8b5eaf75273714e",
+      "state_flag": 0,
+      "state_mode": 1,
+      "stopped_boundary": "resource_header_validation_excluded",
+      "sum_fixture_matches": true
+    },
+    {
+      "case": "final_byte_sum",
+      "data_bytes": 257,
+      "first_entry_crc_comparison": null,
+      "input_frame_bytes": 16,
+      "input_frame_sha256": "2d7dc1c260b3fdc1d45bcab17e30456034ab8764fd6ac6f5729db3cd869cb862",
+      "input_point_raw": 20,
+      "instructions": 2877,
+      "last_block_raw": 0,
+      "page_program_substitutes": [],
+      "physical_storage_verified": false,
+      "primask_restored": true,
+      "resource_header_read_substitute_bytes": 0,
+      "response_frame_sha256": [],
+      "responses": [],
+      "retained_descriptor_sha256": "eff6cf40a140694d759290ee8a70bb33fdf242765ccf557a067e56dd0d972af7",
+      "spi_command_substitutes": [
+        {
+          "bytes": 1,
+          "sha256": "8254c329a92850f6d539dd376f4816ee2764517da5e0235514af433164480d7a"
+        },
+        {
+          "bytes": 4,
+          "sha256": "e51245c8418dd3f3629da3001ddfed530dc7b5d85c74ecc4acf507e073938422"
+        }
+      ],
+      "spi_read_substitute_bytes": 257,
+      "staged_bytes_raw": 257,
+      "staged_storage_sha256": "14043ac76d63d442d1b36e6ff99ba88ee671cf43a2084c439cdcae13f53188d4",
+      "state_flag": 0,
+      "state_mode": 1,
+      "stopped_boundary": "resource_header_validation_excluded",
+      "sum_fixture_matches": true
+    },
+    {
+      "case": "final_byte_sum",
+      "data_bytes": 1024,
+      "first_entry_crc_comparison": null,
+      "input_frame_bytes": 16,
+      "input_frame_sha256": "2d7dc1c260b3fdc1d45bcab17e30456034ab8764fd6ac6f5729db3cd869cb862",
+      "input_point_raw": 20,
+      "instructions": 10547,
+      "last_block_raw": 0,
+      "page_program_substitutes": [],
+      "physical_storage_verified": false,
+      "primask_restored": true,
+      "resource_header_read_substitute_bytes": 0,
+      "response_frame_sha256": [],
+      "responses": [],
+      "retained_descriptor_sha256": "23c4095de5958a304802c044bae570cc11a2de0146606b7049e5e97abee190e3",
+      "spi_command_substitutes": [
+        {
+          "bytes": 1,
+          "sha256": "8254c329a92850f6d539dd376f4816ee2764517da5e0235514af433164480d7a"
+        },
+        {
+          "bytes": 4,
+          "sha256": "e51245c8418dd3f3629da3001ddfed530dc7b5d85c74ecc4acf507e073938422"
+        }
+      ],
+      "spi_read_substitute_bytes": 1024,
+      "staged_bytes_raw": 1024,
+      "staged_storage_sha256": "4493a4c2be2c1e770a4e9b3ffbf5980d2c221e9216784d7d1a76e6bd318c91e2",
+      "state_flag": 0,
+      "state_mode": 1,
+      "stopped_boundary": "resource_header_validation_excluded",
+      "sum_fixture_matches": true
+    },
+    {
+      "case": "final_byte_sum",
+      "data_bytes": 2048,
+      "first_entry_crc_comparison": null,
+      "input_frame_bytes": 16,
+      "input_frame_sha256": "2d7dc1c260b3fdc1d45bcab17e30456034ab8764fd6ac6f5729db3cd869cb862",
+      "input_point_raw": 20,
+      "instructions": 20787,
+      "last_block_raw": 1,
+      "page_program_substitutes": [],
+      "physical_storage_verified": false,
+      "primask_restored": true,
+      "resource_header_read_substitute_bytes": 0,
+      "response_frame_sha256": [],
+      "responses": [],
+      "retained_descriptor_sha256": "4caae40035ce14e79fb03a0236677acdc03ec4d086473aa699fc5b3b15159be7",
+      "spi_command_substitutes": [
+        {
+          "bytes": 1,
+          "sha256": "8254c329a92850f6d539dd376f4816ee2764517da5e0235514af433164480d7a"
+        },
+        {
+          "bytes": 4,
+          "sha256": "e51245c8418dd3f3629da3001ddfed530dc7b5d85c74ecc4acf507e073938422"
+        }
+      ],
+      "spi_read_substitute_bytes": 2048,
+      "staged_bytes_raw": 2048,
+      "staged_storage_sha256": "e1f5fcc834d434a822d5c1b7bbd276f735f3a234ddb2726c54cad46b511273dc",
+      "state_flag": 0,
+      "state_mode": 1,
+      "stopped_boundary": "resource_header_validation_excluded",
+      "sum_fixture_matches": true
+    },
+    {
+      "case": "final_byte_sum",
+      "data_bytes": 1,
+      "first_entry_crc_comparison": null,
+      "input_frame_bytes": 16,
+      "input_frame_sha256": "2d7dc1c260b3fdc1d45bcab17e30456034ab8764fd6ac6f5729db3cd869cb862",
+      "input_point_raw": 20,
+      "instructions": 542,
+      "last_block_raw": 0,
+      "page_program_substitutes": [],
+      "physical_storage_verified": false,
+      "primask_restored": true,
+      "resource_header_read_substitute_bytes": 0,
+      "response_frame_sha256": [
+        "e8469ef3e7e0038611a5efc225ecc9acb6935e80312bb97f0a4a6398e0890bcc"
+      ],
+      "responses": [
+        [
+          20,
+          0,
+          4,
+          0
+        ]
+      ],
+      "retained_descriptor_sha256": "f0bc9cd3f76636e0b1c97e653f7f51270512756e69acf653b0f5a496d2a19731",
+      "spi_command_substitutes": [
+        {
+          "bytes": 1,
+          "sha256": "8254c329a92850f6d539dd376f4816ee2764517da5e0235514af433164480d7a"
+        },
+        {
+          "bytes": 4,
+          "sha256": "e51245c8418dd3f3629da3001ddfed530dc7b5d85c74ecc4acf507e073938422"
+        }
+      ],
+      "spi_read_substitute_bytes": 1,
+      "staged_bytes_raw": 1,
+      "staged_storage_sha256": "22d1b60f0879a3fc102b4e1580060ac079a0ae9dc1fd45cca8b5eaf75273714e",
+      "state_flag": 1,
+      "state_mode": 0,
+      "stopped_boundary": null,
+      "sum_fixture_matches": false
+    },
+    {
+      "case": "final_byte_sum",
+      "data_bytes": 1024,
+      "first_entry_crc_comparison": null,
+      "input_frame_bytes": 16,
+      "input_frame_sha256": "2d7dc1c260b3fdc1d45bcab17e30456034ab8764fd6ac6f5729db3cd869cb862",
+      "input_point_raw": 20,
+      "instructions": 10772,
+      "last_block_raw": 0,
+      "page_program_substitutes": [],
+      "physical_storage_verified": false,
+      "primask_restored": true,
+      "resource_header_read_substitute_bytes": 0,
+      "response_frame_sha256": [
+        "e8469ef3e7e0038611a5efc225ecc9acb6935e80312bb97f0a4a6398e0890bcc"
+      ],
+      "responses": [
+        [
+          20,
+          0,
+          4,
+          0
+        ]
+      ],
+      "retained_descriptor_sha256": "be758ad953d39e6771db5b0fc6fcd777530323aa8f954b4058e1b5a856135984",
+      "spi_command_substitutes": [
+        {
+          "bytes": 1,
+          "sha256": "8254c329a92850f6d539dd376f4816ee2764517da5e0235514af433164480d7a"
+        },
+        {
+          "bytes": 4,
+          "sha256": "e51245c8418dd3f3629da3001ddfed530dc7b5d85c74ecc4acf507e073938422"
+        }
+      ],
+      "spi_read_substitute_bytes": 1024,
+      "staged_bytes_raw": 1024,
+      "staged_storage_sha256": "4493a4c2be2c1e770a4e9b3ffbf5980d2c221e9216784d7d1a76e6bd318c91e2",
+      "state_flag": 1,
+      "state_mode": 0,
+      "stopped_boundary": null,
+      "sum_fixture_matches": false
+    },
+    {
+      "case": "marker_one_skips_whole_byte_sum",
+      "first_entry_crc_comparison": null,
+      "input_frame_bytes": 16,
+      "input_frame_sha256": "2d7dc1c260b3fdc1d45bcab17e30456034ab8764fd6ac6f5729db3cd869cb862",
+      "input_point_raw": 20,
+      "instructions": 250,
+      "last_block_raw": 0,
+      "page_program_substitutes": [],
+      "physical_storage_verified": false,
+      "primask_restored": true,
+      "resource_header_read_substitute_bytes": 0,
+      "response_frame_sha256": [],
+      "responses": [],
+      "retained_descriptor_sha256": "1705aae6125055e37c57688e3a4576fe35740ec77d27b588cabf6f4df10ce966",
+      "spi_command_substitutes": [],
+      "spi_read_substitute_bytes": 0,
+      "staged_bytes_raw": 257,
+      "staged_storage_sha256": "14043ac76d63d442d1b36e6ff99ba88ee671cf43a2084c439cdcae13f53188d4",
+      "state_flag": 0,
+      "state_mode": 1,
+      "stopped_boundary": "resource_header_validation_excluded"
+    },
+    {
+      "case": "first_resource_entry_crc",
+      "crc_fixture_matches": true,
+      "data_bytes": 1,
+      "first_entry_crc_comparison": {
+        "computed_crc_raw": 33534,
+        "matched": true,
+        "stored_crc_raw": 33534
+      },
+      "input_frame_bytes": 16,
+      "input_frame_sha256": "2d7dc1c260b3fdc1d45bcab17e30456034ab8764fd6ac6f5729db3cd869cb862",
+      "input_point_raw": 20,
+      "instructions": 437,
+      "last_block_raw": 1,
+      "page_program_substitutes": [],
+      "physical_storage_verified": false,
+      "primask_restored": true,
+      "resource_header_read_substitute_bytes": 1024,
+      "response_frame_sha256": [],
+      "responses": [],
+      "retained_descriptor_sha256": "07af3494e1734c5081b23bd34f26a9aa81e063f16035fe6c2e65f527a8b5d330",
+      "spi_command_substitutes": [
+        {
+          "bytes": 1,
+          "sha256": "8254c329a92850f6d539dd376f4816ee2764517da5e0235514af433164480d7a"
+        },
+        {
+          "bytes": 4,
+          "sha256": "e51245c8418dd3f3629da3001ddfed530dc7b5d85c74ecc4acf507e073938422"
+        }
+      ],
+      "spi_read_substitute_bytes": 1,
+      "staged_bytes_raw": 1025,
+      "staged_storage_sha256": "05c6deac685d4ed2474d14ad95d6a26d829eff5c63067c1319aae4d699862f33",
+      "state_flag": 0,
+      "state_mode": 1,
+      "stopped_boundary": "first_entry_crc_matched_before_name_or_commit"
+    },
+    {
+      "case": "first_resource_entry_crc",
+      "crc_fixture_matches": true,
+      "data_bytes": 255,
+      "first_entry_crc_comparison": {
+        "computed_crc_raw": 58273,
+        "matched": true,
+        "stored_crc_raw": 58273
+      },
+      "input_frame_bytes": 16,
+      "input_frame_sha256": "2d7dc1c260b3fdc1d45bcab17e30456034ab8764fd6ac6f5729db3cd869cb862",
+      "input_point_raw": 20,
+      "instructions": 18980,
+      "last_block_raw": 1,
+      "page_program_substitutes": [],
+      "physical_storage_verified": false,
+      "primask_restored": true,
+      "resource_header_read_substitute_bytes": 1024,
+      "response_frame_sha256": [],
+      "responses": [],
+      "retained_descriptor_sha256": "07af3494e1734c5081b23bd34f26a9aa81e063f16035fe6c2e65f527a8b5d330",
+      "spi_command_substitutes": [
+        {
+          "bytes": 1,
+          "sha256": "8254c329a92850f6d539dd376f4816ee2764517da5e0235514af433164480d7a"
+        },
+        {
+          "bytes": 4,
+          "sha256": "e51245c8418dd3f3629da3001ddfed530dc7b5d85c74ecc4acf507e073938422"
+        }
+      ],
+      "spi_read_substitute_bytes": 255,
+      "staged_bytes_raw": 1279,
+      "staged_storage_sha256": "d74f8ba005aa66aaebba24eea5ca41707cb18ebb68ca0f2033afced612189969",
+      "state_flag": 0,
+      "state_mode": 1,
+      "stopped_boundary": "first_entry_crc_matched_before_name_or_commit"
+    },
+    {
+      "case": "first_resource_entry_crc",
+      "crc_fixture_matches": true,
+      "data_bytes": 1024,
+      "first_entry_crc_comparison": {
+        "computed_crc_raw": 8673,
+        "matched": true,
+        "stored_crc_raw": 8673
+      },
+      "input_frame_bytes": 16,
+      "input_frame_sha256": "2d7dc1c260b3fdc1d45bcab17e30456034ab8764fd6ac6f5729db3cd869cb862",
+      "input_point_raw": 20,
+      "instructions": 75118,
+      "last_block_raw": 1,
+      "page_program_substitutes": [],
+      "physical_storage_verified": false,
+      "primask_restored": true,
+      "resource_header_read_substitute_bytes": 1024,
+      "response_frame_sha256": [],
+      "responses": [],
+      "retained_descriptor_sha256": "07af3494e1734c5081b23bd34f26a9aa81e063f16035fe6c2e65f527a8b5d330",
+      "spi_command_substitutes": [
+        {
+          "bytes": 1,
+          "sha256": "8254c329a92850f6d539dd376f4816ee2764517da5e0235514af433164480d7a"
+        },
+        {
+          "bytes": 4,
+          "sha256": "e51245c8418dd3f3629da3001ddfed530dc7b5d85c74ecc4acf507e073938422"
+        }
+      ],
+      "spi_read_substitute_bytes": 1024,
+      "staged_bytes_raw": 2048,
+      "staged_storage_sha256": "f89e32dcd34bebd5f22d0a598a978d85c39a62e32e4e0c5a562a62359fb82d5c",
+      "state_flag": 0,
+      "state_mode": 1,
+      "stopped_boundary": "first_entry_crc_matched_before_name_or_commit"
+    },
+    {
+      "case": "first_resource_entry_crc",
+      "crc_fixture_matches": false,
+      "data_bytes": 1,
+      "first_entry_crc_comparison": {
+        "computed_crc_raw": 33534,
+        "matched": false,
+        "stored_crc_raw": 33535
+      },
+      "input_frame_bytes": 16,
+      "input_frame_sha256": "2d7dc1c260b3fdc1d45bcab17e30456034ab8764fd6ac6f5729db3cd869cb862",
+      "input_point_raw": 20,
+      "instructions": 437,
+      "last_block_raw": 1,
+      "page_program_substitutes": [],
+      "physical_storage_verified": false,
+      "primask_restored": true,
+      "resource_header_read_substitute_bytes": 1024,
+      "response_frame_sha256": [],
+      "responses": [],
+      "retained_descriptor_sha256": "07af3494e1734c5081b23bd34f26a9aa81e063f16035fe6c2e65f527a8b5d330",
+      "spi_command_substitutes": [
+        {
+          "bytes": 1,
+          "sha256": "8254c329a92850f6d539dd376f4816ee2764517da5e0235514af433164480d7a"
+        },
+        {
+          "bytes": 4,
+          "sha256": "e51245c8418dd3f3629da3001ddfed530dc7b5d85c74ecc4acf507e073938422"
+        }
+      ],
+      "spi_read_substitute_bytes": 1,
+      "staged_bytes_raw": 1025,
+      "staged_storage_sha256": "44c173fbfa3b1aa72b703648862ea625914e40f3536f469021ce44f05bb09b44",
+      "state_flag": 0,
+      "state_mode": 1,
+      "stopped_boundary": "first_entry_crc_rejected_before_error_reply"
+    },
+    {
+      "case": "first_resource_entry_crc",
+      "crc_fixture_matches": false,
+      "data_bytes": 1024,
+      "first_entry_crc_comparison": {
+        "computed_crc_raw": 8673,
+        "matched": false,
+        "stored_crc_raw": 8672
+      },
+      "input_frame_bytes": 16,
+      "input_frame_sha256": "2d7dc1c260b3fdc1d45bcab17e30456034ab8764fd6ac6f5729db3cd869cb862",
+      "input_point_raw": 20,
+      "instructions": 75118,
+      "last_block_raw": 1,
+      "page_program_substitutes": [],
+      "physical_storage_verified": false,
+      "primask_restored": true,
+      "resource_header_read_substitute_bytes": 1024,
+      "response_frame_sha256": [],
+      "responses": [],
+      "retained_descriptor_sha256": "07af3494e1734c5081b23bd34f26a9aa81e063f16035fe6c2e65f527a8b5d330",
+      "spi_command_substitutes": [
+        {
+          "bytes": 1,
+          "sha256": "8254c329a92850f6d539dd376f4816ee2764517da5e0235514af433164480d7a"
+        },
+        {
+          "bytes": 4,
+          "sha256": "e51245c8418dd3f3629da3001ddfed530dc7b5d85c74ecc4acf507e073938422"
+        }
+      ],
+      "spi_read_substitute_bytes": 1024,
+      "staged_bytes_raw": 2048,
+      "staged_storage_sha256": "de657b2251cbbe4ef26810debcad6a8d441a2707c8f4b3a191372ec39c6001fc",
+      "state_flag": 0,
+      "state_mode": 1,
+      "stopped_boundary": "first_entry_crc_rejected_before_error_reply"
+    },
+    {
+      "case": "zero_entry_size",
+      "first_entry_crc_comparison": null,
+      "input_frame_bytes": 16,
+      "input_frame_sha256": "2d7dc1c260b3fdc1d45bcab17e30456034ab8764fd6ac6f5729db3cd869cb862",
+      "input_point_raw": 20,
+      "instructions": 306,
+      "last_block_raw": 0,
+      "page_program_substitutes": [],
+      "physical_storage_verified": false,
+      "primask_restored": true,
+      "resource_header_read_substitute_bytes": 1024,
+      "response_frame_sha256": [],
+      "responses": [],
+      "retained_descriptor_sha256": "95a66c8108f14acbb8740fd154087efd6230f204ceec3dcf198c3ac07ac31e7f",
+      "spi_command_substitutes": [],
+      "spi_read_substitute_bytes": 0,
+      "staged_bytes_raw": 1024,
+      "staged_storage_sha256": "757ae5154e968ab60c9930ef0024714cfadcfe9e67738d15223527e9b2e411c8",
+      "state_flag": 0,
+      "state_mode": 1,
+      "stopped_boundary": "entry_size_rejected_before_error_reply"
+    },
+    {
+      "case": "entry_size_above_staged_bytes",
+      "first_entry_crc_comparison": null,
+      "input_frame_bytes": 16,
+      "input_frame_sha256": "2d7dc1c260b3fdc1d45bcab17e30456034ab8764fd6ac6f5729db3cd869cb862",
+      "input_point_raw": 20,
+      "instructions": 309,
+      "last_block_raw": 0,
+      "page_program_substitutes": [],
+      "physical_storage_verified": false,
+      "primask_restored": true,
+      "resource_header_read_substitute_bytes": 1024,
+      "response_frame_sha256": [],
+      "responses": [],
+      "retained_descriptor_sha256": "95a66c8108f14acbb8740fd154087efd6230f204ceec3dcf198c3ac07ac31e7f",
+      "spi_command_substitutes": [],
+      "spi_read_substitute_bytes": 0,
+      "staged_bytes_raw": 1024,
+      "staged_storage_sha256": "540682af0bbcadcb59301b5d8f737a9be41f18b7a950246983c6fce032f13ba3",
+      "state_flag": 0,
+      "state_mode": 1,
+      "stopped_boundary": "entry_size_rejected_before_error_reply"
+    },
+    {
+      "case": "empty_descriptor_list",
+      "first_entry_crc_comparison": null,
+      "input_frame_bytes": 16,
+      "input_frame_sha256": "2d7dc1c260b3fdc1d45bcab17e30456034ab8764fd6ac6f5729db3cd869cb862",
+      "input_point_raw": 20,
+      "instructions": 280,
+      "last_block_raw": 0,
+      "page_program_substitutes": [],
+      "physical_storage_verified": false,
+      "primask_restored": true,
+      "resource_header_read_substitute_bytes": 1024,
+      "response_frame_sha256": [],
+      "responses": [],
+      "retained_descriptor_sha256": "95a66c8108f14acbb8740fd154087efd6230f204ceec3dcf198c3ac07ac31e7f",
+      "spi_command_substitutes": [],
+      "spi_read_substitute_bytes": 0,
+      "staged_bytes_raw": 1024,
+      "staged_storage_sha256": "f47a8ec3e9aff2318d896942282ad4fe37d6391c82914f54a5da8a37de1300c6",
+      "state_flag": 0,
+      "state_mode": 1,
+      "stopped_boundary": "empty_descriptor_list_before_cleanup"
+    }
+  ],
+  "station_commands_sent": 0
+}
