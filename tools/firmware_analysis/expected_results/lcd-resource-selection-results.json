@@ -1,0 +1,3582 @@
+{
+  "application_sha256": "f5683c2f7c9a5bdab638123a7a0a547d3d549e513e18fc10918ed979b83459c6",
+  "cases": 43,
+  "instruction_limit_per_entry": 100000,
+  "lcd_manifest_version": "0.1.9.6",
+  "lcd_sha256": "c314816f396d6b6958a6a398476eafa182f7c368802569803b60bd6a4e6dc97d",
+  "limits": "Bounded LCD resource catalog recovery, name policy and pending-marker replay.\n\nActual selected initialized-data decompression, MAIN ingress/CRC, descriptor\niteration, strcmp/name/size branches, mapping checks, cleanup bookkeeping,\npersistent marker serialization and replies execute. Host substitutes provide\nheap, SPI/storage, memory operations, logging,\nUI/refresh and optional flash erase/program delivery. Firmware boot, real SPI/MMIO,\nflash/file writes, resource application and physical stations remain excluded.\nLarge size fixtures explicitly alter a header after a bounded CRC checkpoint;\nthey prove selected downstream size branches, not full validation of large data.",
+  "maximum_entry_instructions": 9723,
+  "model": "A1763",
+  "negative_guards": [
+    "boot_instruction_excluded",
+    "real_flash_instruction_excluded",
+    "catalog_write_excluded",
+    "mmio_write_excluded",
+    "unbounded_name_pointer_excluded",
+    "size_fixture_without_checkpoint_excluded",
+    "real_refresh_instruction_excluded",
+    "copy_source_extent_guard"
+  ],
+  "physical_flash_verified": false,
+  "resource_application_verified": false,
+  "results": [
+    {
+      "case": "initialized_data_recovery",
+      "compressed_bytes_consumed": 421,
+      "decoded_bytes": 1520,
+      "destination_address": "20000000",
+      "entries": [
+        {
+          "capacity_word_raw": 614400,
+          "index": 0,
+          "middle_word_raw": 4096,
+          "name": "startup",
+          "name_address": "080395ab"
+        },
+        {
+          "capacity_word_raw": 155648,
+          "index": 1,
+          "middle_word_raw": 4294967295,
+          "name": "ss_hour",
+          "name_address": "08039721"
+        },
+        {
+          "capacity_word_raw": 155648,
+          "index": 2,
+          "middle_word_raw": 4294967295,
+          "name": "ss_min",
+          "name_address": "0803941e"
+        },
+        {
+          "capacity_word_raw": 155648,
+          "index": 3,
+          "middle_word_raw": 4294967295,
+          "name": "ss_bg",
+          "name_address": "080390b5"
+        },
+        {
+          "capacity_word_raw": 462848,
+          "index": 4,
+          "middle_word_raw": 4294967295,
+          "name": "was_reset",
+          "name_address": "080398a7"
+        },
+        {
+          "capacity_word_raw": 1847296,
+          "index": 5,
+          "middle_word_raw": 4294967295,
+          "name": "fast_charge",
+          "name_address": "08038eb2"
+        },
+        {
+          "capacity_word_raw": 528384,
+          "index": 6,
+          "middle_word_raw": 4294967295,
+          "name": "cumu_usage",
+          "name_address": "08038e8c"
+        },
+        {
+          "capacity_word_raw": 1245184,
+          "index": 7,
+          "middle_word_raw": 4294967295,
+          "name": "first_pv",
+          "name_address": "08039aed"
+        },
+        {
+          "capacity_word_raw": 528384,
+          "index": 8,
+          "middle_word_raw": 4294967295,
+          "name": "cumu_pv",
+          "name_address": "08039af6"
+        },
+        {
+          "capacity_word_raw": 524288,
+          "index": 9,
+          "middle_word_raw": 4294967295,
+          "name": "normal2tou",
+          "name_address": "08039ad1"
+        },
+        {
+          "capacity_word_raw": 524288,
+          "index": 10,
+          "middle_word_raw": 4294967295,
+          "name": "tou2normal",
+          "name_address": "0803927c"
+        },
+        {
+          "capacity_word_raw": 495616,
+          "index": 11,
+          "middle_word_raw": 4294967295,
+          "name": "dev_idle",
+          "name_address": "08038f00"
+        },
+        {
+          "capacity_word_raw": 1282048,
+          "index": 12,
+          "middle_word_raw": 4294967295,
+          "name": "silent_charge",
+          "name_address": "08038ea4"
+        },
+        {
+          "capacity_word_raw": 1363968,
+          "index": 13,
+          "middle_word_raw": 4294967295,
+          "name": "super_output",
+          "name_address": "08039a6d"
+        }
+      ],
+      "firmware_boot_executed": false,
+      "host_reconstruction_matches": true,
+      "initialized_data_sha256": "cfbbfae6df83687b91c87016bb40622b3e1a41da1698d7f13b888d1f1e909b5f",
+      "instruction_limit_per_entry": 30000,
+      "instructions": 8281,
+      "scatter_record_address": "0803a044",
+      "source_address": "0803a068"
+    },
+    {
+      "allocations": [
+        {
+          "bytes": 1024
+        }
+      ],
+      "case": "name_route",
+      "catalog_preserved": true,
+      "crc_comparisons": [
+        {
+          "computed_crc_raw": 55297,
+          "matched": true,
+          "stored_crc_raw": 55297
+        }
+      ],
+      "first_entry_crc_comparison": {
+        "computed_crc_raw": 55297,
+        "matched": true,
+        "stored_crc_raw": 55297
+      },
+      "flash_service_substitutes": [],
+      "frees": [
+        {
+          "bytes_from_synthetic_header": 1028
+        }
+      ],
+      "header_live_after": false,
+      "input_frame_bytes": 16,
+      "input_frame_sha256": "2d7dc1c260b3fdc1d45bcab17e30456034ab8764fd6ac6f5729db3cd869cb862",
+      "input_point_raw": 20,
+      "instructions": 838,
+      "last_block_raw": 1,
+      "mapping_matches": [],
+      "marker_substitutes": [],
+      "maximum_entry_instructions": 9723,
+      "name_fixture": "pps_lcd",
+      "page_program_substitutes": [],
+      "pending_context_pointer_set": false,
+      "pending_counter_raw": 3000,
+      "persistent_marker_delivery_substituted": false,
+      "physical_storage_verified": false,
+      "primask_restored": true,
+      "refresh_substitutes": 0,
+      "resource_application_verified": false,
+      "resource_header_read_substitute_bytes": 1024,
+      "response_frame_sha256": [],
+      "responses": [],
+      "retained_descriptor_sha256": "07af3494e1734c5081b23bd34f26a9aa81e063f16035fe6c2e65f527a8b5d330",
+      "spi_command_substitutes": [
+        {
+          "bytes": 1,
+          "sha256": "8254c329a92850f6d539dd376f4816ee2764517da5e0235514af433164480d7a"
+        },
+        {
+          "bytes": 4,
+          "sha256": "e51245c8418dd3f3629da3001ddfed530dc7b5d85c74ecc4acf507e073938422"
+        }
+      ],
+      "spi_read_substitute_bytes": 4,
+      "staged_bytes_raw": 1028,
+      "staged_storage_sha256": "f08a907bbd4584cde913639000d4968a45cb74b718fdd82991e85ea2252277f1",
+      "state_flag": 0,
+      "state_mode": 2,
+      "stopped_boundary": "persistent_flash_marker_excluded",
+      "synthetic_heap_used_after": 0,
+      "synthetic_parameter_page_preserved": true,
+      "ui_signal_substitutes": [
+        {
+          "signal_argument": 1,
+          "value_argument": 1
+        }
+      ]
+    },
+    {
+      "allocations": [
+        {
+          "bytes": 1024
+        }
+      ],
+      "case": "name_route",
+      "catalog_preserved": true,
+      "completion_poll_after_substituted_marker": [
+        [
+          22,
+          0,
+          0,
+          50
+        ]
+      ],
+      "crc_comparisons": [
+        {
+          "computed_crc_raw": 55297,
+          "matched": true,
+          "stored_crc_raw": 55297
+        }
+      ],
+      "first_entry_crc_comparison": {
+        "computed_crc_raw": 55297,
+        "matched": true,
+        "stored_crc_raw": 55297
+      },
+      "flash_service_substitutes": [
+        {
+          "address_raw": 134238208,
+          "bytes": 20,
+          "operation": "erase"
+        },
+        {
+          "address_raw": 134238208,
+          "bytes": 20,
+          "data_sha256": "08347070af8db8bed3bdbf094db96d6cfb7d6b18fe48c479ebbe29472586bf7c",
+          "following_words_preserved": true,
+          "marker_word_raw": 2779096485,
+          "operation": "program"
+        }
+      ],
+      "frees": [
+        {
+          "bytes_from_synthetic_header": 1028
+        }
+      ],
+      "header_live_after": false,
+      "input_frame_bytes": 16,
+      "input_frame_sha256": "2d7dc1c260b3fdc1d45bcab17e30456034ab8764fd6ac6f5729db3cd869cb862",
+      "input_point_raw": 20,
+      "instructions": 1090,
+      "last_block_raw": 1,
+      "mapping_matches": [],
+      "marker_substitutes": [
+        {
+          "marker_argument_raw": 2779096485
+        }
+      ],
+      "maximum_entry_instructions": 9723,
+      "name_fixture": "pps_lcd",
+      "page_program_substitutes": [],
+      "pending_context_pointer_set": false,
+      "pending_counter_raw": 3000,
+      "persistent_marker_delivery_substituted": true,
+      "physical_storage_verified": false,
+      "primask_restored": true,
+      "refresh_substitutes": 0,
+      "resource_application_verified": false,
+      "resource_header_read_substitute_bytes": 1024,
+      "response_frame_sha256": [
+        "b7a902b63c2224a97b59ce897c5caec7fd784e3621c667e96e130637e22bb456"
+      ],
+      "responses": [
+        [
+          20,
+          0,
+          170,
+          238
+        ]
+      ],
+      "retained_descriptor_sha256": "07af3494e1734c5081b23bd34f26a9aa81e063f16035fe6c2e65f527a8b5d330",
+      "spi_command_substitutes": [
+        {
+          "bytes": 1,
+          "sha256": "8254c329a92850f6d539dd376f4816ee2764517da5e0235514af433164480d7a"
+        },
+        {
+          "bytes": 4,
+          "sha256": "e51245c8418dd3f3629da3001ddfed530dc7b5d85c74ecc4acf507e073938422"
+        }
+      ],
+      "spi_read_substitute_bytes": 4,
+      "staged_bytes_raw": 1028,
+      "staged_storage_sha256": "f08a907bbd4584cde913639000d4968a45cb74b718fdd82991e85ea2252277f1",
+      "state_flag": 0,
+      "state_mode": 2,
+      "stopped_boundary": null,
+      "synthetic_heap_used_after": 0,
+      "synthetic_parameter_page_preserved": true,
+      "ui_signal_substitutes": [
+        {
+          "signal_argument": 1,
+          "value_argument": 1
+        },
+        {
+          "signal_argument": 13,
+          "value_argument": 0
+        }
+      ]
+    },
+    {
+      "allocations": [
+        {
+          "bytes": 1024
+        }
+      ],
+      "case": "name_route",
+      "catalog_preserved": true,
+      "crc_comparisons": [
+        {
+          "computed_crc_raw": 55297,
+          "matched": true,
+          "stored_crc_raw": 55297
+        }
+      ],
+      "first_entry_crc_comparison": {
+        "computed_crc_raw": 55297,
+        "matched": true,
+        "stored_crc_raw": 55297
+      },
+      "flash_service_substitutes": [],
+      "frees": [
+        {
+          "bytes_from_synthetic_header": 1028
+        }
+      ],
+      "header_live_after": false,
+      "input_frame_bytes": 16,
+      "input_frame_sha256": "2d7dc1c260b3fdc1d45bcab17e30456034ab8764fd6ac6f5729db3cd869cb862",
+      "input_point_raw": 20,
+      "instructions": 931,
+      "last_block_raw": 1,
+      "mapping_matches": [],
+      "marker_substitutes": [],
+      "maximum_entry_instructions": 9723,
+      "name_fixture": "pps_lcd_res",
+      "page_program_substitutes": [],
+      "pending_context_pointer_set": false,
+      "pending_counter_raw": 3000,
+      "persistent_marker_delivery_substituted": false,
+      "physical_storage_verified": false,
+      "primask_restored": true,
+      "refresh_substitutes": 0,
+      "resource_application_verified": false,
+      "resource_header_read_substitute_bytes": 1024,
+      "response_frame_sha256": [],
+      "responses": [],
+      "retained_descriptor_sha256": "07af3494e1734c5081b23bd34f26a9aa81e063f16035fe6c2e65f527a8b5d330",
+      "spi_command_substitutes": [
+        {
+          "bytes": 1,
+          "sha256": "8254c329a92850f6d539dd376f4816ee2764517da5e0235514af433164480d7a"
+        },
+        {
+          "bytes": 4,
+          "sha256": "e51245c8418dd3f3629da3001ddfed530dc7b5d85c74ecc4acf507e073938422"
+        }
+      ],
+      "spi_read_substitute_bytes": 4,
+      "staged_bytes_raw": 1028,
+      "staged_storage_sha256": "e6605a0cf416e2506d56a7ef9a2444865cdfb0a3e5f52e4b71a3d23ade5af644",
+      "state_flag": 0,
+      "state_mode": 2,
+      "stopped_boundary": "persistent_flash_marker_excluded",
+      "synthetic_heap_used_after": 0,
+      "synthetic_parameter_page_preserved": true,
+      "ui_signal_substitutes": [
+        {
+          "signal_argument": 1,
+          "value_argument": 1
+        }
+      ]
+    },
+    {
+      "allocations": [
+        {
+          "bytes": 1024
+        }
+      ],
+      "case": "name_route",
+      "catalog_preserved": true,
+      "completion_poll_after_substituted_marker": [
+        [
+          22,
+          0,
+          0,
+          50
+        ]
+      ],
+      "crc_comparisons": [
+        {
+          "computed_crc_raw": 55297,
+          "matched": true,
+          "stored_crc_raw": 55297
+        }
+      ],
+      "first_entry_crc_comparison": {
+        "computed_crc_raw": 55297,
+        "matched": true,
+        "stored_crc_raw": 55297
+      },
+      "flash_service_substitutes": [
+        {
+          "address_raw": 134238208,
+          "bytes": 20,
+          "operation": "erase"
+        },
+        {
+          "address_raw": 134238208,
+          "bytes": 20,
+          "data_sha256": "08347070af8db8bed3bdbf094db96d6cfb7d6b18fe48c479ebbe29472586bf7c",
+          "following_words_preserved": true,
+          "marker_word_raw": 2779096485,
+          "operation": "program"
+        }
+      ],
+      "frees": [
+        {
+          "bytes_from_synthetic_header": 1028
+        }
+      ],
+      "header_live_after": false,
+      "input_frame_bytes": 16,
+      "input_frame_sha256": "2d7dc1c260b3fdc1d45bcab17e30456034ab8764fd6ac6f5729db3cd869cb862",
+      "input_point_raw": 20,
+      "instructions": 1183,
+      "last_block_raw": 1,
+      "mapping_matches": [],
+      "marker_substitutes": [
+        {
+          "marker_argument_raw": 2779096485
+        }
+      ],
+      "maximum_entry_instructions": 9723,
+      "name_fixture": "pps_lcd_res",
+      "page_program_substitutes": [],
+      "pending_context_pointer_set": false,
+      "pending_counter_raw": 3000,
+      "persistent_marker_delivery_substituted": true,
+      "physical_storage_verified": false,
+      "primask_restored": true,
+      "refresh_substitutes": 0,
+      "resource_application_verified": false,
+      "resource_header_read_substitute_bytes": 1024,
+      "response_frame_sha256": [
+        "b7a902b63c2224a97b59ce897c5caec7fd784e3621c667e96e130637e22bb456"
+      ],
+      "responses": [
+        [
+          20,
+          0,
+          170,
+          238
+        ]
+      ],
+      "retained_descriptor_sha256": "07af3494e1734c5081b23bd34f26a9aa81e063f16035fe6c2e65f527a8b5d330",
+      "spi_command_substitutes": [
+        {
+          "bytes": 1,
+          "sha256": "8254c329a92850f6d539dd376f4816ee2764517da5e0235514af433164480d7a"
+        },
+        {
+          "bytes": 4,
+          "sha256": "e51245c8418dd3f3629da3001ddfed530dc7b5d85c74ecc4acf507e073938422"
+        }
+      ],
+      "spi_read_substitute_bytes": 4,
+      "staged_bytes_raw": 1028,
+      "staged_storage_sha256": "e6605a0cf416e2506d56a7ef9a2444865cdfb0a3e5f52e4b71a3d23ade5af644",
+      "state_flag": 0,
+      "state_mode": 2,
+      "stopped_boundary": null,
+      "synthetic_heap_used_after": 0,
+      "synthetic_parameter_page_preserved": true,
+      "ui_signal_substitutes": [
+        {
+          "signal_argument": 1,
+          "value_argument": 1
+        },
+        {
+          "signal_argument": 13,
+          "value_argument": 0
+        }
+      ]
+    },
+    {
+      "allocations": [
+        {
+          "bytes": 1024
+        },
+        {
+          "bytes": 1024
+        }
+      ],
+      "case": "name_route",
+      "catalog_preserved": true,
+      "crc_comparisons": [
+        {
+          "computed_crc_raw": 55297,
+          "matched": true,
+          "stored_crc_raw": 55297
+        }
+      ],
+      "first_entry_crc_comparison": {
+        "computed_crc_raw": 55297,
+        "matched": true,
+        "stored_crc_raw": 55297
+      },
+      "flash_service_substitutes": [],
+      "frees": [
+        {
+          "bytes_from_synthetic_header": 1028
+        },
+        {
+          "bytes_from_synthetic_header": 1028
+        }
+      ],
+      "header_live_after": false,
+      "input_frame_bytes": 16,
+      "input_frame_sha256": "2d7dc1c260b3fdc1d45bcab17e30456034ab8764fd6ac6f5729db3cd869cb862",
+      "input_point_raw": 20,
+      "instructions": 955,
+      "last_block_raw": 1,
+      "mapping_matches": [
+        {
+          "catalog_index": 1
+        }
+      ],
+      "marker_substitutes": [],
+      "maximum_entry_instructions": 9723,
+      "name_fixture": "ss_hour",
+      "page_program_substitutes": [],
+      "pending_context_pointer_set": true,
+      "pending_counter_raw": 0,
+      "persistent_marker_delivery_substituted": false,
+      "physical_storage_verified": false,
+      "primask_restored": true,
+      "refresh_substitutes": 1,
+      "resource_application_verified": false,
+      "resource_header_read_substitute_bytes": 2048,
+      "response_frame_sha256": [],
+      "responses": [],
+      "retained_descriptor_sha256": "07af3494e1734c5081b23bd34f26a9aa81e063f16035fe6c2e65f527a8b5d330",
+      "spi_command_substitutes": [
+        {
+          "bytes": 1,
+          "sha256": "8254c329a92850f6d539dd376f4816ee2764517da5e0235514af433164480d7a"
+        },
+        {
+          "bytes": 4,
+          "sha256": "e51245c8418dd3f3629da3001ddfed530dc7b5d85c74ecc4acf507e073938422"
+        }
+      ],
+      "spi_read_substitute_bytes": 4,
+      "staged_bytes_raw": 1028,
+      "staged_storage_sha256": "231fea121e0980653e238843a57c49c35b301e41fda22e1ba08b04e9c8aba049",
+      "state_flag": 0,
+      "state_mode": 2,
+      "stopped_boundary": "persistent_flash_marker_excluded",
+      "synthetic_heap_used_after": 0,
+      "synthetic_parameter_page_preserved": true,
+      "ui_signal_substitutes": [
+        {
+          "signal_argument": 11,
+          "value_argument": 1
+        }
+      ]
+    },
+    {
+      "allocations": [
+        {
+          "bytes": 1024
+        },
+        {
+          "bytes": 1024
+        }
+      ],
+      "case": "name_route",
+      "catalog_preserved": true,
+      "completion_poll_after_substituted_marker": [
+        [
+          22,
+          0,
+          0,
+          50
+        ]
+      ],
+      "crc_comparisons": [
+        {
+          "computed_crc_raw": 55297,
+          "matched": true,
+          "stored_crc_raw": 55297
+        }
+      ],
+      "first_entry_crc_comparison": {
+        "computed_crc_raw": 55297,
+        "matched": true,
+        "stored_crc_raw": 55297
+      },
+      "flash_service_substitutes": [
+        {
+          "address_raw": 134238208,
+          "bytes": 20,
+          "operation": "erase"
+        },
+        {
+          "address_raw": 134238208,
+          "bytes": 20,
+          "data_sha256": "08347070af8db8bed3bdbf094db96d6cfb7d6b18fe48c479ebbe29472586bf7c",
+          "following_words_preserved": true,
+          "marker_word_raw": 2779096485,
+          "operation": "program"
+        }
+      ],
+      "frees": [
+        {
+          "bytes_from_synthetic_header": 1028
+        },
+        {
+          "bytes_from_synthetic_header": 1028
+        }
+      ],
+      "header_live_after": false,
+      "input_frame_bytes": 16,
+      "input_frame_sha256": "2d7dc1c260b3fdc1d45bcab17e30456034ab8764fd6ac6f5729db3cd869cb862",
+      "input_point_raw": 20,
+      "instructions": 1207,
+      "last_block_raw": 1,
+      "mapping_matches": [
+        {
+          "catalog_index": 1
+        }
+      ],
+      "marker_substitutes": [
+        {
+          "marker_argument_raw": 2779096485
+        }
+      ],
+      "maximum_entry_instructions": 9723,
+      "name_fixture": "ss_hour",
+      "page_program_substitutes": [],
+      "pending_context_pointer_set": true,
+      "pending_counter_raw": 0,
+      "persistent_marker_delivery_substituted": true,
+      "physical_storage_verified": false,
+      "primask_restored": true,
+      "refresh_substitutes": 1,
+      "resource_application_verified": false,
+      "resource_header_read_substitute_bytes": 2048,
+      "response_frame_sha256": [
+        "b7a902b63c2224a97b59ce897c5caec7fd784e3621c667e96e130637e22bb456"
+      ],
+      "responses": [
+        [
+          20,
+          0,
+          170,
+          238
+        ]
+      ],
+      "retained_descriptor_sha256": "07af3494e1734c5081b23bd34f26a9aa81e063f16035fe6c2e65f527a8b5d330",
+      "spi_command_substitutes": [
+        {
+          "bytes": 1,
+          "sha256": "8254c329a92850f6d539dd376f4816ee2764517da5e0235514af433164480d7a"
+        },
+        {
+          "bytes": 4,
+          "sha256": "e51245c8418dd3f3629da3001ddfed530dc7b5d85c74ecc4acf507e073938422"
+        }
+      ],
+      "spi_read_substitute_bytes": 4,
+      "staged_bytes_raw": 1028,
+      "staged_storage_sha256": "231fea121e0980653e238843a57c49c35b301e41fda22e1ba08b04e9c8aba049",
+      "state_flag": 0,
+      "state_mode": 2,
+      "stopped_boundary": null,
+      "synthetic_heap_used_after": 0,
+      "synthetic_parameter_page_preserved": true,
+      "ui_signal_substitutes": [
+        {
+          "signal_argument": 11,
+          "value_argument": 1
+        },
+        {
+          "signal_argument": 13,
+          "value_argument": 0
+        }
+      ]
+    },
+    {
+      "allocations": [
+        {
+          "bytes": 1024
+        },
+        {
+          "bytes": 1024
+        }
+      ],
+      "case": "name_route",
+      "catalog_preserved": true,
+      "crc_comparisons": [
+        {
+          "computed_crc_raw": 55297,
+          "matched": true,
+          "stored_crc_raw": 55297
+        }
+      ],
+      "first_entry_crc_comparison": {
+        "computed_crc_raw": 55297,
+        "matched": true,
+        "stored_crc_raw": 55297
+      },
+      "flash_service_substitutes": [],
+      "frees": [
+        {
+          "bytes_from_synthetic_header": 1028
+        },
+        {
+          "bytes_from_synthetic_header": 1028
+        }
+      ],
+      "header_live_after": false,
+      "input_frame_bytes": 16,
+      "input_frame_sha256": "2d7dc1c260b3fdc1d45bcab17e30456034ab8764fd6ac6f5729db3cd869cb862",
+      "input_point_raw": 20,
+      "instructions": 1108,
+      "last_block_raw": 1,
+      "mapping_matches": [],
+      "marker_substitutes": [],
+      "maximum_entry_instructions": 9723,
+      "name_fixture": "unknown",
+      "page_program_substitutes": [],
+      "pending_context_pointer_set": true,
+      "pending_counter_raw": 0,
+      "persistent_marker_delivery_substituted": false,
+      "physical_storage_verified": false,
+      "primask_restored": true,
+      "refresh_substitutes": 1,
+      "resource_application_verified": false,
+      "resource_header_read_substitute_bytes": 2048,
+      "response_frame_sha256": [],
+      "responses": [],
+      "retained_descriptor_sha256": "07af3494e1734c5081b23bd34f26a9aa81e063f16035fe6c2e65f527a8b5d330",
+      "spi_command_substitutes": [
+        {
+          "bytes": 1,
+          "sha256": "8254c329a92850f6d539dd376f4816ee2764517da5e0235514af433164480d7a"
+        },
+        {
+          "bytes": 4,
+          "sha256": "e51245c8418dd3f3629da3001ddfed530dc7b5d85c74ecc4acf507e073938422"
+        }
+      ],
+      "spi_read_substitute_bytes": 4,
+      "staged_bytes_raw": 1028,
+      "staged_storage_sha256": "b7465f410be07f979039054fedbc52874083ab5d7a4b151b173bfb261d808868",
+      "state_flag": 0,
+      "state_mode": 2,
+      "stopped_boundary": "persistent_flash_marker_excluded",
+      "synthetic_heap_used_after": 0,
+      "synthetic_parameter_page_preserved": true,
+      "ui_signal_substitutes": [
+        {
+          "signal_argument": 11,
+          "value_argument": 1
+        }
+      ]
+    },
+    {
+      "allocations": [
+        {
+          "bytes": 1024
+        },
+        {
+          "bytes": 1024
+        }
+      ],
+      "case": "name_route",
+      "catalog_preserved": true,
+      "completion_poll_after_substituted_marker": [
+        [
+          22,
+          0,
+          0,
+          50
+        ]
+      ],
+      "crc_comparisons": [
+        {
+          "computed_crc_raw": 55297,
+          "matched": true,
+          "stored_crc_raw": 55297
+        }
+      ],
+      "first_entry_crc_comparison": {
+        "computed_crc_raw": 55297,
+        "matched": true,
+        "stored_crc_raw": 55297
+      },
+      "flash_service_substitutes": [
+        {
+          "address_raw": 134238208,
+          "bytes": 20,
+          "operation": "erase"
+        },
+        {
+          "address_raw": 134238208,
+          "bytes": 20,
+          "data_sha256": "08347070af8db8bed3bdbf094db96d6cfb7d6b18fe48c479ebbe29472586bf7c",
+          "following_words_preserved": true,
+          "marker_word_raw": 2779096485,
+          "operation": "program"
+        }
+      ],
+      "frees": [
+        {
+          "bytes_from_synthetic_header": 1028
+        },
+        {
+          "bytes_from_synthetic_header": 1028
+        }
+      ],
+      "header_live_after": false,
+      "input_frame_bytes": 16,
+      "input_frame_sha256": "2d7dc1c260b3fdc1d45bcab17e30456034ab8764fd6ac6f5729db3cd869cb862",
+      "input_point_raw": 20,
+      "instructions": 1360,
+      "last_block_raw": 1,
+      "mapping_matches": [],
+      "marker_substitutes": [
+        {
+          "marker_argument_raw": 2779096485
+        }
+      ],
+      "maximum_entry_instructions": 9723,
+      "name_fixture": "unknown",
+      "page_program_substitutes": [],
+      "pending_context_pointer_set": true,
+      "pending_counter_raw": 0,
+      "persistent_marker_delivery_substituted": true,
+      "physical_storage_verified": false,
+      "primask_restored": true,
+      "refresh_substitutes": 1,
+      "resource_application_verified": false,
+      "resource_header_read_substitute_bytes": 2048,
+      "response_frame_sha256": [
+        "b7a902b63c2224a97b59ce897c5caec7fd784e3621c667e96e130637e22bb456"
+      ],
+      "responses": [
+        [
+          20,
+          0,
+          170,
+          238
+        ]
+      ],
+      "retained_descriptor_sha256": "07af3494e1734c5081b23bd34f26a9aa81e063f16035fe6c2e65f527a8b5d330",
+      "spi_command_substitutes": [
+        {
+          "bytes": 1,
+          "sha256": "8254c329a92850f6d539dd376f4816ee2764517da5e0235514af433164480d7a"
+        },
+        {
+          "bytes": 4,
+          "sha256": "e51245c8418dd3f3629da3001ddfed530dc7b5d85c74ecc4acf507e073938422"
+        }
+      ],
+      "spi_read_substitute_bytes": 4,
+      "staged_bytes_raw": 1028,
+      "staged_storage_sha256": "b7465f410be07f979039054fedbc52874083ab5d7a4b151b173bfb261d808868",
+      "state_flag": 0,
+      "state_mode": 2,
+      "stopped_boundary": null,
+      "synthetic_heap_used_after": 0,
+      "synthetic_parameter_page_preserved": true,
+      "ui_signal_substitutes": [
+        {
+          "signal_argument": 11,
+          "value_argument": 1
+        },
+        {
+          "signal_argument": 13,
+          "value_argument": 0
+        }
+      ]
+    },
+    {
+      "allocations": [
+        {
+          "bytes": 1024
+        },
+        {
+          "bytes": 1024
+        }
+      ],
+      "case": "name_route",
+      "catalog_preserved": true,
+      "crc_comparisons": [
+        {
+          "computed_crc_raw": 55297,
+          "matched": true,
+          "stored_crc_raw": 55297
+        }
+      ],
+      "first_entry_crc_comparison": {
+        "computed_crc_raw": 55297,
+        "matched": true,
+        "stored_crc_raw": 55297
+      },
+      "flash_service_substitutes": [],
+      "frees": [
+        {
+          "bytes_from_synthetic_header": 1028
+        },
+        {
+          "bytes_from_synthetic_header": 1028
+        }
+      ],
+      "header_live_after": false,
+      "input_frame_bytes": 16,
+      "input_frame_sha256": "2d7dc1c260b3fdc1d45bcab17e30456034ab8764fd6ac6f5729db3cd869cb862",
+      "input_point_raw": 20,
+      "instructions": 1213,
+      "last_block_raw": 1,
+      "mapping_matches": [],
+      "marker_substitutes": [],
+      "maximum_entry_instructions": 9723,
+      "name_fixture": "pps_lcd_extra",
+      "page_program_substitutes": [],
+      "pending_context_pointer_set": true,
+      "pending_counter_raw": 0,
+      "persistent_marker_delivery_substituted": false,
+      "physical_storage_verified": false,
+      "primask_restored": true,
+      "refresh_substitutes": 1,
+      "resource_application_verified": false,
+      "resource_header_read_substitute_bytes": 2048,
+      "response_frame_sha256": [],
+      "responses": [],
+      "retained_descriptor_sha256": "07af3494e1734c5081b23bd34f26a9aa81e063f16035fe6c2e65f527a8b5d330",
+      "spi_command_substitutes": [
+        {
+          "bytes": 1,
+          "sha256": "8254c329a92850f6d539dd376f4816ee2764517da5e0235514af433164480d7a"
+        },
+        {
+          "bytes": 4,
+          "sha256": "e51245c8418dd3f3629da3001ddfed530dc7b5d85c74ecc4acf507e073938422"
+        }
+      ],
+      "spi_read_substitute_bytes": 4,
+      "staged_bytes_raw": 1028,
+      "staged_storage_sha256": "85d70f4798cc7e65476394eb314a1c7d6b85274a4886486d3a52d4bdd1e98914",
+      "state_flag": 0,
+      "state_mode": 2,
+      "stopped_boundary": "persistent_flash_marker_excluded",
+      "synthetic_heap_used_after": 0,
+      "synthetic_parameter_page_preserved": true,
+      "ui_signal_substitutes": [
+        {
+          "signal_argument": 11,
+          "value_argument": 1
+        }
+      ]
+    },
+    {
+      "allocations": [
+        {
+          "bytes": 1024
+        },
+        {
+          "bytes": 1024
+        }
+      ],
+      "case": "name_route",
+      "catalog_preserved": true,
+      "completion_poll_after_substituted_marker": [
+        [
+          22,
+          0,
+          0,
+          50
+        ]
+      ],
+      "crc_comparisons": [
+        {
+          "computed_crc_raw": 55297,
+          "matched": true,
+          "stored_crc_raw": 55297
+        }
+      ],
+      "first_entry_crc_comparison": {
+        "computed_crc_raw": 55297,
+        "matched": true,
+        "stored_crc_raw": 55297
+      },
+      "flash_service_substitutes": [
+        {
+          "address_raw": 134238208,
+          "bytes": 20,
+          "operation": "erase"
+        },
+        {
+          "address_raw": 134238208,
+          "bytes": 20,
+          "data_sha256": "08347070af8db8bed3bdbf094db96d6cfb7d6b18fe48c479ebbe29472586bf7c",
+          "following_words_preserved": true,
+          "marker_word_raw": 2779096485,
+          "operation": "program"
+        }
+      ],
+      "frees": [
+        {
+          "bytes_from_synthetic_header": 1028
+        },
+        {
+          "bytes_from_synthetic_header": 1028
+        }
+      ],
+      "header_live_after": false,
+      "input_frame_bytes": 16,
+      "input_frame_sha256": "2d7dc1c260b3fdc1d45bcab17e30456034ab8764fd6ac6f5729db3cd869cb862",
+      "input_point_raw": 20,
+      "instructions": 1465,
+      "last_block_raw": 1,
+      "mapping_matches": [],
+      "marker_substitutes": [
+        {
+          "marker_argument_raw": 2779096485
+        }
+      ],
+      "maximum_entry_instructions": 9723,
+      "name_fixture": "pps_lcd_extra",
+      "page_program_substitutes": [],
+      "pending_context_pointer_set": true,
+      "pending_counter_raw": 0,
+      "persistent_marker_delivery_substituted": true,
+      "physical_storage_verified": false,
+      "primask_restored": true,
+      "refresh_substitutes": 1,
+      "resource_application_verified": false,
+      "resource_header_read_substitute_bytes": 2048,
+      "response_frame_sha256": [
+        "b7a902b63c2224a97b59ce897c5caec7fd784e3621c667e96e130637e22bb456"
+      ],
+      "responses": [
+        [
+          20,
+          0,
+          170,
+          238
+        ]
+      ],
+      "retained_descriptor_sha256": "07af3494e1734c5081b23bd34f26a9aa81e063f16035fe6c2e65f527a8b5d330",
+      "spi_command_substitutes": [
+        {
+          "bytes": 1,
+          "sha256": "8254c329a92850f6d539dd376f4816ee2764517da5e0235514af433164480d7a"
+        },
+        {
+          "bytes": 4,
+          "sha256": "e51245c8418dd3f3629da3001ddfed530dc7b5d85c74ecc4acf507e073938422"
+        }
+      ],
+      "spi_read_substitute_bytes": 4,
+      "staged_bytes_raw": 1028,
+      "staged_storage_sha256": "85d70f4798cc7e65476394eb314a1c7d6b85274a4886486d3a52d4bdd1e98914",
+      "state_flag": 0,
+      "state_mode": 2,
+      "stopped_boundary": null,
+      "synthetic_heap_used_after": 0,
+      "synthetic_parameter_page_preserved": true,
+      "ui_signal_substitutes": [
+        {
+          "signal_argument": 11,
+          "value_argument": 1
+        },
+        {
+          "signal_argument": 13,
+          "value_argument": 0
+        }
+      ]
+    },
+    {
+      "allocations": [
+        {
+          "bytes": 1024
+        },
+        {
+          "bytes": 1024
+        }
+      ],
+      "case": "name_route",
+      "catalog_preserved": true,
+      "crc_comparisons": [
+        {
+          "computed_crc_raw": 55297,
+          "matched": true,
+          "stored_crc_raw": 55297
+        }
+      ],
+      "first_entry_crc_comparison": {
+        "computed_crc_raw": 55297,
+        "matched": true,
+        "stored_crc_raw": 55297
+      },
+      "flash_service_substitutes": [],
+      "frees": [
+        {
+          "bytes_from_synthetic_header": 1028
+        },
+        {
+          "bytes_from_synthetic_header": 1028
+        }
+      ],
+      "header_live_after": false,
+      "input_frame_bytes": 16,
+      "input_frame_sha256": "2d7dc1c260b3fdc1d45bcab17e30456034ab8764fd6ac6f5729db3cd869cb862",
+      "input_point_raw": 20,
+      "instructions": 1108,
+      "last_block_raw": 1,
+      "mapping_matches": [],
+      "marker_substitutes": [],
+      "maximum_entry_instructions": 9723,
+      "name_fixture": "PPS_LCD",
+      "page_program_substitutes": [],
+      "pending_context_pointer_set": true,
+      "pending_counter_raw": 0,
+      "persistent_marker_delivery_substituted": false,
+      "physical_storage_verified": false,
+      "primask_restored": true,
+      "refresh_substitutes": 1,
+      "resource_application_verified": false,
+      "resource_header_read_substitute_bytes": 2048,
+      "response_frame_sha256": [],
+      "responses": [],
+      "retained_descriptor_sha256": "07af3494e1734c5081b23bd34f26a9aa81e063f16035fe6c2e65f527a8b5d330",
+      "spi_command_substitutes": [
+        {
+          "bytes": 1,
+          "sha256": "8254c329a92850f6d539dd376f4816ee2764517da5e0235514af433164480d7a"
+        },
+        {
+          "bytes": 4,
+          "sha256": "e51245c8418dd3f3629da3001ddfed530dc7b5d85c74ecc4acf507e073938422"
+        }
+      ],
+      "spi_read_substitute_bytes": 4,
+      "staged_bytes_raw": 1028,
+      "staged_storage_sha256": "30006f169251a7cd0495981293aa6f6a42d2029a1fb7f1f2f2117cf5ea1738b4",
+      "state_flag": 0,
+      "state_mode": 2,
+      "stopped_boundary": "persistent_flash_marker_excluded",
+      "synthetic_heap_used_after": 0,
+      "synthetic_parameter_page_preserved": true,
+      "ui_signal_substitutes": [
+        {
+          "signal_argument": 11,
+          "value_argument": 1
+        }
+      ]
+    },
+    {
+      "allocations": [
+        {
+          "bytes": 1024
+        },
+        {
+          "bytes": 1024
+        }
+      ],
+      "case": "name_route",
+      "catalog_preserved": true,
+      "completion_poll_after_substituted_marker": [
+        [
+          22,
+          0,
+          0,
+          50
+        ]
+      ],
+      "crc_comparisons": [
+        {
+          "computed_crc_raw": 55297,
+          "matched": true,
+          "stored_crc_raw": 55297
+        }
+      ],
+      "first_entry_crc_comparison": {
+        "computed_crc_raw": 55297,
+        "matched": true,
+        "stored_crc_raw": 55297
+      },
+      "flash_service_substitutes": [
+        {
+          "address_raw": 134238208,
+          "bytes": 20,
+          "operation": "erase"
+        },
+        {
+          "address_raw": 134238208,
+          "bytes": 20,
+          "data_sha256": "08347070af8db8bed3bdbf094db96d6cfb7d6b18fe48c479ebbe29472586bf7c",
+          "following_words_preserved": true,
+          "marker_word_raw": 2779096485,
+          "operation": "program"
+        }
+      ],
+      "frees": [
+        {
+          "bytes_from_synthetic_header": 1028
+        },
+        {
+          "bytes_from_synthetic_header": 1028
+        }
+      ],
+      "header_live_after": false,
+      "input_frame_bytes": 16,
+      "input_frame_sha256": "2d7dc1c260b3fdc1d45bcab17e30456034ab8764fd6ac6f5729db3cd869cb862",
+      "input_point_raw": 20,
+      "instructions": 1360,
+      "last_block_raw": 1,
+      "mapping_matches": [],
+      "marker_substitutes": [
+        {
+          "marker_argument_raw": 2779096485
+        }
+      ],
+      "maximum_entry_instructions": 9723,
+      "name_fixture": "PPS_LCD",
+      "page_program_substitutes": [],
+      "pending_context_pointer_set": true,
+      "pending_counter_raw": 0,
+      "persistent_marker_delivery_substituted": true,
+      "physical_storage_verified": false,
+      "primask_restored": true,
+      "refresh_substitutes": 1,
+      "resource_application_verified": false,
+      "resource_header_read_substitute_bytes": 2048,
+      "response_frame_sha256": [
+        "b7a902b63c2224a97b59ce897c5caec7fd784e3621c667e96e130637e22bb456"
+      ],
+      "responses": [
+        [
+          20,
+          0,
+          170,
+          238
+        ]
+      ],
+      "retained_descriptor_sha256": "07af3494e1734c5081b23bd34f26a9aa81e063f16035fe6c2e65f527a8b5d330",
+      "spi_command_substitutes": [
+        {
+          "bytes": 1,
+          "sha256": "8254c329a92850f6d539dd376f4816ee2764517da5e0235514af433164480d7a"
+        },
+        {
+          "bytes": 4,
+          "sha256": "e51245c8418dd3f3629da3001ddfed530dc7b5d85c74ecc4acf507e073938422"
+        }
+      ],
+      "spi_read_substitute_bytes": 4,
+      "staged_bytes_raw": 1028,
+      "staged_storage_sha256": "30006f169251a7cd0495981293aa6f6a42d2029a1fb7f1f2f2117cf5ea1738b4",
+      "state_flag": 0,
+      "state_mode": 2,
+      "stopped_boundary": null,
+      "synthetic_heap_used_after": 0,
+      "synthetic_parameter_page_preserved": true,
+      "ui_signal_substitutes": [
+        {
+          "signal_argument": 11,
+          "value_argument": 1
+        },
+        {
+          "signal_argument": 13,
+          "value_argument": 0
+        }
+      ]
+    },
+    {
+      "allocations": [
+        {
+          "bytes": 1024
+        }
+      ],
+      "case": "post_crc_name_size_boundary",
+      "catalog_preserved": true,
+      "crc_comparisons": [
+        {
+          "computed_crc_raw": 55297,
+          "matched": true,
+          "stored_crc_raw": 55297
+        }
+      ],
+      "flash_service_substitutes": [],
+      "frees": [
+        {
+          "bytes_from_synthetic_header": 1028
+        }
+      ],
+      "header_live_after": false,
+      "host_modified_post_crc_length": 237568,
+      "instructions": 178,
+      "large_payload_crc_verified": false,
+      "mapping_matches": [],
+      "marker_substitutes": [],
+      "maximum_entry_instructions": 9723,
+      "name_fixture": "pps_lcd",
+      "pending_context_pointer_set": false,
+      "pending_counter_raw": 3000,
+      "refresh_substitutes": 0,
+      "resource_application_verified": false,
+      "responses": [],
+      "state_flag": 0,
+      "state_mode": 2,
+      "stopped_boundary": "persistent_flash_marker_excluded",
+      "synthetic_heap_used_after": 0,
+      "synthetic_parameter_page_preserved": true,
+      "ui_signal_substitutes": [
+        {
+          "signal_argument": 1,
+          "value_argument": 1
+        }
+      ]
+    },
+    {
+      "allocations": [
+        {
+          "bytes": 1024
+        }
+      ],
+      "case": "post_crc_name_size_boundary",
+      "catalog_preserved": true,
+      "crc_comparisons": [
+        {
+          "computed_crc_raw": 55297,
+          "matched": true,
+          "stored_crc_raw": 55297
+        }
+      ],
+      "flash_service_substitutes": [],
+      "frees": [
+        {
+          "bytes_from_synthetic_header": 1028
+        }
+      ],
+      "header_live_after": false,
+      "host_modified_post_crc_length": 237569,
+      "instructions": 333,
+      "large_payload_crc_verified": false,
+      "mapping_matches": [],
+      "marker_substitutes": [],
+      "maximum_entry_instructions": 9723,
+      "name_fixture": "pps_lcd",
+      "pending_context_pointer_set": false,
+      "pending_counter_raw": 0,
+      "refresh_substitutes": 0,
+      "resource_application_verified": false,
+      "responses": [
+        [
+          20,
+          0,
+          3,
+          0
+        ]
+      ],
+      "state_flag": 1,
+      "state_mode": 0,
+      "stopped_boundary": null,
+      "synthetic_heap_used_after": 0,
+      "synthetic_parameter_page_preserved": true,
+      "ui_signal_substitutes": [
+        {
+          "signal_argument": 13,
+          "value_argument": 0
+        }
+      ]
+    },
+    {
+      "allocations": [
+        {
+          "bytes": 1024
+        }
+      ],
+      "case": "post_crc_name_size_boundary",
+      "catalog_preserved": true,
+      "crc_comparisons": [
+        {
+          "computed_crc_raw": 55297,
+          "matched": true,
+          "stored_crc_raw": 55297
+        }
+      ],
+      "flash_service_substitutes": [],
+      "frees": [
+        {
+          "bytes_from_synthetic_header": 1028
+        }
+      ],
+      "header_live_after": false,
+      "host_modified_post_crc_length": 786432,
+      "instructions": 271,
+      "large_payload_crc_verified": false,
+      "mapping_matches": [],
+      "marker_substitutes": [],
+      "maximum_entry_instructions": 9723,
+      "name_fixture": "pps_lcd_res",
+      "pending_context_pointer_set": false,
+      "pending_counter_raw": 3000,
+      "refresh_substitutes": 0,
+      "resource_application_verified": false,
+      "responses": [],
+      "state_flag": 0,
+      "state_mode": 2,
+      "stopped_boundary": "persistent_flash_marker_excluded",
+      "synthetic_heap_used_after": 0,
+      "synthetic_parameter_page_preserved": true,
+      "ui_signal_substitutes": [
+        {
+          "signal_argument": 1,
+          "value_argument": 1
+        }
+      ]
+    },
+    {
+      "allocations": [
+        {
+          "bytes": 1024
+        }
+      ],
+      "case": "post_crc_name_size_boundary",
+      "catalog_preserved": true,
+      "crc_comparisons": [
+        {
+          "computed_crc_raw": 55297,
+          "matched": true,
+          "stored_crc_raw": 55297
+        }
+      ],
+      "flash_service_substitutes": [],
+      "frees": [
+        {
+          "bytes_from_synthetic_header": 1028
+        }
+      ],
+      "header_live_after": false,
+      "host_modified_post_crc_length": 786433,
+      "instructions": 426,
+      "large_payload_crc_verified": false,
+      "mapping_matches": [],
+      "marker_substitutes": [],
+      "maximum_entry_instructions": 9723,
+      "name_fixture": "pps_lcd_res",
+      "pending_context_pointer_set": false,
+      "pending_counter_raw": 0,
+      "refresh_substitutes": 0,
+      "resource_application_verified": false,
+      "responses": [
+        [
+          20,
+          0,
+          3,
+          0
+        ]
+      ],
+      "state_flag": 1,
+      "state_mode": 0,
+      "stopped_boundary": null,
+      "synthetic_heap_used_after": 0,
+      "synthetic_parameter_page_preserved": true,
+      "ui_signal_substitutes": [
+        {
+          "signal_argument": 13,
+          "value_argument": 0
+        }
+      ]
+    },
+    {
+      "allocations": [
+        {
+          "bytes": 1024
+        },
+        {
+          "bytes": 1024
+        }
+      ],
+      "case": "post_crc_name_size_boundary",
+      "catalog_preserved": true,
+      "crc_comparisons": [
+        {
+          "computed_crc_raw": 55297,
+          "matched": true,
+          "stored_crc_raw": 55297
+        }
+      ],
+      "flash_service_substitutes": [],
+      "frees": [
+        {
+          "bytes_from_synthetic_header": 1028
+        },
+        {
+          "bytes_from_synthetic_header": 1028
+        }
+      ],
+      "header_live_after": false,
+      "host_modified_post_crc_length": 155644,
+      "instructions": 295,
+      "large_payload_crc_verified": false,
+      "mapping_matches": [
+        {
+          "catalog_index": 1
+        }
+      ],
+      "marker_substitutes": [],
+      "maximum_entry_instructions": 9723,
+      "name_fixture": "ss_hour",
+      "pending_context_pointer_set": true,
+      "pending_counter_raw": 0,
+      "refresh_substitutes": 1,
+      "resource_application_verified": false,
+      "responses": [],
+      "state_flag": 0,
+      "state_mode": 2,
+      "stopped_boundary": "persistent_flash_marker_excluded",
+      "synthetic_heap_used_after": 0,
+      "synthetic_parameter_page_preserved": true,
+      "ui_signal_substitutes": [
+        {
+          "signal_argument": 11,
+          "value_argument": 1
+        }
+      ]
+    },
+    {
+      "allocations": [
+        {
+          "bytes": 1024
+        },
+        {
+          "bytes": 1024
+        }
+      ],
+      "case": "post_crc_name_size_boundary",
+      "catalog_preserved": true,
+      "crc_comparisons": [
+        {
+          "computed_crc_raw": 55297,
+          "matched": true,
+          "stored_crc_raw": 55297
+        }
+      ],
+      "flash_service_substitutes": [],
+      "frees": [
+        {
+          "bytes_from_synthetic_header": 1028
+        },
+        {
+          "bytes_from_synthetic_header": 1028
+        }
+      ],
+      "header_live_after": false,
+      "host_modified_post_crc_length": 155645,
+      "instructions": 532,
+      "large_payload_crc_verified": false,
+      "mapping_matches": [
+        {
+          "catalog_index": 1
+        }
+      ],
+      "marker_substitutes": [],
+      "maximum_entry_instructions": 9723,
+      "name_fixture": "ss_hour",
+      "pending_context_pointer_set": false,
+      "pending_counter_raw": 0,
+      "refresh_substitutes": 1,
+      "resource_application_verified": false,
+      "responses": [
+        [
+          20,
+          0,
+          8,
+          0
+        ]
+      ],
+      "state_flag": 1,
+      "state_mode": 0,
+      "stopped_boundary": null,
+      "synthetic_heap_used_after": 0,
+      "synthetic_parameter_page_preserved": true,
+      "ui_signal_substitutes": [
+        {
+          "signal_argument": 13,
+          "value_argument": 0
+        }
+      ]
+    },
+    {
+      "allocations": [
+        {
+          "bytes": 1024
+        },
+        {
+          "bytes": 1024
+        }
+      ],
+      "case": "descriptor_iteration",
+      "catalog_preserved": true,
+      "crc_comparisons": [],
+      "entries_fixture": 0,
+      "first_entry_crc_comparison": null,
+      "flash_service_substitutes": [],
+      "frees": [
+        {
+          "bytes_from_synthetic_header": 1028
+        },
+        {
+          "bytes_from_synthetic_header": 1028
+        }
+      ],
+      "header_live_after": false,
+      "input_frame_bytes": 16,
+      "input_frame_sha256": "2d7dc1c260b3fdc1d45bcab17e30456034ab8764fd6ac6f5729db3cd869cb862",
+      "input_point_raw": 20,
+      "instructions": 383,
+      "last_block_raw": 0,
+      "mapping_matches": [],
+      "marker_substitutes": [],
+      "maximum_entry_instructions": 9723,
+      "names_fixture": [],
+      "page_program_substitutes": [],
+      "pending_context_pointer_set": true,
+      "pending_counter_raw": 0,
+      "physical_storage_verified": false,
+      "primask_restored": true,
+      "refresh_substitutes": 1,
+      "resource_application_verified": false,
+      "resource_header_read_substitute_bytes": 2048,
+      "response_frame_sha256": [],
+      "responses": [],
+      "retained_descriptor_sha256": "95a66c8108f14acbb8740fd154087efd6230f204ceec3dcf198c3ac07ac31e7f",
+      "spi_command_substitutes": [],
+      "spi_read_substitute_bytes": 0,
+      "staged_bytes_raw": 1024,
+      "staged_storage_sha256": "f47a8ec3e9aff2318d896942282ad4fe37d6391c82914f54a5da8a37de1300c6",
+      "state_flag": 0,
+      "state_mode": 2,
+      "stopped_boundary": "persistent_flash_marker_excluded",
+      "synthetic_heap_used_after": 0,
+      "synthetic_parameter_page_preserved": true,
+      "ui_signal_substitutes": [
+        {
+          "signal_argument": 11,
+          "value_argument": 1
+        }
+      ]
+    },
+    {
+      "allocations": [
+        {
+          "bytes": 1024
+        }
+      ],
+      "case": "descriptor_iteration",
+      "catalog_preserved": true,
+      "crc_comparisons": [
+        {
+          "computed_crc_raw": 25279,
+          "matched": true,
+          "stored_crc_raw": 25279
+        },
+        {
+          "computed_crc_raw": 41598,
+          "matched": true,
+          "stored_crc_raw": 41598
+        }
+      ],
+      "entries_fixture": 2,
+      "first_entry_crc_comparison": {
+        "computed_crc_raw": 41598,
+        "matched": true,
+        "stored_crc_raw": 41598
+      },
+      "flash_service_substitutes": [],
+      "frees": [
+        {
+          "bytes_from_synthetic_header": 1028
+        }
+      ],
+      "header_live_after": false,
+      "input_frame_bytes": 16,
+      "input_frame_sha256": "2d7dc1c260b3fdc1d45bcab17e30456034ab8764fd6ac6f5729db3cd869cb862",
+      "input_point_raw": 20,
+      "instructions": 962,
+      "last_block_raw": 1,
+      "mapping_matches": [],
+      "marker_substitutes": [],
+      "maximum_entry_instructions": 9723,
+      "names_fixture": [
+        "pps_lcd",
+        "pps_lcd_res"
+      ],
+      "page_program_substitutes": [],
+      "pending_context_pointer_set": false,
+      "pending_counter_raw": 3000,
+      "physical_storage_verified": false,
+      "primask_restored": true,
+      "refresh_substitutes": 0,
+      "resource_application_verified": false,
+      "resource_header_read_substitute_bytes": 1024,
+      "response_frame_sha256": [],
+      "responses": [],
+      "retained_descriptor_sha256": "07af3494e1734c5081b23bd34f26a9aa81e063f16035fe6c2e65f527a8b5d330",
+      "spi_command_substitutes": [
+        {
+          "bytes": 1,
+          "sha256": "8254c329a92850f6d539dd376f4816ee2764517da5e0235514af433164480d7a"
+        },
+        {
+          "bytes": 4,
+          "sha256": "e51245c8418dd3f3629da3001ddfed530dc7b5d85c74ecc4acf507e073938422"
+        },
+        {
+          "bytes": 1,
+          "sha256": "8254c329a92850f6d539dd376f4816ee2764517da5e0235514af433164480d7a"
+        },
+        {
+          "bytes": 4,
+          "sha256": "e51245c8418dd3f3629da3001ddfed530dc7b5d85c74ecc4acf507e073938422"
+        }
+      ],
+      "spi_read_substitute_bytes": 2,
+      "staged_bytes_raw": 1026,
+      "staged_storage_sha256": "d289d73a8e6ac04ef38081895bb892293151c3d57ae42af51d53cfc7d0a640b8",
+      "state_flag": 0,
+      "state_mode": 2,
+      "stopped_boundary": "persistent_flash_marker_excluded",
+      "synthetic_heap_used_after": 0,
+      "synthetic_parameter_page_preserved": true,
+      "ui_signal_substitutes": [
+        {
+          "signal_argument": 1,
+          "value_argument": 1
+        }
+      ]
+    },
+    {
+      "allocations": [
+        {
+          "bytes": 1024
+        }
+      ],
+      "case": "descriptor_iteration",
+      "catalog_preserved": true,
+      "crc_comparisons": [
+        {
+          "computed_crc_raw": 43134,
+          "matched": true,
+          "stored_crc_raw": 43134
+        },
+        {
+          "computed_crc_raw": 43326,
+          "matched": true,
+          "stored_crc_raw": 43326
+        }
+      ],
+      "entries_fixture": 2,
+      "first_entry_crc_comparison": {
+        "computed_crc_raw": 43326,
+        "matched": true,
+        "stored_crc_raw": 43326
+      },
+      "flash_service_substitutes": [],
+      "frees": [
+        {
+          "bytes_from_synthetic_header": 1028
+        }
+      ],
+      "header_live_after": false,
+      "input_frame_bytes": 16,
+      "input_frame_sha256": "2d7dc1c260b3fdc1d45bcab17e30456034ab8764fd6ac6f5729db3cd869cb862",
+      "input_point_raw": 20,
+      "instructions": 830,
+      "last_block_raw": 1,
+      "mapping_matches": [],
+      "marker_substitutes": [],
+      "maximum_entry_instructions": 9723,
+      "names_fixture": [
+        "unknown",
+        "pps_lcd"
+      ],
+      "page_program_substitutes": [],
+      "pending_context_pointer_set": false,
+      "pending_counter_raw": 3000,
+      "physical_storage_verified": false,
+      "primask_restored": true,
+      "refresh_substitutes": 0,
+      "resource_application_verified": false,
+      "resource_header_read_substitute_bytes": 1024,
+      "response_frame_sha256": [],
+      "responses": [],
+      "retained_descriptor_sha256": "07af3494e1734c5081b23bd34f26a9aa81e063f16035fe6c2e65f527a8b5d330",
+      "spi_command_substitutes": [
+        {
+          "bytes": 1,
+          "sha256": "8254c329a92850f6d539dd376f4816ee2764517da5e0235514af433164480d7a"
+        },
+        {
+          "bytes": 4,
+          "sha256": "e51245c8418dd3f3629da3001ddfed530dc7b5d85c74ecc4acf507e073938422"
+        },
+        {
+          "bytes": 1,
+          "sha256": "8254c329a92850f6d539dd376f4816ee2764517da5e0235514af433164480d7a"
+        },
+        {
+          "bytes": 4,
+          "sha256": "e51245c8418dd3f3629da3001ddfed530dc7b5d85c74ecc4acf507e073938422"
+        }
+      ],
+      "spi_read_substitute_bytes": 2,
+      "staged_bytes_raw": 1026,
+      "staged_storage_sha256": "5a0eea5261dc49fead8aaa6d56b067140ce6bfb738bb23fee4bfeb49ebf3e6fd",
+      "state_flag": 0,
+      "state_mode": 2,
+      "stopped_boundary": "persistent_flash_marker_excluded",
+      "synthetic_heap_used_after": 0,
+      "synthetic_parameter_page_preserved": true,
+      "ui_signal_substitutes": [
+        {
+          "signal_argument": 1,
+          "value_argument": 1
+        }
+      ]
+    },
+    {
+      "allocations": [
+        {
+          "bytes": 1024
+        }
+      ],
+      "case": "descriptor_iteration",
+      "catalog_preserved": true,
+      "crc_comparisons": [
+        {
+          "computed_crc_raw": 43134,
+          "matched": true,
+          "stored_crc_raw": 43134
+        },
+        {
+          "computed_crc_raw": 43326,
+          "matched": false,
+          "stored_crc_raw": 43327
+        }
+      ],
+      "entries_fixture": 2,
+      "first_entry_crc_comparison": {
+        "computed_crc_raw": 43326,
+        "matched": false,
+        "stored_crc_raw": 43327
+      },
+      "flash_service_substitutes": [],
+      "frees": [
+        {
+          "bytes_from_synthetic_header": 1028
+        }
+      ],
+      "header_live_after": false,
+      "input_frame_bytes": 16,
+      "input_frame_sha256": "2d7dc1c260b3fdc1d45bcab17e30456034ab8764fd6ac6f5729db3cd869cb862",
+      "input_point_raw": 20,
+      "instructions": 936,
+      "last_block_raw": 1,
+      "mapping_matches": [],
+      "marker_substitutes": [],
+      "maximum_entry_instructions": 9723,
+      "names_fixture": [
+        "pps_lcd",
+        "unknown"
+      ],
+      "page_program_substitutes": [],
+      "pending_context_pointer_set": false,
+      "pending_counter_raw": 0,
+      "physical_storage_verified": false,
+      "primask_restored": true,
+      "refresh_substitutes": 0,
+      "resource_application_verified": false,
+      "resource_header_read_substitute_bytes": 1024,
+      "response_frame_sha256": [
+        "8ccb2e936397a9bd84a0341044ac5ff402fc7df52eea7227b98d40d0482728c3"
+      ],
+      "responses": [
+        [
+          20,
+          0,
+          5,
+          0
+        ]
+      ],
+      "retained_descriptor_sha256": "07af3494e1734c5081b23bd34f26a9aa81e063f16035fe6c2e65f527a8b5d330",
+      "spi_command_substitutes": [
+        {
+          "bytes": 1,
+          "sha256": "8254c329a92850f6d539dd376f4816ee2764517da5e0235514af433164480d7a"
+        },
+        {
+          "bytes": 4,
+          "sha256": "e51245c8418dd3f3629da3001ddfed530dc7b5d85c74ecc4acf507e073938422"
+        },
+        {
+          "bytes": 1,
+          "sha256": "8254c329a92850f6d539dd376f4816ee2764517da5e0235514af433164480d7a"
+        },
+        {
+          "bytes": 4,
+          "sha256": "e51245c8418dd3f3629da3001ddfed530dc7b5d85c74ecc4acf507e073938422"
+        }
+      ],
+      "spi_read_substitute_bytes": 2,
+      "staged_bytes_raw": 1026,
+      "staged_storage_sha256": "8559594ba23d2deb4947d27a613460db430187d16a85a4d9cd2e7b6f7a2f75a0",
+      "state_flag": 1,
+      "state_mode": 0,
+      "stopped_boundary": null,
+      "synthetic_heap_used_after": 0,
+      "synthetic_parameter_page_preserved": true,
+      "ui_signal_substitutes": [
+        {
+          "signal_argument": 13,
+          "value_argument": 0
+        }
+      ]
+    },
+    {
+      "allocations": [
+        {
+          "bytes": 1024
+        },
+        {
+          "bytes": 1024
+        }
+      ],
+      "case": "mapped_payload_count",
+      "catalog_preserved": true,
+      "count_fixture": 0,
+      "crc_comparisons": [
+        {
+          "computed_crc_raw": 9216,
+          "matched": true,
+          "stored_crc_raw": 9216
+        }
+      ],
+      "first_entry_crc_comparison": {
+        "computed_crc_raw": 9216,
+        "matched": true,
+        "stored_crc_raw": 9216
+      },
+      "flash_service_substitutes": [],
+      "frees": [
+        {
+          "bytes_from_synthetic_header": 1028
+        },
+        {
+          "bytes_from_synthetic_header": 1028
+        }
+      ],
+      "header_live_after": false,
+      "input_frame_bytes": 16,
+      "input_frame_sha256": "2d7dc1c260b3fdc1d45bcab17e30456034ab8764fd6ac6f5729db3cd869cb862",
+      "input_point_raw": 20,
+      "instructions": 1175,
+      "last_block_raw": 1,
+      "mapping_matches": [
+        {
+          "catalog_index": 1
+        }
+      ],
+      "marker_substitutes": [],
+      "maximum_entry_instructions": 9723,
+      "page_program_substitutes": [],
+      "pending_context_pointer_set": false,
+      "pending_counter_raw": 0,
+      "physical_storage_verified": false,
+      "primask_restored": true,
+      "refresh_substitutes": 1,
+      "resource_application_verified": false,
+      "resource_header_read_substitute_bytes": 2048,
+      "response_frame_sha256": [
+        "fc3b4de8c696e79c879618bf40b5dd76456df69b4569578f91c576fb2accf7d5"
+      ],
+      "responses": [
+        [
+          20,
+          0,
+          8,
+          0
+        ]
+      ],
+      "retained_descriptor_sha256": "07af3494e1734c5081b23bd34f26a9aa81e063f16035fe6c2e65f527a8b5d330",
+      "spi_command_substitutes": [
+        {
+          "bytes": 1,
+          "sha256": "8254c329a92850f6d539dd376f4816ee2764517da5e0235514af433164480d7a"
+        },
+        {
+          "bytes": 4,
+          "sha256": "e51245c8418dd3f3629da3001ddfed530dc7b5d85c74ecc4acf507e073938422"
+        }
+      ],
+      "spi_read_substitute_bytes": 4,
+      "staged_bytes_raw": 1028,
+      "staged_storage_sha256": "1f0e37f32ee2d2820d88861b9205a2a24410c0f4974a8d53954d7539fba22d4e",
+      "state_flag": 1,
+      "state_mode": 0,
+      "stopped_boundary": null,
+      "synthetic_heap_used_after": 0,
+      "synthetic_parameter_page_preserved": true,
+      "ui_signal_substitutes": [
+        {
+          "signal_argument": 13,
+          "value_argument": 0
+        }
+      ]
+    },
+    {
+      "allocations": [
+        {
+          "bytes": 1024
+        },
+        {
+          "bytes": 1024
+        }
+      ],
+      "case": "mapped_payload_count",
+      "catalog_preserved": true,
+      "count_fixture": 1,
+      "crc_comparisons": [
+        {
+          "computed_crc_raw": 55297,
+          "matched": true,
+          "stored_crc_raw": 55297
+        }
+      ],
+      "first_entry_crc_comparison": {
+        "computed_crc_raw": 55297,
+        "matched": true,
+        "stored_crc_raw": 55297
+      },
+      "flash_service_substitutes": [],
+      "frees": [
+        {
+          "bytes_from_synthetic_header": 1028
+        },
+        {
+          "bytes_from_synthetic_header": 1028
+        }
+      ],
+      "header_live_after": false,
+      "input_frame_bytes": 16,
+      "input_frame_sha256": "2d7dc1c260b3fdc1d45bcab17e30456034ab8764fd6ac6f5729db3cd869cb862",
+      "input_point_raw": 20,
+      "instructions": 955,
+      "last_block_raw": 1,
+      "mapping_matches": [
+        {
+          "catalog_index": 1
+        }
+      ],
+      "marker_substitutes": [],
+      "maximum_entry_instructions": 9723,
+      "page_program_substitutes": [],
+      "pending_context_pointer_set": true,
+      "pending_counter_raw": 0,
+      "physical_storage_verified": false,
+      "primask_restored": true,
+      "refresh_substitutes": 1,
+      "resource_application_verified": false,
+      "resource_header_read_substitute_bytes": 2048,
+      "response_frame_sha256": [],
+      "responses": [],
+      "retained_descriptor_sha256": "07af3494e1734c5081b23bd34f26a9aa81e063f16035fe6c2e65f527a8b5d330",
+      "spi_command_substitutes": [
+        {
+          "bytes": 1,
+          "sha256": "8254c329a92850f6d539dd376f4816ee2764517da5e0235514af433164480d7a"
+        },
+        {
+          "bytes": 4,
+          "sha256": "e51245c8418dd3f3629da3001ddfed530dc7b5d85c74ecc4acf507e073938422"
+        }
+      ],
+      "spi_read_substitute_bytes": 4,
+      "staged_bytes_raw": 1028,
+      "staged_storage_sha256": "231fea121e0980653e238843a57c49c35b301e41fda22e1ba08b04e9c8aba049",
+      "state_flag": 0,
+      "state_mode": 2,
+      "stopped_boundary": "persistent_flash_marker_excluded",
+      "synthetic_heap_used_after": 0,
+      "synthetic_parameter_page_preserved": true,
+      "ui_signal_substitutes": [
+        {
+          "signal_argument": 11,
+          "value_argument": 1
+        }
+      ]
+    },
+    {
+      "allocations": [
+        {
+          "bytes": 1024
+        },
+        {
+          "bytes": 1024
+        }
+      ],
+      "case": "mapped_payload_count",
+      "catalog_preserved": true,
+      "count_fixture": 300,
+      "crc_comparisons": [
+        {
+          "computed_crc_raw": 29785,
+          "matched": true,
+          "stored_crc_raw": 29785
+        }
+      ],
+      "first_entry_crc_comparison": {
+        "computed_crc_raw": 29785,
+        "matched": true,
+        "stored_crc_raw": 29785
+      },
+      "flash_service_substitutes": [],
+      "frees": [
+        {
+          "bytes_from_synthetic_header": 1028
+        },
+        {
+          "bytes_from_synthetic_header": 1028
+        }
+      ],
+      "header_live_after": false,
+      "input_frame_bytes": 16,
+      "input_frame_sha256": "2d7dc1c260b3fdc1d45bcab17e30456034ab8764fd6ac6f5729db3cd869cb862",
+      "input_point_raw": 20,
+      "instructions": 947,
+      "last_block_raw": 1,
+      "mapping_matches": [
+        {
+          "catalog_index": 1
+        }
+      ],
+      "marker_substitutes": [],
+      "maximum_entry_instructions": 9723,
+      "page_program_substitutes": [],
+      "pending_context_pointer_set": true,
+      "pending_counter_raw": 0,
+      "physical_storage_verified": false,
+      "primask_restored": true,
+      "refresh_substitutes": 1,
+      "resource_application_verified": false,
+      "resource_header_read_substitute_bytes": 2048,
+      "response_frame_sha256": [],
+      "responses": [],
+      "retained_descriptor_sha256": "07af3494e1734c5081b23bd34f26a9aa81e063f16035fe6c2e65f527a8b5d330",
+      "spi_command_substitutes": [
+        {
+          "bytes": 1,
+          "sha256": "8254c329a92850f6d539dd376f4816ee2764517da5e0235514af433164480d7a"
+        },
+        {
+          "bytes": 4,
+          "sha256": "e51245c8418dd3f3629da3001ddfed530dc7b5d85c74ecc4acf507e073938422"
+        }
+      ],
+      "spi_read_substitute_bytes": 4,
+      "staged_bytes_raw": 1028,
+      "staged_storage_sha256": "4e2963a85e34e634604182f70090fe929f607cbd8871e26a8b92a8b176fc57e0",
+      "state_flag": 0,
+      "state_mode": 2,
+      "stopped_boundary": "persistent_flash_marker_excluded",
+      "synthetic_heap_used_after": 0,
+      "synthetic_parameter_page_preserved": true,
+      "ui_signal_substitutes": [
+        {
+          "signal_argument": 11,
+          "value_argument": 1
+        }
+      ]
+    },
+    {
+      "allocations": [
+        {
+          "bytes": 1024
+        },
+        {
+          "bytes": 1024
+        }
+      ],
+      "case": "mapped_payload_count",
+      "catalog_preserved": true,
+      "count_fixture": 301,
+      "crc_comparisons": [
+        {
+          "computed_crc_raw": 34904,
+          "matched": true,
+          "stored_crc_raw": 34904
+        }
+      ],
+      "first_entry_crc_comparison": {
+        "computed_crc_raw": 34904,
+        "matched": true,
+        "stored_crc_raw": 34904
+      },
+      "flash_service_substitutes": [],
+      "frees": [
+        {
+          "bytes_from_synthetic_header": 1028
+        },
+        {
+          "bytes_from_synthetic_header": 1028
+        }
+      ],
+      "header_live_after": false,
+      "input_frame_bytes": 16,
+      "input_frame_sha256": "2d7dc1c260b3fdc1d45bcab17e30456034ab8764fd6ac6f5729db3cd869cb862",
+      "input_point_raw": 20,
+      "instructions": 1183,
+      "last_block_raw": 1,
+      "mapping_matches": [
+        {
+          "catalog_index": 1
+        }
+      ],
+      "marker_substitutes": [],
+      "maximum_entry_instructions": 9723,
+      "page_program_substitutes": [],
+      "pending_context_pointer_set": false,
+      "pending_counter_raw": 0,
+      "physical_storage_verified": false,
+      "primask_restored": true,
+      "refresh_substitutes": 1,
+      "resource_application_verified": false,
+      "resource_header_read_substitute_bytes": 2048,
+      "response_frame_sha256": [
+        "fc3b4de8c696e79c879618bf40b5dd76456df69b4569578f91c576fb2accf7d5"
+      ],
+      "responses": [
+        [
+          20,
+          0,
+          8,
+          0
+        ]
+      ],
+      "retained_descriptor_sha256": "07af3494e1734c5081b23bd34f26a9aa81e063f16035fe6c2e65f527a8b5d330",
+      "spi_command_substitutes": [
+        {
+          "bytes": 1,
+          "sha256": "8254c329a92850f6d539dd376f4816ee2764517da5e0235514af433164480d7a"
+        },
+        {
+          "bytes": 4,
+          "sha256": "e51245c8418dd3f3629da3001ddfed530dc7b5d85c74ecc4acf507e073938422"
+        }
+      ],
+      "spi_read_substitute_bytes": 4,
+      "staged_bytes_raw": 1028,
+      "staged_storage_sha256": "2e6057d958c9157414e7849f76e835bcbcbd61ba615d3b8eb9d0f450ca5788dc",
+      "state_flag": 1,
+      "state_mode": 0,
+      "stopped_boundary": null,
+      "synthetic_heap_used_after": 0,
+      "synthetic_parameter_page_preserved": true,
+      "ui_signal_substitutes": [
+        {
+          "signal_argument": 13,
+          "value_argument": 0
+        }
+      ]
+    },
+    {
+      "allocations": [
+        {
+          "bytes": 1024
+        },
+        {
+          "bytes": 1024
+        }
+      ],
+      "case": "catalog_name_mapping",
+      "catalog_preserved": true,
+      "crc_comparisons": [
+        {
+          "computed_crc_raw": 55297,
+          "matched": true,
+          "stored_crc_raw": 55297
+        }
+      ],
+      "first_entry_crc_comparison": {
+        "computed_crc_raw": 55297,
+        "matched": true,
+        "stored_crc_raw": 55297
+      },
+      "flash_service_substitutes": [],
+      "frees": [
+        {
+          "bytes_from_synthetic_header": 1028
+        },
+        {
+          "bytes_from_synthetic_header": 1028
+        }
+      ],
+      "header_live_after": false,
+      "input_frame_bytes": 16,
+      "input_frame_sha256": "2d7dc1c260b3fdc1d45bcab17e30456034ab8764fd6ac6f5729db3cd869cb862",
+      "input_point_raw": 20,
+      "instructions": 929,
+      "last_block_raw": 1,
+      "mapping_matches": [
+        {
+          "catalog_index": 0
+        }
+      ],
+      "marker_substitutes": [],
+      "maximum_entry_instructions": 9723,
+      "name_fixture": "startup",
+      "page_program_substitutes": [],
+      "pending_context_pointer_set": true,
+      "pending_counter_raw": 0,
+      "physical_storage_verified": false,
+      "primask_restored": true,
+      "refresh_substitutes": 1,
+      "resource_application_verified": false,
+      "resource_header_read_substitute_bytes": 2048,
+      "response_frame_sha256": [],
+      "responses": [],
+      "retained_descriptor_sha256": "07af3494e1734c5081b23bd34f26a9aa81e063f16035fe6c2e65f527a8b5d330",
+      "spi_command_substitutes": [
+        {
+          "bytes": 1,
+          "sha256": "8254c329a92850f6d539dd376f4816ee2764517da5e0235514af433164480d7a"
+        },
+        {
+          "bytes": 4,
+          "sha256": "e51245c8418dd3f3629da3001ddfed530dc7b5d85c74ecc4acf507e073938422"
+        }
+      ],
+      "spi_read_substitute_bytes": 4,
+      "staged_bytes_raw": 1028,
+      "staged_storage_sha256": "854c10942409c9dfe63a62ca0601318d1867fbf53acb035599b2cbe7b6bd0d08",
+      "state_flag": 0,
+      "state_mode": 2,
+      "stopped_boundary": "persistent_flash_marker_excluded",
+      "synthetic_heap_used_after": 0,
+      "synthetic_parameter_page_preserved": true,
+      "ui_signal_substitutes": [
+        {
+          "signal_argument": 11,
+          "value_argument": 1
+        }
+      ]
+    },
+    {
+      "allocations": [
+        {
+          "bytes": 1024
+        },
+        {
+          "bytes": 1024
+        }
+      ],
+      "case": "catalog_name_mapping",
+      "catalog_preserved": true,
+      "crc_comparisons": [
+        {
+          "computed_crc_raw": 55297,
+          "matched": true,
+          "stored_crc_raw": 55297
+        }
+      ],
+      "first_entry_crc_comparison": {
+        "computed_crc_raw": 55297,
+        "matched": true,
+        "stored_crc_raw": 55297
+      },
+      "flash_service_substitutes": [],
+      "frees": [
+        {
+          "bytes_from_synthetic_header": 1028
+        },
+        {
+          "bytes_from_synthetic_header": 1028
+        }
+      ],
+      "header_live_after": false,
+      "input_frame_bytes": 16,
+      "input_frame_sha256": "2d7dc1c260b3fdc1d45bcab17e30456034ab8764fd6ac6f5729db3cd869cb862",
+      "input_point_raw": 20,
+      "instructions": 988,
+      "last_block_raw": 1,
+      "mapping_matches": [
+        {
+          "catalog_index": 2
+        }
+      ],
+      "marker_substitutes": [],
+      "maximum_entry_instructions": 9723,
+      "name_fixture": "ss_min",
+      "page_program_substitutes": [],
+      "pending_context_pointer_set": true,
+      "pending_counter_raw": 0,
+      "physical_storage_verified": false,
+      "primask_restored": true,
+      "refresh_substitutes": 1,
+      "resource_application_verified": false,
+      "resource_header_read_substitute_bytes": 2048,
+      "response_frame_sha256": [],
+      "responses": [],
+      "retained_descriptor_sha256": "07af3494e1734c5081b23bd34f26a9aa81e063f16035fe6c2e65f527a8b5d330",
+      "spi_command_substitutes": [
+        {
+          "bytes": 1,
+          "sha256": "8254c329a92850f6d539dd376f4816ee2764517da5e0235514af433164480d7a"
+        },
+        {
+          "bytes": 4,
+          "sha256": "e51245c8418dd3f3629da3001ddfed530dc7b5d85c74ecc4acf507e073938422"
+        }
+      ],
+      "spi_read_substitute_bytes": 4,
+      "staged_bytes_raw": 1028,
+      "staged_storage_sha256": "152449075cf0d632c808c41fbdbac3d1205f9268114747fc5da22dd612ada76b",
+      "state_flag": 0,
+      "state_mode": 2,
+      "stopped_boundary": "persistent_flash_marker_excluded",
+      "synthetic_heap_used_after": 0,
+      "synthetic_parameter_page_preserved": true,
+      "ui_signal_substitutes": [
+        {
+          "signal_argument": 11,
+          "value_argument": 1
+        }
+      ]
+    },
+    {
+      "allocations": [
+        {
+          "bytes": 1024
+        },
+        {
+          "bytes": 1024
+        }
+      ],
+      "case": "catalog_name_mapping",
+      "catalog_preserved": true,
+      "crc_comparisons": [
+        {
+          "computed_crc_raw": 55297,
+          "matched": true,
+          "stored_crc_raw": 55297
+        }
+      ],
+      "first_entry_crc_comparison": {
+        "computed_crc_raw": 55297,
+        "matched": true,
+        "stored_crc_raw": 55297
+      },
+      "flash_service_substitutes": [],
+      "frees": [
+        {
+          "bytes_from_synthetic_header": 1028
+        },
+        {
+          "bytes_from_synthetic_header": 1028
+        }
+      ],
+      "header_live_after": false,
+      "input_frame_bytes": 16,
+      "input_frame_sha256": "2d7dc1c260b3fdc1d45bcab17e30456034ab8764fd6ac6f5729db3cd869cb862",
+      "input_point_raw": 20,
+      "instructions": 1021,
+      "last_block_raw": 1,
+      "mapping_matches": [
+        {
+          "catalog_index": 3
+        }
+      ],
+      "marker_substitutes": [],
+      "maximum_entry_instructions": 9723,
+      "name_fixture": "ss_bg",
+      "page_program_substitutes": [],
+      "pending_context_pointer_set": true,
+      "pending_counter_raw": 0,
+      "physical_storage_verified": false,
+      "primask_restored": true,
+      "refresh_substitutes": 1,
+      "resource_application_verified": false,
+      "resource_header_read_substitute_bytes": 2048,
+      "response_frame_sha256": [],
+      "responses": [],
+      "retained_descriptor_sha256": "07af3494e1734c5081b23bd34f26a9aa81e063f16035fe6c2e65f527a8b5d330",
+      "spi_command_substitutes": [
+        {
+          "bytes": 1,
+          "sha256": "8254c329a92850f6d539dd376f4816ee2764517da5e0235514af433164480d7a"
+        },
+        {
+          "bytes": 4,
+          "sha256": "e51245c8418dd3f3629da3001ddfed530dc7b5d85c74ecc4acf507e073938422"
+        }
+      ],
+      "spi_read_substitute_bytes": 4,
+      "staged_bytes_raw": 1028,
+      "staged_storage_sha256": "d631cbe429c790f50e28b798bfdd23fb5686bfd68f844bb124ac89e05f24b78f",
+      "state_flag": 0,
+      "state_mode": 2,
+      "stopped_boundary": "persistent_flash_marker_excluded",
+      "synthetic_heap_used_after": 0,
+      "synthetic_parameter_page_preserved": true,
+      "ui_signal_substitutes": [
+        {
+          "signal_argument": 11,
+          "value_argument": 1
+        }
+      ]
+    },
+    {
+      "allocations": [
+        {
+          "bytes": 1024
+        },
+        {
+          "bytes": 1024
+        }
+      ],
+      "case": "catalog_name_mapping",
+      "catalog_preserved": true,
+      "crc_comparisons": [
+        {
+          "computed_crc_raw": 55297,
+          "matched": true,
+          "stored_crc_raw": 55297
+        }
+      ],
+      "first_entry_crc_comparison": {
+        "computed_crc_raw": 55297,
+        "matched": true,
+        "stored_crc_raw": 55297
+      },
+      "flash_service_substitutes": [],
+      "frees": [
+        {
+          "bytes_from_synthetic_header": 1028
+        },
+        {
+          "bytes_from_synthetic_header": 1028
+        }
+      ],
+      "header_live_after": false,
+      "input_frame_bytes": 16,
+      "input_frame_sha256": "2d7dc1c260b3fdc1d45bcab17e30456034ab8764fd6ac6f5729db3cd869cb862",
+      "input_point_raw": 20,
+      "instructions": 1019,
+      "last_block_raw": 1,
+      "mapping_matches": [
+        {
+          "catalog_index": 4
+        }
+      ],
+      "marker_substitutes": [],
+      "maximum_entry_instructions": 9723,
+      "name_fixture": "was_reset",
+      "page_program_substitutes": [],
+      "pending_context_pointer_set": true,
+      "pending_counter_raw": 0,
+      "physical_storage_verified": false,
+      "primask_restored": true,
+      "refresh_substitutes": 1,
+      "resource_application_verified": false,
+      "resource_header_read_substitute_bytes": 2048,
+      "response_frame_sha256": [],
+      "responses": [],
+      "retained_descriptor_sha256": "07af3494e1734c5081b23bd34f26a9aa81e063f16035fe6c2e65f527a8b5d330",
+      "spi_command_substitutes": [
+        {
+          "bytes": 1,
+          "sha256": "8254c329a92850f6d539dd376f4816ee2764517da5e0235514af433164480d7a"
+        },
+        {
+          "bytes": 4,
+          "sha256": "e51245c8418dd3f3629da3001ddfed530dc7b5d85c74ecc4acf507e073938422"
+        }
+      ],
+      "spi_read_substitute_bytes": 4,
+      "staged_bytes_raw": 1028,
+      "staged_storage_sha256": "a719e2a1cd97066afb0f8c1686c73eaff0239e93a9ec4d37885510ee1aa7c50d",
+      "state_flag": 0,
+      "state_mode": 2,
+      "stopped_boundary": "persistent_flash_marker_excluded",
+      "synthetic_heap_used_after": 0,
+      "synthetic_parameter_page_preserved": true,
+      "ui_signal_substitutes": [
+        {
+          "signal_argument": 11,
+          "value_argument": 1
+        }
+      ]
+    },
+    {
+      "allocations": [
+        {
+          "bytes": 1024
+        },
+        {
+          "bytes": 1024
+        }
+      ],
+      "case": "catalog_name_mapping",
+      "catalog_preserved": true,
+      "crc_comparisons": [
+        {
+          "computed_crc_raw": 55297,
+          "matched": true,
+          "stored_crc_raw": 55297
+        }
+      ],
+      "first_entry_crc_comparison": {
+        "computed_crc_raw": 55297,
+        "matched": true,
+        "stored_crc_raw": 55297
+      },
+      "flash_service_substitutes": [],
+      "frees": [
+        {
+          "bytes_from_synthetic_header": 1028
+        },
+        {
+          "bytes_from_synthetic_header": 1028
+        }
+      ],
+      "header_live_after": false,
+      "input_frame_bytes": 16,
+      "input_frame_sha256": "2d7dc1c260b3fdc1d45bcab17e30456034ab8764fd6ac6f5729db3cd869cb862",
+      "input_point_raw": 20,
+      "instructions": 1052,
+      "last_block_raw": 1,
+      "mapping_matches": [
+        {
+          "catalog_index": 5
+        }
+      ],
+      "marker_substitutes": [],
+      "maximum_entry_instructions": 9723,
+      "name_fixture": "fast_charge",
+      "page_program_substitutes": [],
+      "pending_context_pointer_set": true,
+      "pending_counter_raw": 0,
+      "physical_storage_verified": false,
+      "primask_restored": true,
+      "refresh_substitutes": 1,
+      "resource_application_verified": false,
+      "resource_header_read_substitute_bytes": 2048,
+      "response_frame_sha256": [],
+      "responses": [],
+      "retained_descriptor_sha256": "07af3494e1734c5081b23bd34f26a9aa81e063f16035fe6c2e65f527a8b5d330",
+      "spi_command_substitutes": [
+        {
+          "bytes": 1,
+          "sha256": "8254c329a92850f6d539dd376f4816ee2764517da5e0235514af433164480d7a"
+        },
+        {
+          "bytes": 4,
+          "sha256": "e51245c8418dd3f3629da3001ddfed530dc7b5d85c74ecc4acf507e073938422"
+        }
+      ],
+      "spi_read_substitute_bytes": 4,
+      "staged_bytes_raw": 1028,
+      "staged_storage_sha256": "382b5f3a18334905fd9c9f7eabb1588dd58fcf98cc47760bacdbdcd4edae3f75",
+      "state_flag": 0,
+      "state_mode": 2,
+      "stopped_boundary": "persistent_flash_marker_excluded",
+      "synthetic_heap_used_after": 0,
+      "synthetic_parameter_page_preserved": true,
+      "ui_signal_substitutes": [
+        {
+          "signal_argument": 11,
+          "value_argument": 1
+        }
+      ]
+    },
+    {
+      "allocations": [
+        {
+          "bytes": 1024
+        },
+        {
+          "bytes": 1024
+        }
+      ],
+      "case": "catalog_name_mapping",
+      "catalog_preserved": true,
+      "crc_comparisons": [
+        {
+          "computed_crc_raw": 55297,
+          "matched": true,
+          "stored_crc_raw": 55297
+        }
+      ],
+      "first_entry_crc_comparison": {
+        "computed_crc_raw": 55297,
+        "matched": true,
+        "stored_crc_raw": 55297
+      },
+      "flash_service_substitutes": [],
+      "frees": [
+        {
+          "bytes_from_synthetic_header": 1028
+        },
+        {
+          "bytes_from_synthetic_header": 1028
+        }
+      ],
+      "header_live_after": false,
+      "input_frame_bytes": 16,
+      "input_frame_sha256": "2d7dc1c260b3fdc1d45bcab17e30456034ab8764fd6ac6f5729db3cd869cb862",
+      "input_point_raw": 20,
+      "instructions": 1064,
+      "last_block_raw": 1,
+      "mapping_matches": [
+        {
+          "catalog_index": 6
+        }
+      ],
+      "marker_substitutes": [],
+      "maximum_entry_instructions": 9723,
+      "name_fixture": "cumu_usage",
+      "page_program_substitutes": [],
+      "pending_context_pointer_set": true,
+      "pending_counter_raw": 0,
+      "physical_storage_verified": false,
+      "primask_restored": true,
+      "refresh_substitutes": 1,
+      "resource_application_verified": false,
+      "resource_header_read_substitute_bytes": 2048,
+      "response_frame_sha256": [],
+      "responses": [],
+      "retained_descriptor_sha256": "07af3494e1734c5081b23bd34f26a9aa81e063f16035fe6c2e65f527a8b5d330",
+      "spi_command_substitutes": [
+        {
+          "bytes": 1,
+          "sha256": "8254c329a92850f6d539dd376f4816ee2764517da5e0235514af433164480d7a"
+        },
+        {
+          "bytes": 4,
+          "sha256": "e51245c8418dd3f3629da3001ddfed530dc7b5d85c74ecc4acf507e073938422"
+        }
+      ],
+      "spi_read_substitute_bytes": 4,
+      "staged_bytes_raw": 1028,
+      "staged_storage_sha256": "7337f3f3ab35c8ebe60d9f09dd57dc34b72e26daa91ac5d527f87a564d063750",
+      "state_flag": 0,
+      "state_mode": 2,
+      "stopped_boundary": "persistent_flash_marker_excluded",
+      "synthetic_heap_used_after": 0,
+      "synthetic_parameter_page_preserved": true,
+      "ui_signal_substitutes": [
+        {
+          "signal_argument": 11,
+          "value_argument": 1
+        }
+      ]
+    },
+    {
+      "allocations": [
+        {
+          "bytes": 1024
+        },
+        {
+          "bytes": 1024
+        }
+      ],
+      "case": "catalog_name_mapping",
+      "catalog_preserved": true,
+      "crc_comparisons": [
+        {
+          "computed_crc_raw": 55297,
+          "matched": true,
+          "stored_crc_raw": 55297
+        }
+      ],
+      "first_entry_crc_comparison": {
+        "computed_crc_raw": 55297,
+        "matched": true,
+        "stored_crc_raw": 55297
+      },
+      "flash_service_substitutes": [],
+      "frees": [
+        {
+          "bytes_from_synthetic_header": 1028
+        },
+        {
+          "bytes_from_synthetic_header": 1028
+        }
+      ],
+      "header_live_after": false,
+      "input_frame_bytes": 16,
+      "input_frame_sha256": "2d7dc1c260b3fdc1d45bcab17e30456034ab8764fd6ac6f5729db3cd869cb862",
+      "input_point_raw": 20,
+      "instructions": 1076,
+      "last_block_raw": 1,
+      "mapping_matches": [
+        {
+          "catalog_index": 7
+        }
+      ],
+      "marker_substitutes": [],
+      "maximum_entry_instructions": 9723,
+      "name_fixture": "first_pv",
+      "page_program_substitutes": [],
+      "pending_context_pointer_set": true,
+      "pending_counter_raw": 0,
+      "physical_storage_verified": false,
+      "primask_restored": true,
+      "refresh_substitutes": 1,
+      "resource_application_verified": false,
+      "resource_header_read_substitute_bytes": 2048,
+      "response_frame_sha256": [],
+      "responses": [],
+      "retained_descriptor_sha256": "07af3494e1734c5081b23bd34f26a9aa81e063f16035fe6c2e65f527a8b5d330",
+      "spi_command_substitutes": [
+        {
+          "bytes": 1,
+          "sha256": "8254c329a92850f6d539dd376f4816ee2764517da5e0235514af433164480d7a"
+        },
+        {
+          "bytes": 4,
+          "sha256": "e51245c8418dd3f3629da3001ddfed530dc7b5d85c74ecc4acf507e073938422"
+        }
+      ],
+      "spi_read_substitute_bytes": 4,
+      "staged_bytes_raw": 1028,
+      "staged_storage_sha256": "cf0dfb182dbe850ad707faed219e024a1a5d7f2a53d2c1aa2efbac22ee558a3e",
+      "state_flag": 0,
+      "state_mode": 2,
+      "stopped_boundary": "persistent_flash_marker_excluded",
+      "synthetic_heap_used_after": 0,
+      "synthetic_parameter_page_preserved": true,
+      "ui_signal_substitutes": [
+        {
+          "signal_argument": 11,
+          "value_argument": 1
+        }
+      ]
+    },
+    {
+      "allocations": [
+        {
+          "bytes": 1024
+        },
+        {
+          "bytes": 1024
+        }
+      ],
+      "case": "catalog_name_mapping",
+      "catalog_preserved": true,
+      "crc_comparisons": [
+        {
+          "computed_crc_raw": 55297,
+          "matched": true,
+          "stored_crc_raw": 55297
+        }
+      ],
+      "first_entry_crc_comparison": {
+        "computed_crc_raw": 55297,
+        "matched": true,
+        "stored_crc_raw": 55297
+      },
+      "flash_service_substitutes": [],
+      "frees": [
+        {
+          "bytes_from_synthetic_header": 1028
+        },
+        {
+          "bytes_from_synthetic_header": 1028
+        }
+      ],
+      "header_live_after": false,
+      "input_frame_bytes": 16,
+      "input_frame_sha256": "2d7dc1c260b3fdc1d45bcab17e30456034ab8764fd6ac6f5729db3cd869cb862",
+      "input_point_raw": 20,
+      "instructions": 1116,
+      "last_block_raw": 1,
+      "mapping_matches": [
+        {
+          "catalog_index": 8
+        }
+      ],
+      "marker_substitutes": [],
+      "maximum_entry_instructions": 9723,
+      "name_fixture": "cumu_pv",
+      "page_program_substitutes": [],
+      "pending_context_pointer_set": true,
+      "pending_counter_raw": 0,
+      "physical_storage_verified": false,
+      "primask_restored": true,
+      "refresh_substitutes": 1,
+      "resource_application_verified": false,
+      "resource_header_read_substitute_bytes": 2048,
+      "response_frame_sha256": [],
+      "responses": [],
+      "retained_descriptor_sha256": "07af3494e1734c5081b23bd34f26a9aa81e063f16035fe6c2e65f527a8b5d330",
+      "spi_command_substitutes": [
+        {
+          "bytes": 1,
+          "sha256": "8254c329a92850f6d539dd376f4816ee2764517da5e0235514af433164480d7a"
+        },
+        {
+          "bytes": 4,
+          "sha256": "e51245c8418dd3f3629da3001ddfed530dc7b5d85c74ecc4acf507e073938422"
+        }
+      ],
+      "spi_read_substitute_bytes": 4,
+      "staged_bytes_raw": 1028,
+      "staged_storage_sha256": "5c75786da959d6e8b2bcefbbfd8da8e340877c683b760390d026820154ecd09a",
+      "state_flag": 0,
+      "state_mode": 2,
+      "stopped_boundary": "persistent_flash_marker_excluded",
+      "synthetic_heap_used_after": 0,
+      "synthetic_parameter_page_preserved": true,
+      "ui_signal_substitutes": [
+        {
+          "signal_argument": 11,
+          "value_argument": 1
+        }
+      ]
+    },
+    {
+      "allocations": [
+        {
+          "bytes": 1024
+        },
+        {
+          "bytes": 1024
+        }
+      ],
+      "case": "catalog_name_mapping",
+      "catalog_preserved": true,
+      "crc_comparisons": [
+        {
+          "computed_crc_raw": 55297,
+          "matched": true,
+          "stored_crc_raw": 55297
+        }
+      ],
+      "first_entry_crc_comparison": {
+        "computed_crc_raw": 55297,
+        "matched": true,
+        "stored_crc_raw": 55297
+      },
+      "flash_service_substitutes": [],
+      "frees": [
+        {
+          "bytes_from_synthetic_header": 1028
+        },
+        {
+          "bytes_from_synthetic_header": 1028
+        }
+      ],
+      "header_live_after": false,
+      "input_frame_bytes": 16,
+      "input_frame_sha256": "2d7dc1c260b3fdc1d45bcab17e30456034ab8764fd6ac6f5729db3cd869cb862",
+      "input_point_raw": 20,
+      "instructions": 1121,
+      "last_block_raw": 1,
+      "mapping_matches": [
+        {
+          "catalog_index": 9
+        }
+      ],
+      "marker_substitutes": [],
+      "maximum_entry_instructions": 9723,
+      "name_fixture": "normal2tou",
+      "page_program_substitutes": [],
+      "pending_context_pointer_set": true,
+      "pending_counter_raw": 0,
+      "physical_storage_verified": false,
+      "primask_restored": true,
+      "refresh_substitutes": 1,
+      "resource_application_verified": false,
+      "resource_header_read_substitute_bytes": 2048,
+      "response_frame_sha256": [],
+      "responses": [],
+      "retained_descriptor_sha256": "07af3494e1734c5081b23bd34f26a9aa81e063f16035fe6c2e65f527a8b5d330",
+      "spi_command_substitutes": [
+        {
+          "bytes": 1,
+          "sha256": "8254c329a92850f6d539dd376f4816ee2764517da5e0235514af433164480d7a"
+        },
+        {
+          "bytes": 4,
+          "sha256": "e51245c8418dd3f3629da3001ddfed530dc7b5d85c74ecc4acf507e073938422"
+        }
+      ],
+      "spi_read_substitute_bytes": 4,
+      "staged_bytes_raw": 1028,
+      "staged_storage_sha256": "0f5bb62d09aff8f59d57f4634fb03344dadc65ca9f8c90cb28de95f7ab0afac2",
+      "state_flag": 0,
+      "state_mode": 2,
+      "stopped_boundary": "persistent_flash_marker_excluded",
+      "synthetic_heap_used_after": 0,
+      "synthetic_parameter_page_preserved": true,
+      "ui_signal_substitutes": [
+        {
+          "signal_argument": 11,
+          "value_argument": 1
+        }
+      ]
+    },
+    {
+      "allocations": [
+        {
+          "bytes": 1024
+        },
+        {
+          "bytes": 1024
+        }
+      ],
+      "case": "catalog_name_mapping",
+      "catalog_preserved": true,
+      "crc_comparisons": [
+        {
+          "computed_crc_raw": 55297,
+          "matched": true,
+          "stored_crc_raw": 55297
+        }
+      ],
+      "first_entry_crc_comparison": {
+        "computed_crc_raw": 55297,
+        "matched": true,
+        "stored_crc_raw": 55297
+      },
+      "flash_service_substitutes": [],
+      "frees": [
+        {
+          "bytes_from_synthetic_header": 1028
+        },
+        {
+          "bytes_from_synthetic_header": 1028
+        }
+      ],
+      "header_live_after": false,
+      "input_frame_bytes": 16,
+      "input_frame_sha256": "2d7dc1c260b3fdc1d45bcab17e30456034ab8764fd6ac6f5729db3cd869cb862",
+      "input_point_raw": 20,
+      "instructions": 1140,
+      "last_block_raw": 1,
+      "mapping_matches": [
+        {
+          "catalog_index": 10
+        }
+      ],
+      "marker_substitutes": [],
+      "maximum_entry_instructions": 9723,
+      "name_fixture": "tou2normal",
+      "page_program_substitutes": [],
+      "pending_context_pointer_set": true,
+      "pending_counter_raw": 0,
+      "physical_storage_verified": false,
+      "primask_restored": true,
+      "refresh_substitutes": 1,
+      "resource_application_verified": false,
+      "resource_header_read_substitute_bytes": 2048,
+      "response_frame_sha256": [],
+      "responses": [],
+      "retained_descriptor_sha256": "07af3494e1734c5081b23bd34f26a9aa81e063f16035fe6c2e65f527a8b5d330",
+      "spi_command_substitutes": [
+        {
+          "bytes": 1,
+          "sha256": "8254c329a92850f6d539dd376f4816ee2764517da5e0235514af433164480d7a"
+        },
+        {
+          "bytes": 4,
+          "sha256": "e51245c8418dd3f3629da3001ddfed530dc7b5d85c74ecc4acf507e073938422"
+        }
+      ],
+      "spi_read_substitute_bytes": 4,
+      "staged_bytes_raw": 1028,
+      "staged_storage_sha256": "017e21d992bc780880c32deb2938f6736fe906b406c1f483ca060e4836ec3c31",
+      "state_flag": 0,
+      "state_mode": 2,
+      "stopped_boundary": "persistent_flash_marker_excluded",
+      "synthetic_heap_used_after": 0,
+      "synthetic_parameter_page_preserved": true,
+      "ui_signal_substitutes": [
+        {
+          "signal_argument": 11,
+          "value_argument": 1
+        }
+      ]
+    },
+    {
+      "allocations": [
+        {
+          "bytes": 1024
+        },
+        {
+          "bytes": 1024
+        }
+      ],
+      "case": "catalog_name_mapping",
+      "catalog_preserved": true,
+      "crc_comparisons": [
+        {
+          "computed_crc_raw": 55297,
+          "matched": true,
+          "stored_crc_raw": 55297
+        }
+      ],
+      "first_entry_crc_comparison": {
+        "computed_crc_raw": 55297,
+        "matched": true,
+        "stored_crc_raw": 55297
+      },
+      "flash_service_substitutes": [],
+      "frees": [
+        {
+          "bytes_from_synthetic_header": 1028
+        },
+        {
+          "bytes_from_synthetic_header": 1028
+        }
+      ],
+      "header_live_after": false,
+      "input_frame_bytes": 16,
+      "input_frame_sha256": "2d7dc1c260b3fdc1d45bcab17e30456034ab8764fd6ac6f5729db3cd869cb862",
+      "input_point_raw": 20,
+      "instructions": 1145,
+      "last_block_raw": 1,
+      "mapping_matches": [
+        {
+          "catalog_index": 11
+        }
+      ],
+      "marker_substitutes": [],
+      "maximum_entry_instructions": 9723,
+      "name_fixture": "dev_idle",
+      "page_program_substitutes": [],
+      "pending_context_pointer_set": true,
+      "pending_counter_raw": 0,
+      "physical_storage_verified": false,
+      "primask_restored": true,
+      "refresh_substitutes": 1,
+      "resource_application_verified": false,
+      "resource_header_read_substitute_bytes": 2048,
+      "response_frame_sha256": [],
+      "responses": [],
+      "retained_descriptor_sha256": "07af3494e1734c5081b23bd34f26a9aa81e063f16035fe6c2e65f527a8b5d330",
+      "spi_command_substitutes": [
+        {
+          "bytes": 1,
+          "sha256": "8254c329a92850f6d539dd376f4816ee2764517da5e0235514af433164480d7a"
+        },
+        {
+          "bytes": 4,
+          "sha256": "e51245c8418dd3f3629da3001ddfed530dc7b5d85c74ecc4acf507e073938422"
+        }
+      ],
+      "spi_read_substitute_bytes": 4,
+      "staged_bytes_raw": 1028,
+      "staged_storage_sha256": "5ba4d39086e7957ad06f4c14caedaa2641ddfe791bf7a6e21df0784016a88378",
+      "state_flag": 0,
+      "state_mode": 2,
+      "stopped_boundary": "persistent_flash_marker_excluded",
+      "synthetic_heap_used_after": 0,
+      "synthetic_parameter_page_preserved": true,
+      "ui_signal_substitutes": [
+        {
+          "signal_argument": 11,
+          "value_argument": 1
+        }
+      ]
+    },
+    {
+      "allocations": [
+        {
+          "bytes": 1024
+        },
+        {
+          "bytes": 1024
+        }
+      ],
+      "case": "catalog_name_mapping",
+      "catalog_preserved": true,
+      "crc_comparisons": [
+        {
+          "computed_crc_raw": 55297,
+          "matched": true,
+          "stored_crc_raw": 55297
+        }
+      ],
+      "first_entry_crc_comparison": {
+        "computed_crc_raw": 55297,
+        "matched": true,
+        "stored_crc_raw": 55297
+      },
+      "flash_service_substitutes": [],
+      "frees": [
+        {
+          "bytes_from_synthetic_header": 1028
+        },
+        {
+          "bytes_from_synthetic_header": 1028
+        }
+      ],
+      "header_live_after": false,
+      "input_frame_bytes": 16,
+      "input_frame_sha256": "2d7dc1c260b3fdc1d45bcab17e30456034ab8764fd6ac6f5729db3cd869cb862",
+      "input_point_raw": 20,
+      "instructions": 1227,
+      "last_block_raw": 1,
+      "mapping_matches": [
+        {
+          "catalog_index": 12
+        }
+      ],
+      "marker_substitutes": [],
+      "maximum_entry_instructions": 9723,
+      "name_fixture": "silent_charge",
+      "page_program_substitutes": [],
+      "pending_context_pointer_set": true,
+      "pending_counter_raw": 0,
+      "physical_storage_verified": false,
+      "primask_restored": true,
+      "refresh_substitutes": 1,
+      "resource_application_verified": false,
+      "resource_header_read_substitute_bytes": 2048,
+      "response_frame_sha256": [],
+      "responses": [],
+      "retained_descriptor_sha256": "07af3494e1734c5081b23bd34f26a9aa81e063f16035fe6c2e65f527a8b5d330",
+      "spi_command_substitutes": [
+        {
+          "bytes": 1,
+          "sha256": "8254c329a92850f6d539dd376f4816ee2764517da5e0235514af433164480d7a"
+        },
+        {
+          "bytes": 4,
+          "sha256": "e51245c8418dd3f3629da3001ddfed530dc7b5d85c74ecc4acf507e073938422"
+        }
+      ],
+      "spi_read_substitute_bytes": 4,
+      "staged_bytes_raw": 1028,
+      "staged_storage_sha256": "07c4e78c134c8fa0451f3279c4a3e03f084f0281eb53b1abe14582cb36536b97",
+      "state_flag": 0,
+      "state_mode": 2,
+      "stopped_boundary": "persistent_flash_marker_excluded",
+      "synthetic_heap_used_after": 0,
+      "synthetic_parameter_page_preserved": true,
+      "ui_signal_substitutes": [
+        {
+          "signal_argument": 11,
+          "value_argument": 1
+        }
+      ]
+    },
+    {
+      "allocations": [
+        {
+          "bytes": 1024
+        },
+        {
+          "bytes": 1024
+        }
+      ],
+      "case": "catalog_name_mapping",
+      "catalog_preserved": true,
+      "crc_comparisons": [
+        {
+          "computed_crc_raw": 55297,
+          "matched": true,
+          "stored_crc_raw": 55297
+        }
+      ],
+      "first_entry_crc_comparison": {
+        "computed_crc_raw": 55297,
+        "matched": true,
+        "stored_crc_raw": 55297
+      },
+      "flash_service_substitutes": [],
+      "frees": [
+        {
+          "bytes_from_synthetic_header": 1028
+        },
+        {
+          "bytes_from_synthetic_header": 1028
+        }
+      ],
+      "header_live_after": false,
+      "input_frame_bytes": 16,
+      "input_frame_sha256": "2d7dc1c260b3fdc1d45bcab17e30456034ab8764fd6ac6f5729db3cd869cb862",
+      "input_point_raw": 20,
+      "instructions": 1246,
+      "last_block_raw": 1,
+      "mapping_matches": [
+        {
+          "catalog_index": 13
+        }
+      ],
+      "marker_substitutes": [],
+      "maximum_entry_instructions": 9723,
+      "name_fixture": "super_output",
+      "page_program_substitutes": [],
+      "pending_context_pointer_set": true,
+      "pending_counter_raw": 0,
+      "physical_storage_verified": false,
+      "primask_restored": true,
+      "refresh_substitutes": 1,
+      "resource_application_verified": false,
+      "resource_header_read_substitute_bytes": 2048,
+      "response_frame_sha256": [],
+      "responses": [],
+      "retained_descriptor_sha256": "07af3494e1734c5081b23bd34f26a9aa81e063f16035fe6c2e65f527a8b5d330",
+      "spi_command_substitutes": [
+        {
+          "bytes": 1,
+          "sha256": "8254c329a92850f6d539dd376f4816ee2764517da5e0235514af433164480d7a"
+        },
+        {
+          "bytes": 4,
+          "sha256": "e51245c8418dd3f3629da3001ddfed530dc7b5d85c74ecc4acf507e073938422"
+        }
+      ],
+      "spi_read_substitute_bytes": 4,
+      "staged_bytes_raw": 1028,
+      "staged_storage_sha256": "d8bba6d40e38e4db48ff163c160f955fb3c3a20eb4d50e13007977b017b0b910",
+      "state_flag": 0,
+      "state_mode": 2,
+      "stopped_boundary": "persistent_flash_marker_excluded",
+      "synthetic_heap_used_after": 0,
+      "synthetic_parameter_page_preserved": true,
+      "ui_signal_substitutes": [
+        {
+          "signal_argument": 11,
+          "value_argument": 1
+        }
+      ]
+    },
+    {
+      "allocations": [
+        {
+          "bytes": 1024
+        }
+      ],
+      "case": "entry_length_rejected_before_crc",
+      "catalog_preserved": true,
+      "crc_comparisons": [],
+      "declared_length_fixture": 0,
+      "first_entry_crc_comparison": null,
+      "flash_service_substitutes": [],
+      "frees": [
+        {
+          "bytes_from_synthetic_header": 1028
+        }
+      ],
+      "header_live_after": false,
+      "input_frame_bytes": 16,
+      "input_frame_sha256": "2d7dc1c260b3fdc1d45bcab17e30456034ab8764fd6ac6f5729db3cd869cb862",
+      "input_point_raw": 20,
+      "instructions": 547,
+      "last_block_raw": 1,
+      "mapping_matches": [],
+      "marker_substitutes": [],
+      "maximum_entry_instructions": 9723,
+      "page_program_substitutes": [],
+      "pending_context_pointer_set": false,
+      "pending_counter_raw": 0,
+      "physical_storage_verified": false,
+      "primask_restored": true,
+      "refresh_substitutes": 0,
+      "resource_application_verified": false,
+      "resource_header_read_substitute_bytes": 1024,
+      "response_frame_sha256": [
+        "884b2b6e175128a81c8be6f8abe89bc43d0d2084f0768d4725a513a261f3d2da"
+      ],
+      "responses": [
+        [
+          20,
+          0,
+          3,
+          0
+        ]
+      ],
+      "retained_descriptor_sha256": "07af3494e1734c5081b23bd34f26a9aa81e063f16035fe6c2e65f527a8b5d330",
+      "spi_command_substitutes": [],
+      "spi_read_substitute_bytes": 0,
+      "staged_bytes_raw": 1025,
+      "staged_storage_sha256": "6392fbb68517e85f27189e87e11a34bfe058d005d00f18b2124bc9962ffffa94",
+      "state_flag": 1,
+      "state_mode": 0,
+      "stopped_boundary": null,
+      "synthetic_heap_used_after": 0,
+      "synthetic_parameter_page_preserved": true,
+      "ui_signal_substitutes": [
+        {
+          "signal_argument": 13,
+          "value_argument": 0
+        }
+      ]
+    },
+    {
+      "allocations": [
+        {
+          "bytes": 1024
+        }
+      ],
+      "case": "entry_length_rejected_before_crc",
+      "catalog_preserved": true,
+      "crc_comparisons": [],
+      "declared_length_fixture": 1026,
+      "first_entry_crc_comparison": null,
+      "flash_service_substitutes": [],
+      "frees": [
+        {
+          "bytes_from_synthetic_header": 1028
+        }
+      ],
+      "header_live_after": false,
+      "input_frame_bytes": 16,
+      "input_frame_sha256": "2d7dc1c260b3fdc1d45bcab17e30456034ab8764fd6ac6f5729db3cd869cb862",
+      "input_point_raw": 20,
+      "instructions": 550,
+      "last_block_raw": 1,
+      "mapping_matches": [],
+      "marker_substitutes": [],
+      "maximum_entry_instructions": 9723,
+      "page_program_substitutes": [],
+      "pending_context_pointer_set": false,
+      "pending_counter_raw": 0,
+      "physical_storage_verified": false,
+      "primask_restored": true,
+      "refresh_substitutes": 0,
+      "resource_application_verified": false,
+      "resource_header_read_substitute_bytes": 1024,
+      "response_frame_sha256": [
+        "884b2b6e175128a81c8be6f8abe89bc43d0d2084f0768d4725a513a261f3d2da"
+      ],
+      "responses": [
+        [
+          20,
+          0,
+          3,
+          0
+        ]
+      ],
+      "retained_descriptor_sha256": "07af3494e1734c5081b23bd34f26a9aa81e063f16035fe6c2e65f527a8b5d330",
+      "spi_command_substitutes": [],
+      "spi_read_substitute_bytes": 0,
+      "staged_bytes_raw": 1025,
+      "staged_storage_sha256": "35ff7b17f59eae8d2ca72b24c632259729989c2dd21664faa3b14e6c6f394f81",
+      "state_flag": 1,
+      "state_mode": 0,
+      "stopped_boundary": null,
+      "synthetic_heap_used_after": 0,
+      "synthetic_parameter_page_preserved": true,
+      "ui_signal_substitutes": [
+        {
+          "signal_argument": 13,
+          "value_argument": 0
+        }
+      ]
+    },
+    {
+      "allocations": [
+        {
+          "bytes": 1024
+        },
+        {
+          "bytes": 1024
+        }
+      ],
+      "case": "empty_catalog_after_substituted_marker",
+      "catalog_preserved": true,
+      "crc_comparisons": [],
+      "first_entry_crc_comparison": null,
+      "flash_service_substitutes": [
+        {
+          "address_raw": 134238208,
+          "bytes": 20,
+          "operation": "erase"
+        },
+        {
+          "address_raw": 134238208,
+          "bytes": 20,
+          "data_sha256": "08347070af8db8bed3bdbf094db96d6cfb7d6b18fe48c479ebbe29472586bf7c",
+          "following_words_preserved": true,
+          "marker_word_raw": 2779096485,
+          "operation": "program"
+        }
+      ],
+      "frees": [
+        {
+          "bytes_from_synthetic_header": 1028
+        },
+        {
+          "bytes_from_synthetic_header": 1028
+        }
+      ],
+      "header_live_after": false,
+      "input_frame_bytes": 16,
+      "input_frame_sha256": "2d7dc1c260b3fdc1d45bcab17e30456034ab8764fd6ac6f5729db3cd869cb862",
+      "input_point_raw": 20,
+      "instructions": 635,
+      "last_block_raw": 0,
+      "mapping_matches": [],
+      "marker_substitutes": [
+        {
+          "marker_argument_raw": 2779096485
+        }
+      ],
+      "maximum_entry_instructions": 9723,
+      "page_program_substitutes": [],
+      "pending_context_pointer_set": true,
+      "pending_counter_raw": 0,
+      "physical_storage_verified": false,
+      "primask_restored": true,
+      "refresh_substitutes": 1,
+      "resource_application_verified": false,
+      "resource_header_read_substitute_bytes": 2048,
+      "response_frame_sha256": [
+        "b7a902b63c2224a97b59ce897c5caec7fd784e3621c667e96e130637e22bb456"
+      ],
+      "responses": [
+        [
+          20,
+          0,
+          170,
+          238
+        ]
+      ],
+      "retained_descriptor_sha256": "95a66c8108f14acbb8740fd154087efd6230f204ceec3dcf198c3ac07ac31e7f",
+      "spi_command_substitutes": [],
+      "spi_read_substitute_bytes": 0,
+      "staged_bytes_raw": 1024,
+      "staged_storage_sha256": "f47a8ec3e9aff2318d896942282ad4fe37d6391c82914f54a5da8a37de1300c6",
+      "state_flag": 0,
+      "state_mode": 2,
+      "stopped_boundary": null,
+      "synthetic_heap_used_after": 0,
+      "synthetic_parameter_page_preserved": true,
+      "ui_signal_substitutes": [
+        {
+          "signal_argument": 11,
+          "value_argument": 1
+        },
+        {
+          "signal_argument": 13,
+          "value_argument": 0
+        }
+      ]
+    }
+  ],
+  "station_commands_sent": 0
+}

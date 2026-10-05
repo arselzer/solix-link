@@ -459,3 +459,63 @@ the previously documented independent physical measurements.
 **Zero station commands were sent.** No BLE scan, station/profile/phone access,
 MQTT/cloud request, network/service change, observer query, deployment, push,
 merge or automation activation occurred. C2000 and all live settings are untouched.
+
+## LCD catalog, name policy and pending-marker destination — 2026-10-05
+
+This follows local checkpoint **`405cd0e`** on `server/research-20261004`.
+The [resource-selection proof](lcd-resource-selection-and-pending.md) adds
+**43 synthetic instruction cases and eight negative guards**. The complete
+result/manifest pair independently reproduces, including source hashes. Analysis
+source, synthetic metadata and documentation change; product code is unchanged.
+
+- The selected initialized-data helper `08006cb0` recovers 1,520 bytes from
+  421 compressed bytes. Independent host reconstruction matches exactly;
+  output SHA-256 is
+  `cfbbfae6df83687b91c87016bb40622b3e1a41da1698d7f13b888d1f1e909b5f`.
+  Reset/startup and the subsequent zero-fill record do not execute.
+- Its 14-entry resource catalog is recovered at `2000053c`, and all name
+  lookups execute with actual bounded bytewise strcmp. Clock, TOU-transition,
+  charging-related and solar/usage asset names are documented as display
+  resources; they do not establish additional charging commands or counters.
+- Exact `pps_lcd`/`pps_lcd_res` names select limits 237,568/786,432. Their
+  boundary fixtures explicitly change a post-CRC header, proving downstream
+  policy rather than large-payload validation. Ordinary mapping checks the
+  leading u32 in 1..300 and payload length plus four against catalog capacity.
+  Unknown names are skipped. Empty/unknown supplied fixtures can reach pending
+  marker handling with the renderer refresh substituted.
+- Selected multi-entry, CRC/length/count errors and cleanup branches execute.
+  Actual caller accounting releases one or two synthetic headers and returns
+  the synthetic used count to zero. Real allocator/error recovery is unproved.
+- The pending helper reads 20 bytes at `08005000`, prepares first word
+  `a5a5a5a5` while preserving four supplied words, then requests erase/program
+  services for that address/length. Actual helper instructions execute;
+  flash drivers and writes remain excluded. Supplied old words are synthetic
+  because the parameter/bootloader region is absent from this application.
+  With service substitutes, final receipt `14 00 aa ee` is followed by actual
+  completion poll `16 00 00 32`: pending/raw progress 50, not verified commit.
+
+Pins: A1763 LCD container **0.1.9.6**, supplied with main **1.1.4.9**,
+925,696 bytes, SHA-256
+`c314816f396d6b6958a6a398476eafa182f7c368802569803b60bd6a4e6dc97d`;
+application SHA-256
+`f5683c2f7c9a5bdab638123a7a0a547d3d549e513e18fc10918ed979b83459c6`.
+Python **3.14.4**, Unicorn **2.1.4**. Copy bound 30,000/observed 8,281;
+transfer bound 100,000/observed maximum 9,723. Catalog, parameter page and
+PRIMASK restoration are checked. SPI channel/control register, heap and
+parameter words are synthetic; code is read-only and MMIO writes are rejected.
+Raw initialized data/disassembly remain private/ignored with restricted
+permissions. Public artifacts contain structural metadata/hashes. Focused
+replays, source hashes, syntax/JSON/whitespace and unchanged AGENTS.md are
+verified; earlier product/browser gates were not rerun.
+
+Next: trace pending-counter/context readers, UI dispatch and real refresh
+`0802a374`, then marker consumption and precise code/resource destinations.
+An absent bootloader consumer may require a separate public input. Commit,
+recovery, true pause, SDK `context+160` provenance, complete saved-state readback
+and physical calibration remain open. The original C1000 still needs charging
+measurements below full; Gen 2 energy units need paired power/counter/timing
+samples and separately authorized retention testing.
+
+**Zero station commands were sent.** No BLE scan, station/profile/phone read,
+MQTT/cloud request, network/service change, observer query, deployment, push,
+merge or automation activation occurred. C2000 and live settings are untouched.

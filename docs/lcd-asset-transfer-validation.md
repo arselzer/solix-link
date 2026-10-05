@@ -163,3 +163,8 @@ exact destination and commit/recovery behavior before considering an update API.
 Radio task/header activation, true charging pause, full saved-state readback and
 physical energy calibration remain separate open tasks. **Zero station commands
 were sent; no live settings, services or deployment changed.**
+
+The [resource-selection continuation](lcd-resource-selection-and-pending.md)
+recovers the initialized catalog and executes name/size selection, descriptor
+iteration, mapping checks, cleanup and pending-marker serialization. Flash
+drivers, runtime resource application and recovery remain excluded.

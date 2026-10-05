@@ -532,3 +532,12 @@ CRCs are separately inspected on the host. Compare both
 `lcd-asset-transfer-*.json` artifacts with `expected_results/`; the bound is
 100,000 per entry. Set `SOLIX_ANALYSIS_OUTPUT` to the output directory. See
 [LCD transfer validation](../../docs/lcd-asset-transfer-validation.md).
+
+`emulate_lcd_resource_selection.py --output-dir /private/output/lcd-selection`
+adds **43 cases and eight guards** for bounded initialized-data recovery, actual
+name comparison, catalog mapping, descriptor cleanup and pending-marker
+serialization. Large size tests explicitly modify a post-CRC header. Heap,
+SPI, UI/refresh and flash services remain substitutes; no boot or real resource
+application runs. Compare both `lcd-resource-selection-*.json` artifacts;
+set `SOLIX_ANALYSIS_OUTPUT` to the output directory. Copy/transfer bounds are
+30,000/100,000. See [resource selection](../../docs/lcd-resource-selection-and-pending.md).

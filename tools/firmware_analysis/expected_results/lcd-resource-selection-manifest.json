@@ -1,0 +1,14 @@
+{
+  "application_sha256": "f5683c2f7c9a5bdab638123a7a0a547d3d549e513e18fc10918ed979b83459c6",
+  "lcd_sha256": "c314816f396d6b6958a6a398476eafa182f7c368802569803b60bd6a4e6dc97d",
+  "python": "3.14.4",
+  "sources": {
+    "emulate_clock_semantics.py": "945b649c3b5cec00d816041e783641085ccfbdb5f80efc2ed2c4e15f3bae30f2",
+    "emulate_lcd_asset_status.py": "40d22f18a367e658150276e6d474bb2db110d9c890b6eba875a9085c46ef9954",
+    "emulate_lcd_asset_transfer.py": "59de86c8aedb1671215019bc1425c1035a9fb46ee6d5cbdabdddf08fd4f2b24e",
+    "emulate_lcd_resource_selection.py": "bc94a7969f7d011b9a40a7fa11a201e7e59bbed89e5c865011e7bedef6b77795",
+    "emulate_uart_request_worker.py": "499234889687fcced89b4a0d2d998717cf423024de7e8e7058c8771f0575da12",
+    "replay_io.py": "731d795a5ec37e2cf12b809b7122eaf7a29d84c21a2ecd43fafa3e2f8d962d30"
+  },
+  "unicorn": "2.1.4"
+}
