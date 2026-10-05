@@ -847,3 +847,54 @@ automations and the separate observation services were neither queried nor
 changed. No profile/phone capture, cloud/MQTT request, network/service change,
 deployment, push or merge occurred. AGENTS.md and preexisting `python/build/`
 are preserved. Changes are prepared for a local reviewable commit only.
+
+## Cached MQTT confirmation and implementation inventory — 2026-10-05
+
+This follows local checkpoint **`884e9c5`**. The user authorized the existing
+gateway's cached `GET /diagnostics` and an update to the research handoff.
+A restricted, ignored handoff addendum retains that permission for future
+cached diagnostic reads. It grants no active MQTT query or station write;
+the remaining privacy, deployment and output protections continue to apply.
+
+Two authenticated cached GETs at approximately **21:35 UTC**, five seconds
+apart, both returned three connected/available stations over **native MQTT**:
+
+| Model | Reported firmware | First / second telemetry age |
+| --- | --- | --- |
+| Original C1000 / A1761 | 1.7.1 | 3.67 / 3.28 seconds |
+| C1000 Gen 2 / A1763 | 1.1.4.9 | 3.23 / 3.00 seconds |
+| C2000 Gen 2 / A1783 | 2.1.6.4 | 2.85 / 2.61 seconds |
+
+All reports satisfy the gateway's 30-second native freshness limit. These
+observations confirm fresh cached monitoring, not electrical continuity or
+current BLE visibility. They explain HA readings despite the earlier absent
+advertisements. Source inspection confirms the diagnostics route calls only
+existing snapshots; the native monitor reads existing worker status files.
+It does not call the worker request/control interface or poll a station.
+
+The request consumed the existing owner-only gateway HTTP token locally,
+refused redirects and external proxies, used bounded responses/timeouts and
+retained only validated model/transport/version/freshness fields. No token,
+identity, profile, HA configuration or phone capture was copied or published.
+The observer/restart-check services were neither queried nor changed.
+
+[Implementation gaps](implementation-gaps.md) now distinguishes missing product
+features from protocol uncertainty, physical validation and prepared deployment
+work. Repository native allowlists have **9 / 16 / 5** command families for
+original / C1000 Gen 2 / C2000 Gen 2; live command capabilities were not queried.
+Original battery-use control, true pause, complete restoration, calibrated
+battery energy, adaptive execution and offline updates remain open. Gen 2 TOU
+discharge, grid return, common charging/preferences and C1000 timeout controls
+already exist. Account-free original/C2000-native trials remain unverified.
+
+Node and npm are absent. Adaptive browser source still needs a build and
+synthetic browser gate; optional HA history and terminal additions remain
+undeployed. No package/UI build or tests are rerun for this documentation-only
+inventory. The previous **116 focused tests** remain a separate checkpoint.
+Local document links, whitespace, source hashes and unchanged AGENTS.md are
+checked; sanitized request/verification records stay ignored with modes 700/600.
+
+**Two cached GETs; zero station commands.** No BLE connection/scan, active MQTT
+or cloud request, settings/identity change, network/service operation, deployment,
+automation activation, push or merge occurred. C2000 outputs and live HA/AP/
+gateway configuration remain untouched. Prepared changes are local only.

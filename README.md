@@ -152,6 +152,8 @@ web-dashboard guide. Commit Vue sources and compiled Python assets together.
 
 ## Protocol research and firmware
 
+- [Implementation gaps and validation priorities](docs/implementation-gaps.md):
+  missing controls, account-free setup, energy calibration and prepared UI work.
 - [Gen 2 protocol](docs/gen2-protocol.md), [original C1000](docs/c1000-original-protocol.md)
   and [C300](docs/c300-protocol.md): wire formats and hardware evidence.
 - [Firmware findings](docs/firmware-findings.md): handlers, readiness, tariffs,
