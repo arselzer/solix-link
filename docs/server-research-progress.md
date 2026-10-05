@@ -652,3 +652,74 @@ authorized retention testing.
 **Zero station commands were sent.** No BLE scan, station/profile/phone read,
 MQTT/cloud request, network/service change, observer query, deployment, push,
 merge or automation activation occurred. C2000 and live settings are untouched.
+
+## LCD frame streams, header probe and transport returns — 2026-10-05
+
+This follows local checkpoint **`27bb1d9`** on `server/research-20261004`.
+The [frame-stream proof](lcd-frame-stream-and-transport-contract.md) adds **105
+synthetic instruction cases and fifteen rejection guards**, with independently
+identical result/manifest pairs. Only analysis tools, sanitized synthetic
+metadata and documentation change.
+
+- Actual driver preparation assigns drive letter L and file open/read/seek/close
+  callbacks. Registry insertion is excluded; actual later filesystem dispatch
+  uses an explicitly seeded one-node registry. Actual open selects resources
+  0..13 and bounded frame numbers after substituted string helpers. Missing
+  runtime/index/count, disabled state and frame bounds reject and free the
+  allocated handle. Allocation failure stops before the reset-directed handler.
+- Actual read limits a stream by the indexed extent and uses a signed available
+  comparison. Zero requested length can still reach storage. Seek does not
+  clamp and can move before a frame or beyond its end. An out-of-storage read
+  hits a host guard, explicitly not firmware bounds checking.
+- One case runs the actual prior index builder and transfers its exact synthetic
+  storage/index into a separate file guest. The complete eighteen-pixel-byte
+  fixture starts at its twelve-byte header and reaches EOF after only six
+  further bytes. This establishes sequential callback behavior, not physical
+  display corruption or all renderer access patterns.
+- Actual image-header probing opens/reads/closes through the callbacks. It
+  rejects short headers, accepts twelve-byte headers without reading pixels,
+  and ORs flag `0020` into offset two while preserving other supplied words.
+  A deliberately stale/corrupt indexed magic is normalized by the probe;
+  the ordinary index builder would reject it. Full flag/format meanings remain
+  unresolved; deeper row-size consumers are statically identified.
+- Actual address encoding supports three-byte mode zero and four-byte mode one,
+  both most significant byte first. Early substituted returns do not stop the
+  remaining address sends. Tested unsupported modes send none. Actual device
+  addressing mode/capacity is not inferred from these supplied contexts.
+- Actual polling send/receive instructions with clock/status/data/registers in
+  RAM distinguish invalid buffer/length return six and timeout return eleven.
+  Deadline equality still polls; raw units remain uncalibrated. Width one floors
+  an odd byte length to halfwords; tested width two returns zero without a
+  transfer. Timeout leaves a busy byte set and can follow a partial transfer.
+- Five nested cases execute actual storage read wrapper, address encoding and
+  transport together, with channel 255 excluding physical chip select. Ready,
+  invalid/zero-length receive, timeout and partial-receive cases all return the
+  supplied register-block pointer rather than the transport result. Physical
+  SPI reads, persistence and recovery remain unproved.
+
+Pins: A1763 LCD container **0.1.9.6**, supplied with main **1.1.4.9**,
+925,696 bytes, SHA-256
+`c314816f396d6b6958a6a398476eafa182f7c368802569803b60bd6a4e6dc97d`;
+application SHA-256
+`f5683c2f7c9a5bdab638123a7a0a547d3d549e513e18fc10918ed979b83459c6`.
+Python **3.14.4**, Unicorn **2.1.4**, static Capstone **5.0.7**.
+New slice bound **10,000**, reused index reader **100,000**, observed maximum
+**721**. Guards exclude boot/reset bodies, rendering, real MMIO/programming,
+runtime/index mutation, unbounded strings, host-storage overreads and missing
+clock/status/receive inputs. Focused independent replay, source hashes, syntax,
+JSON/whitespace and unchanged AGENTS.md are checked; raw analysis stays
+private/ignored with restricted permissions. Product/HA/browser gates are not
+rerun because product and live deployment are unchanged.
+
+Next offline targets: actual pixel requests beyond `08017a34`, header flags and
+row-size calculations; full-transfer/release wrapper `080158bc` and retained
+page-program return. A pinned bootloader remains necessary for special code/
+resource installation and recovery. True pause/SDK runtime provenance, complete
+settings readback and physical energy calibration remain open. Original C1000
+charging still needs a battery below full and an independently metered
+noncritical load; Gen 2 counters need paired power/counter/time samples and
+separately authorized retention testing. Charging automation remains disabled.
+
+**Zero station commands were sent.** No BLE scan, station/profile/phone read,
+MQTT/cloud request, network/service change, observer query, deployment, push,
+merge or automation activation occurred. C2000 and live settings are untouched.

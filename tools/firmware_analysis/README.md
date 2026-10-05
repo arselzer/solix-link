@@ -559,3 +559,12 @@ parameter writes remain host substitutes; actual storage, rendering, reset
 and fatal handlers do not run. Compare both `lcd-resource-copy-*.json`
 artifacts with `expected_results/`; copy bound is 100,000, waits 10,000, observed maximum
 22,281. See [copy/index validation limits](../../docs/lcd-resource-copy-and-index-validation.md).
+
+`emulate_lcd_frame_stream.py` adds 105 synthetic cases and fifteen guards for
+actual file open/read/seek/close, uncached filesystem dispatch, image-header
+probing, address encoding, polling transport and the nested storage read wrapper.
+String helpers, heap/storage, registry/index and clock/status/data/registers are
+host fixtures; no real MMIO, rendering, programming, reset or station executes.
+Compare both `lcd-frame-stream-*.json` artifacts with `expected_results/`;
+new entries are bounded at 10,000, the reused index reader at 100,000, observed
+maximum 721. See [frame streams and transport returns](../../docs/lcd-frame-stream-and-transport-contract.md).

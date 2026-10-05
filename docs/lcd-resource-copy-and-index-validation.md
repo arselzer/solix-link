@@ -214,3 +214,7 @@ payload/extent validation and receiver readback; receipt, zero caller return,
 marker clearing and an index are insufficient verification. True charging
 pause, complete settings readback and physical energy calibration remain open.
 **Zero station commands were sent; C2000 and all live settings are untouched.**
+
+Follow-up: [frame streams, header probing and transport returns](lcd-frame-stream-and-transport-contract.md)
+executes selected consumers of the rebuilt index and the actual polling
+transport, with synthetic storage/registers and no physical device access.
