@@ -10,6 +10,7 @@ import stat
 from urllib.error import HTTPError, URLError
 from urllib.parse import quote, urlencode, urlsplit, urlunsplit
 from urllib.request import HTTPRedirectHandler, ProxyHandler, Request, build_opener
+from .plan_readback import validate_plan_readback
 
 
 MAX_RESPONSE_BYTES = 1048576
@@ -160,6 +161,8 @@ class GatewayClient:
         return {"name": document["name"], "model": document["model"], "protocol": document["protocol"],
                 "connected": document["connected"], "available": document["available"],
                 "last_seen_timestamp": document.get("last_seen_timestamp"), "metrics": document["metrics"],
+                "tou_plan_readback": validate_plan_readback(document.get("tou_plan_readback")) if (
+                    document["model"] in ("c1000_gen2", "c2000_gen2") and document["protocol"] == "native_mqtt") else None,
                 "power_flow": document.get("power_flow") if document.get("power_flow") in (
                     "unknown", "grid", "battery", "transitioning") else "unknown", "control_enabled": False,
                 "error": "ConnectionError" if document.get("error") is not None else None}

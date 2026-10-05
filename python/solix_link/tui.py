@@ -226,6 +226,8 @@ def public_snapshot(snapshot: dict) -> dict:
         if key in METRIC_LABELS and isinstance(value, (int, float, str))
     }
     result["error"] = "ConnectionError" if snapshot.get("error") is not None else None
+    from .plan_readback import validate_plan_readback
+    result["tou_plan_readback"] = validate_plan_readback(snapshot.get("tou_plan_readback"))
     return result
 
 
@@ -1023,6 +1025,8 @@ def create_app(config_path: Path = DEFAULT_CONFIG, ap_service_directory: Path | 
                     with TabPane("Hourly plan", id="plan"):
                         with VerticalScroll(id="plan-scroll"):
                             yield Static("Native MQTT only · local station hours · up to six non-overlapping periods", classes="hint", markup=False)
+                            yield Static("Saved plan readback unavailable or stale", id="saved-plan-status", markup=False)
+                            yield Button("Load saved plan into draft", id="load-saved-plan", disabled=True)
                             yield Label("Periods (empty clears the plan)", classes="form-label")
                             yield Input(placeholder="off_peak:0:6,peak:6:24", id="plan-text")
                             yield Static("Tariffs: peak, mid_peak, off_peak. Split overnight periods at midnight.\nActivating a plan persists until you change it or return to grid.", classes="hint", markup=False)
@@ -1183,6 +1187,13 @@ def create_app(config_path: Path = DEFAULT_CONFIG, ap_service_directory: Path | 
                     self.query_one("#apply-setting", Button).disabled = True
             for name in ("apply-plan", "return-grid"):
                 self.query_one(f"#{name}", Button).disabled = self.busy or not connected or not fresh or not permitted or not (target and target.native and target.model in (Model.C1000_GEN2, Model.C2000_GEN2))
+            from .plan_readback import plan_is_fresh
+            plan_fresh = plan_is_fresh(backend.preview_snapshot(self.snapshot))
+            self.query_one("#load-saved-plan", Button).disabled = self.busy or not plan_fresh
+            plan = self.snapshot.get("tou_plan_readback")
+            self.query_one("#saved-plan-status", Static).update(
+                f"Fresh saved plan · {'Enabled' if plan['enabled'] else 'Standard'} · {len(plan['periods'])} periods"
+                if plan_fresh else "Saved plan readback unavailable or stale")
 
         def render_snapshot(self, snapshot: dict) -> None:
             if (self._has_preview or self.preview_loading) and snapshot != self.snapshot:
@@ -1295,6 +1306,13 @@ def create_app(config_path: Path = DEFAULT_CONFIG, ap_service_directory: Path | 
                 self.action_gateway_reload()
             elif action == "preview-run":
                 self.action_preview()
+            elif action == "load-saved-plan":
+                from .plan_readback import plan_is_fresh
+                if not self.busy and plan_is_fresh(backend.preview_snapshot(self.snapshot)):
+                    plan = self.snapshot["tou_plan_readback"]
+                    self.query_one("#plan-text", Input).value = ",".join(
+                        f"{p['tariff']}:{p['start_hour']}:{p['end_hour']}" for p in plan["periods"])
+                    self.query_one("#plan-mode", Select).value = "activate" if plan["enabled"] else "store"
             elif action == "save-station" and self.selected:
                 async def save() -> None:
                     target = await backend.save_target(self.selected)

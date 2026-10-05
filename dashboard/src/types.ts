@@ -1,5 +1,13 @@
 export type Metric = number | string | boolean | null;
 
+export interface TouPlanReadback {
+  schema_version: 1;
+  enabled: boolean;
+  periods: { tariff: string; start_hour: number; end_hour: number }[];
+  reported_at: number;
+  source: 'status_d9';
+}
+
 export interface Station {
   name: string;
   model: string;
@@ -9,6 +17,7 @@ export interface Station {
   last_seen_timestamp: number | null;
   power_flow?: string;
   timezone_name?: string | null;
+  tou_plan_readback?: TouPlanReadback | null;
   controls: string[];
   metrics: Record<string, Metric>;
 }
@@ -82,6 +91,26 @@ export function modelLabel(model: string): string {
   return { c300: 'C300 AC', c1000: 'C1000', c1000_gen2: 'C1000 Gen 2', c2000_gen2: 'C2000 Gen 2' }[model] ?? 'SOLIX station';
 }
 
+export function savedPlan(station: Station, now: number): TouPlanReadback | null {
+  const plan = station.tou_plan_readback;
+  if (!['c1000_gen2', 'c2000_gen2'].includes(station.model) || station.protocol !== 'native_mqtt'
+    || !telemetryFresh(station, now) || !plan || plan.schema_version !== 1 || typeof plan.enabled !== 'boolean'
+    || plan.source !== 'status_d9' || !Number.isFinite(plan.reported_at)
+    || now / 1000 - plan.reported_at < -5 || now / 1000 - plan.reported_at >= 30
+    || !Array.isArray(plan.periods) || plan.periods.length > 6 || plan.enabled && !plan.periods.length) return null;
+  if (plan.periods.some((p) => !p || !['peak', 'mid_peak', 'off_peak'].includes(p.tariff)
+    || !Number.isInteger(p.start_hour) || !Number.isInteger(p.end_hour)
+    || p.start_hour < 0 || p.start_hour >= p.end_hour || p.end_hour > 24)) return null;
+  const sorted = [...plan.periods].sort((a, b) => a.start_hour - b.start_hour);
+  if (sorted.some((p, i) => i > 0 && sorted[i - 1]!.end_hour > p.start_hour)) return null;
+  return plan;
+}
+
+export function planDraft(plan: TouPlanReadback): DraftPeriod[] {
+  return plan.periods.map((period, i) => ({ id: i, tariff: period.tariff,
+    start: String(period.start_hour), end: String(period.end_hour) }));
+}
+
 export function draftFor(station: Station): Draft {
   const current = (key: string, fallback: string) => String(station.metrics[key] ?? fallback);
   return {
@@ -101,6 +130,7 @@ export function draftFor(station: Station): Draft {
     dcSaving: current('dc_power_saving_mode_enabled', ''),
     clockFirst: current('clock_screen_first_brightness_flag_raw', ''),
     clockSecond: current('clock_screen_second_brightness_flag_raw', ''),
-    periods: [],
+    periods: planDraft(savedPlan(station, Date.now()) ?? { schema_version: 1, enabled: false,
+      periods: [], reported_at: 0, source: 'status_d9' }),
   };
 }

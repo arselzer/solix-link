@@ -23,6 +23,8 @@ from .adaptive_policy import preview_adaptive_policy
 from .diagnostics import gateway_diagnostics
 from .manager import MonitorService
 from .tou import PowerFlowTimeout
+from .plan_readback import validate_plan_readback
+from .settings_export import export_settings
 
 MAX_COMMAND_BYTES = 16384
 WEB_HEADERS = {
@@ -106,6 +108,8 @@ def create_app(service: MonitorService, token: str | None = None, *, allow_contr
         private_fields = {"address", "serial_number", "account_id", "owner_id", "owner_user_id", "client_id", "raw_tlvs"}
         public = {key: value for key, value in status.items() if key not in private_fields}
         public["metrics"] = {key: value for key, value in status["metrics"].items() if key not in private_fields}
+        public["tou_plan_readback"] = validate_plan_readback(status.get("tou_plan_readback")) if (
+            status.get("model") in ("c1000_gen2", "c2000_gen2") and status.get("protocol") == "native_mqtt") else None
         if public.get("error"):
             error_class = str(public["error"]).split(":", 1)[0]
             public["error"] = error_class if re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]*Error", error_class) else "ConnectionError"
@@ -145,6 +149,12 @@ def create_app(service: MonitorService, token: str | None = None, *, allow_contr
         if name not in service.devices:
             return PlainTextResponse("Unknown device", status_code=404)
         return status_with_controls(service.snapshot(name))
+
+    @app.api_route("/devices/{name}/settings-export", methods=["GET", "HEAD"])
+    async def settings_export(name: str):
+        if name not in service.devices:
+            return PlainTextResponse("Unknown device", status_code=404)
+        return export_settings(service.snapshot(name))
 
     @app.api_route("/history", methods=["GET", "HEAD"])
     async def history_info():

@@ -21,6 +21,7 @@ from .native_mqtt import (RADIO_NATIVE_PATTERN, RADIO_QUERY_RESPONSES, NativeMqt
                           decode_mqtt_telemetry, decode_native_wireless_state)
 from .protocol import DATA_RESPONSE, Model, decode_telemetry, parse_packet, parse_tlvs, timezone_confer
 from .tou import PowerFlowTimeout, TouPeriod, periods_from_d9, power_flow, validate_periods
+from .plan_readback import plan_from_d9, validate_plan_readback
 
 
 def _original_settings(payload: bytes, *, require_inactive_ac_timer: bool = False) -> tuple[dict, bytes]:
@@ -132,6 +133,7 @@ class LocalMqttServer:
         self.connection: _Connection | None = None
         self.metrics: dict = {}
         self.last_seen: float | None = None
+        self.tou_plan_readback: dict | None = None
         self.error: str | None = None
         self._server: asyncio.Server | None = None
         self._tasks: set[asyncio.Task] = set()
@@ -144,6 +146,7 @@ class LocalMqttServer:
                 "connected": connected,
                 "available": bool(connected and self.last_seen and time.time() - self.last_seen < 30),
                 "last_seen_timestamp": self.last_seen, "error": self.error, "metrics": self.metrics.copy(),
+                "tou_plan_readback": validate_plan_readback(self.tou_plan_readback),
                 "control_enabled": self.allow_control,
                 "power_flow": power_flow(self.metrics) if self.config.model != Model.C1000 and connected and self.last_seen and time.time() - self.last_seen < 30 else "unknown"}
 
@@ -1016,6 +1019,7 @@ class _Connection:
                         15 if self.server.config.model == Model.C1000_GEN2 else 0)
                     self.server.connection = self
                     self.server.last_seen = None
+                    self.server.tou_plan_readback = None
                     self.server.error = None
                     self.server.changed()
                     self.poller = asyncio.create_task(self.poll())
@@ -1045,6 +1049,9 @@ class _Connection:
                     if update:
                         self.server.metrics = {k: v for k, v in update.metrics.items() if k != "serial_number"}
                         self.server.last_seen = time.time()
+                        if 0xD9 in update.raw_tlvs:
+                            self.server.tou_plan_readback = plan_from_d9(
+                                update.raw_tlvs[0xD9], self.server.config.model, self.server.last_seen)
                         self.server.error = None
                         self.server.changed()
                     command = frame.command.hex()

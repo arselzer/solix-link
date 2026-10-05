@@ -49,11 +49,9 @@ HA helpers, enables automation or sends a setting. Positive-export confirmation
 does not independently validate a sensor. There is no Apply action for proposals.
 See [guards and request schema](charging-policy-preview.md).
 
-Prepared Vue source also offers adaptive solar-surplus and price-driven battery
-use, simulated overrides/latch/cooldown and candidate-plan explanations. The
-server research environment has no Node runtime: **the bundled assets and browser
-screenshots still show the earlier fixed form**. Rebuild and run synthetic browser
-checks before publishing that UI. See [the adaptive contract](adaptive-policy-preview.md).
+The compiled dashboard also offers adaptive solar-surplus and price-driven
+battery-use previews, simulated overrides/latch/cooldown and candidate-plan
+explanations. These remain read-only. See [the adaptive contract](adaptive-policy-preview.md).
 
 Controls follow the selected station's advertised capabilities. Each change
 requires a review and explicit confirmation; offline or busy controls are
@@ -72,8 +70,12 @@ C1000 Gen 2 also has a guarded lower discharge limit; it cannot silently
 adjust reserve. There is no HTTP AC-output switch. Several native stations can
 share one AP: see [registration and selection](multiple-ap-devices.md).
 
-A tariff editor is a **draft**, not a copy of the station's active schedule.
-Only its active mode, tariff and slot count are available in the status API.
+The tariff editor is a **draft**. Fresh native Gen 2 saved-plan readback can
+initialize it or be loaded explicitly; polling preserves edits. Plan freshness
+is tracked separately from other telemetry. Older gateways show unavailable
+readback rather than inventing hours. **Download partial settings** exports
+sanitized cached preferences; it is incomplete and cannot restore a station.
+See [readback/export semantics](settings-export-and-plan-readback.md).
 Saving replaces the entire plan; activation persists on the station even after
 closing the browser. Check the configured station timezone before choosing
 hours. Return to grid requests confirmation from measured telemetry; it is not

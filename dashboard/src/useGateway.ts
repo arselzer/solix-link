@@ -203,7 +203,23 @@ export function useGateway() {
     return request(path, body, true, true);
   }
 
+  async function exportSettings(name: string) {
+    const value = await readOnly(`/devices/${encodeURIComponent(name)}/settings-export`);
+    if (!value || typeof value !== 'object' || !('complete' in value) || value.complete !== false
+      || !('restore_supported' in value) || value.restore_supported !== false) {
+      if (session.value) message('Partial settings export is unavailable on this gateway.', 'error');
+      return;
+    }
+    const url = URL.createObjectURL(new Blob([JSON.stringify(value, null, 2)], { type: 'application/json' }));
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'solix-partial-settings.json';
+    link.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    message('Downloaded cached preferences. This incomplete export cannot restore the station.');
+  }
+
   onUnmounted(() => disconnect(true));
   return { stations, histories, session, online, connecting, polling, busy, checking, checks, notice, noticeKind, now,
-    active: computed(() => session.value && online.value), connect, disconnect, refresh, send, fresh, checkGateway, readOnly };
+    active: computed(() => session.value && online.value), connect, disconnect, refresh, send, fresh, checkGateway, readOnly, exportSettings };
 }

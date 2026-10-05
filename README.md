@@ -33,12 +33,17 @@ Home Assistant integration for the local gateway.
 - Authenticated JSON HTTP, SSE and Prometheus for multiple stations.
 - Opt-in Home Assistant price/solar charging blueprint with telemetry freshness,
   reserve protection and a failure latch; installed automations start disabled.
+- Opt-in [adaptive surplus charging blueprint](docs/home-assistant-surplus-charging.md)
+  for C1000 Gen 2 / 1.1.4.9, with bounded steps, manual hold and an inactive
+  disaster-plan guard; prepared, disabled and not deployed.
+- [Partial settings export and saved hourly-plan readback](docs/settings-export-and-plan-readback.md)
+  through cached API, CLI, browser, terminal and HA attributes; no full restoration.
 - Read-only charging-policy previews in the browser, terminal, API and CLI; proposals
   send no commands and do not activate automations.
 - Opt-in [adaptive surplus/price previews](docs/adaptive-policy-preview.md) in
   Python, API, CLI and terminal; bounded charging steps and candidate Gen 2 battery-use plans.
   [Offline timeline replay](docs/policy-timeline-replay.md) exports JSON or standalone SVG.
-  Adaptive Vue source is prepared; its browser bundle still needs rebuilding.
+  The adaptive Vue interface is compiled and covered by synthetic browser scenarios.
 - Optional private SQLite history with saved battery/AC-power charts, estimated
   AC energy and coverage; gaps and process restarts stop integration. Includes
   [HA diagnostics](docs/home-assistant-history.md) and

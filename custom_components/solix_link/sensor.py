@@ -7,7 +7,7 @@ from homeassistant.components.sensor import SensorDeviceClass, SensorEntity, Sen
 from homeassistant.const import EntityCategory, PERCENTAGE, UnitOfEnergy, UnitOfPower, UnitOfTemperature, UnitOfTime
 from homeassistant.core import callback
 
-from .api import numeric
+from .api import numeric, parse_tou_plan, snapshot_available
 from .coordinator import SolixConfigEntry
 from .entity import SolixEntity
 from .history import history_available
@@ -129,6 +129,17 @@ class SolixSensor(SolixEntity, SensorEntity):
     @property
     def available(self) -> bool:
         return self.native_value is not None and super().available
+
+    @property
+    def extra_state_attributes(self) -> dict:
+        attributes = dict(super().extra_state_attributes)
+        if self.entity_description.key == "usage_mode":
+            plan = parse_tou_plan(self.snapshot.get("tou_plan_readback"))
+            if plan is not None:
+                age = time.time() - plan["reported_at"]
+                attributes.update(saved_tou_plan=plan, saved_tou_plan_fresh=self.available
+                                  and snapshot_available(self.snapshot, 30) and -5 <= age < 30)
+        return attributes
 
 
 class SolixHistorySensor(SolixEntity, SensorEntity):

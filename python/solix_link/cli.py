@@ -39,6 +39,13 @@ def parser() -> argparse.ArgumentParser:
     gateway_history.add_argument("--until", type=float, help="UNIX seconds; default gateway clock")
     gateway_history.add_argument("--limit", type=int, default=200, help="1–2000 points (default 200)")
 
+    export = subcommands.add_parser("settings-export", help="Export cached preferences as partial JSON; no station commands or restore")
+    source = export.add_mutually_exclusive_group(required=True)
+    source.add_argument("--snapshot-file", type=Path)
+    source.add_argument("--gateway-url")
+    export.add_argument("--gateway-token-file", type=Path)
+    export.add_argument("--name", help="Exact public station name for gateway reads")
+
     scan = subcommands.add_parser("scan", help="Find C300 AC, C1000, and C1000/C2000 Gen 2 devices")
     scan.add_argument("--timeout", type=float, default=8)
 
@@ -465,6 +472,23 @@ def main(argv: list[str] | None = None) -> int:
             from .gateway_client import GatewayClient
             client = GatewayClient(args.gateway_url, args.gateway_token_file)
             print(json.dumps(client.history(args.name, since=args.since, until=args.until, limit=args.limit), indent=2))
+        elif args.command == "settings-export":
+            from .settings_export import export_settings
+            if args.snapshot_file:
+                if args.name or args.gateway_token_file:
+                    raise ValueError("Gateway arguments require --gateway-url")
+                from .charging_preview_cli import read_document
+                from .charging_policy import ChargingPolicyRequestError
+                try:
+                    snapshot = read_document(args.snapshot_file, 1_048_576)
+                except ChargingPolicyRequestError:
+                    raise ValueError("Invalid saved snapshot for partial settings export") from None
+            else:
+                if not args.name:
+                    raise ValueError("Gateway export requires --name")
+                from .gateway_client import GatewayClient
+                snapshot = GatewayClient(args.gateway_url, args.gateway_token_file).snapshot(args.name)
+            print(json.dumps(export_settings(snapshot), indent=2))
         elif args.command == "scan":
             asyncio.run(_scan(args.timeout))
         elif args.command == "ble-inspect":

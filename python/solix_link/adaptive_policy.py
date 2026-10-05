@@ -71,8 +71,8 @@ def preview_adaptive_policy(snapshot: object, request: object, *, now: float | N
     """Return candidate settings/plan from saved inputs, without mutating inputs.
 
     Tariff proposals require Standard mode and zero stored tariff slots. The
-    current gateway snapshot cannot prove ownership or exact hours of an active
-    plan; it is insufficient for automatically replacing or restoring one.
+    cached plan readback does not establish this policy's ownership or safe
+    restoration of an active plan. Nonempty plans remain excluded here.
     State describes the previous *preview*, not a confirmed executed action.
     """
     config, base = _parse(request)

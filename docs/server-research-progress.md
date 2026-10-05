@@ -898,3 +898,109 @@ checked; sanitized request/verification records stay ignored with modes 700/600.
 or cloud request, settings/identity change, network/service operation, deployment,
 automation activation, push or merge occurred. C2000 outputs and live HA/AP/
 gateway configuration remain untouched. Prepared changes are local only.
+
+## Saved-plan, partial-export and adaptive-surplus integration — 2026-10-05
+
+This reviewable batch follows **`b98430b`**. The latest user request authorizes
+feature integration and noncritical C1000 experimentation, with C2000 server
+power protected. A restricted private handoff addendum records that scope.
+This batch sends **zero station commands** and leaves live services untouched.
+
+### Implemented
+
+- Native Gen 2 `tou_plan_readback` carries validated complete hourly slots and
+  an independent host timestamp. Missing D9 cannot refresh it; malformed D9
+  invalidates it; connection replacement clears it. Freshness requires both
+  station and plan ages within -5..30 seconds, excluding the upper bound.
+  This is a complete hourly-slot readback, not a complete settings backup.
+  Existing command-result `tou_plan` lists remain compatible.
+- SDK/gateway clients, HTTP/SSE snapshots and HA parsing preserve detached,
+  bounded public plan data. HA Usage mode exposes `saved_tou_plan` and
+  `saved_tou_plan_fresh`. Browser and terminal F3 load a fresh saved plan into a
+  local draft without station requests; ordinary polling preserves edits.
+- Partial preferences export: Python `export_settings()`, CLI `settings-export`,
+  cached authenticated GET `/devices/{name}/settings-export` and browser JSON
+  download. Model/firmware and known validated preferences are retained;
+  names, identities, credentials, raw bytes and output states are omitted.
+  `complete`, `restore_supported` and `field_freshness_verified` are false.
+  Unknown/invalid values are omitted, not converted into defaults.
+- Opt-in HA surplus blueprint: bounded nonzero charging steps, target export,
+  deadband, hysteresis, reserve protection, cooldown, explicit manual hold/charge,
+  entity ownership/role checks and a failure latch. It rechecks conditions
+  between commands and rejects a concurrent charging-limit change. The existing
+  fixed blueprint and preview contracts retain their behavior.
+- Firmware-backed disaster preparation can override normal charging bounds.
+  The new read-only A1763 HA diagnostic provides a confirmed inactive guard.
+  The first adaptive executor therefore accepts **C1000 Gen 2 / 1.1.4.9 only**;
+  active/unknown disaster state, original/C2000 models and other firmware block
+  it. No C2000 disaster semantics are inferred from A1763. Automation starts
+  disabled and has not been installed or enabled.
+- Adaptive Vue previews are now type-checked, compiled and browser-verified.
+  The packaged bundle and synthetic screenshots are refreshed; runtime needs
+  no Node/CDN. Public docs describe interfaces, evidence and remaining limits:
+  [export/readback](settings-export-and-plan-readback.md),
+  [surplus blueprint](home-assistant-surplus-charging.md).
+
+### Verification and versions
+
+Final focused gate: **565 Python/HA tests passed in 23.95 seconds**. Selected:
+`test_plan_readback.py`, `test_settings_export.py`, `test_mqtt_startup.py`,
+`test_tou.py`, `test_gateway_client.py`, `test_server_readonly_features.py`,
+`test_adaptive_policy.py`, `test_tui.py`, `test_tui_gateway.py`,
+`test_plan_readback_contract.py`, `test_surplus_blueprint.py`,
+`test_charging_blueprint.py`, `test_gateway_contract.py`,
+`test_freshness_entities.py`, `test_diagnostics_privacy.py`.
+Socket/terminal regressions ran with reviewed local test access; no timer
+adapter or production scheduling changes were needed. Restricted runs first
+identified denied synthetic Unix/loopback sockets, not station failures.
+
+`npm run build:dashboard` passed TypeScript/Vue checks and Vite compilation.
+**28 browser scenarios passed** against a temporary loopback-only synthetic
+gateway, including read-only plan loading, download sanitization, independent
+expiry, malformed plans, draft preservation, authentication and existing
+controls/previews. Browser errors and external request lists were empty.
+Screenshots contain synthetic data only. These do not run HA's live automation
+engine or establish electrical behavior. The previous 3,007/24 broad baseline
+is not counted again or claimed rerun.
+
+Analysis/test runtime: Python **3.14.4**, pytest **9.1.1**, Bleak **3.0.2**,
+FastAPI **0.142.2**, Textual **8.2.8**. Development-only Node **22.20.0** and
+Playwright **1.63.0** are private workspace installs, not system/service changes.
+The official Node archive was verified against its published SHA-256 before
+extraction. Exact source/bundle hashes and invocation metadata remain in the
+ignored verification manifest; no development binaries enter Git.
+
+One authenticated cached `GET /devices` at **22:06:37 UTC** recognized:
+
+| Model | Reported firmware | Telemetry age | Exported preferences |
+| --- | --- | ---: | ---: |
+| Original C1000 | 1.7.1 | 3.356 s | 9 |
+| C1000 Gen 2 | 1.1.4.9 | 2.994 s | 15 |
+
+The token remained in memory; redirects/proxies were disabled and the response
+was bounded. Only sanitized C1000 exports were saved privately, without station
+names or identities. The deployed worker did not provide the new plan field;
+that check validates partial export against cached telemetry, not live saved-
+plan readback. C2000 was not controlled. No new firmware instruction replay,
+BLE connection, cloud request, identity/provisioning change or physical test
+occurred. Existing hash-pinned A1763 firmware evidence is reused with its scope.
+
+### Remaining requirements
+
+Review/deploy worker, gateway bundle and HA component together before checking
+live plan readback; updating HA alone cannot create the worker field. Deployment
+and automation activation are separate steps, neither performed here. The
+separate observer/restart-check services were neither queried nor changed.
+
+Before enabling surplus, confirm export sign/units and measure saved-limit
+versus actual charging response on a noncritical C1000 Gen 2. Original charging
+rate requires a below-full battery, test load and independent meter. Account-
+free identity replacement needs physical recovery access. True pause encoding,
+calibrated battery energy, hidden settings/full restoration, price-driven TOU
+ownership/recovery and qualified offline OTA remain research boundaries.
+C2000 adaptive execution needs its own established charging-override readback.
+
+AGENTS.md is unchanged; preexisting `python/build/` is preserved. Private inputs,
+phone data, identities, credentials and raw logs stay ignored. No live HA/AP/
+gateway/network change, automation activation, push or merge occurred. Changes
+are prepared for a local commit only.

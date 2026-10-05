@@ -5,6 +5,10 @@ uses the existing local SOLIX Link integration for **C1000 Gen 2** and
 **C2000 Gen 2**. It has not been activated on the development HA node.
 The original C1000 is excluded from this policy.
 
+For bounded surplus-following steps instead of two fixed watt levels, use the
+separate [adaptive surplus blueprint](home-assistant-surplus-charging.md).
+It is prepared locally and starts disabled; this fixed blueprint is unchanged.
+
 ## Prepared development-node draft
 
 On 2026-10-02, actual HA **2026.7.4** validated and saved a C1000 Gen 2

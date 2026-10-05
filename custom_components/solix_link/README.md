@@ -26,9 +26,14 @@ Authorization header. Treat HA configuration backups as containing credentials.
   telemetry is available. Unknown/stale values become unavailable. The Gen 2
   mains transition was verified by unplug/replug on C1000; C2000 is checked
   against baseline/reference data without unplugging its server supply.
+- C1000 Gen 2 read-only **Disaster preparation active** diagnostic, from D9.
+  Unknown values remain unavailable; this is not a complete plan exporter.
+  The prepared adaptive surplus blueprint requires inactive readback.
 - Sensors: battery percentage/status, temperature, AC/DC/total output power,
   AC input power, usage mode, active tariff and observed AC power source, when
-  reported by the gateway. Power sensors support HA statistics and can feed
+  reported by the gateway. Native Gen 2 Usage mode also exposes validated
+  `saved_tou_plan` and independently checked `saved_tou_plan_fresh` attributes;
+  missing readback remains unknown. Power sensors support HA statistics and can feed
   HA's Integral helper; no unverified firmware energy counters are published.
 - Numbers: AC charging power limit, charge cap and backup reserve. A number is
   created only for a supported model when telemetry exists and the gateway

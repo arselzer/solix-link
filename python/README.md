@@ -70,6 +70,15 @@ and `POST /devices/{name}/adaptive-preview`. These remain read-only with no
 executor. [Timeline replay](../docs/policy-timeline-replay.md) accepts saved frames
 and exports JSON or SVG; it never fabricates charging/SOC response from a proposal.
 
+`settings-export --snapshot-file snapshot.json` exports sanitized partial
+preferences; `--gateway-url`, `--gateway-token-file` and `--name` select a cached
+gateway snapshot instead. The API/browser download uses
+`GET /devices/{name}/settings-export`. This cannot restore a station. Native
+Gen 2 saved TOU readback has its own freshness timestamp and can populate the
+browser/terminal draft; see [export/readback](../docs/settings-export-and-plan-readback.md).
+The separate [HA surplus blueprint](../docs/home-assistant-surplus-charging.md)
+can execute bounded steps when explicitly enabled; preview calls remain pure.
+
 ## Terminal dashboard and HA gateway
 
 ```sh

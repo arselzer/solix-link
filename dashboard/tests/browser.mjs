@@ -2,7 +2,7 @@
 import assert from 'node:assert/strict';
 import { spawn } from 'node:child_process';
 import { once } from 'node:events';
-import { mkdir } from 'node:fs/promises';
+import { mkdir, readFile } from 'node:fs/promises';
 import net from 'node:net';
 import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright';
@@ -92,6 +92,58 @@ try {
   assert.equal(await page.getByRole('button', { name: /AC output/i }).count(), 0);
   cases++; console.log(`Scenario ${cases} passed`);
 
+  const savedPlanPosts = posts;
+  const planNow = await page.evaluate(() => Date.now() / 1000);
+  const freshPlan = { schema_version: 1, enabled: false, source: 'status_d9', reported_at: planNow - 2,
+    periods: [{ tariff: 'off_peak', start_hour: 0, end_hour: 6 }, { tariff: 'peak', start_hour: 6, end_hour: 24 }] };
+  await change({ plan_readback: freshPlan });
+  await refresh();
+  assert.match(await page.getByTestId('saved-plan-status').textContent(), /Fresh saved plan/);
+  assert.equal(await page.getByTestId('saved-plan-periods').locator('li').count(), 2);
+  await page.getByTestId('load-saved-plan').click();
+  assert.equal(await page.locator('.period-row').count(), 2);
+  assert.equal(await page.locator('.period-row').nth(1).locator('select').inputValue(), 'peak');
+  assert.equal(await page.locator('.period-row').nth(1).locator('input').nth(0).inputValue(), '6');
+  await page.locator('.period-row').nth(1).locator('input').nth(0).fill('8');
+  await refresh();
+  assert.equal(await page.locator('.period-row').nth(1).locator('input').nth(0).inputValue(), '8');
+  await change({ readonly: true });
+  await refresh();
+  assert.equal(await page.getByTestId('load-saved-plan').isEnabled(), true);
+  await page.getByTestId('load-saved-plan').click();
+  assert.equal(await page.locator('.period-row').nth(1).locator('input').nth(0).inputValue(), '6');
+  assert.equal(await page.getByRole('button', { name: 'Activate plan', exact: true }).isDisabled(), true);
+  await page.screenshot({ path: `${root}/docs/images/web-saved-plan-readback.png`, fullPage: true });
+  assert.equal(posts, savedPlanPosts);
+  cases++; console.log(`Scenario ${cases} passed`);
+
+  const downloadPending = page.waitForEvent('download');
+  await page.getByTestId('settings-export').click();
+  const download = await downloadPending;
+  const partialSettings = JSON.parse(await readFile(await download.path(), 'utf8'));
+  assert.equal(partialSettings.complete, false);
+  assert.equal(partialSettings.restore_supported, false);
+  assert.equal(partialSettings.field_freshness_verified, false);
+  assert.equal(partialSettings.tou_plan_fresh, true);
+  assert.equal('name' in partialSettings, false);
+  assert.equal('ac_output_enabled' in partialSettings.settings, false);
+  assert.equal(posts, savedPlanPosts);
+  cases++; console.log(`Scenario ${cases} passed`);
+
+  await change({ readonly: false, plan_readback: { ...freshPlan, reported_at: planNow - 31 } });
+  await refresh();
+  assert.equal(await page.getByTestId('load-saved-plan').isDisabled(), true);
+  assert.match(await page.getByTestId('saved-plan-status').textContent(), /unavailable or stale/);
+  await change({ plan_readback: { ...freshPlan, periods: [freshPlan.periods[0], freshPlan.periods[0]] } });
+  await refresh();
+  assert.equal(await page.getByTestId('load-saved-plan').isDisabled(), true);
+  await change({ plan_readback: null });
+  await refresh();
+  await page.getByRole('button', { name: 'Remove period 2', exact: true }).click();
+  await page.getByRole('button', { name: 'Remove period 1', exact: true }).click();
+  assert.equal(posts, savedPlanPosts);
+  cases++; console.log(`Scenario ${cases} passed`);
+
   await page.locator('#charging-power').selectOption('100');
   await page.getByRole('button', { name: 'Add period' }).click();
   await page.locator('.period-row').first().locator('input').nth(1).fill('6');
@@ -125,7 +177,7 @@ try {
   await page.getByTestId('open-checks').click();
   await page.getByTestId('setup-unavailable').waitFor();
   assert.equal(await page.getByTestId('gateway-checks').getByText('Checking…').count(), 0);
-  assert.match(await page.getByTestId('gateway-notice').textContent(), /Connected to the local gateway/);
+  assert.match(await page.getByTestId('gateway-notice').textContent(), /Downloaded cached preferences/);
   await page.getByTestId('close-checks').click();
   await page.unroute('**/setup-check');
   cases++; console.log(`Scenario ${cases} passed`);

@@ -33,6 +33,18 @@ class Response(io.BytesIO):
     pass
 
 
+def test_saved_plan_contract_drops_raw_fields_and_other_models():
+    plan = dict(schema_version=1, enabled=False, reported_at=1000, source="status_d9",
+                periods=[dict(tariff="peak", start_hour=0, end_hour=24)])
+    value = {**device(), "tou_plan_readback": plan}
+    result = GatewayClient._station(value)
+    result["tou_plan_readback"]["periods"].clear()
+    assert plan["periods"]
+    assert result["control_enabled"] is False
+    assert GatewayClient._station({**value, "model": "c1000"})["tou_plan_readback"] is None
+    assert GatewayClient._station({**value, "tou_plan_readback": {**plan, "identity": "PRIVATE"}})["tou_plan_readback"] is None
+
+
 class Opener:
     def __init__(self, body):
         self.body = body if isinstance(body, bytes) else json.dumps(body).encode()

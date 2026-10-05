@@ -1,6 +1,6 @@
 # Implementation gaps and validation priorities
 
-Status on **2026-10-05**, source checkpoint **`884e9c5`**. This separates
+Status on **2026-10-05**, following source checkpoint **`b98430b`**. This separates
 missing product features, unresolved protocol support, hardware validation and
 deployment work. A firmware replay or saved-setting ACK is not an electrical
 measurement. Recent server-branch changes remain local and undeployed.
@@ -35,9 +35,9 @@ Device Timeout is implemented for both C1000 generations.
 | --- | --- | --- |
 | **True charging pause / AC-input disable** | No established public encoder or verified station control. Lower nonzero watts and charge caps are separate controls. | Recover the protected SDK encoder and exact firmware routing/readback, then measure charging and output behavior. [Action boundary](gen2-iot-action-firmware-boundary.md) |
 | **Original C1000 battery use with mains connected** | No demonstrated external command selecting battery supply while retaining AC output. Reserve/TOU/charge-cap support is unestablished. | Recover installed main 1.7.1 and trace a supported route; use independent metering if a candidate is found. [Bypass audit](c1000-bypass-firmware-followup.md) |
-| **Complete settings export and restoration** | Ordinary status omits hidden clock/automatic-backup state. All 19 Gen 2 callbacks were replayed; distinct configurations still collide. | Establish a separate complete readback route before backup/import or full restoration. [Full inventory](gen2-full-status-inventory.md) |
+| **Complete settings export and restoration** | Sanitized partial exports and independently fresh native TOU readback are implemented locally. Ordinary status still omits hidden clock/automatic-backup state; distinct configurations collide across all 19 callbacks. | Establish complete readback before backup/import or full restoration. [Partial export](settings-export-and-plan-readback.md), [full inventory](gen2-full-status-inventory.md) |
 | **Calibrated battery energy / HA Energy statistics** | Saved AC-power integrals include bypass loads and gaps. Raw firmware units, timing and reset/retention epochs are unverified. | Per-model meter/counter/time calibration and noncritical retention tests. Existing AC estimates cannot become battery lifetime energy by renaming them. [Energy boundaries](gen2-energy-epochs.md) |
-| **Adaptive solar/price execution** | Python/API/CLI/terminal previews and timeline replay exist; no adaptive executor. Existing HA fixed charging blueprint is prepared and disabled. | Verify export sign and consumption response, expose complete required plan state, establish control ownership, then design opt-in execution. [Adaptive contract](adaptive-policy-preview.md) |
+| **Adaptive solar/price execution** | Pure previews/timeline replay and a compiled browser exist. An opt-in HA surplus blueprint implements guarded C1000 Gen 2 / 1.1.4.9 charging steps but is undeployed/disabled. C2000 needs an established override readback; price TOU stays preview-only. | Verify export sign/consumption before enabling surplus. Establish persistent plan ownership/recovery before tariff execution. [Surplus blueprint](home-assistant-surplus-charging.md), [adaptive contract](adaptive-policy-preview.md) |
 | **Local firmware-update workflow** | Official update capture and firmware analysis exist; no offline installer, version chooser or recovery workflow. Installed original main 1.7.1 remains unavailable for analysis. | Obtain qualified artifact metadata, product/component checks, integrity verification and established update/recovery transport before an installer. [OTA metadata](c1000-firmware-metadata-followup.md) |
 | **Additional Gen 2 app features** | Clock/theme scheduling, resource upload, language and disaster/Storm Guard plans have partial firmware evidence, without complete safe public controls. Clock brightness is already implemented separately. | Establish enums and hidden-field readback; verify physical behavior and restoration. Active disaster plans can override saved charging bounds. [Clock state](gen2-clock-screen-preservation.md), [disaster plans](gen2-disaster-plan-investigation.md) |
 | **Transport/model parity** | Native C2000 general preferences/Smart are not exposed; C300 DC is unsupported and C300 AC native MQTT is not established. The browser BLE explorer retains some older maps. | Validate each model/transport independently, then add interfaces without generalizing A1763 firmware evidence. [Model evidence](../python/README.md) |
@@ -67,14 +67,16 @@ display preference. See [preference candidates](gen2-preference-candidates.md).
 
 ## Prepared deployment work
 
-Adaptive browser source needs type-checking, synthetic browser tests and a
-rebuilt bundle; this server currently has neither Node nor npm. Eight optional
+The adaptive browser and saved-plan/export UI are type-checked, rebuilt and
+covered by synthetic browser scenarios. Development tools are isolated in an
+ignored workspace directory; the live deployment is unchanged. Eight optional
 HA history entities and terminal F5/F6 panels are implemented but remain
 undeployed during the separate observation. The newest `ble-inspect` command
 is likewise a local repository addition. No automation is activated here.
 
-Suggested order: finish browser/HA presentation for review; improve complete
-cached plan readback; validate original charging and account-free setup when
-physical access is available; pursue pause encoding and calibrated energy in
-parallel with offline analysis. No deployment or station write is implied by
+Suggested order: review the prepared worker/gateway/HA/UI changes; verify
+saved TOU readback after a deliberate deployment; measure surplus and original
+charging response on noncritical hardware; validate account-free setup with
+physical recovery available; pursue pause encoding and calibrated energy
+through offline analysis. No deployment or station write is implied by
 this list. See [current progress](server-research-progress.md).

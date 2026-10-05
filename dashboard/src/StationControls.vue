@@ -1,9 +1,14 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import type { Command, Draft, Proposal, Station } from './types';
-import { numberMetric } from './types';
+import { numberMetric, planDraft, savedPlan } from './types';
 
-const props = defineProps<{ station: Station; draft: Draft; writable: boolean }>();
+const props = defineProps<{ station: Station; draft: Draft; writable: boolean; now: number }>();
+const readback = computed(() => savedPlan(props.station, props.now));
+function loadPlan() {
+  const plan = savedPlan(props.station, props.now);
+  if (plan) props.draft.periods = planDraft(plan);
+}
 const emit = defineEmits<{ propose: [proposal: Proposal] }>();
 const allowed = (command: string) => props.station.controls.includes(command);
 const observed = (key: string, unit = '') => {
@@ -245,10 +250,12 @@ function addPeriod() {
     </div>
   </section>
 
-  <section v-if="allowed('set-tou-plan') || allowed('return-grid')" class="panel schedule-panel">
+  <section v-if="allowed('set-tou-plan') || allowed('return-grid') || station.tou_plan_readback" class="panel schedule-panel">
     <div class="panel-heading"><div><p class="eyebrow">Energy scheduling</p><h2>Hourly plan <span class="draft-label">Draft</span></h2></div><span class="tag">{{ station.timezone_name || 'Timezone unknown' }} · {{ clock }}</span></div>
-    <p class="schedule-note">The station reports {{ observed('tou_schedule_slot_count') }} saved periods; their times are unavailable. This editor starts as a new draft. Changes persist until you replace the plan or return to grid.</p>
-    <div v-if="allowed('set-tou-plan')" class="plan-editor">
+    <p class="schedule-note" data-testid="saved-plan-status">{{ readback ? `Fresh saved plan · ${readback.enabled ? 'Enabled' : 'Stored in Standard'} · ${readback.periods.length} periods` : 'Saved plan readback unavailable or stale.' }} Changes persist until you replace the plan or return to grid.</p>
+    <ul v-if="readback" data-testid="saved-plan-periods"><li v-for="(period, i) in readback.periods" :key="i">{{ period.tariff.replace('_', ' ') }} · {{ period.start_hour }}:00–{{ period.end_hour }}:00</li></ul>
+    <button class="secondary" data-testid="load-saved-plan" :disabled="!readback" @click="loadPlan">Load saved plan into draft</button>
+    <div v-if="allowed('set-tou-plan') || station.tou_plan_readback" class="plan-editor">
       <div v-if="!draft.periods.length" class="empty-plan"><span class="empty-symbol">⌁</span><strong>No periods in this draft</strong><span>Add whole-hour periods, or save this empty draft to clear the schedule.</span></div>
       <div v-for="(period, index) in draft.periods" :key="period.id" class="period-row">
         <span class="period-index">{{ String(index + 1).padStart(2, '0') }}</span>

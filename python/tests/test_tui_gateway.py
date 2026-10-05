@@ -81,6 +81,42 @@ def test_gateway_backend_has_no_transport_fallback_or_control_capability():
     asyncio.run(run())
 
 
+def test_saved_plan_load_is_local_and_expires_independently():
+    pytest.importorskip("textual")
+    from textual.widgets import Button, Input, TabbedContent
+
+    class PlannedGateway(FakeGateway):
+        def snapshot(self, name):
+            result = super().snapshot(name)
+            result["tou_plan_readback"] = dict(schema_version=1, enabled=False, reported_at=self.timestamp,
+                source="status_d9", periods=[dict(tariff="peak", start_hour=6, end_hour=24)])
+            return result
+
+    async def run():
+        client = PlannedGateway()
+        backend = backend_for(client)
+        app = create_app(backend=backend)
+        async with app.run_test(size=(110, 44)) as pilot:
+            await pilot.pause()
+            app.action_connect()
+            await pilot.pause()
+            await app.workers.wait_for_complete()
+            app.query_one(TabbedContent).active = "plan"
+            await pilot.pause()
+            load = app.query_one("#load-saved-plan", Button)
+            assert not load.disabled
+            await pilot.click("#load-saved-plan")
+            await pilot.pause()
+            assert app.query_one("#plan-text", Input).value == "peak:6:24"
+            assert app.query_one("#apply-plan", Button).disabled
+            assert {call[0] for call in client.calls} <= {"devices", "snapshot"}
+            app.snapshot["tou_plan_readback"]["reported_at"] = time.time()-31
+            app.snapshot["last_seen_timestamp"] = time.time()
+            app.render_snapshot(app.snapshot)
+            assert app.query_one("#load-saved-plan", Button).disabled
+    asyncio.run(run())
+
+
 def test_headless_history_and_manual_preview_are_fixed_and_read_only(tmp_path):
     pytest.importorskip("textual")
     from textual.widgets import Button, DataTable, Input, RichLog, TabbedContent

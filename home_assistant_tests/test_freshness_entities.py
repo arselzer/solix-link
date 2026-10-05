@@ -89,6 +89,36 @@ def snapshot(**changes):
         "metrics": {}, "controls": []} | changes
 
 
+@pytest.mark.parametrize("model,value,available", [("c1000_gen2", 0, True), ("c1000_gen2", 1, True),
+    ("c1000_gen2", "unknown", False), ("c1000_gen2", None, False), ("c2000_gen2", 0, False),
+    ("c1000", 0, False)])
+def test_disaster_flag_is_read_only_explicit_and_model_scoped(platform, model, value, available):
+    data = snapshot(model=model, metrics={"disaster_preparation_active": value})
+    description = next(item for item in platform.binary.DESCRIPTIONS if item.key == "disaster_preparation_active")
+    entity = platform.binary.SolixBinarySensor(coordinator({"station": data}), "station", description)
+    assert entity.available is available
+    assert entity.is_on == (bool(value) if type(value) is int else None)
+    assert entity.extra_state_attributes["solix_link_role"] == "disaster_preparation_active"
+    assert not hasattr(entity, "async_turn_on")
+
+
+@pytest.mark.parametrize("plan_age,telemetry_age,fresh", [(1, 1, True), (31, 1, False),
+    (-6, 1, False), (1, 31, False)])
+def test_saved_plan_has_independent_freshness_attributes(platform, plan_age, telemetry_age, fresh):
+    value = snapshot(last_seen_timestamp=NOW-telemetry_age, metrics={"usage_mode": "standard"},
+        tou_plan_readback=dict(schema_version=1, enabled=False, reported_at=NOW-plan_age,
+                              source="status_d9", periods=[]))
+    coordinator = SimpleNamespace(data={"test_station": value}, endpoint_id="synthetic", last_update_success=True)
+    description = next(item for item in platform.sensor.DESCRIPTIONS if item.key == "usage_mode")
+    entity = platform.sensor.SolixSensor(coordinator, "test_station", description)
+    attributes = entity.extra_state_attributes
+    assert attributes["saved_tou_plan_fresh"] is fresh
+    assert attributes["solix_link_role"] == "usage_mode"
+    assert attributes["saved_tou_plan"]["reported_at"] == NOW-plan_age
+    attributes["saved_tou_plan"]["periods"].append({"private": "not retained"})
+    assert entity.extra_state_attributes["saved_tou_plan"]["periods"] == []
+
+
 def coordinator(data):
     listeners = []
 

@@ -7,6 +7,10 @@ copies validated settings, and sends **zero commands**. It has no executor,
 automation activation, configuration writer or station connection.
 
 The existing charge-only preview and HA blueprint keep their previous behavior.
+The separate [surplus blueprint](home-assistant-surplus-charging.md) implements
+opt-in bounded charging steps in HA; it is prepared but not activated. Preview
+functions and HTTP endpoints still send no commands. Price-driven TOU execution
+and automatic ownership/restoration of persistent plans remain unresolved.
 The new contract is available through the Python function and offline CLI:
 
 ```sh
@@ -25,11 +29,10 @@ request file. Optional manual value/age inputs retain all original validation
 and never write the file or returned state. The cached AP CLI also accepts
 `ap-service-charging-preview --adaptive`.
 
-Vue source adds **Fixed charging / Adaptive solar / Price-driven battery use**
-choices and candidate-plan explanations. **Browser assets are not rebuilt or
-verified on this server: Node is unavailable.** The packaged browser still has
-the earlier fixed preview until `npm run build:dashboard` and synthetic browser
-checks are run. There is no Apply action for either preview contract.
+The compiled Vue dashboard offers **Fixed charging / Adaptive solar /
+Price-driven battery use** choices and candidate-plan explanations. Its bundle
+is type-checked and covered by synthetic browser scenarios on this branch.
+There is no Apply action for either preview contract.
 
 For sequence testing and a standalone visualization, see
 [offline timeline replay](policy-timeline-replay.md).

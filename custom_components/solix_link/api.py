@@ -22,7 +22,7 @@ METRICS = frozenset({"battery_percentage", "temperature_c", "output_power_w",
                     "ac_output_timeout_seconds", "dc_output_timeout_seconds",
                     "ac_charging_power_limit_w", "max_charge_percentage",
                     "min_charge_percentage", "backup_reserve_percentage",
-                    "active_tariff", "usage_mode", "tou_schedule_slot_count",
+                    "active_tariff", "usage_mode", "tou_schedule_slot_count", "disaster_preparation_active",
                     "ac_fast_charge_enabled", "software_version",
                     "temperature_unit_fahrenheit", "ac_off_grid_alert_enabled", "device_timeout_minutes",
                     "ac_power_saving_mode_enabled", "dc_power_saving_mode_enabled",
@@ -106,6 +106,33 @@ def snapshot_available(snapshot: dict, max_age: float = 90, now: float | None = 
     return -5 <= age <= max_age
 
 
+def parse_tou_plan(value: Any) -> dict | None:
+    """Standalone HA validation; no SDK/Bluetooth dependencies or raw fields."""
+    if (type(value) is not dict or set(value) != {
+            "schema_version", "enabled", "periods", "reported_at", "source"}
+            or type(value["schema_version"]) is not int or value["schema_version"] != 1
+            or type(value["enabled"]) is not bool or value["source"] != "status_d9"
+            or type(value["reported_at"]) not in (int, float)
+            or not 0 <= value["reported_at"] <= 253402300799
+            or not math.isfinite(value["reported_at"])
+            or type(value["periods"]) is not list or len(value["periods"]) > 6):
+        return None
+    periods = []
+    for item in value["periods"]:
+        if (type(item) is not dict or set(item) != {"tariff", "start_hour", "end_hour"}
+                or item["tariff"] not in ("peak", "mid_peak", "off_peak")
+                or type(item["start_hour"]) is not int or type(item["end_hour"]) is not int
+                or not 0 <= item["start_hour"] < item["end_hour"] <= 24):
+            return None
+        periods.append(item.copy())
+    ordered = sorted(periods, key=lambda item: item["start_hour"])
+    if (value["enabled"] and not periods or any(
+            left["end_hour"] > right["start_hour"] for left, right in zip(ordered, ordered[1:]))):
+        return None
+    return {"schema_version": 1, "enabled": value["enabled"], "periods": periods,
+            "reported_at": value["reported_at"], "source": "status_d9"}
+
+
 def parse_snapshot(value: Any) -> dict:
     """Validate the gateway contract and discard identity/raw diagnostic fields."""
     if not isinstance(value, dict):
@@ -123,6 +150,8 @@ def parse_snapshot(value: Any) -> dict:
     result = {key: value[key] for key in ("name", "model", "protocol", "connected", "available")}
     result["last_seen_timestamp"] = numeric(value.get("last_seen_timestamp"))
     result["controls"] = sorted(set(controls) & COMMANDS)
+    result["tou_plan_readback"] = parse_tou_plan(value.get("tou_plan_readback")) if (
+        value["model"] in ("c1000_gen2", "c2000_gen2") and value["protocol"] == "native_mqtt") else None
     result["metrics"] = {key: metric for key, metric in value["metrics"].items()
                          if key in METRICS and (numeric(metric) is not None or isinstance(metric, str))}
     if value.get("power_flow") in ("unknown", "battery", "grid", "transitioning"):
