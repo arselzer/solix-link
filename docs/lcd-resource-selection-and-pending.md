@@ -169,3 +169,9 @@ consumer may require a separately obtained public image. Establish commit and
 recovery before exposing a transfer API. True charging pause, account-free
 ingress, full saved-state readback and physical calibration remain independent
 needs. **Zero station commands were sent; the live deployment is unchanged.**
+
+The [pending-worker continuation](lcd-pending-worker-and-resource-destinations.md)
+now identifies those fields as scheduler records, executes the refresh bitmap
+and follows special/ordinary callbacks to reset preparation or the marker
+consumer. It establishes all fourteen first resource-erase destinations while
+stopping before writes. Bootloader installation and recovery remain unresolved.

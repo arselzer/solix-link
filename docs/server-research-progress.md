@@ -519,3 +519,66 @@ samples and separately authorized retention testing.
 **Zero station commands were sent.** No BLE scan, station/profile/phone read,
 MQTT/cloud request, network/service change, observer query, deployment, push,
 merge or automation activation occurred. C2000 and live settings are untouched.
+
+## LCD pending callbacks, bitmap and first erase destinations — 2026-10-05
+
+This follows local checkpoint **`5ef8ca8`** on `server/research-20261004`.
+The [pending-worker proof](lcd-pending-worker-and-resource-destinations.md) adds
+**58 synthetic instruction cases and ten negative guards**. The complete
+result/manifest pair independently reproduces, including source hashes.
+Only analysis tools, synthetic metadata and documentation change.
+
+- Recovered initialized data identifies the pending fields as event records:
+  `200002b8` is event 1's interval, `200002c4` its counter, and `20000400`
+  event 11's retained argument. Transitioning to enabled resets the counter;
+  repeated activation preserves it, zero interval blocks activation, and a
+  queued event is not appended twice. A seeded
+  2,999 counter reaches the 3,000 threshold on the next admitted timer scan;
+  elapsed-time units are not physically verified.
+- Event 1's actual inline callback disables itself and reaches interrupt-disable
+  preparation. Static inspection identifies the subsequent system-reset request.
+  Neither preparation nor reset executes. Event 11 queues, is actually unlinked
+  by the selected main-loop fragment, disables itself and reaches marker consumer
+  `0802a438`. Its supplied argument word is preserved, not read in that path.
+- Actual `0802a374` only calculates/stores a missing-resource bitmap from the
+  runtime table's leading word and pointer. It does not perform the previously
+  unresolved resource commit in this replay.
+- Actual catalog placement resolves all fourteen SPI destination words into
+  `00001000..00821000`; the reserved region ends at `0096e000`, below staging
+  `00c00000`. Each named consumer fixture reaches its corresponding first sector
+  erase request. Replay stops before the service; physical placement is unproved.
+- The marker consumer skips matching versions and unknown names, validates
+  leading counts 1..300 and declared length plus four, and reaches parameter
+  marker clearing on tested skip/error paths. Zero prepared marker is recorded
+  before erase, while input parameter bytes stay unchanged. This is requested
+  marker clearing, not successful installation. Consumer fixtures explicitly
+  bypass ingress/CRC and seed runtime versions and saved words.
+- Public `pps_lcd_res` begins with `190a1801`, matching the compiled word observed
+  before an actual caller's substituted log. Its relationship to runtime version
+  address `08040000` is documented; bootloader placement remains an inference.
+
+Pins: A1763 LCD container **0.1.9.6**, supplied with main **1.1.4.9**,
+925,696 bytes, SHA-256
+`c314816f396d6b6958a6a398476eafa182f7c368802569803b60bd6a4e6dc97d`;
+application SHA-256
+`f5683c2f7c9a5bdab638123a7a0a547d3d549e513e18fc10918ed979b83459c6`;
+resource payload SHA-256
+`f61823dde70028254b74a534f88ed249f21136a776acdfd1d0420bc0a20c247c`.
+Python **3.14.4**, Unicorn **2.1.4**, static Capstone **5.0.7**.
+Per-entry bound 10,000/observed maximum **721**. Guards, disjoint fixture regions,
+catalog/parameter preservation and PRIMASK restoration are verified. Static
+exploration stays private/ignored with restricted permissions. Focused proof
+reproduction, source hashes, syntax/JSON/whitespace and unchanged AGENTS.md are
+checked; earlier product/browser gates are not rerun.
+
+Next offline targets: ordinary post-erase copy and payload frame/index reader
+`08029b60`, reload/error cleanup, then a separately pinned bootloader input for
+special payload installation/recovery. True pause/SDK runtime provenance,
+complete settings export and energy calibration remain open. Original C1000
+charging still needs measurements below full with a noncritical independently
+metered load; Gen 2 counters need paired power/counter/time samples and separate
+retention-test authorization.
+
+**Zero station commands were sent.** No BLE scan, station/profile/phone read,
+MQTT/cloud request, network/service change, observer query, deployment, push,
+merge or automation activation occurred. C2000 and live settings are untouched.

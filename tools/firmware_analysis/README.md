@@ -541,3 +541,12 @@ SPI, UI/refresh and flash services remain substitutes; no boot or real resource
 application runs. Compare both `lcd-resource-selection-*.json` artifacts;
 set `SOLIX_ANALYSIS_OUTPUT` to the output directory. Copy/transfer bounds are
 30,000/100,000. See [resource selection](../../docs/lcd-resource-selection-and-pending.md).
+
+`emulate_lcd_pending_worker.py` adds 58 synthetic cases and ten guards for
+actual scheduler activation/ticks/queue drain, pending callbacks, catalog
+placement, missing-resource bitmap and marker-consumer decisions. It stops
+before reset preparation, sector erase or parameter flash operations; timer
+registers, versions and old parameter words are supplied fixtures. Compare both
+`lcd-pending-worker-*.json` artifacts with `expected_results/`; the per-entry
+bound is 10,000 and observed maximum 721. See
+[LCD pending callbacks and destinations](../../docs/lcd-pending-worker-and-resource-destinations.md).
