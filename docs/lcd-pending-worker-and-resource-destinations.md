@@ -170,3 +170,10 @@ code/resource installation and recovery. No complete update API or safe recovery
 claim is justified yet. True charging pause, complete settings readback and
 energy calibration remain independent investigations. **Zero station commands
 were sent, and the live deployment is unchanged.**
+
+The [copy/index continuation](lcd-resource-copy-and-index-validation.md) now
+executes the ordinary copy and frame-index reader with storage/flash substitutes.
+It verifies chunk boundaries and cleanup, while exposing truncated/unchecked
+frame extents and zero caller returns on tested malformed-resource paths.
+Rendering, real writes, fatal-handler recovery and bootloader installation
+remain unresolved.

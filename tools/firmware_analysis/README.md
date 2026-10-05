@@ -550,3 +550,12 @@ registers, versions and old parameter words are supplied fixtures. Compare both
 `lcd-pending-worker-*.json` artifacts with `expected_results/`; the per-entry
 bound is 10,000 and observed maximum 721. See
 [LCD pending callbacks and destinations](../../docs/lcd-pending-worker-and-resource-destinations.md).
+
+`emulate_lcd_resource_copy.py` adds 76 synthetic cases and thirteen guards for
+actual ordinary copy/chunk loops, frame-index parsing, format-size table,
+cleanup, final state/callback, allocation-failure boundaries and isolated
+status-wait logic with a supplied clock/status stream. SPI and
+parameter writes remain host substitutes; actual storage, rendering, reset
+and fatal handlers do not run. Compare both `lcd-resource-copy-*.json`
+artifacts with `expected_results/`; copy bound is 100,000, waits 10,000, observed maximum
+22,281. See [copy/index validation limits](../../docs/lcd-resource-copy-and-index-validation.md).

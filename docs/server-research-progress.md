@@ -582,3 +582,73 @@ retention-test authorization.
 **Zero station commands were sent.** No BLE scan, station/profile/phone read,
 MQTT/cloud request, network/service change, observer query, deployment, push,
 merge or automation activation occurred. C2000 and live settings are untouched.
+
+## LCD resource copy, index validation and failure paths — 2026-10-05
+
+This follows local checkpoint **`e968455`** on `server/research-20261004`.
+The [copy/index proof](lcd-resource-copy-and-index-validation.md) adds **76
+synthetic instruction cases and thirteen rejection guards**, with independently
+identical result/manifest artifacts. Only analysis tools, sanitized synthetic
+metadata and documentation change.
+
+- Actual copy loops erase the reserved catalog capacity through substituted
+  services, then write an eight-byte count/version prefix followed by staged
+  payload bytes after their leading count. Seven tail-size fixtures span
+  0..8,193 bytes and verify exact chunk addresses, lengths and host-array hashes.
+  `ss_hour` requests 38 sector erases even for its minimum supplied payload.
+- Actual reader `08029b60` builds eight-byte frame-index entries from a 12-byte
+  header: magic 25, format byte and little-endian width/height. Actual helper
+  `08017fc4` executes its format table. The observed extent formula, additional
+  byte adjustment, two-frame addresses and maximum 300-count index are recorded.
+- Bad frame magic truncates the loaded count; zero dimensions and unsupported
+  formats yield admitted zero extents. A truncated-pixel fixture is indexed
+  despite missing eighteen claimed bytes. A large-dimension fixture wraps its
+  extent to 4,294,311,941; the next-frame variant hits a host storage guard,
+  which is explicitly not firmware bounds checking.
+- The caller returns zero and clears busy mode on tested malformed/truncated
+  frame paths, after requested marker clearing through substituted flash
+  services. Actual valid/bad-magic callbacks both reach the next timer
+  notification. A separate bitmap refresh marks a zero-count resource missing,
+  but a partial or truncated count-one resource can clear its missing bit.
+  Neither successful return nor an index proves complete rendering/install.
+- Actual old-index/buffer/header cleanup matches host live-allocation accounting.
+  Header, buffer and index allocation failures reach a fatal-handler boundary
+  with mode 2 and no marker-clear request; prefix/payload requests may already
+  have occurred. Static inspection identifies that boundary as a system-reset
+  request and terminal loop. Reset and bootloader recovery remain unexecuted.
+- Synthetic service-return 17 fixtures show that selected callers do not inspect
+  that return, including when host programming is skipped and the resource stays
+  erased. No real-driver error meaning or physical failure is claimed.
+- Seven actual isolated status-wait cases use supplied clock/status reads and
+  synthetic channel 255. They distinguish ready/deadline branches and prove
+  that the deadline expires strictly after the limit. Both return the supplied
+  channel value, not a distinguishable timeout result. Static page-program
+  inspection identifies a retained transport-send return across the wait;
+  real transport meanings and physical time units remain unresolved.
+
+Pins: A1763 LCD container **0.1.9.6**, supplied with main **1.1.4.9**,
+925,696 bytes, SHA-256
+`c314816f396d6b6958a6a398476eafa182f7c368802569803b60bd6a4e6dc97d`;
+application SHA-256
+`f5683c2f7c9a5bdab638123a7a0a547d3d549e513e18fc10918ed979b83459c6`.
+Python **3.14.4**, Unicorn **2.1.4**, static Capstone **5.0.7**.
+Copy bound **100,000**, isolated waits **10,000**, observed maximum **22,281**.
+Ingress/CRC is excluded
+from this continuation. Heap and SPI storage are synthetic; parameter writes
+are captured without changing the seeded read-only page. Guards, independent
+reproduction, source hashes, syntax/JSON/whitespace, disjoint fixture regions,
+heap/PRIMASK checks and unchanged AGENTS.md are verified. Raw analysis stays
+private/ignored with restricted permissions. Earlier product/browser gates
+are not rerun because product code is unchanged.
+
+Next: actual renderer/index consumers and remaining header fields; transport
+return semantics and recovery after the identified reset requests; pinned bootloader input
+for special installation. True pause/SDK runtime provenance, full settings
+readback and energy calibration remain independent open items. Original C1000
+charging still needs a battery below full and an independently metered noncritical
+load. Gen 2 energy units require paired power/counter/time samples and separately
+authorized retention testing.
+
+**Zero station commands were sent.** No BLE scan, station/profile/phone read,
+MQTT/cloud request, network/service change, observer query, deployment, push,
+merge or automation activation occurred. C2000 and live settings are untouched.
