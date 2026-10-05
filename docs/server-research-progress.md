@@ -786,3 +786,64 @@ disabled, and the separate observation services are left untouched.
 **Zero station commands were sent.** No BLE scan, station/profile/phone read,
 MQTT/cloud request, network/service change, observer query, deployment, push,
 merge or automation activation occurred. C2000 and live settings are untouched.
+
+## Bluetooth visibility and service-only inspection — 2026-10-05
+
+This continuation follows local checkpoint **`b902e79`** on
+`server/research-20261004`. The user requested Bluetooth investigation and had
+already authorized read-only BLE checks on the two C1000s. Reviewed adapter
+access succeeded: **one ten-second discovery and two later ten-second model
+scans completed**, with zero A1761/A1763 matches and zero unclassified
+SOLIX-service advertisements. No station connection or query was possible.
+The user confirmed they were away, so no button press was awaited or recovery
+setter attempted. Lack of advertisements does not prove a station is offline.
+
+The new [BLE inspection command](ble-inspection.md) provides bounded discovery
+and opt-in GATT inventory without a SOLIX `Session`, saved profiles or pairing
+identity. `ble-inspect --model c1000_gen2` discovers only;
+`--connect` permits GATT enumeration only for a unique named model match.
+It reads no characteristic values, sends no login/subscription/control packets,
+excludes C2000/C300, and omits names, addresses and exception text from JSON.
+Timeouts, ambiguous targets, cancellation and cleanup failures have explicit
+contracts. GATT inventory is **synthetic-tested only** at this checkpoint.
+
+Source inspection establishes a separate connection boundary: current normal
+legacy/Prime negotiation emits **4022** timezone/conference fields, and Prime
+emits **4027** registration. Prime creates an ID when none is supplied.
+This identifies client-generated traffic, not newly verified firmware storage
+or electrical behavior; existing monitoring is unchanged. Calling a subsequent
+status request read-only does not remove these setup messages. Factory F0 and
+state-consuming diagnostic routes remain excluded.
+
+Verification: **116 focused tests passed in 12.28 seconds** on Python **3.14.4**,
+Bleak **3.0.2**, pytest **9.1.1**:
+
+```text
+python/tests/test_ble_inspection.py python/tests/test_protocol.py
+python/tests/test_wifi_rssi.py python/tests/test_wifi_cli.py
+```
+
+Client SHA-256:
+`c94f774d627191d5313edfdc61793099dad7102c1c4644e3e1596cb0294acd1a`;
+protocol SHA-256:
+`337a531dd3863fab30c1f1922cdf81a5a04064a4b0c411e826333da2e3cc745d`.
+Both remain unchanged. Exact probe-source hashes, sanitized scan timestamps
+and verification/review records are retained only in the ignored private
+research folder with restricted permissions. No firmware was replayed in this
+continuation; previous firmware/electrical results are not counted as new tests.
+
+Next hardware requirement: a visible C1000 advertisement, potentially after a
+short IoT-button press, closer proximity or release of an existing connection.
+First enumerate GATT without login. Normal telemetry and saved-setting checks
+then need a separately established login/authentication boundary consistent
+with the existing prohibition on private profiles and pairing/configuration
+changes. Physical original-C1000 charging response and Gen 2 counter calibration
+still require suitable load/SOC and independent measurements. True pause,
+complete saved-state export and disabled charging previews remain open.
+
+**Zero station commands and zero connection attempts.** Three approved scans
+were the only live activity. C2000, settings, identities, AP, gateway, HA,
+automations and the separate observation services were neither queried nor
+changed. No profile/phone capture, cloud/MQTT request, network/service change,
+deployment, push or merge occurred. AGENTS.md and preexisting `python/build/`
+are preserved. Changes are prepared for a local reviewable commit only.

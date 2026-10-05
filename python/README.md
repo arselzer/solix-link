@@ -545,6 +545,12 @@ hold the button or press the separate AC output button.
 
 ## CLI and network server
 
+For a bounded [Bluetooth inspection](../docs/ble-inspection.md) without a saved
+profile, pairing or SOLIX login, use `solix-link ble-inspect --model c1000_gen2`.
+Add `--connect` to enumerate GATT interfaces on a unique match; characteristic
+values and station settings are not read or written. The probe supports both
+C1000 models and omits names, addresses and backend error text from its JSON.
+
 The package installs a `solix-link` command. Pair each Prime station once and
 save both in a config file:
 

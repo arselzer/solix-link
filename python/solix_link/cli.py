@@ -42,6 +42,12 @@ def parser() -> argparse.ArgumentParser:
     scan = subcommands.add_parser("scan", help="Find C300 AC, C1000, and C1000/C2000 Gen 2 devices")
     scan.add_argument("--timeout", type=float, default=8)
 
+    inspect_ble = subcommands.add_parser("ble-inspect", help="Inspect C1000 advertisements/GATT without login, pairing or settings changes")
+    inspect_ble.add_argument("--model", choices=[Model.C1000.value, Model.C1000_GEN2.value], required=True)
+    inspect_ble.add_argument("--timeout", type=float, default=10, help="Discovery window, 1–30 seconds")
+    inspect_ble.add_argument("--connect", action="store_true", help="Enumerate GATT services only when exactly one matching station advertises")
+    inspect_ble.add_argument("--connect-timeout", type=float, default=15, help="Connection timeout, 1–30 seconds")
+
     add = subcommands.add_parser("add", help="Save a known device in the local config")
     add.add_argument("--name", required=True)
     add.add_argument("--address", required=True)
@@ -461,6 +467,13 @@ def main(argv: list[str] | None = None) -> int:
             print(json.dumps(client.history(args.name, since=args.since, until=args.until, limit=args.limit), indent=2))
         elif args.command == "scan":
             asyncio.run(_scan(args.timeout))
+        elif args.command == "ble-inspect":
+            from .ble_inspection import inspect_ble_features
+            report = asyncio.run(inspect_ble_features(
+                Model(args.model), scan_timeout=args.timeout,
+                connect=args.connect, connect_timeout=args.connect_timeout))
+            print(json.dumps(report, indent=2))
+            return 0 if report["result"] in ("discovered", "inspected") else 1
         elif args.command == "add":
             device = DeviceConfig(args.name, args.address, Model(args.model), args.client_id,
                                   args.protocol, args.timezone)
