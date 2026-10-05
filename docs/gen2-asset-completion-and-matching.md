@@ -147,3 +147,9 @@ mapping; full task/header activation; and an independent saved-state producer.
 None of this adds a live asset API, restoration command or charging-pause
 encoder. Physical validation still needs an established protocol route and
 independent observations; no device needs to be disturbed for these proofs.
+
+The later [radio ACK and LCD continuation](radio-asset-ack-and-lcd-status.md)
+executes received-frame ACK handling through the radio's actual callback,
+and extracts the LCD application to replay matching point/status responses.
+It narrows the first two boundaries above; LCD ordinary storage/final resource
+commit and a complete physical transfer remain unproved.

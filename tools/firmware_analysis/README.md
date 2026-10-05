@@ -506,3 +506,19 @@ radio ACK parsing and worker execution remain excluded. Compare both
 `gen2-asset-request-matching-*.json` artifacts. Its entry bound is 3,000.
 Set `SOLIX_ANALYSIS_OUTPUT` to each output directory. See
 [completion and matching limits](../../docs/gen2-asset-completion-and-matching.md).
+
+`emulate_radio_asset_ack.py --output-dir /private/output/radio-ack`
+adds **15 cases** for actual send-object construction, receive validation,
+general ACK processing, selected send worker and the asset ACK callback.
+Five guards reject excluded task/handler entries, fixture bounds and protected
+writes. A host pause/resume substitutes scheduling; physical transport, OS,
+session and crypto services remain substitutes. Compare both
+`radio-asset-ack-*.json` artifacts. Its entry bound is 100,000.
+
+`emulate_lcd_asset_status.py --output-dir /private/output/lcd-status`
+adds **11 cases** for the hash/CRC-pinned LCD application, MAIN ingress/point
+dispatch and completion/error response serialization, with five guards.
+Ordinary chunk storage, final resource commit, progress math and boot remain
+excluded. Compare both `lcd-asset-status-*.json` artifacts. Its entry bound is
+10,000; set `SOLIX_ANALYSIS_OUTPUT` to the private output directory. See
+[radio ACK and LCD status](../../docs/radio-asset-ack-and-lcd-status.md).

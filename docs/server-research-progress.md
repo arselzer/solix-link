@@ -348,3 +348,57 @@ paired counters/power/timing and a separately authorized retention test.
 **Zero station commands were sent.** No new BLE scan, profile/phone access,
 network/service operation, deployment, push, merge or automation activation
 occurred. No live observer, gateway, AP, HA or station setting was changed.
+
+## Radio receipt ACK and LCD status receiver — 2026-10-05
+
+This follows local checkpoint **`7090023`** on `server/research-20261004`.
+The [new proof](radio-asset-ack-and-lcd-status.md) adds **26 synthetic instruction
+cases and ten negative guards**, with two independently reproduced complete
+result/manifest pairs. Analysis tools, synthetic metadata and documentation
+change; product code and the live deployment remain unchanged.
+
+- **15 radio cases:** actual 003e framing/send-object construction, incoming
+  validation/RX processing, general ACK helper, selected worker and actual
+  asset callback execute. A matching 083e receipt produces callback argument
+  zero/ACK flag 1 even for the supplied failure TLV `A1 01 01`. Body values and
+  the tested different function do not affect this selected receipt helper.
+  Wrong command/nonreply/checksum fixtures retry three sends and produce
+  callback argument one/flag 2. Queue, scheduler, transport and session services
+  remain substituted; no application success is proved by receipt.
+- **11 LCD cases:** the container supplies an ARM application at file offset
+  1,024, length 214,016, CRC-16/MODBUS `a038`; its pinned reset stub supports
+  mapping at `08006000`. Reset is not executed. Actual MAIN CRC/header checking,
+  the matching 0010–0016 dispatch table and selected completion/error branches
+  serialize lowercase-main responses. An idle supplied state reports completion
+  and 100, without a preceding transfer. Ordinary storage `0802d5fa`, final
+  resource handling `0802d3d8` and progress math `0802d652` remain exclusions.
+
+Input pins: radio **0.3.3.0**, 1,482,800 bytes, SHA-256
+`e291ec115f013953e825cb51b9e457a8731889547ab55b3058640e599e8cfec8`;
+LCD container **0.1.9.6**, 925,696 bytes, SHA-256
+`c314816f396d6b6958a6a398476eafa182f7c368802569803b60bd6a4e6dc97d`;
+extracted application SHA-256
+`f5683c2f7c9a5bdab638123a7a0a547d3d549e513e18fc10918ed979b83459c6`.
+These are public A1763 inputs supplied with main 1.1.4.9; no other model or
+firmware equivalence is established.
+
+Environment: Python **3.14.4**, Unicorn **2.1.4**, cryptography **50.0.2**.
+Instruction bounds: radio 100,000, maximum 16,927; LCD 10,000, maximum 407.
+Protected radio state is preserved; LCD writes stay within synthetic scratch
+and its two-byte state word. ROM/code are read-only and MMIO writes are rejected.
+Raw exploratory disassembly remains ignored/private; public results contain
+synthetic structural metadata and hashes. Earlier product/browser/proof gates
+were not rerun for these analysis-only additions. AGENTS.md is unchanged.
+
+Next useful offline work is the LCD point-0010 start-state producer, then its
+ordinary chunk/final resource paths with bounded storage substitutes and format
+validation. Radio full task/header activation and default-size fragmentation
+remain separate boundaries. SDK runtime `context+160` provenance, true charging
+pause and complete saved-state readback remain open. Physical calibration still
+requires original C1000 below full with an independently metered noncritical
+load; Gen 2 paired power/counter/timing samples and separate retention testing.
+
+**Zero station commands were sent.** No BLE discovery, private profile/phone
+capture read, MQTT/cloud access, network/service change, observer query,
+deployment, push, merge or automation activation occurred. C2000 and all live
+settings remain untouched.

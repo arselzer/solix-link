@@ -1,0 +1,720 @@
+{
+  "account_free_setup_verified": false,
+  "cases": 15,
+  "instruction_limit_per_entry": 100000,
+  "limits": "Bounded radio 003e send queue, received ACK and asset callback replay.\n\nActual frame builder, enqueue object constructor, receive validation/processing,\npayload classification, resend ACK helper, selected send worker and asset ACK\ncallback run on synthetic RAM. OS queues/allocation/mutex/time/delay, libc,\nphysical send, logging and session/GCM primitives are host substitutes. A host\npause/resume delivers one synthetic reply during a substituted delay; no real\nscheduler, station, network, controller, HTTP task or firmware boot executes.",
+  "model": "A1763",
+  "negative_guards": [
+    "http_task_engine_excluded",
+    "station_setting_handler_excluded",
+    "timeout_fixture_bounds",
+    "mmio_write_excluded",
+    "protected_radio_state_write_excluded"
+  ],
+  "physical_transport_verified": false,
+  "radio_sha256": "e291ec115f013953e825cb51b9e457a8731889547ab55b3058640e599e8cfec8",
+  "radio_version": "0.3.3.0",
+  "receiver_application_verified": false,
+  "results": [
+    {
+      "ack_flag_raw": 1,
+      "callback_arguments": [
+        {
+          "command_argument": 62,
+          "status_argument": 0
+        }
+      ],
+      "case": "main_success_tlv",
+      "delay_argument_counts": {
+        "10": 1,
+        "30": 0,
+        "5": 1
+      },
+      "delay_calls": 2,
+      "incoming_body_bytes": 3,
+      "incoming_body_sha256": "d834dba22a162024b0403cc47d78988d1c0cf9f2f842ae1d37879b09e9a7dae8",
+      "incoming_command_raw": 2110,
+      "incoming_function_raw": 16,
+      "incoming_port": 2,
+      "last_ack_command_raw": 65535,
+      "maximum_entry_instructions": 3347,
+      "physical_send_substitutes": [
+        {
+          "bytes": 26,
+          "port": 2,
+          "sha256": "8ead684f0064d11afceebd2e6a718839f725035151cc28e5499efb87721f74a6"
+        }
+      ],
+      "protected_radio_state_preserved": true,
+      "queued_objects": [
+        {
+          "active_raw": 1,
+          "callback": "4203c8fa",
+          "command_raw": 62,
+          "frame_bytes": 26,
+          "frame_sha256": "8ead684f0064d11afceebd2e6a718839f725035151cc28e5499efb87721f74a6",
+          "port": 2,
+          "timeout_raw": 1000
+        }
+      ],
+      "waiting_command_raw": 65535
+    },
+    {
+      "ack_flag_raw": 1,
+      "callback_arguments": [
+        {
+          "command_argument": 62,
+          "status_argument": 0
+        }
+      ],
+      "case": "main_failure_tlv",
+      "delay_argument_counts": {
+        "10": 1,
+        "30": 0,
+        "5": 1
+      },
+      "delay_calls": 2,
+      "incoming_body_bytes": 3,
+      "incoming_body_sha256": "c05585b695c0cf13d97459cc96a147584d9e25348328d86469cd31f861275843",
+      "incoming_command_raw": 2110,
+      "incoming_function_raw": 16,
+      "incoming_port": 2,
+      "last_ack_command_raw": 65535,
+      "maximum_entry_instructions": 3326,
+      "physical_send_substitutes": [
+        {
+          "bytes": 26,
+          "port": 2,
+          "sha256": "8ead684f0064d11afceebd2e6a718839f725035151cc28e5499efb87721f74a6"
+        }
+      ],
+      "protected_radio_state_preserved": true,
+      "queued_objects": [
+        {
+          "active_raw": 1,
+          "callback": "4203c8fa",
+          "command_raw": 62,
+          "frame_bytes": 26,
+          "frame_sha256": "8ead684f0064d11afceebd2e6a718839f725035151cc28e5499efb87721f74a6",
+          "port": 2,
+          "timeout_raw": 1000
+        }
+      ],
+      "waiting_command_raw": 65535
+    },
+    {
+      "ack_flag_raw": 1,
+      "callback_arguments": [
+        {
+          "command_argument": 62,
+          "status_argument": 0
+        }
+      ],
+      "case": "raw_zero_status",
+      "delay_argument_counts": {
+        "10": 1,
+        "30": 0,
+        "5": 1
+      },
+      "delay_calls": 2,
+      "incoming_body_bytes": 1,
+      "incoming_body_sha256": "6e340b9cffb37a989ca544e6bb780a2c78901d3fb33738768511a30617afa01d",
+      "incoming_command_raw": 2110,
+      "incoming_function_raw": 16,
+      "incoming_port": 2,
+      "last_ack_command_raw": 65535,
+      "maximum_entry_instructions": 502,
+      "physical_send_substitutes": [
+        {
+          "bytes": 26,
+          "port": 2,
+          "sha256": "8ead684f0064d11afceebd2e6a718839f725035151cc28e5499efb87721f74a6"
+        }
+      ],
+      "protected_radio_state_preserved": true,
+      "queued_objects": [
+        {
+          "active_raw": 1,
+          "callback": "4203c8fa",
+          "command_raw": 62,
+          "frame_bytes": 26,
+          "frame_sha256": "8ead684f0064d11afceebd2e6a718839f725035151cc28e5499efb87721f74a6",
+          "port": 2,
+          "timeout_raw": 1000
+        }
+      ],
+      "waiting_command_raw": 65535
+    },
+    {
+      "ack_flag_raw": 1,
+      "callback_arguments": [
+        {
+          "command_argument": 62,
+          "status_argument": 0
+        }
+      ],
+      "case": "raw_failure_status",
+      "delay_argument_counts": {
+        "10": 1,
+        "30": 0,
+        "5": 1
+      },
+      "delay_calls": 2,
+      "incoming_body_bytes": 1,
+      "incoming_body_sha256": "4bf5122f344554c53bde2ebb8cd2b7e3d1600ad631c385a5d7cce23c7785459a",
+      "incoming_command_raw": 2110,
+      "incoming_function_raw": 16,
+      "incoming_port": 2,
+      "last_ack_command_raw": 65535,
+      "maximum_entry_instructions": 502,
+      "physical_send_substitutes": [
+        {
+          "bytes": 26,
+          "port": 2,
+          "sha256": "8ead684f0064d11afceebd2e6a718839f725035151cc28e5499efb87721f74a6"
+        }
+      ],
+      "protected_radio_state_preserved": true,
+      "queued_objects": [
+        {
+          "active_raw": 1,
+          "callback": "4203c8fa",
+          "command_raw": 62,
+          "frame_bytes": 26,
+          "frame_sha256": "8ead684f0064d11afceebd2e6a718839f725035151cc28e5499efb87721f74a6",
+          "port": 2,
+          "timeout_raw": 1000
+        }
+      ],
+      "waiting_command_raw": 65535
+    },
+    {
+      "ack_flag_raw": 1,
+      "callback_arguments": [
+        {
+          "command_argument": 62,
+          "status_argument": 0
+        }
+      ],
+      "case": "empty_body",
+      "delay_argument_counts": {
+        "10": 1,
+        "30": 0,
+        "5": 1
+      },
+      "delay_calls": 2,
+      "incoming_body_bytes": 0,
+      "incoming_body_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "incoming_command_raw": 2110,
+      "incoming_function_raw": 16,
+      "incoming_port": 2,
+      "last_ack_command_raw": 65535,
+      "maximum_entry_instructions": 502,
+      "physical_send_substitutes": [
+        {
+          "bytes": 26,
+          "port": 2,
+          "sha256": "8ead684f0064d11afceebd2e6a718839f725035151cc28e5499efb87721f74a6"
+        }
+      ],
+      "protected_radio_state_preserved": true,
+      "queued_objects": [
+        {
+          "active_raw": 1,
+          "callback": "4203c8fa",
+          "command_raw": 62,
+          "frame_bytes": 26,
+          "frame_sha256": "8ead684f0064d11afceebd2e6a718839f725035151cc28e5499efb87721f74a6",
+          "port": 2,
+          "timeout_raw": 1000
+        }
+      ],
+      "waiting_command_raw": 65535
+    },
+    {
+      "ack_flag_raw": 1,
+      "callback_arguments": [
+        {
+          "command_argument": 62,
+          "status_argument": 0
+        }
+      ],
+      "case": "arbitrary_body",
+      "delay_argument_counts": {
+        "10": 1,
+        "30": 0,
+        "5": 1
+      },
+      "delay_calls": 2,
+      "incoming_body_bytes": 3,
+      "incoming_body_sha256": "d7c6462074209943e1dfbe63221397c005915a82f4e676f62604d96459f69153",
+      "incoming_command_raw": 2110,
+      "incoming_function_raw": 16,
+      "incoming_port": 2,
+      "last_ack_command_raw": 65535,
+      "maximum_entry_instructions": 3326,
+      "physical_send_substitutes": [
+        {
+          "bytes": 26,
+          "port": 2,
+          "sha256": "8ead684f0064d11afceebd2e6a718839f725035151cc28e5499efb87721f74a6"
+        }
+      ],
+      "protected_radio_state_preserved": true,
+      "queued_objects": [
+        {
+          "active_raw": 1,
+          "callback": "4203c8fa",
+          "command_raw": 62,
+          "frame_bytes": 26,
+          "frame_sha256": "8ead684f0064d11afceebd2e6a718839f725035151cc28e5499efb87721f74a6",
+          "port": 2,
+          "timeout_raw": 1000
+        }
+      ],
+      "waiting_command_raw": 65535
+    },
+    {
+      "ack_flag_raw": 2,
+      "callback_arguments": [
+        {
+          "command_argument": 62,
+          "status_argument": 1
+        }
+      ],
+      "case": "wrong_opcode",
+      "delay_argument_counts": {
+        "10": 0,
+        "30": 0,
+        "5": 600
+      },
+      "delay_calls": 600,
+      "incoming_body_bytes": 3,
+      "incoming_body_sha256": "d834dba22a162024b0403cc47d78988d1c0cf9f2f842ae1d37879b09e9a7dae8",
+      "incoming_command_raw": 2111,
+      "incoming_function_raw": 16,
+      "incoming_port": 2,
+      "last_ack_command_raw": 63,
+      "maximum_entry_instructions": 8484,
+      "physical_send_substitutes": [
+        {
+          "bytes": 26,
+          "port": 2,
+          "sha256": "8ead684f0064d11afceebd2e6a718839f725035151cc28e5499efb87721f74a6"
+        },
+        {
+          "bytes": 26,
+          "port": 2,
+          "sha256": "8ead684f0064d11afceebd2e6a718839f725035151cc28e5499efb87721f74a6"
+        },
+        {
+          "bytes": 26,
+          "port": 2,
+          "sha256": "8ead684f0064d11afceebd2e6a718839f725035151cc28e5499efb87721f74a6"
+        }
+      ],
+      "protected_radio_state_preserved": true,
+      "queued_objects": [
+        {
+          "active_raw": 1,
+          "callback": "4203c8fa",
+          "command_raw": 62,
+          "frame_bytes": 26,
+          "frame_sha256": "8ead684f0064d11afceebd2e6a718839f725035151cc28e5499efb87721f74a6",
+          "port": 2,
+          "timeout_raw": 1000
+        }
+      ],
+      "waiting_command_raw": 62
+    },
+    {
+      "ack_flag_raw": 1,
+      "callback_arguments": [
+        {
+          "command_argument": 62,
+          "status_argument": 0
+        }
+      ],
+      "case": "wrong_function",
+      "delay_argument_counts": {
+        "10": 1,
+        "30": 0,
+        "5": 1
+      },
+      "delay_calls": 2,
+      "incoming_body_bytes": 3,
+      "incoming_body_sha256": "d834dba22a162024b0403cc47d78988d1c0cf9f2f842ae1d37879b09e9a7dae8",
+      "incoming_command_raw": 2110,
+      "incoming_function_raw": 23,
+      "incoming_port": 2,
+      "last_ack_command_raw": 65535,
+      "maximum_entry_instructions": 3082,
+      "physical_send_substitutes": [
+        {
+          "bytes": 26,
+          "port": 2,
+          "sha256": "8ead684f0064d11afceebd2e6a718839f725035151cc28e5499efb87721f74a6"
+        }
+      ],
+      "protected_radio_state_preserved": true,
+      "queued_objects": [
+        {
+          "active_raw": 1,
+          "callback": "4203c8fa",
+          "command_raw": 62,
+          "frame_bytes": 26,
+          "frame_sha256": "8ead684f0064d11afceebd2e6a718839f725035151cc28e5499efb87721f74a6",
+          "port": 2,
+          "timeout_raw": 1000
+        }
+      ],
+      "waiting_command_raw": 65535
+    },
+    {
+      "ack_flag_raw": 2,
+      "callback_arguments": [
+        {
+          "command_argument": 62,
+          "status_argument": 1
+        }
+      ],
+      "case": "nonreply_opcode",
+      "delay_argument_counts": {
+        "10": 0,
+        "30": 0,
+        "5": 600
+      },
+      "delay_calls": 600,
+      "incoming_body_bytes": 3,
+      "incoming_body_sha256": "d834dba22a162024b0403cc47d78988d1c0cf9f2f842ae1d37879b09e9a7dae8",
+      "incoming_command_raw": 62,
+      "incoming_function_raw": 16,
+      "incoming_port": 2,
+      "last_ack_command_raw": 65535,
+      "maximum_entry_instructions": 8484,
+      "physical_send_substitutes": [
+        {
+          "bytes": 26,
+          "port": 2,
+          "sha256": "8ead684f0064d11afceebd2e6a718839f725035151cc28e5499efb87721f74a6"
+        },
+        {
+          "bytes": 26,
+          "port": 2,
+          "sha256": "8ead684f0064d11afceebd2e6a718839f725035151cc28e5499efb87721f74a6"
+        },
+        {
+          "bytes": 26,
+          "port": 2,
+          "sha256": "8ead684f0064d11afceebd2e6a718839f725035151cc28e5499efb87721f74a6"
+        }
+      ],
+      "protected_radio_state_preserved": true,
+      "queued_objects": [
+        {
+          "active_raw": 1,
+          "callback": "4203c8fa",
+          "command_raw": 62,
+          "frame_bytes": 26,
+          "frame_sha256": "8ead684f0064d11afceebd2e6a718839f725035151cc28e5499efb87721f74a6",
+          "port": 2,
+          "timeout_raw": 1000
+        }
+      ],
+      "waiting_command_raw": 62
+    },
+    {
+      "ack_flag_raw": 2,
+      "callback_arguments": [
+        {
+          "command_argument": 62,
+          "status_argument": 1
+        }
+      ],
+      "case": "bad_outer_checksum",
+      "delay_argument_counts": {
+        "10": 0,
+        "30": 0,
+        "5": 600
+      },
+      "delay_calls": 600,
+      "incoming_body_bytes": 3,
+      "incoming_body_sha256": "d834dba22a162024b0403cc47d78988d1c0cf9f2f842ae1d37879b09e9a7dae8",
+      "incoming_command_raw": 2110,
+      "incoming_function_raw": 16,
+      "incoming_port": 2,
+      "last_ack_command_raw": 65535,
+      "maximum_entry_instructions": 8484,
+      "physical_send_substitutes": [
+        {
+          "bytes": 26,
+          "port": 2,
+          "sha256": "8ead684f0064d11afceebd2e6a718839f725035151cc28e5499efb87721f74a6"
+        },
+        {
+          "bytes": 26,
+          "port": 2,
+          "sha256": "8ead684f0064d11afceebd2e6a718839f725035151cc28e5499efb87721f74a6"
+        },
+        {
+          "bytes": 26,
+          "port": 2,
+          "sha256": "8ead684f0064d11afceebd2e6a718839f725035151cc28e5499efb87721f74a6"
+        }
+      ],
+      "protected_radio_state_preserved": true,
+      "queued_objects": [
+        {
+          "active_raw": 1,
+          "callback": "4203c8fa",
+          "command_raw": 62,
+          "frame_bytes": 26,
+          "frame_sha256": "8ead684f0064d11afceebd2e6a718839f725035151cc28e5499efb87721f74a6",
+          "port": 2,
+          "timeout_raw": 1000
+        }
+      ],
+      "waiting_command_raw": 62
+    },
+    {
+      "ack_flag_raw": 1,
+      "callback_arguments": [
+        {
+          "command_argument": 62,
+          "status_argument": 0
+        }
+      ],
+      "case": "port_zero",
+      "delay_argument_counts": {
+        "10": 1,
+        "30": 0,
+        "5": 1
+      },
+      "delay_calls": 2,
+      "incoming_body_bytes": 3,
+      "incoming_body_sha256": "d834dba22a162024b0403cc47d78988d1c0cf9f2f842ae1d37879b09e9a7dae8",
+      "incoming_command_raw": 2110,
+      "incoming_function_raw": 16,
+      "incoming_port": 0,
+      "last_ack_command_raw": 65535,
+      "maximum_entry_instructions": 3347,
+      "physical_send_substitutes": [
+        {
+          "bytes": 26,
+          "port": 2,
+          "sha256": "8ead684f0064d11afceebd2e6a718839f725035151cc28e5499efb87721f74a6"
+        }
+      ],
+      "protected_radio_state_preserved": true,
+      "queued_objects": [
+        {
+          "active_raw": 1,
+          "callback": "4203c8fa",
+          "command_raw": 62,
+          "frame_bytes": 26,
+          "frame_sha256": "8ead684f0064d11afceebd2e6a718839f725035151cc28e5499efb87721f74a6",
+          "port": 2,
+          "timeout_raw": 1000
+        }
+      ],
+      "waiting_command_raw": 65535
+    },
+    {
+      "ack_flag_raw": 2,
+      "callback_arguments": [
+        {
+          "command_argument": 62,
+          "status_argument": 1
+        }
+      ],
+      "case": "no_response",
+      "delay_argument_counts": {
+        "10": 0,
+        "30": 0,
+        "5": 0
+      },
+      "delay_calls": 0,
+      "last_ack_command_raw": 65535,
+      "maximum_entry_instructions": 502,
+      "physical_send_substitutes": [
+        {
+          "bytes": 26,
+          "port": 2,
+          "sha256": "8ead684f0064d11afceebd2e6a718839f725035151cc28e5499efb87721f74a6"
+        },
+        {
+          "bytes": 26,
+          "port": 2,
+          "sha256": "8ead684f0064d11afceebd2e6a718839f725035151cc28e5499efb87721f74a6"
+        },
+        {
+          "bytes": 26,
+          "port": 2,
+          "sha256": "8ead684f0064d11afceebd2e6a718839f725035151cc28e5499efb87721f74a6"
+        }
+      ],
+      "protected_radio_state_preserved": true,
+      "queued_objects": [
+        {
+          "active_raw": 1,
+          "callback": "4203c8fa",
+          "command_raw": 62,
+          "frame_bytes": 26,
+          "frame_sha256": "8ead684f0064d11afceebd2e6a718839f725035151cc28e5499efb87721f74a6",
+          "port": 2,
+          "timeout_raw": 1
+        }
+      ],
+      "timeout_fixture_raw": 1,
+      "waiting_command_raw": 65535
+    },
+    {
+      "ack_flag_raw": 2,
+      "callback_arguments": [
+        {
+          "command_argument": 62,
+          "status_argument": 1
+        }
+      ],
+      "case": "no_response",
+      "delay_argument_counts": {
+        "10": 0,
+        "30": 0,
+        "5": 3
+      },
+      "delay_calls": 3,
+      "last_ack_command_raw": 65535,
+      "maximum_entry_instructions": 502,
+      "physical_send_substitutes": [
+        {
+          "bytes": 26,
+          "port": 2,
+          "sha256": "8ead684f0064d11afceebd2e6a718839f725035151cc28e5499efb87721f74a6"
+        },
+        {
+          "bytes": 26,
+          "port": 2,
+          "sha256": "8ead684f0064d11afceebd2e6a718839f725035151cc28e5499efb87721f74a6"
+        },
+        {
+          "bytes": 26,
+          "port": 2,
+          "sha256": "8ead684f0064d11afceebd2e6a718839f725035151cc28e5499efb87721f74a6"
+        }
+      ],
+      "protected_radio_state_preserved": true,
+      "queued_objects": [
+        {
+          "active_raw": 1,
+          "callback": "4203c8fa",
+          "command_raw": 62,
+          "frame_bytes": 26,
+          "frame_sha256": "8ead684f0064d11afceebd2e6a718839f725035151cc28e5499efb87721f74a6",
+          "port": 2,
+          "timeout_raw": 5
+        }
+      ],
+      "timeout_fixture_raw": 5,
+      "waiting_command_raw": 62
+    },
+    {
+      "ack_flag_raw": 2,
+      "callback_arguments": [
+        {
+          "command_argument": 62,
+          "status_argument": 1
+        }
+      ],
+      "case": "no_response",
+      "delay_argument_counts": {
+        "10": 0,
+        "30": 0,
+        "5": 600
+      },
+      "delay_calls": 600,
+      "last_ack_command_raw": 65535,
+      "maximum_entry_instructions": 8527,
+      "physical_send_substitutes": [
+        {
+          "bytes": 26,
+          "port": 2,
+          "sha256": "8ead684f0064d11afceebd2e6a718839f725035151cc28e5499efb87721f74a6"
+        },
+        {
+          "bytes": 26,
+          "port": 2,
+          "sha256": "8ead684f0064d11afceebd2e6a718839f725035151cc28e5499efb87721f74a6"
+        },
+        {
+          "bytes": 26,
+          "port": 2,
+          "sha256": "8ead684f0064d11afceebd2e6a718839f725035151cc28e5499efb87721f74a6"
+        }
+      ],
+      "protected_radio_state_preserved": true,
+      "queued_objects": [
+        {
+          "active_raw": 1,
+          "callback": "4203c8fa",
+          "command_raw": 62,
+          "frame_bytes": 26,
+          "frame_sha256": "8ead684f0064d11afceebd2e6a718839f725035151cc28e5499efb87721f74a6",
+          "port": 2,
+          "timeout_raw": 1000
+        }
+      ],
+      "timeout_fixture_raw": 1000,
+      "waiting_command_raw": 62
+    },
+    {
+      "ack_flag_raw": 2,
+      "callback_arguments": [
+        {
+          "command_argument": 62,
+          "status_argument": 1
+        }
+      ],
+      "case": "no_response",
+      "delay_argument_counts": {
+        "10": 0,
+        "30": 0,
+        "5": 1200
+      },
+      "delay_calls": 1200,
+      "last_ack_command_raw": 65535,
+      "maximum_entry_instructions": 16927,
+      "physical_send_substitutes": [
+        {
+          "bytes": 26,
+          "port": 2,
+          "sha256": "8ead684f0064d11afceebd2e6a718839f725035151cc28e5499efb87721f74a6"
+        },
+        {
+          "bytes": 26,
+          "port": 2,
+          "sha256": "8ead684f0064d11afceebd2e6a718839f725035151cc28e5499efb87721f74a6"
+        },
+        {
+          "bytes": 26,
+          "port": 2,
+          "sha256": "8ead684f0064d11afceebd2e6a718839f725035151cc28e5499efb87721f74a6"
+        }
+      ],
+      "protected_radio_state_preserved": true,
+      "queued_objects": [
+        {
+          "active_raw": 1,
+          "callback": "4203c8fa",
+          "command_raw": 62,
+          "frame_bytes": 26,
+          "frame_sha256": "8ead684f0064d11afceebd2e6a718839f725035151cc28e5499efb87721f74a6",
+          "port": 2,
+          "timeout_raw": 2000
+        }
+      ],
+      "timeout_fixture_raw": 2000,
+      "waiting_command_raw": 62
+    }
+  ],
+  "station_commands_sent": 0
+}

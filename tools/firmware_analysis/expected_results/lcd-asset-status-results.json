@@ -1,0 +1,307 @@
+{
+  "application_bytes": 214016,
+  "application_crc16_modbus": 41016,
+  "application_load_address": "08006000",
+  "application_offset": 1024,
+  "application_sha256": "f5683c2f7c9a5bdab638123a7a0a547d3d549e513e18fc10918ed979b83459c6",
+  "cases": 11,
+  "complete_settings_export": false,
+  "instruction_limit_per_entry": 10000,
+  "lcd_manifest_version": "0.1.9.6",
+  "lcd_sha256": "c314816f396d6b6958a6a398476eafa182f7c368802569803b60bd6a4e6dc97d",
+  "limits": "Bounded A1763 LCD MAIN ingress, dispatch and asset status responses.\n\nActual selected LCD CRC validation, MAIN header/point dispatch, completion-state\nbranches and lowercase-main reply serialization/CRC execute on synthetic RAM.\nLogging, libc, UART send and one UI signal call are substitutes. Ordinary\nchunk storage, erase, final resource commit, floating-point progress, boot,\nhardware and stations are excluded. This proves supplied-state responses,\nnot a completed physical resource update or a saved-settings exporter.",
+  "model": "A1763",
+  "negative_guards": [
+    "wrong_image_hash",
+    "ordinary_chunk_storage_excluded",
+    "final_resource_commit_excluded",
+    "mmio_write_excluded",
+    "unrelated_ram_write_excluded"
+  ],
+  "points_10_to_16_targets": [
+    "0802d150",
+    "0802e182",
+    "0802d236",
+    "0802d336",
+    "0802d352",
+    "0802e182",
+    "0802d36a"
+  ],
+  "receiver_application_verified": false,
+  "results": [
+    {
+      "case": "idle_status",
+      "final_state_word_raw": 0,
+      "flash_or_resource_backend_executed": false,
+      "frames": [
+        {
+          "bytes": 16,
+          "header_words_le": [
+            16,
+            5,
+            4,
+            22
+          ],
+          "response_bytes_10_13": [
+            22,
+            0,
+            1,
+            100
+          ],
+          "sha256": "ea3b96af265a037f6a2ce9edb559d2acd1944049488fb6e1167dfdccea3d062e"
+        }
+      ],
+      "input_point_raw": 22,
+      "instructions": 407,
+      "seeded_flag": 0,
+      "seeded_mode": 0,
+      "stopped_boundary": null,
+      "ui_signal_substitutes": []
+    },
+    {
+      "case": "mode_zero_flag_one",
+      "final_state_word_raw": 1,
+      "flash_or_resource_backend_executed": false,
+      "frames": [
+        {
+          "bytes": 16,
+          "header_words_le": [
+            16,
+            5,
+            4,
+            22
+          ],
+          "response_bytes_10_13": [
+            22,
+            0,
+            1,
+            0
+          ],
+          "sha256": "99f3d249224445ac2a09c7bbcddf911db673be4637a6ebde6b864d48787d6df8"
+        }
+      ],
+      "input_point_raw": 22,
+      "instructions": 406,
+      "seeded_flag": 1,
+      "seeded_mode": 0,
+      "stopped_boundary": null,
+      "ui_signal_substitutes": []
+    },
+    {
+      "case": "mode_two_status",
+      "final_state_word_raw": 512,
+      "flash_or_resource_backend_executed": false,
+      "frames": [
+        {
+          "bytes": 16,
+          "header_words_le": [
+            16,
+            5,
+            4,
+            22
+          ],
+          "response_bytes_10_13": [
+            22,
+            0,
+            0,
+            50
+          ],
+          "sha256": "7b8941e6704db5f2ec031120f56ac85bcda017c219b740afd0942d744470df76"
+        }
+      ],
+      "input_point_raw": 22,
+      "instructions": 398,
+      "seeded_flag": 0,
+      "seeded_mode": 2,
+      "stopped_boundary": null,
+      "ui_signal_substitutes": []
+    },
+    {
+      "case": "unknown_mode_status",
+      "final_state_word_raw": 768,
+      "flash_or_resource_backend_executed": false,
+      "frames": [
+        {
+          "bytes": 16,
+          "header_words_le": [
+            16,
+            5,
+            4,
+            22
+          ],
+          "response_bytes_10_13": [
+            22,
+            0,
+            0,
+            0
+          ],
+          "sha256": "7ac657884bea2db0bf21657de4280850d3ac639dc271dc10af769b8f25c0e1d3"
+        }
+      ],
+      "input_point_raw": 22,
+      "instructions": 398,
+      "seeded_flag": 0,
+      "seeded_mode": 3,
+      "stopped_boundary": null,
+      "ui_signal_substitutes": []
+    },
+    {
+      "case": "mode_one_math_boundary",
+      "final_state_word_raw": 256,
+      "flash_or_resource_backend_executed": false,
+      "frames": [],
+      "input_point_raw": 22,
+      "instructions": 199,
+      "seeded_flag": 0,
+      "seeded_mode": 1,
+      "stopped_boundary": "floating_point_progress_excluded",
+      "ui_signal_substitutes": []
+    },
+    {
+      "case": "mode_two_final_receipt",
+      "final_state_word_raw": 1,
+      "flash_or_resource_backend_executed": false,
+      "frames": [
+        {
+          "bytes": 16,
+          "header_words_le": [
+            16,
+            5,
+            4,
+            20
+          ],
+          "response_bytes_10_13": [
+            20,
+            0,
+            1,
+            0
+          ],
+          "sha256": "a4fc2fa68ea96a519be77027a986d4bc70410e0265e700669aa4abd4f0133623"
+        }
+      ],
+      "input_point_raw": 20,
+      "instructions": 401,
+      "seeded_flag": 0,
+      "seeded_mode": 2,
+      "stopped_boundary": null,
+      "ui_signal_substitutes": [
+        {
+          "signal_argument": 13,
+          "value_argument": 0
+        }
+      ]
+    },
+    {
+      "case": "mode_two_chunk_rejected",
+      "final_state_word_raw": 512,
+      "flash_or_resource_backend_executed": false,
+      "frames": [
+        {
+          "bytes": 16,
+          "header_words_le": [
+            16,
+            5,
+            4,
+            19
+          ],
+          "response_bytes_10_13": [
+            19,
+            0,
+            1,
+            0
+          ],
+          "sha256": "a55c3b3cd3a93ec6dd2ecbd97ae5025c128f636256f3adbbd128b34eea27770d"
+        }
+      ],
+      "input_point_raw": 19,
+      "instructions": 395,
+      "seeded_flag": 0,
+      "seeded_mode": 2,
+      "stopped_boundary": null,
+      "ui_signal_substitutes": []
+    },
+    {
+      "case": "chunk_offset_above_bound",
+      "final_state_word_raw": 0,
+      "flash_or_resource_backend_executed": false,
+      "frames": [
+        {
+          "bytes": 16,
+          "header_words_le": [
+            16,
+            5,
+            4,
+            19
+          ],
+          "response_bytes_10_13": [
+            19,
+            0,
+            6,
+            0
+          ],
+          "sha256": "eb39b71530373ddbde9df68cf1d3c7ba05ae401e3281625c9e21c77d1853128f"
+        }
+      ],
+      "input_point_raw": 19,
+      "instructions": 398,
+      "seeded_flag": 0,
+      "seeded_mode": 0,
+      "stopped_boundary": null,
+      "ui_signal_substitutes": []
+    },
+    {
+      "case": "unhandled_point_15",
+      "final_state_word_raw": 0,
+      "flash_or_resource_backend_executed": false,
+      "frames": [
+        {
+          "bytes": 16,
+          "header_words_le": [
+            16,
+            5,
+            4,
+            21
+          ],
+          "response_bytes_10_13": [
+            21,
+            0,
+            7,
+            0
+          ],
+          "sha256": "6d0d6e7b1ac14dc413e3527d7e8524bbc51230a1288b709b5565ed96f5c34e15"
+        }
+      ],
+      "input_point_raw": 21,
+      "instructions": 390,
+      "seeded_flag": 0,
+      "seeded_mode": 0,
+      "stopped_boundary": null,
+      "ui_signal_substitutes": []
+    },
+    {
+      "case": "bad_input_crc",
+      "final_state_word_raw": 0,
+      "flash_or_resource_backend_executed": false,
+      "frames": [],
+      "input_point_raw": 22,
+      "instructions": 193,
+      "seeded_flag": 0,
+      "seeded_mode": 0,
+      "stopped_boundary": null,
+      "ui_signal_substitutes": []
+    },
+    {
+      "case": "wrong_selector_header",
+      "final_state_word_raw": 0,
+      "flash_or_resource_backend_executed": false,
+      "frames": [],
+      "input_point_raw": 22,
+      "instructions": 203,
+      "seeded_flag": 0,
+      "seeded_mode": 0,
+      "stopped_boundary": null,
+      "ui_signal_substitutes": []
+    }
+  ],
+  "station_commands_sent": 0
+}

@@ -74,6 +74,11 @@ its second argument is zero, and flag **2** for tested nonzero arguments 1 and
 substituted delay. The actual callback sets the flag; the radio framing/parser
 that supplies its arguments remains outside this proof.
 
+The later [radio ACK proof](radio-asset-ack-and-lcd-status.md) executes the
+send-object constructor, received-frame helper, selected send worker and actual
+callback. For its fixtures, argument zero means a matching receipt ACK; it
+does not interpret the controller's success/failure TLV body.
+
 ## MAIN consumer and forwarding
 
 A bounded initialization **prefix**, `08013f90..08013fc2`, installs the 32-byte
