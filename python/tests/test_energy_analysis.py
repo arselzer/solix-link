@@ -52,6 +52,24 @@ def test_constant_load_comparison_has_no_calibration_claim_even_with_unity_ratio
     assert not result["physical_units_verified"] and not result["battery_energy_estimate"]
 
 
+@pytest.mark.parametrize("pulse_phase,expected_integral_wh", [(1, 360), (4.5, 860)])
+def test_temporally_covered_samples_can_miss_or_overweight_short_pulses(pulse_phase, expected_integral_wh):
+    # Independent analytic waveform: 360 W base plus a 1000 W, one-second
+    # pulse every ten seconds, for one hour. True energy is 460 Wh.
+    # This is a hypothetical ideal counter, not a claim about either station.
+    samples = [{"timestamp": second, "power_w": 360 + (
+        1000 if pulse_phase <= second % 10 < pulse_phase + 1 else 0)}
+        for second in range(0, 3601, 5)]
+    result = compare_power_interval(460, 0, 3600, samples, max_power_gap=15,
+                                    candidate_wh_per_raw_unit=1.0)
+    assert result["coverage_complete"] and result["gap_reasons"] == []
+    assert result["estimated_ac_energy_wh"] == pytest.approx(expected_integral_wh)
+    # A correct 1 Wh/unit meter can fail the rounding-only check solely because
+    # the sampled integral differs from the known waveform's energy.
+    assert result["candidate_scale"]["rounding_compatible"] is False
+    assert result["physical_units_verified"] is False
+
+
 def test_interpolation_clips_endpoints_and_integrates_linear_ramp():
     result = compare_power_interval(1, 5, 25, [{"timestamp": 0, "power_w": 0}, {"timestamp": 30, "power_w": 360}])
     assert result["coverage_complete"]

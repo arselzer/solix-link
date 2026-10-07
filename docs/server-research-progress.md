@@ -1478,3 +1478,55 @@ Private baselines, reports, installation backups, registry IDs, auth material
 and detailed verification remain ignored with restricted permissions.
 AGENTS.md is unchanged. Remaining hardware: an independent energy meter and
 a captured ordinary C1000 Gen 2 button restart; do not restart the C2000.
+
+## 2026-10-07: C2000 follow-up and held-out scale check
+
+The user's C2000 follow-up prompted another bounded **read-only** comparison
+of retained local uploads against the SQLite AC history, preserving the earlier
+frozen result. It reused the unchanged `compare_power_interval` helper, source
+SHA-256 `347ade0bc28e58db50c12991b3795d6720e19c101a7c2a67c81cfba009f69fa6`,
+with Python **3.14.4**. No code, runtime, HA configuration, native conversion,
+station command/output/reset, service or network setting changed.
+
+The expanded sample has **29 C2000 / main 2.1.6.4 reports over 4.2 hours** and
+**27 covered intervals per Standard AC channel**. Raw-unit/reported-Wh ratios
+are **1.11198 input / 1.11280 output**. The 0.9 Wh/unit hypothesis yields
+**1.00078 / 1.00152**, with **24 / 27** intervals compatible with integer
+rounding alone. All radio intervals are 540 seconds; no batches, counter
+decreases or source-clock reversals appeared. Incomplete history intervals are
+excluded rather than bridged.
+
+The holdout contains **19 covered intervals** whose left receipt follows the
+original frozen artifact's save time. Corrected aggregate ratios are
+**1.00115 / 1.00216**; **16 / 19** fit the rounding-only bound. Three exceptions
+remain unexplained; timing, sampling and sensor error have not been separated.
+No interval supports the original 1.0 hypothesis within that bound. C1000 Gen 2
+has 22 covered intervals, all consistent with nominal 1.0; ratios are
+**1.00331 / 0.99380**. There is no independent meter or physical restart test.
+
+This strengthens the empirical C2000 Standard AC estimate without establishing
+calibrated native units. C2000's native sensors remain diagnostics; no automatic
+0.9 correction or statistics entity was enabled. A separately labelled empirical
+estimate or an integral of the existing AC power sensors can be implemented
+without restarting the server-backed station. See the
+[extended validation](native-energy-validation.md). New raw results and identity
+mapping remain private; the public update contains ratios/counts only.
+
+The user correctly raised missed spikes as an alternative. A further read-only
+cadence audit found **5.23 s median** source gaps; the three rounding-only
+exceptions include sampled peaks **2.71–3.31 × interval mean**, with corrected
+AC residuals **−2.12% to +5.52%**. This is compatible with sampling/timing
+effects, without proving a cause or ruling out spikes between observations.
+The sole source gap over 15 s is excluded from covered comparisons.
+
+Two new analytic synthetic cases show that temporally covered five-second
+samples can either miss or over-weight one-second pulses, while a hypothetical
+correct 1 Wh/unit meter fails the rounding-only check. The bound is therefore
+not a necessary acceptance gate for estimated consumption, and fitting 0.9 to
+the station's own watt integral does not prove that conversion. No automatic
+rescaling or device-counter superiority is asserted. The helper behavior and
+source hash are unchanged; its interpretation is clarified in the
+[validation report](native-energy-validation.md#the-watt-integral-is-not-ground-truth).
+All **44 focused energy-analysis tests passed** with Python **3.14.4** /
+pytest **9.1.1**. This synthetic suite is not physical calibration. The new
+public files contain no retained device readings or private identifiers.

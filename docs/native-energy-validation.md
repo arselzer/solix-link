@@ -50,6 +50,76 @@ The public C2000 conversion remains explicitly **assumed/unverified**;
 input/output only. DC/other-port energy, TOU and backup groups are unqualified.
 AC values include bypass and do not isolate battery charge/discharge.
 
+### Extended passive sample and held-out intervals
+
+A later read-only comparison retained the original frozen result and extended
+the sample to **29 C2000 Gen 2 reports over 4.2 hours**. There are **27 fully
+covered intervals per AC channel**. All radio intervals remain 540 seconds;
+no source-clock reversal, multi-event batch or counter decrease appeared.
+Incomplete power-history coverage is excluded, including the monitoring-upgrade
+gap. No station command, reset, cloud call, load change or service action was
+needed for this comparison.
+
+| C2000 Standard AC channel | Uncorrected aggregate ratio | Ratio using 0.9 Wh/unit | Compatible with integer rounding alone |
+| --- | --- | --- | --- |
+| Input | 1.11198 | 1.00078 | 24 / 27 |
+| Output | 1.11280 | 1.00152 | 24 / 27 |
+
+The **19 covered held-out intervals** start after the original comparison
+artifact's save time; that cohort was not used to choose the 0.9 hypothesis.
+Its corrected aggregate ratios are **1.00115 input / 1.00216 output**,
+with **16 / 19** intervals compatible with rounding alone on each channel.
+No interval supports 1.0 Wh/unit within the rounding bound. This strengthens
+the empirical Standard AC scale lead, but **three intervals still exceed the
+rounding-only bound**. Sampling, queue timing and measurement error have not
+been separated; no new cause is asserted.
+
+C1000 Gen 2 provides a useful parallel reference: 24 reports over 3.83 hours,
+22 covered intervals per channel, all compatible with its firmware-supported
+1.0 Wh/unit interpretation. Its aggregate ratios are **1.00331 input /
+0.99380 output**. These are still comparisons to reported watts, not independent
+electrical measurements.
+
+C2000 can use a future explicitly labelled **empirical estimate** with the
+same persistent guards; enabling that does not require restarting the station.
+It is not implemented by this audit. Verified native scaling still requires
+independent meter evidence or equivalent firmware/timing proof. Integrating
+its already-supported AC watt readings is the separate available estimate
+path described in [HA consumption options](home-assistant-energy-dashboard.md).
+No live conversion or HA setting was changed. Detailed readings and cohort
+timestamps remain in the ignored private folder.
+
+### The watt integral is not ground truth
+
+The user's sampling objection is valid. A separate read-only history audit
+found a median source-sample interval of **5.23 seconds**. The three
+rounding-only exceptions have sampled peaks **2.71–3.31 times** their interval
+mean. Their corrected residuals range from **−2.12% to +5.52%** across AC
+channels. This is consistent with sampling/endpoint effects, but does not
+identify their actual cause or reveal unseen spikes. The single source gap
+over 15 seconds is excluded from fully covered comparisons.
+
+`coverage_complete` establishes bracketed endpoints and acceptable gaps between
+observations. It does **not** establish continuous measurement of the load.
+Trapezoidal interpolation can miss pulses between samples or over-weight a
+pulse observed at one point. Native C1000 accounting also uses discrete cached
+power samples; C2000's method remains unproved. Neither trace is automatically
+an independent reference meter.
+
+Two synthetic analytic-waveform cases demonstrate this limit: 360 W base with
+a one-second 1000 W pulse every ten seconds has **460 Wh** true energy over
+one hour. Five-second point samples can integrate to **360 Wh or 860 Wh**,
+depending on pulse phase, despite complete timestamp coverage. A hypothetical
+correct 1 Wh/unit counter then fails the rounding-only comparison. This is
+mathematical synthetic evidence, not either station's observed waveform.
+
+The three exceptions therefore **do not disqualify an energy estimate**, and
+the near-unity corrected aggregate **does not prove 0.9 is the native scale**.
+A stable discrepancy can come from scale, timing or systematic sampling bias.
+No automatic rescaling is justified by this integral alone. A C2000 estimate
+may be exposed with a clearly stated assumption; verified conversion needs
+independent meter evidence or a firmware/measurement-path proof.
+
 ## Reusable offline hypothesis check
 
 `compare_power_interval(..., candidate_wh_per_raw_unit=0.9)` now adds a
