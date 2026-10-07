@@ -5,6 +5,32 @@ gateway snapshots and a bounded 6 MiB tail of locally retained station traffic.
 No station query, control command, cloud request or phone-capture access was
 needed. Raw requests, identities and counter readings remain private.
 
+## Cached audit after the kWh deployment
+
+A new cached-only check after `5826a07` confirmed all three deployed models
+available. It compared public metric names with HA's metric allowlist and entity
+descriptions, without printing readings or identities or issuing station queries.
+
+| Candidate | Confirmed presentation gap | Reliability boundary |
+| --- | --- | --- |
+| Original C1000 USB-C1/C2, USB-A1/A2 and DC-input watts | Present as numeric decoded fields; absent from HA allowlist/entities | Expose as reported port power. This check does not validate a loaded port or calibrate watts. |
+| Remaining charge/discharge time | Gen 2 values present but excluded by HA; original C1000 currently explicitly unknown | Device estimate, with charging/discharging labels and idle/sentinel handling; not a guaranteed runtime. |
+| AC/DC output countdowns | Original C1000/C2000 report numeric values; HA keeps AC metadata but has no countdown sensor, and drops DC | Remaining timers are distinct from saved output/device timeouts. Nonzero countdown transitions are not exercised here. |
+| Component firmware versions | C2000 controller/inverter/BMS/module and C1000 Gen 2 module versions present but excluded by HA | Stable reported version diagnostics, not measurements or update availability. |
+| Wi-Fi RSSI on C1000 Gen 2 | Separately validated operator query, excluded from routine HA polling | Known 1.1.4.9/radio 0.3.3.0 read-only route; this audit did not query it. See [native validation](c1000-gen2-native-rssi-validation.md). |
+
+These are primarily presentation gaps: the SDK/cached HTTP already retains the
+telemetry. Current cached presence does not prove that every retained field was
+refreshed with the most recent incremental packet. Port power and firmware
+diagnostics are the simplest next additions, followed by guarded duration sensors.
+
+Expansion fields are also decoded, but valid expansion SOC/temperature entities
+must require actual expansion presence; C2000's value is only a presence flag.
+Health bytes, original-model BMS/charging-source codes, Gen 2 raw PV power,
+unmapped fault meanings and extra energy-report blocks still require semantic or
+physical validation. The controller UTC field is a retained diagnostic, not a
+fresh clock-accuracy measurement. No sensor was enabled or station setting changed.
+
 ## Energy and report fields
 
 | Source | Available evidence | Current use / remaining work |
