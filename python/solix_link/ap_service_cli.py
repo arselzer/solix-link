@@ -133,6 +133,7 @@ def add_commands(subcommands) -> None:
     serve.add_argument("--port", type=int, default=8765)
     serve.add_argument("--allow-control", action="store_true", help="Enable HTTP commands; requires SOLIX_HTTP_TOKEN and a control-enabled worker")
     serve.add_argument("--web-ui", action="store_true", help="Serve the optional local dashboard at /")
+    serve.add_argument("--wifi-rssi", action="store_true", help="Opt in to read-only C1000 Gen 2 Wi-Fi signal queries every 5 minutes; main 1.1.4.9 / radio 0.3.3.0 only")
     serve.add_argument("--history-file", type=Path, help="Opt in to a private SQLite history file; no station requests")
     serve.add_argument("--history-retention-days", type=int, default=7, help="History retention, 1–365 days (default 7)")
     serve.add_argument("--permissions-file", type=Path, help="Owner-only per-device token scopes; replaces SOLIX_HTTP_TOKEN")
@@ -264,7 +265,8 @@ def dispatch(args) -> None:
     elif args.command == "ap-service-serve":
         from .ap_service_monitor import APServiceMonitor
         from .server import run_server
-        run_server(APServiceMonitor(load_ap_service(args.directory / "ap_service.json"), args.directory), args.host, args.port,
+        run_server(APServiceMonitor(load_ap_service(args.directory / "ap_service.json"), args.directory,
+                                   wifi_rssi=args.wifi_rssi), args.host, args.port,
                    allow_control=args.allow_control, web_ui=args.web_ui,
                    history_file=args.history_file, history_retention_days=args.history_retention_days,
                    permissions_file=args.permissions_file, activity_file=args.activity_file,

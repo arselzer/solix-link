@@ -13,6 +13,8 @@ from .const import CONF_HISTORY_ENERGY_ENABLED, CONF_NATIVE_ENERGY_ENABLED
 from .entity import SolixEntity
 from .history import history_available
 from .native_energy import ENERGY_CHANNELS, GROUP_NAMES, validate_native_energy
+from .telemetry import COMPONENT_VERSIONS, duration_value, telemetry_supported, version_value
+from .wifi_signal import validate_wifi_signal
 
 PARALLEL_UPDATES = 0
 DESCRIPTIONS = (
@@ -24,7 +26,20 @@ DESCRIPTIONS = (
                             native_unit_of_measurement=UnitOfTemperature.CELSIUS, state_class=SensorStateClass.MEASUREMENT),
     *(SensorEntityDescription(key=key, translation_key=key, device_class=SensorDeviceClass.POWER,
                              native_unit_of_measurement=UnitOfPower.WATT, state_class=SensorStateClass.MEASUREMENT)
-      for key in ("ac_input_power_w", "ac_output_power_w", "dc_output_power_w", "output_power_w")),
+      for key in ("ac_input_power_w", "ac_output_power_w", "dc_output_power_w", "output_power_w",
+                  "dc_input_power_w", "solar_input_power_w", "input_power_w", "usb_c1_power_w",
+                  "usb_c2_power_w", "usb_c3_power_w", "usb_a1_power_w", "usb_a2_power_w")),
+    SensorEntityDescription(key="time_remaining_minutes", translation_key="time_remaining_minutes",
+                            device_class=SensorDeviceClass.DURATION, native_unit_of_measurement=UnitOfTime.MINUTES),
+    *(SensorEntityDescription(key=key, translation_key=key, device_class=SensorDeviceClass.DURATION,
+                             native_unit_of_measurement=UnitOfTime.SECONDS)
+      for key in ("ac_output_timer_remaining_seconds", "dc_output_timer_remaining_seconds")),
+    *(SensorEntityDescription(key=key, translation_key=key, entity_category=EntityCategory.DIAGNOSTIC,
+                             entity_registry_enabled_default=True) for key in COMPONENT_VERSIONS),
+    SensorEntityDescription(key="wifi_rssi_dbm", translation_key="wifi_rssi_dbm",
+                            device_class=SensorDeviceClass.SIGNAL_STRENGTH,
+                            native_unit_of_measurement="dBm",
+                            entity_category=EntityCategory.DIAGNOSTIC, entity_registry_enabled_default=True),
     SensorEntityDescription(key="battery_status", translation_key="battery_status", device_class=SensorDeviceClass.ENUM,
                             options=["idle", "charging", "discharging", "unknown"]),
     SensorEntityDescription(key="active_tariff", translation_key="active_tariff", device_class=SensorDeviceClass.ENUM,
@@ -103,11 +118,15 @@ async def async_setup_entry(hass, entry: SolixConfigEntry, async_add_entities) -
         for name, snapshot in (coordinator.data or {}).items():
             for description in DESCRIPTIONS:
                 key = description.key
+                if not telemetry_supported(key, snapshot.get("model")):
+                    continue
                 if key == "ac_output_frequency_setting_hz" and snapshot.get("model") != "c1000_gen2":
                     continue
                 if key == "ac_frequency_raw" and snapshot.get("model") != "c2000_gen2":
                     continue
                 present = key in (snapshot if key in ("power_flow", "last_seen_timestamp", "control_availability") else snapshot["metrics"])
+                if key == "wifi_rssi_dbm":
+                    present = snapshot.get("wifi_signal") is not None
                 if present and (name, key) not in added:
                     added.add((name, key))
                     entities.append(SolixSensor(coordinator, name, description))
@@ -154,6 +173,12 @@ class SolixSensor(SolixEntity, SensorEntity):
     @property
     def native_value(self):
         key = self.entity_description.key
+        if not telemetry_supported(key, self.snapshot.get("model")):
+            return None
+        if key == "wifi_rssi_dbm":
+            report = validate_wifi_signal(self.snapshot.get("wifi_signal"), model=self.snapshot.get("model"),
+                                           protocol=self.snapshot.get("protocol"), now=time.time())
+            return report["wifi_rssi_dbm"] if report is not None else None
         if key == "control_availability":
             report = self.snapshot.get(key)
             return sum(not row["ready"] for row in report["commands"]
@@ -167,6 +192,11 @@ class SolixSensor(SolixEntity, SensorEntity):
             except (OverflowError, OSError, ValueError):
                 return None
         value = self.snapshot.get("power_flow") if key == "power_flow" else self.snapshot.get("metrics", {}).get(key)
+        if key in COMPONENT_VERSIONS:
+            return version_value(value)
+        if key == "time_remaining_minutes" or key.endswith("_timer_remaining_seconds"):
+            return duration_value(key, value, model=self.snapshot.get("model"),
+                                  activity=self.snapshot.get("metrics", {}).get("battery_status"))
         if self.entity_description.options is not None:
             return value if value in self.entity_description.options else None
         value = numeric(value)
@@ -199,6 +229,18 @@ class SolixSensor(SolixEntity, SensorEntity):
                 age = time.time() - plan["reported_at"]
                 attributes.update(saved_tou_plan=plan, saved_tou_plan_fresh=self.available
                                   and snapshot_available(self.snapshot, 30) and -5 <= age < 30)
+        if self.entity_description.key == "time_remaining_minutes":
+            activity = self.snapshot.get("metrics", {}).get("battery_status")
+            attributes.update(estimated=True, source="device_runtime_estimate",
+                estimate_kind={"charging": "time_to_full", "discharging": "time_to_empty"}.get(activity, "remaining_time"))
+        if self.entity_description.key.endswith("_timer_remaining_seconds"):
+            attributes.update(source="device_reported_countdown", zero_means="no_active_countdown")
+        if self.entity_description.key == "wifi_rssi_dbm":
+            report = validate_wifi_signal(self.snapshot.get("wifi_signal"), model=self.snapshot.get("model"),
+                                           protocol=self.snapshot.get("protocol"), now=time.time())
+            if report is not None:
+                attributes.update({key: report[key] for key in ("source", "observed_at", "max_age_seconds",
+                                                               "main_version", "radio_version")})
         return attributes
 
 

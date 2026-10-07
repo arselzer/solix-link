@@ -22,6 +22,13 @@ Authorization header. Treat HA configuration backups as containing credentials.
 
 ## Entities and actions
 
+Reported USB/DC/solar power sensors, guarded remaining-time estimates, current
+AC/DC countdowns and component firmware diagnostics are discovered only for
+models that report them. Native C1000 Gen 2 Wi-Fi signal is optional: enable
+`--wifi-rssi` on `ap-service-serve` for five-minute read-only queries with
+independent ten-minute expiry. HA itself reads cached HTTP data only. See
+[reported telemetry](../../docs/reported-telemetry.md) for scope and limits.
+
 - **Blocked controls** diagnostic: cached permission/prerequisite reasons with
   a count for the configured model/transport; requires an updated gateway.
   The client supplies expected settings and a request ID when supported,

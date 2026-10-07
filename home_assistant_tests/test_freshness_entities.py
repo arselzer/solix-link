@@ -52,12 +52,12 @@ def platform(monkeypatch):
     install("homeassistant.components.sensor", SensorEntity=type("SensorEntity", (), {}),
         SensorEntityDescription=Description, SensorStateClass=SimpleNamespace(MEASUREMENT="measurement", TOTAL="total"),
         SensorDeviceClass=SimpleNamespace(BATTERY="battery", TEMPERATURE="temperature",
-            POWER="power", ENUM="enum", TIMESTAMP="timestamp", ENERGY="energy"))
+            POWER="power", ENUM="enum", TIMESTAMP="timestamp", ENERGY="energy", DURATION="duration", SIGNAL_STRENGTH="signal_strength"))
     install("homeassistant.components.binary_sensor", BinarySensorEntity=type("BinarySensorEntity", (), {}),
         BinarySensorEntityDescription=Description, BinarySensorDeviceClass=SimpleNamespace(POWER="power"))
     install("homeassistant.const", PERCENTAGE="%", EntityCategory=SimpleNamespace(DIAGNOSTIC="diagnostic"),
         UnitOfPower=SimpleNamespace(WATT="W"), UnitOfTemperature=SimpleNamespace(CELSIUS="°C"),
-        UnitOfEnergy=SimpleNamespace(KILO_WATT_HOUR="kWh"), UnitOfTime=SimpleNamespace(SECONDS="s"))
+        UnitOfEnergy=SimpleNamespace(KILO_WATT_HOUR="kWh"), UnitOfTime=SimpleNamespace(SECONDS="s", MINUTES="min"))
     install("homeassistant.core", callback=lambda function: function)
     install("homeassistant.helpers")
     install("homeassistant.helpers.device_registry", DeviceInfo=dict)

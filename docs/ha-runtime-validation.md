@@ -431,3 +431,43 @@ Select the appropriate **Observed Standard AC ... energy estimate** in
 Energy → Individual devices. These estimates include bypass and exclude TOU
 and backup groups. No dashboard boundary was selected automatically. Raw
 requests, meter readings, registry IDs and verification details remain private.
+
+## Reported telemetry deployment, 2026-10-07
+
+The [presentation update](reported-telemetry.md) was built from **79** matching
+package source/assets. Wheel SHA-256:
+`7b46551b516744d1ba27536ea08c93ee2834b44dfdf3c3043fbe726335625205`.
+The gateway/AP and HA restarted to load the package/component, with private
+backups and rollback copies of history and energy state. A signal-unit import
+was corrected to HA's supported literal `dBm`; only HA restarted for that fix.
+The installed component then loaded successfully on **HA 2026.7.4**.
+
+All **18 new entities** are enabled:
+
+| Model | New entities | Populated at final check | Unavailable runtime estimate |
+| --- | ---: | ---: | ---: |
+| Original C1000, main 1.7.1 | 8 | 7 | 1 |
+| C1000 Gen 2, main 1.1.4.9 / module 0.3.3.0 | 3 | 2 | 1 |
+| C2000 Gen 2, main 2.1.6.4 | 7 | 6 | 1 |
+
+Reported idle/unknown estimates intentionally remain unavailable. The other
+entities have the expected reported-watt, duration or version/signal contract.
+C300 presentation is covered synthetically; it is not configured on this HA
+node. Firmware and signal are diagnostics; power and duration are ordinary
+sensors. Existing **ten Energy-compatible sensors** retained numeric kWh
+states and their `total` state class.
+
+A gateway-only service override enables `--wifi-rssi` at five-minute cadence.
+One initial explicit C1000 Gen 2 query populated its independently timestamped
+signal cache and HA sensor, with complete protected-state confirmation. No
+setting writes, output switches, station restarts, cloud requests or queries
+on unvalidated models were used. All three stations remained fresh with AC
+reported enabled; protected fields and station identity/network-file hashes
+matched the baseline. Public package ownership was preserved for the user CLI.
+Charging automations and the earlier observation services were left unchanged.
+
+Verification passed **1,219 focused Python/HA tests**, **103 follow-up entity
+checks** after the unit correction, Vue type-check/build and **34 synthetic
+browser scenarios**, including RSSI expiry. Cached/live presentation does not
+establish watt calibration, runtime accuracy, countdown behavior or electrical
+continuity. Baselines, HA registry/state output and local logs remain private.

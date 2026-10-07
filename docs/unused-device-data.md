@@ -5,7 +5,7 @@ gateway snapshots and a bounded 6 MiB tail of locally retained station traffic.
 No station query, control command, cloud request or phone-capture access was
 needed. Raw requests, identities and counter readings remain private.
 
-## Cached audit after the kWh deployment
+## Cached audit after the kWh deployment (before presentation update)
 
 A new cached-only check after `5826a07` confirmed all three deployed models
 available. It compared public metric names with HA's metric allowlist and entity
@@ -19,7 +19,11 @@ descriptions, without printing readings or identities or issuing station queries
 | Component firmware versions | C2000 controller/inverter/BMS/module and C1000 Gen 2 module versions present but excluded by HA | Stable reported version diagnostics, not measurements or update availability. |
 | Wi-Fi RSSI on C1000 Gen 2 | Separately validated operator query, excluded from routine HA polling | Known 1.1.4.9/radio 0.3.3.0 read-only route; this audit did not query it. See [native validation](c1000-gen2-native-rssi-validation.md). |
 
-These are primarily presentation gaps: the SDK/cached HTTP already retains the
+The five candidates in this table were subsequently integrated in
+[reported telemetry](reported-telemetry.md), with model guards and opt-in RSSI
+polling. The table records the original audit.
+
+These were primarily presentation gaps: the SDK/cached HTTP already retains the
 telemetry. Current cached presence does not prove that every retained field was
 refreshed with the most recent incremental packet. Port power and firmware
 diagnostics are the simplest next additions, followed by guarded duration sensors.

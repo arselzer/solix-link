@@ -64,8 +64,10 @@ The same protected-state helper serves the existing wireless-flags query.
 
 The Unix-socket command works with controls disabled, rejects extra fields
 and requires exact fresh **1.1.4.9 / 0.3.3.0** versions before sending RSSI.
-It is an explicit private query, excluded from HTTP/HA controls and automatic
-polling. Other models remain unsupported. Focused framing, failure, freshness,
+The initial validation used an explicit private query. The
+[2026-10-07 presentation extension](reported-telemetry.md) adds cached HTTP/HA
+data and opt-in five-minute gateway polling; RSSI remains excluded from
+HTTP/HA setting controls. Other models remain unsupported. Focused framing, failure, freshness,
 firmware and correlation tests passed; the full gate passed **2,451 Python/HA
 tests**. Deployment and policy checks are recorded in
 [HA runtime validation](ha-runtime-validation.md#native-rssi-runtime-update).

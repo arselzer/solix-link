@@ -82,6 +82,37 @@ try {
     await page.getByTestId('command-review').waitFor();
   }
   await connect();
+  await page.getByTestId('reported-telemetry').locator('summary').click();
+  assert.ok((await page.getByTestId('telemetry-time_remaining_minutes').textContent()).includes('Time to empty (estimate)'));
+  assert.ok((await page.getByTestId('telemetry-time_remaining_minutes').textContent()).includes('120 min'));
+  assert.ok((await page.getByTestId('telemetry-software_version_module').textContent()).includes('0.3.3.0'));
+  assert.equal(await page.getByTestId('telemetry-dc_output_timer_remaining_seconds').count(), 0);
+  await page.getByTestId('station-select').selectOption('Spare · C1000');
+  await page.getByTestId('reported-telemetry').locator('summary').click();
+  assert.ok((await page.getByTestId('telemetry-usb_c1_power_w').textContent()).includes('15 W'));
+  assert.ok((await page.getByTestId('telemetry-usb_a2_power_w').textContent()).includes('0 W'));
+  assert.ok((await page.getByTestId('telemetry-time_remaining_minutes').textContent()).includes('Unavailable'));
+  assert.equal(await page.getByTestId('telemetry-software_version_module').count(), 0);
+  await page.screenshot({ path: `${root}/docs/images/web-dashboard-reported-telemetry.png`, fullPage: true });
+  await page.getByTestId('station-select').selectOption('Server · C2000 Gen 2');
+  await page.getByTestId('reported-telemetry').locator('summary').click();
+  assert.ok((await page.getByTestId('telemetry-dc_output_timer_remaining_seconds').textContent()).includes('No active countdown'));
+  assert.ok((await page.getByTestId('telemetry-software_version_bms').textContent()).includes('3.4.5.6'));
+  assert.equal(await page.getByTestId('telemetry-usb_a1_power_w').count(), 0);
+  await page.getByTestId('station-select').selectOption('Office · C1000 Gen 2');
+  const wifiReport = { schema_version: 1, source: 'radio_ap_info', main_version: '1.1.4.9', radio_version: '0.3.3.0',
+    settings_unchanged: true, observed_at: simulatedNow / 1000 - 1, wifi_rssi_dbm: -42 };
+  await change({ wifi_signal: { 'Office · C1000 Gen 2': wifiReport } });
+  await refresh();
+  await page.getByTestId('reported-telemetry').locator('summary').click();
+  assert.ok((await page.getByTestId('telemetry-wifi_rssi_dbm').textContent()).includes('-42 dBm'));
+  await change({ wifi_signal: { 'Office · C1000 Gen 2': { ...wifiReport, observed_at: simulatedNow / 1000 - 601 } } });
+  await refresh();
+  assert.ok((await page.getByTestId('telemetry-wifi_rssi_dbm').textContent()).includes('Unavailable'));
+  await change({ wifi_signal: {} });
+  await refresh();
+  assert.equal(await page.getByTestId('telemetry-wifi_rssi_dbm').count(), 0);
+  cases++; console.log(`Scenario ${cases} passed`);
   assert.equal(await page.locator('#temperature-unit').count(), 1);
   assert.equal(await page.locator('#off-grid-alert').count(), 1);
   assert.equal(await page.locator('#device-timeout').inputValue(), '0');

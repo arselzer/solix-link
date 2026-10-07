@@ -19,6 +19,7 @@ export interface Station {
   timezone_name?: string | null;
   tou_plan_readback?: TouPlanReadback | null;
   native_energy?: unknown;
+  wifi_signal?: unknown;
   ups_state?: { battery_reserve_low?: boolean | null };
   command_context?: { schema_version: 1; gateway_instance: string; issued_at: number;
     request_window_seconds: number; busy: boolean; preconditions_supported: boolean; expected: Record<string, unknown> };

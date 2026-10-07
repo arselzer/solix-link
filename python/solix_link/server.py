@@ -159,12 +159,15 @@ def create_app(service: MonitorService, token: str | None = None, *, allow_contr
 
     def status_with_controls(status: dict, principal: Principal) -> dict:
         from .energy_values import validate_native_energy
+        from .wifi_signal import validate_wifi_signal
         commands = getattr(service, "supported_commands", None)
         config = service.devices.get(status["name"])
         private_fields = {"address", "serial_number", "account_id", "owner_id", "owner_user_id", "client_id", "raw_tlvs"}
         public = {key: value for key, value in status.items() if key not in private_fields}
         public["metrics"] = {key: value for key, value in status["metrics"].items() if key not in private_fields}
         public["native_energy"] = validate_native_energy(status.get("native_energy"), model=status.get("model")) if status.get("protocol") == "native_mqtt" else None
+        public["wifi_signal"] = validate_wifi_signal(status.get("wifi_signal"),
+            model=status.get("model"), protocol=status.get("protocol"))
         public["tou_plan_readback"] = validate_plan_readback(status.get("tou_plan_readback")) if (
             status.get("model") in ("c1000_gen2", "c2000_gen2") and status.get("protocol") == "native_mqtt") else None
         if public.get("error"):
@@ -512,6 +515,13 @@ def create_app(service: MonitorService, token: str | None = None, *, allow_contr
                 if isinstance(value, (int, float)) and not isinstance(value, bool):
                     metric = re.sub(r"[^a-zA-Z0-9_]", "_", key)
                     lines.append(f"solix_gen2_{metric}{label} {value}")
+            signal = status.get("wifi_signal")
+            signal_available = bool(status["available"] and signal and signal["available"])
+            lines.append(f"solix_wifi_signal_available{label} {int(signal_available)}")
+            if signal is not None:
+                lines.append(f"solix_wifi_signal_observed_at_seconds{label} {signal['observed_at']}")
+            if signal_available:
+                lines.append(f"solix_wifi_rssi_dbm{label} {signal['wifi_rssi_dbm']}")
             energy = status.get("native_energy")
             meter = energy.get("meter") if energy is not None else None
             lines.append(f"solix_native_meter_available{label} {int(bool(meter and meter['available']))}")

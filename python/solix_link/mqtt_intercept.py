@@ -136,6 +136,7 @@ class LocalMqttServer:
         self.energy = NativeEnergyStore(config.model.value, directory / "energy-state.json")
         self.last_seen: float | None = None
         self.tou_plan_readback: dict | None = None
+        self.wifi_signal: dict | None = None
         self.error: str | None = None
         self._server: asyncio.Server | None = None
         self._tasks: set[asyncio.Task] = set()
@@ -143,6 +144,7 @@ class LocalMqttServer:
         self._control_lock = asyncio.Lock()
 
     def snapshot(self) -> dict:
+        from .wifi_signal import validate_wifi_signal
         connected = bool(self.connection and not self.connection.writer.is_closing())
         return {"name": self.config.name, "model": self.config.model.value, "protocol": "native_mqtt",
                 "connected": connected,
@@ -150,6 +152,8 @@ class LocalMqttServer:
                 "last_seen_timestamp": self.last_seen, "error": self.error, "metrics": self.metrics.copy(),
                 "tou_plan_readback": validate_plan_readback(self.tou_plan_readback),
                 "native_energy": self.energy.snapshot(),
+                "wifi_signal": validate_wifi_signal(self.wifi_signal, model=self.config.model.value,
+                                                     protocol="native_mqtt"),
                 "control_enabled": self.allow_control,
                 "power_flow": power_flow(self.metrics) if self.config.model != Model.C1000 and connected and self.last_seen and time.time() - self.last_seen < 30 else "unknown"}
 
@@ -507,10 +511,18 @@ class LocalMqttServer:
     async def wifi_rssi(self) -> dict:
         """Query radio AP-info; an unavailable observation returns null."""
         request = self.commands.wifi_rssi()  # Model guard before device I/O.
+        # Invalidate the previous observation even if this query fails. A
+        # failed confirmation must not leave an old success looking current.
+        self.wifi_signal = None
+        self.changed()
         result = await self._radio_query(request, lambda reply: {
             "wifi_rssi_dbm": decode_wifi_rssi(reply)})
         result["rssi_available"] = result["wifi_rssi_dbm"] is not None
         result["scope"] = "Radio AP-info query; unavailable RSSI is null"
+        self.wifi_signal = {"schema_version": 1, "source": "radio_ap_info", "main_version": "1.1.4.9",
+                            **{key: result[key] for key in ("radio_version", "settings_unchanged",
+                                                          "observed_at", "wifi_rssi_dbm")}}
+        self.changed()
         return result
 
     async def _radio_query(self, request: NativeMqttRequest,

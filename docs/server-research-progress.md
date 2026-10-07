@@ -1621,3 +1621,41 @@ only in the owner-restricted ignored private directory. Physical counter
 calibration and station-restart retention checks still require independent
 measurements and the authorized C1000 button test; the server-backed C2000
 was left operating.
+
+## Reported telemetry integration, 2026-10-07
+
+Integrated the five presentation candidates from the unused-data audit:
+original/C300 port watts, guarded runtime estimates, current output countdowns,
+Gen 2 component firmware, and validated C1000 Gen 2 Wi-Fi RSSI. HA allowlists
+and entities, terminal labels, SDK cache, HTTP/SSE/metrics and compact browser
+presentation now carry applicable values. Saved Gen 2 timeout configuration
+is not substituted for countdown remaining. RSSI polling defaults off;
+`ap-service-serve --wifi-rssi` opts in to guarded read-only queries every 300 s,
+with separate 600 s expiry, no write or immediate failure retry. Other models
+remain excluded. Portable package/HA validators are byte-compared by tests.
+
+Focused verification: **1,219 Python/HA tests**, **103 follow-up entity tests**
+for the HA signal-unit fix, Vue type-check/build and **34 synthetic browser
+scenarios**. Public screenshot inputs are synthetic. Official Node 22.14.0
+was used privately for the frontend build, archive SHA-256
+`69b09dba5c8dcb05c4e4273a4340db1005abeafe3927efda2bc5b249e80437ec`.
+The final local wheel has SHA-256
+`7b46551b516744d1ba27536ea08c93ee2834b44dfdf3c3043fbe726335625205`;
+all **79** package source/assets matched repository input.
+
+The HA 2026.7.4 deployment loaded successfully after correcting a nonexistent
+signal-unit enum import to literal `dBm`. It enabled **18 new entities**;
+15 were populated and three idle/unknown runtime estimates were unavailable.
+All ten existing Energy-compatible sensors retained numeric kWh states. One
+initial read-only C1000 Gen 2 RSSI query populated the cache; protected-state
+confirmation passed. All stations remained fresh with AC reported enabled,
+protected settings and identity/network-file hashes unchanged. The gateway
+alone gained the opt-in polling flag. No station writes/restarts, cloud calls
+or automation activation occurred. Raw deployment and HA results remain in
+ignored owner-restricted `.solix-private/reported-telemetry-20261007/`.
+
+Remaining physical requirements are unchanged: loaded-port watt calibration,
+independent runtime/countdown checks, native counter scale/reset verification,
+original C1000 charging measurements and any actual electrical-behavior claim.
+See [reported telemetry](reported-telemetry.md) and
+[HA runtime validation](ha-runtime-validation.md#reported-telemetry-deployment-2026-10-07).

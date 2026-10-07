@@ -32,9 +32,14 @@ METRIC_LABELS = {
     "ac_output_enabled": "AC output enabled",
     "ac_output_timer_remaining_seconds": "AC countdown remaining (seconds)",
     "dc_output_enabled": "DC output enabled",
+    "dc_output_power_w": "DC output (W)",
+    "dc_input_power_w": "DC input (W)",
+    "dc_output_timer_remaining_seconds": "DC countdown remaining (seconds)",
     "usb_c1_power_w": "USB-C1 (W)",
     "usb_c2_power_w": "USB-C2 (W)",
     "usb_c3_power_w": "USB-C3 (W)",
+    "usb_a1_power_w": "USB-A1 (W)",
+    "usb_a2_power_w": "USB-A2 (W)",
     "solar_input_power_w": "Solar input (W)",
     "dc_input_active": "DC/PV input active",
     "pv_weak_light_locked": "PV weak-light lock (firmware-derived)",
@@ -58,8 +63,13 @@ METRIC_LABELS = {
     "ac_power_saving_mode_enabled": "AC power saving enabled",
     "dc_power_saving_mode_enabled": "DC power saving enabled",
     "light_mode": "Light mode",
-    "time_remaining_minutes": "Remaining time (min)",
+    "time_remaining_minutes": "Device remaining-time estimate (min)",
     "software_version": "Firmware",
+    "software_version_controller": "Controller firmware",
+    "software_version_inverter": "Inverter firmware",
+    "software_version_bms": "BMS firmware",
+    "software_version_module": "Radio/module firmware",
+    "wifi_rssi_dbm": "Wi-Fi signal (dBm)",
 }
 
 
@@ -225,11 +235,29 @@ def public_snapshot(snapshot: dict) -> dict:
         key: value for key, value in metrics.items()
         if key in METRIC_LABELS and isinstance(value, (int, float, str))
     }
+    from .telemetry_values import COMPONENT_VERSIONS, duration_value, telemetry_supported, version_value
+    model = snapshot.get("model")
+    if model is not None:
+        for key, value in tuple(result["metrics"].items()):
+            if not telemetry_supported(key, model):
+                result["metrics"].pop(key)
+            elif key in COMPONENT_VERSIONS:
+                result["metrics"][key] = version_value(value) or "unknown"
+            elif key == "time_remaining_minutes" or key.endswith("_timer_remaining_seconds"):
+                checked = duration_value(key, value, model=model, activity=metrics.get("battery_status"))
+                result["metrics"][key] = checked if checked is not None else "unknown"
     result["error"] = "ConnectionError" if snapshot.get("error") is not None else None
     from .plan_readback import validate_plan_readback
     result["tou_plan_readback"] = validate_plan_readback(snapshot.get("tou_plan_readback"))
     from .energy_values import validate_native_energy
     result["native_energy"] = validate_native_energy(snapshot.get("native_energy"), model=snapshot.get("model")) if snapshot.get("protocol") == "native_mqtt" else None
+    from .wifi_signal import validate_wifi_signal
+    result["wifi_signal"] = validate_wifi_signal(snapshot.get("wifi_signal"),
+        model=snapshot.get("model"), protocol=snapshot.get("protocol"))
+    if result["wifi_signal"] is not None and result["wifi_signal"]["available"] and snapshot.get("available"):
+        result["metrics"]["wifi_rssi_dbm"] = result["wifi_signal"]["wifi_rssi_dbm"]
+    else:
+        result["metrics"].pop("wifi_rssi_dbm", None)
     return result
 
 

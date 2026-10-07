@@ -12,18 +12,21 @@ from .commands import native_commands_for_model, validate_command
 from .ap_service import ap_service_request
 from .protocol import Model
 from .energy_values import validate_native_energy
+from .wifi_signal import POLL_INTERVAL_SECONDS, validate_wifi_signal
 
 
 class APServiceMonitor:
     """Monitor-service interface backed by the private native MQTT status file."""
 
-    def __init__(self, config: APServiceConfig, directory: Path) -> None:
+    def __init__(self, config: APServiceConfig, directory: Path, *, wifi_rssi: bool = False) -> None:
         self.config, self.directory = config, directory
         profiles = load_ap_service_profiles(directory, config)
         self.devices = {name: item for name, (item, _) in profiles.items()}
         self.directories = {name: path for name, (_, path) in profiles.items()}
         self._subscribers: set[asyncio.Queue] = set()
         self._task: asyncio.Task | None = None
+        self._radio_task: asyncio.Task | None = None
+        self._wifi_rssi = wifi_rssi
 
     def snapshot(self, name: str) -> dict:
         if name not in self.devices:
@@ -36,6 +39,8 @@ class APServiceMonitor:
             status["connected"] = bool(fresh and status.get("connected"))
             status["available"] = bool(status["connected"] and latest and time.time() - latest < 30)
             status["native_energy"] = validate_native_energy(status.get("native_energy"), model=self.devices[name].model.value)
+            status["wifi_signal"] = validate_wifi_signal(status.get("wifi_signal"),
+                model=self.devices[name].model.value, protocol="native_mqtt")
             if not status["available"] or self.devices[name].model == Model.C1000:
                 status["power_flow"] = "unknown"
             return status
@@ -75,11 +80,34 @@ class APServiceMonitor:
 
     async def start(self) -> None:
         self._task = asyncio.create_task(self._poll())
+        if self._wifi_rssi:
+            self._radio_task = asyncio.create_task(self._poll_wifi_signal())
 
     async def stop(self) -> None:
-        if self._task:
-            self._task.cancel()
-            await asyncio.gather(self._task, return_exceptions=True)
+        tasks = [task for task in (self._task, self._radio_task) if task is not None]
+        for task in tasks:
+            task.cancel()
+        await asyncio.gather(*tasks, return_exceptions=True)
+
+    async def _query_wifi_signal(self, name: str) -> None:
+        """Only the validated model/firmware can reach the read-only socket route."""
+        status = self.snapshot(name)
+        metrics = status.get("metrics", {})
+        if (self.devices[name].model != Model.C1000_GEN2 or not status.get("available")
+                or metrics.get("software_version") != "1.1.4.9"
+                or metrics.get("software_version_module") != "0.3.3.0"):
+            return
+        try:
+            await ap_service_request(self.directory, "wifi-rssi", name=name)
+        except (OSError, ValueError, RuntimeError, TimeoutError):
+            # Bounded cadence: no immediate retry, setting write or recovery.
+            pass
+
+    async def _poll_wifi_signal(self) -> None:
+        while True:
+            for name in self.devices:
+                await self._query_wifi_signal(name)
+            await asyncio.sleep(POLL_INTERVAL_SECONDS)
 
     async def _poll(self) -> None:
         previous = None

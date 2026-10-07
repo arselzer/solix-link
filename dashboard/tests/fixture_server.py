@@ -27,6 +27,7 @@ class Demo:
         self.preview_slot_count = None
         self.plan_readback = None
         self.native_energy = {}
+        self.wifi_signal = {}
     async def start(self): pass
     async def stop(self): pass
     def supported_commands(self, name):
@@ -54,6 +55,7 @@ class Demo:
                    "tou_schedule_slot_count": 2 if c1000 else 0, "device_timeout_minutes": 0,
                    "software_version": "code 151" if original else "1.1.4.9" if c1000 else "2.1.6.4", "software_version_module": "0.3.3.0"}
         if c1000:
+            metrics["time_remaining_minutes"] = 120
             if self.preview_power_w is not None:
                 metrics["ac_charging_power_limit_w"] = self.preview_power_w
             if self.preview_slot_count is not None:
@@ -62,7 +64,12 @@ class Demo:
                            ac_output_timeout_seconds=0, dc_output_timeout_seconds=0,
                            clock_screen_enabled=0, clock_screen_transfer_status_raw=0,
                            clock_screen_first_brightness_flag_raw=0, clock_screen_second_brightness_flag_raw=0)
+        if not original and not c1000:
+            metrics.update(software_version_controller="1.2.3.4", software_version_inverter="2.3.4.5",
+                           software_version_bms="3.4.5.6", ac_output_timer_remaining_seconds=0, dc_output_timer_remaining_seconds=0)
         if original:
+            metrics.update(usb_c1_power_w=15, usb_c2_power_w=0, usb_a1_power_w=3, usb_a2_power_w=0,
+                           dc_input_power_w=0, time_remaining_minutes="unknown", dc_output_timer_remaining_seconds=0)
             metrics.update(display_brightness=2, display_timeout_seconds=30, light_mode=0,
                            device_timeout_minutes=720 if updated else 0, ac_output_timer_remaining_seconds=self.ac_countdown)
             if updated or local: metrics.update(software_version="1.7.1", ac_charging_power_limit_w=1000)
@@ -77,7 +84,7 @@ class Demo:
                 "connected":self.connected,"available":self.available,"last_seen_timestamp":self.last_seen or now - 2,
                 "metrics":metrics,"power_flow":"unknown" if original else "battery" if c1000 else "grid",
                 "tou_plan_readback": None if original else self.plan_readback,
-                "native_energy": self.native_energy.get(name)}
+                "native_energy": self.native_energy.get(name), "wifi_signal": self.wifi_signal.get(name)}
     def snapshots(self): return [self.snapshot(name) for name in self.devices]
     async def check_setup(self):
         return {"schema": 1, "ok": True, "read_only": True,

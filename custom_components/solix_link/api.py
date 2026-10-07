@@ -20,6 +20,10 @@ COMMANDS = frozenset({"set-charge-power", "set-charge-cap", "set-backup-reserve"
                       "set-display-brightness", "set-display-timeout", "set-port-memory", "set-light", "set-clock-brightness"})
 METRICS = frozenset({"battery_percentage", "temperature_c", "output_power_w",
                     "ac_input_power_w", "ac_output_power_w", "dc_output_power_w",
+                    "dc_input_power_w", "solar_input_power_w", "input_power_w",
+                    "usb_c1_power_w", "usb_c2_power_w", "usb_c3_power_w", "usb_a1_power_w", "usb_a2_power_w",
+                    "time_remaining_minutes", "dc_output_timer_remaining_seconds",
+                    "software_version_controller", "software_version_inverter", "software_version_bms", "software_version_module",
                     "ac_input_connected", "ac_output_enabled", "ac_output_timer_remaining_seconds", "dc_output_enabled", "battery_status",
                     "ac_output_timeout_seconds", "dc_output_timeout_seconds",
                     "ac_charging_power_limit_w", "max_charge_percentage",
@@ -228,6 +232,10 @@ def parse_snapshot(value: Any) -> dict:
     result["tou_plan_readback"] = parse_tou_plan(value.get("tou_plan_readback")) if (
         value["model"] in ("c1000_gen2", "c2000_gen2") and value["protocol"] == "native_mqtt") else None
     result["native_energy"] = None
+    result["wifi_signal"] = None
+    if value.get("wifi_signal") is not None and value["model"] == "c1000_gen2" and value["protocol"] == "native_mqtt":
+        from .wifi_signal import validate_wifi_signal
+        result["wifi_signal"] = validate_wifi_signal(value["wifi_signal"], model=value["model"], protocol=value["protocol"])
     if value.get("native_energy") is not None and value["protocol"] == "native_mqtt":
         from .native_energy import validate_native_energy
         result["native_energy"] = validate_native_energy(value["native_energy"], model=value["model"])

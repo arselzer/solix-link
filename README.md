@@ -23,7 +23,8 @@ firmware specific; detailed capabilities are in the [Python guide](python/README
 
 ## What you can do
 
-- Monitor battery, temperature, power, outputs and supported settings.
+- Monitor battery, temperature, power, outputs and supported settings; view
+  [reported port power, runtime estimates and component firmware](docs/reported-telemetry.md).
 - Set charging power/limits; use Gen 2 reserve and hourly Time-of-Use plans for
   battery use with mains connected, with confirmed return to grid.
 - Manage up to eight stations on one isolated AP through terminal, browser or

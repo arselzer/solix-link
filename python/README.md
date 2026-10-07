@@ -223,8 +223,11 @@ in the private capture. Application state does not establish physical advertisin
 `ap-service-wifi-rssi --directory /path/to/ap-service --name station`
 uses the same C1000 Gen 2 firmware and protected-state guards to query AP-info
 over native MQTT. It returns `wifi_rssi_dbm` and `rssi_available`; a failed/zero
-observation is `null`, not 100% quality. This is an explicit private query, not
-an automatic HA sensor or HTTP control. No Bluetooth session is required.
+observation is `null`, not 100% quality. The query updates a separately timed
+worker cache exposed in HTTP/SSE, the terminal/browser and HA. Optional
+`ap-service-serve --wifi-rssi` queries eligible stations every five minutes;
+it defaults off and expires observations after ten minutes. No Bluetooth
+session or setting write is required. See [reported telemetry](../docs/reported-telemetry.md).
 
 Original C1000 **legacy** temperature, fast charge and AC/DC Smart preferences are
 [physically verified](../docs/c1000-preferences-validation.md) and exposed in
