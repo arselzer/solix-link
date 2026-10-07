@@ -74,17 +74,22 @@ def analyze_energy_epochs(reports: object, *, max_report_gap: int = 3600) -> dic
 
 
 def compare_power_interval(raw_delta: object, start: object, end: object, samples: object,
-                           *, max_power_gap: int = 30) -> dict:
+                           *, max_power_gap: int = 30,
+                           candidate_wh_per_raw_unit: float | None = None) -> dict:
     """Compare a raw delta with a covered trapezoidal AC-power estimate.
 
     Samples must bracket both endpoints. Sparse or missing intervals remain
     gaps; never hold the last watt value through an outage. A matching ratio
     is evidence to examine, not proof of a physical unit or battery energy.
+    An explicit candidate scale tests integer-counter rounding compatibility;
+    it never changes public conversions or marks physical units verified.
     """
     if (type(raw_delta) is not int or not 0 <= raw_delta < 2**32
             or not _number(start) or not _number(end) or end <= start
             or type(samples) is not list or not 2 <= len(samples) <= 4096
-            or type(max_power_gap) is not int or not 1 <= max_power_gap <= 300):
+            or type(max_power_gap) is not int or not 1 <= max_power_gap <= 300
+            or candidate_wh_per_raw_unit is not None and (
+                not _number(candidate_wh_per_raw_unit, 0, 1000) or candidate_wh_per_raw_unit == 0)):
         raise EnergyAnalysisError()
     points = []
     for sample in samples:
@@ -111,9 +116,23 @@ def compare_power_interval(raw_delta: object, start: object, end: object, sample
         energy += (a + b) / 2 * ((right - left) / 3600)
         coverage += right - left
     complete = not gaps and math.isclose(coverage, end - start, abs_tol=1e-9, rel_tol=1e-12)
-    return {"raw_delta": raw_delta, "estimated_ac_energy_wh": energy,
+    result = {"raw_delta": raw_delta, "estimated_ac_energy_wh": energy,
             "covered_seconds": coverage, "requested_seconds": end - start,
             "coverage_complete": complete, "gap_reasons": sorted(set(gaps)),
             "raw_units_per_estimated_wh": raw_delta / energy if complete and energy > 0 else None,
             "physical_units_verified": False, "mcu_snapshot_timing_verified": False,
             "battery_energy_estimate": False}
+    if candidate_wh_per_raw_unit is not None:
+        candidate_energy = raw_delta * candidate_wh_per_raw_unit
+        difference = candidate_energy - energy if complete and energy > 0 else None
+        # Two floor-quantized endpoints differ by strictly less than one unit.
+        # A match checks this hypothesis only, not sampling/sensor accuracy.
+        magnitude = abs(difference) if difference is not None else None
+        compatible = None if magnitude is None else (
+            magnitude < candidate_wh_per_raw_unit
+            and not math.isclose(magnitude, candidate_wh_per_raw_unit, rel_tol=1e-12))
+        result["candidate_scale"] = {"wh_per_raw_unit": candidate_wh_per_raw_unit,
+            "interval_energy_wh": candidate_energy, "difference_to_power_wh": difference,
+            "rounding_error_bound_wh_exclusive": candidate_wh_per_raw_unit,
+            "rounding_compatible": compatible}
+    return result

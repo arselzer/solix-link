@@ -74,6 +74,52 @@ def test_zero_power_reference_does_not_divide_by_zero():
     assert result["raw_units_per_estimated_wh"] is None
 
 
+@pytest.mark.parametrize("candidate,expected", [(1.0, False), (0.9, True)])
+def test_explicit_scale_hypothesis_distinguishes_nine_second_sampling_from_wh(candidate, expected):
+    # Synthetic 360 W for 540 s = 54 Wh, while an assumed ten-second sample
+    # conversion could report 60 units. No station observation is embedded.
+    samples = [{"timestamp": i, "power_w": 360} for i in range(0, 541, 30)]
+    result = compare_power_interval(60, 0, 540, samples, candidate_wh_per_raw_unit=candidate)
+    assert result["candidate_scale"]["rounding_compatible"] is expected
+    assert result["candidate_scale"]["interval_energy_wh"] == 60 * candidate
+    assert not result["physical_units_verified"] and not result["mcu_snapshot_timing_verified"]
+    assert "candidate_scale" not in compare_power_interval(60, 0, 540, samples)
+
+
+@pytest.mark.parametrize("power,expected", [(359.999, True), (360, False), (360.001, False)])
+def test_rounding_bound_is_exclusive_at_one_candidate_unit(power, expected):
+    result = compare_power_interval(2, 0, 30,
+        [{"timestamp": 0, "power_w": power}, {"timestamp": 30, "power_w": power}],
+        candidate_wh_per_raw_unit=1.0)
+    assert result["candidate_scale"]["rounding_compatible"] is expected
+
+
+def test_fractional_scale_cannot_qualify_a_rounded_floating_point_boundary():
+    result = compare_power_interval(2, 0, 30,
+        [{"timestamp": 0, "power_w": 36}, {"timestamp": 30, "power_w": 36}],
+        candidate_wh_per_raw_unit=0.1)
+    # Binary float can put |0.2 - 0.3| just below 0.1; the exact error is one
+    # full unit, which does not satisfy the exclusive rounding bound.
+    assert result["candidate_scale"]["rounding_compatible"] is False
+
+
+@pytest.mark.parametrize("end,step,power", [(600, 600, 360), (30, 30, 0)])
+def test_gaps_and_zero_reference_cannot_qualify_a_candidate_scale(end, step, power):
+    result = compare_power_interval(1, 0, end,
+        [{"timestamp": i, "power_w": power} for i in range(0, end+1, step)],
+        candidate_wh_per_raw_unit=0.9)
+    assert result["candidate_scale"]["rounding_compatible"] is None
+    assert result["candidate_scale"]["difference_to_power_wh"] is None
+    assert result["physical_units_verified"] is False
+
+
+@pytest.mark.parametrize("candidate", [True, False, 0, -1, 1001, float("nan"), float("inf"), "PRIVATE", 10**400])
+def test_bad_candidate_scale_fails_with_fixed_text(candidate):
+    with pytest.raises(EnergyAnalysisError, match="^InvalidEnergyAnalysis$"):
+        compare_power_interval(1, 0, 30, [{"timestamp": 0, "power_w": 120},
+            {"timestamp": 30, "power_w": 120}], candidate_wh_per_raw_unit=candidate)
+
+
 @pytest.mark.parametrize("value", [True, -1, 2**32, float("nan"), "PRIVATE"])
 def test_invalid_counter_fails_with_fixed_text(value):
     with pytest.raises(EnergyAnalysisError, match="^InvalidEnergyAnalysis$"):

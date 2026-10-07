@@ -30,6 +30,10 @@ isolates battery charge/discharge or stored energy. The Standard, TOU and two
 backup variants stay separate. They are not summed or mapped to cloud daily
 categories. Raw duration fields are retained without a minutes/hours conversion.
 See [source evidence](app-energy-statistics.md) and [counter epochs](gen2-energy-epochs.md).
+The [2026-10-07 comparison](native-energy-validation.md) supports nominal Wh
+for C1000 Gen 2 but finds C2000's 1.0 assumption about 11% above reported-power
+integrals. A 0.9 Wh/unit hypothesis fits the tested Standard AC intervals;
+it is not yet a calibrated conversion or applied correction.
 
 ## Public contract and persistence
 

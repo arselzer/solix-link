@@ -146,6 +146,14 @@ HA lifetime statistics. Battery energy needs independent AC/DC measurements,
 controlled SOC changes and per-model reset/retention tests.
 [Counter epochs](gen2-energy-epochs.md)
 
+The [2026-10-07 native validation](native-energy-validation.md) adds eleven
+covered report intervals from the running deployment. C1000 Gen 2 nominal Wh
+is consistent with integer rounding; C2000 shows a repeatable roughly 11%
+discrepancy, with a 0.9 Wh/unit hypothesis fitting its tested Standard AC
+channels. This is a comparison to reported watts, not independent calibration.
+Native statistics are still unenabled; the validation lists precise scaling,
+retention and ordering requirements.
+
 Focused verification covers history arithmetic, summaries and entity behavior
 using synthetic readings and HA doubles. No live configuration or battery was
 accessed; results are recorded in [research progress](server-research-progress.md).

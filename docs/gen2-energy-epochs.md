@@ -65,6 +65,14 @@ not battery energy or conversion efficiency.
 These pure functions do not read a profile, collect live samples, change
 analytics reporting, write history or expose HA lifetime statistics.
 
+An explicit `candidate_wh_per_raw_unit` argument to `compare_power_interval`
+tests a scale against the exclusive one-unit error bound for differences of
+integer-rounded endpoints. It never infers an automatic scale or changes
+`physical_units_verified`. Incomplete or zero references cannot qualify a
+candidate; the default result is unchanged. See the
+[new model-specific comparison](native-energy-validation.md), including the
+unresolved C2000 0.9 Wh/unit hypothesis.
+
 ## Remaining physical calibration
 
 For each model/firmware separately:

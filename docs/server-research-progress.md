@@ -1377,3 +1377,37 @@ registry/states were verified live. This does not test HA Recorder statistics
 or physically calibrated energy. AGENTS.md is unchanged; no private data is
 published. Next work: validate original-model counter semantics and epochs,
 trace extra report descriptors, then add justified presentation diagnostics.
+
+## 2026-10-07: native counter scaling qualification
+
+The user's follow-up asked whether native scaling and reset handling could
+now be established. A bounded read-only audit compared locally retained uploads
+with the existing SQLite AC power history, without station commands, HA writes,
+service restarts, cloud requests or phone-capture access. The frozen result
+covers **8 C2000 Gen 2 / 2.1.6.4 reports** and **5 C1000 Gen 2 / 1.1.4.9
+reports**, yielding seven and four fully covered intervals per AC channel.
+
+C1000 Gen 2 nominal Wh agrees with the reported-power integral within the
+exclusive integer-rounding bound in all four intervals; aggregate ratio is
+**0.99276**. C2000's 1.0 assumption agrees in none of seven intervals, with
+aggregate ratios **1.10847 input / 1.11208 output**. A **0.9 Wh/raw-unit
+hypothesis** agrees within its 0.9 Wh rounding bound in all seven, with ratios
+**0.99762 / 1.00087** after conversion. Upload intervals are **600 / 540 s**
+respectively, and duration advances one each time. This supports a specific
+model timing/scale lead; it does not establish physical calibration or MCU
+snapshot timing. No decreases, batches or reordering appeared in this short
+sequence; no physical reset or restart was tested.
+
+The pure `compare_power_interval` helper now accepts an explicit candidate
+scale and reports rounding compatibility, without changing its default result
+or asserting verified units. **42 focused tests passed**, including 17 new
+synthetic cases. Source SHA-256:
+`347ade0bc28e58db50c12991b3795d6720e19c101a7c2a67c81cfba009f69fa6`.
+Public findings use ratios and relative timing; original readings, identities,
+absolute timestamps and requests stay private.
+
+No candidate scale was applied to live values and no native statistics state
+class was enabled. The [validation report](native-energy-validation.md) records
+the precise remaining checks: independent meter/load comparisons, a captured
+noncritical C1000 Gen 2 restart, radio-time/order-aware persistent baselines
+and defined HA reset semantics. C2000's server power must remain untouched.
