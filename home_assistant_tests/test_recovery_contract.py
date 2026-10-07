@@ -109,8 +109,9 @@ def integration(monkeypatch):
 
     install("voluptuous", Schema=lambda fields: fields, Required=Marker, Optional=Marker)
     install("homeassistant")
-    install("homeassistant.config_entries", ConfigFlow=Flow, ConfigFlowResult=dict, ConfigEntry=Entry)
-    install("homeassistant.core", HomeAssistant=object)
+    install("homeassistant.config_entries", ConfigFlow=Flow, ConfigFlowResult=dict, ConfigEntry=Entry,
+            OptionsFlowWithReload=Flow)
+    install("homeassistant.core", HomeAssistant=object, callback=lambda function: function)
     install("homeassistant.exceptions", ConfigEntryAuthFailed=type("AuthFailed", (Exception,), {}),
             HomeAssistantError=type("HAError", (Exception,), {}))
     install("homeassistant.helpers")
@@ -153,6 +154,33 @@ def validated_flow(integration, monkeypatch, *, exception=None):
     flow.entry = Entry("existing", "http://old.test")
     flow.entries = [flow.entry]
     return flow, calls
+
+
+@pytest.mark.parametrize("previous, expected", [({}, False), ({"native_energy_enabled": True}, True),
+    ({"native_energy_enabled": False}, False), ({"native_energy_enabled": "true"}, False)])
+def test_energy_options_default_is_opt_in_and_uses_ha_reload_helper(integration, previous, expected):
+    flow = integration.flow.SolixConfigFlow.async_get_options_flow(None)
+    assert isinstance(flow, integration.flow.OptionsFlowWithReload)
+    flow.config_entry = SimpleNamespace(options=previous)
+    result = asyncio.run(flow.async_step_init())
+    assert result["type"] == "form" and result["step_id"] == "init"
+    marker, validator = next(iter(result["data_schema"].items()))
+    assert marker.key == "native_energy_enabled" and marker.default is expected
+    assert validator is bool
+
+
+@pytest.mark.parametrize("enabled", [True, False])
+def test_energy_options_preserve_unrelated_options_without_mutation_or_gateway_calls(integration, monkeypatch, enabled):
+    def forbidden(*_args, **_kwargs):
+        pytest.fail("An energy diagnostic option must not contact the gateway")
+
+    monkeypatch.setattr(integration.flow, "GatewayClient", forbidden)
+    previous = {"other_preference": "retained", "native_energy_enabled": not enabled}
+    flow = integration.flow.SolixConfigFlow.async_get_options_flow(None)
+    flow.config_entry = SimpleNamespace(options=previous)
+    result = asyncio.run(flow.async_step_init({"native_energy_enabled": enabled}))
+    assert result["data"] == {"other_preference": "retained", "native_energy_enabled": enabled}
+    assert previous == {"other_preference": "retained", "native_energy_enabled": not enabled}
 
 
 def test_reconfigure_keeps_gateway_identity_and_untouched_token(integration, monkeypatch):

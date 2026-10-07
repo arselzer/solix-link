@@ -61,11 +61,32 @@ def test_discovery_exposes_only_reported_counters_no_statistics_or_fake_zero(pla
     for sensor in sensors:
         assert sensor.entity_description.state_class is None
         assert sensor.entity_description.entity_registry_enabled_default is False
+        assert sensor.entity_registry_enabled_default is False
         assert sensor.entity_description.native_unit_of_measurement == "kWh"
         assert sensor.extra_state_attributes["units_verified"] is False
         assert sensor.extra_state_attributes["source"] == "device_energy_report"
         assert sensor.extra_state_attributes["counter_epoch"] == 1
     assert not any(sensor.channel == "dc_input" for sensor in sensors)
+
+
+@pytest.mark.parametrize("option, expected", [(True, True), (False, False), (None, False), ("true", False)])
+def test_native_energy_option_applies_to_later_discovery_only_and_keeps_statistics_unset(platform, option, expected):
+    source = coordinator({"station": snapshot()})
+    added = []
+    entry = SimpleNamespace(runtime_data=source, options={"native_energy_enabled": option},
+                            async_on_unload=lambda _callback: None)
+    asyncio.run(platform.sensor.async_setup_entry(None, entry, added.extend))
+    assert not any(isinstance(entity, platform.sensor.SolixNativeEnergySensor) for entity in added)
+    source.data["station"]["native_energy"] = energy()
+    for callback in source.listeners:
+        callback()
+    added = [entity for entity in added if isinstance(entity, platform.sensor.SolixNativeEnergySensor)]
+    assert len(added) == 3
+    assert all(entity.entity_registry_enabled_default is expected for entity in added)
+    assert all(entity.entity_description.state_class is None for entity in added)
+    assert all(entity.extra_state_attributes["units_verified"] is False for entity in added)
+    # Only this entity's default is changed; shared descriptions remain disabled.
+    assert all(entity.entity_description.entity_registry_enabled_default is False for entity in added)
 
 
 @pytest.mark.parametrize("age,connected,success,expected", [(600, False, True, True),

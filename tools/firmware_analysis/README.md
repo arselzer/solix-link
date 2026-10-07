@@ -89,6 +89,19 @@ from the combined Gen 2 runner. It covers port getters, discrete sampling,
 scheduler gaps, SysTick setup, report division and duration remainders.
 See [the timing and calibration limits](../../docs/gen2-energy-counter-investigation.md).
 
+The original-model encoder has a separate three-case proof:
+
+```sh
+PYTHONPATH=python python3 tools/firmware_analysis/emulate_c1000_energy_report.py \
+  --output /tmp/a1761-energy-report.json
+```
+
+It executes the hash-pinned **1.5.9** builder with synthetic counter RAM and
+compares the emitted eight-field block with explicit expected division and
+duration placement. The dynamic callback is substituted. It does not establish
+the installed **1.7.1** implementation, physical units, port meaning or retention.
+See the [unused-data audit](../../docs/unused-device-data.md).
+
 ## Schedule clock continuation
 
 ```sh

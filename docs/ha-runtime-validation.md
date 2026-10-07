@@ -352,3 +352,48 @@ It is still running, not a completed reliability trial. Data stays private and
 is limited to 64 MiB; the observer makes no station requests or recovery actions.
 The release passed **2,751 Python/HA tests**, **24 synthetic browser scenarios**,
 both frontend builds and an independent full SDK-record-two artifact comparison.
+
+## Native energy deployment, 2026-10-07
+
+At the user's request, the prepared native-energy package at **`b540fb8`** was
+installed on the existing node. The wheel SHA-256 is
+`14f42d8210ae9ed2d873133f7b20edc6220a10f92416a5f24d7cc7858c7b4d48`.
+All packaged source/assets were compared byte-for-byte with repository input;
+installation used the local wheel without dependency or network changes.
+Private backups of the previous runtime, component and AP unit were preserved.
+
+The AP worker and HTTP gateway restarted once, preserving existing profile,
+credential, certificate, history and control configuration. An AP unit drop-in
+adds **`--energy-reports`**, returning point `20001=1` when a station next
+requests it. This opt-in affects analytics reporting, not output/charging
+configuration. Initial collection succeeded only on C2000; C1000 Gen 2 fetched
+the flag later and its first report arrived during a second bounded watch.
+No reset, pairing or station restart was used to force refresh.
+
+Actual **Home Assistant 2026.7.4** loaded the updated standalone component.
+C2000's first 16 diagnostics were enabled through the normal entity-registry
+API. A subsequently installed Configure option, **Enable newly discovered
+native energy sensors**, is enabled for the existing gateway. It uses HA's
+standard options flow with automatic reload; future entity defaults change,
+while existing individual enable/disable choices are preserved. HA restarted
+twice to load the component and then the added option; the second component
+update did not restart the AP/gateway.
+
+Final cached/runtime verification found:
+
+- **32 registered, enabled and populated native energy sensors**: 16 each on
+  C1000 Gen 2 and C2000 Gen 2. Every sensor has kWh units, source
+  `device_energy_report`, `units_verified: false` and **no statistics state
+  class**. They remain diagnostic counters, not Energy-dashboard lifetime meters.
+- All three stations fresh with AC enabled; every protected field present in
+  the pre-upgrade baseline still matched. Saved static configuration hashes
+  matched after the runtime upgrade. The second HA update left AP/gateway PIDs
+  unchanged.
+- **Zero station control commands**; no cloud, phone capture, provisioning,
+  charging automation activation or identity change. The earlier observation
+  services were already inactive and were left untouched.
+
+These are live HA registry/state and cached telemetry checks, not independent
+electrical-continuity or kWh calibration measurements. Original C1000 uploads
+use an unsupported separate format, investigated in the
+[unused-data audit](unused-device-data.md). Raw deployment outputs remain private.

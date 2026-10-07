@@ -29,6 +29,15 @@
       "reconfigure_successful": "Gateway configuration updated."
     }
   },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Energy diagnostics",
+        "description": "Enable newly discovered native energy sensors automatically. Counters remain uncalibrated and are not lifetime Energy dashboard statistics. Existing entity enable/disable choices are preserved. Collection must also be enabled on the AP service.",
+        "data": {"native_energy_enabled": "Enable newly discovered native energy sensors"}
+      }
+    }
+  },
   "services": {
     "set_tou_plan": {
       "name": "Set Time-of-Use plan",

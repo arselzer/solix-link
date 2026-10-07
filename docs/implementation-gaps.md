@@ -38,6 +38,7 @@ Device Timeout is implemented for both C1000 generations.
 | **Complete settings export and restoration** | Sanitized partial exports and independently fresh native TOU readback are implemented locally. Ordinary status still omits hidden clock/automatic-backup state; distinct configurations collide across all 19 callbacks. | Establish complete readback before backup/import or full restoration. [Partial export](settings-export-and-plan-readback.md), [full inventory](gen2-full-status-inventory.md) |
 | **HA Energy dashboard: derived AC consumption** | Persisted input/output kWh estimates already exist; optional HA history entities lack a statistics state class. This is independent of native battery-counter calibration. | Add explicit persisted epochs, reload-safe regression checks and opt-in Energy-compatible entities; verify real HA Recorder behavior. An Integral helper provides a separate existing fallback. [Energy dashboard](home-assistant-energy-dashboard.md) |
 | **Calibrated battery energy / native counters** | Per-device native counters and nominal kWh now reach SDK/API, CLI, terminal F7, browser and optional HA diagnostics. Physical units, timing and device reset/retention epochs remain unverified; AC includes bypass. | Per-model meter/counter/time calibration and noncritical retention tests before lifetime statistics. Existing AC values cannot become battery energy by renaming them. [Native values](native-energy-values.md), [energy boundaries](gen2-energy-epochs.md) |
+| **Additional reported energy and diagnostics** | Original C1000 sends `_0002` uploads that remain unsupported; the older main 1.5.9 encoder's numeric layout now has a bounded three-case proof. Gen 2 uploads and decoded telemetry have other unused fields. | Validate original 1.7.1 semantics/units before model-specific support; trace extra report descriptors and fill presentation gaps separately. [Unused-data audit](unused-device-data.md) |
 | **Adaptive solar/price execution** | Pure previews/timeline replay and a compiled browser exist. An opt-in HA surplus blueprint implements guarded C1000 Gen 2 / 1.1.4.9 charging steps but is undeployed/disabled. C2000 needs an established override readback; price TOU stays preview-only. | Verify export sign/consumption before enabling surplus. Establish persistent plan ownership/recovery before tariff execution. [Surplus blueprint](home-assistant-surplus-charging.md), [adaptive contract](adaptive-policy-preview.md) |
 | **Local firmware-update workflow** | Official update capture and firmware analysis exist; no offline installer, version chooser or recovery workflow. Installed original main 1.7.1 remains unavailable for analysis. | Obtain qualified artifact metadata, product/component checks, integrity verification and established update/recovery transport before an installer. [OTA metadata](c1000-firmware-metadata-followup.md) |
 | **Additional Gen 2 app features** | Clock/theme scheduling, resource upload, language and disaster/Storm Guard plans have partial firmware evidence, without complete safe public controls. Clock brightness is already implemented separately. | Establish enums and hidden-field readback; verify physical behavior and restoration. Active disaster plans can override saved charging bounds. [Clock state](gen2-clock-screen-preservation.md), [disaster plans](gen2-disaster-plan-investigation.md) |
@@ -77,10 +78,11 @@ display preference. See [preference candidates](gen2-preference-candidates.md).
 
 The adaptive browser and saved-plan/export UI are type-checked, rebuilt and
 covered by synthetic browser scenarios. Development tools are isolated in an
-ignored workspace directory; the live deployment is unchanged. Eight optional
-HA history entities and terminal F5/F6 panels are implemented but remain
-undeployed during the separate observation. The newest `ble-inspect` command
-is likewise a local repository addition. No automation is activated here.
+ignored workspace directory. The user-authorized **2026-10-07** runtime/HA
+upgrade deployed the prepared package and HA component; **32 native energy
+diagnostics** are enabled and populated across both Gen 2 stations. Optional
+history diagnostics remain opt-in, and no charging automation was activated.
+See [deployment evidence](ha-runtime-validation.md#native-energy-deployment-2026-10-07).
 
 Suggested order: review the prepared worker/gateway/HA/UI changes; verify
 saved TOU readback after a deliberate deployment; measure surplus and original

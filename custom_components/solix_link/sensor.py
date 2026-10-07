@@ -9,6 +9,7 @@ from homeassistant.core import callback
 
 from .api import numeric, parse_tou_plan, snapshot_available
 from .coordinator import SolixConfigEntry
+from .const import CONF_NATIVE_ENERGY_ENABLED
 from .entity import SolixEntity
 from .history import history_available
 from .native_energy import ENERGY_CHANNELS, GROUP_NAMES, validate_native_energy
@@ -110,7 +111,8 @@ async def async_setup_entry(hass, entry: SolixConfigEntry, async_add_entities) -
                     group, channel = NATIVE_ENERGY_COORDINATES[description.key]
                     if channel in energy["groups"].get(group, {}).get("energy_kwh", {}) and (name, description.key) not in added:
                         added.add((name, description.key))
-                        entities.append(SolixNativeEnergySensor(coordinator, name, description, group, channel))
+                        entities.append(SolixNativeEnergySensor(coordinator, name, description, group, channel,
+                            enabled_default=getattr(entry, "options", {}).get(CONF_NATIVE_ENERGY_ENABLED) is True))
         if entities:
             async_add_entities(entities)
 
@@ -177,11 +179,16 @@ class SolixSensor(SolixEntity, SensorEntity):
 class SolixNativeEnergySensor(SolixEntity, SensorEntity):
     """Cached mode-specific counter, independent of the live power stream."""
 
-    def __init__(self, coordinator, name, description, group: str, channel: str) -> None:
+    def __init__(self, coordinator, name, description, group: str, channel: str, *, enabled_default: bool = False) -> None:
         super().__init__(coordinator, name, description.key)
         self.entity_description = description
         self.group, self.channel = group, channel
+        self._native_energy_enabled_default = enabled_default
         self._attr_translation_placeholders = {"group": group.replace("_", " ").title(), "channel": channel.replace("_", " ").upper()}
+
+    @property
+    def entity_registry_enabled_default(self) -> bool:
+        return self._native_energy_enabled_default
 
     @property
     def report(self):

@@ -4,12 +4,13 @@ from __future__ import annotations
 
 import voluptuous as vol
 
-from homeassistant.config_entries import ConfigFlow, ConfigFlowResult
+from homeassistant.config_entries import ConfigFlow, ConfigFlowResult, OptionsFlowWithReload
+from homeassistant.core import callback
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers import selector
 
 from .api import GatewayAuthError, GatewayClient, GatewayError, gateway_id, normalize_url
-from .const import CONF_TOKEN, CONF_URL, DOMAIN
+from .const import CONF_NATIVE_ENERGY_ENABLED, CONF_TOKEN, CONF_URL, DOMAIN
 
 
 def schema(defaults: dict, *, token_only: bool = False) -> vol.Schema:
@@ -24,6 +25,11 @@ def schema(defaults: dict, *, token_only: bool = False) -> vol.Schema:
 
 class SolixConfigFlow(ConfigFlow, domain=DOMAIN):
     VERSION = 1
+
+    @staticmethod
+    @callback
+    def async_get_options_flow(config_entry):
+        return SolixOptionsFlow()
 
     async def _validate(self, data: dict) -> dict:
         normalized = {CONF_URL: normalize_url(data[CONF_URL]), CONF_TOKEN: data.get(CONF_TOKEN, "").strip()}
@@ -84,3 +90,17 @@ class SolixConfigFlow(ConfigFlow, domain=DOMAIN):
                     return self.async_abort(reason="already_configured")
                 return self.async_update_reload_and_abort(entry, data_updates=data, reason="reconfigure_successful")
         return self.async_show_form(step_id="reconfigure", data_schema=schema(dict(entry.data)), errors=errors)
+
+
+class SolixOptionsFlow(OptionsFlowWithReload):
+    """Choose defaults for future diagnostics without changing station settings."""
+
+    async def async_step_init(self, user_input: dict | None = None) -> ConfigFlowResult:
+        options = self.config_entry.options
+        if user_input is not None:
+            return self.async_create_entry(title="", data={**options,
+                CONF_NATIVE_ENERGY_ENABLED: user_input[CONF_NATIVE_ENERGY_ENABLED]})
+        return self.async_show_form(step_id="init", data_schema=vol.Schema({
+            vol.Required(CONF_NATIVE_ENERGY_ENABLED,
+                default=options.get(CONF_NATIVE_ENERGY_ENABLED, False) is True): bool,
+        }))

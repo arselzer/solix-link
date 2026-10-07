@@ -1335,3 +1335,45 @@ was accessed. Live services, AP reporting options, automations and deployments
 were not changed. AGENTS.md is unchanged. The next hardware work is independent
 meter/counter/time calibration and noncritical retention/reset tests; C2000's
 server supply must remain untouched.
+
+## 2026-10-07: native energy enabled in HA and unused-data audit
+
+The user's later request authorized deployment of the prepared energy
+implementation. The local package at **`b540fb8`** was installed with wheel
+SHA-256 `14f42d8210ae9ed2d873133f7b20edc6220a10f92416a5f24d7cc7858c7b4d48`;
+private backups were retained. AP reporting is explicitly enabled, and the
+updated HA component runs on **Core 2026.7.4**. A new opt-in Configure option
+enables newly discovered native energy entities without changing station
+configuration or existing registry choices.
+
+After C1000 Gen 2's delayed analytics refresh/report, both Gen 2 stations have
+**16 enabled sensors each, 32 total**, with numeric kWh states and preserved
+uncalibrated metadata. All three stations stayed fresh with AC enabled at the
+final check; protected baseline settings and saved profile/credential hashes
+matched. Zero station controls, cloud requests, identity changes or automation
+activation were needed. AP/gateway restarted once; HA restarted to load the
+new component and option. [Deployment record](ha-runtime-validation.md#native-energy-deployment-2026-10-07).
+
+The follow-on [unused-data audit](unused-device-data.md) found original C1000
+`charging_pps_series_c_0002` requests, additional unparsed Gen 2 protobuf
+blocks, and decoded port power/runtime/expansion/firmware fields omitted by
+some presentations. Requests and live values remain private. Original uploads
+are still unsupported by the public Gen 2 decoder; no schema alias is added.
+
+Three **actual-instruction encoder replays** use public original main **1.5.9**
+SHA-256 `b295ee8613f5c96e70dcc905896df516621cab4dc590bb580eac6b84519911a6`.
+They establish field 19's eight varints, division by 360 and unchanged seeded
+counter RAM. A dynamic callback is substituted; the installed **1.7.1** image,
+port semantics, physical units, timing and retention remain unproved.
+Public proof source SHA-256:
+`f729ae173b93311e456931d286533e7a3880ffcbc7c2badd74b1d17a1c81b907`;
+synthetic expected output SHA-256:
+`270870ba22ea6a18028db8c47460143f6490c7827b5c3c0bed6e0f2666b78872`.
+
+Verification: **114 focused HA contract tests passed** with Python **3.14.4** /
+pytest **9.1.1**, plus all three standalone actual-encoder cases. The options
+flow was also applied successfully through the installed HA API, and final
+registry/states were verified live. This does not test HA Recorder statistics
+or physically calibrated energy. AGENTS.md is unchanged; no private data is
+published. Next work: validate original-model counter semantics and epochs,
+trace extra report descriptors, then add justified presentation diagnostics.

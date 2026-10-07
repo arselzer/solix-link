@@ -91,6 +91,9 @@ Native energy uploads are distinct from power-integrated history. Station
 snapshots and SSE include sanitized `native_energy`; `/metrics` also exposes
 raw and unverified kWh gauges. Collection uses the AP worker's separate
 `--energy-reports` opt-in. See [contract, persistence and units](native-energy-values.md).
+HA's Configure dialog can enable newly discovered native energy diagnostics;
+existing entity choices remain independent. Collection and HA presentation are
+separate preferences, and neither supplies calibrated lifetime statistics.
 
 GET `/devices` returns stations, freshness, `power_flow`, metrics and the
 available `controls` and configured `timezone_name`.

@@ -13,13 +13,16 @@ passively. To request future reporting, an operator must explicitly run the
 worker with `ap-service-run --energy-reports`; this option defaults off and
 changes analytics point 20001 when the station next fetches it. It does not
 immediately query or confirm the station's reporting flag. This implementation
-does not enable reporting, restart a service or change a deployment.
+does not enable reporting or restart a service automatically. The user-requested
+[HA deployment](ha-runtime-validation.md#native-energy-deployment-2026-10-07)
+enabled collection separately.
 
 | Device/firmware | Interpretation |
 | --- | --- |
 | C1000 Gen 2 main 1.1.4.9 | Nominal Wh inferred from hash-pinned firmware; raw / 1000 gives nominal kWh |
 | C2000 Gen 2, or other Gen 2 main version | Raw / 1000 is an **assumed**, uncalibrated display conversion; actual scaling remains unresolved |
-| Original C1000, C300, BLE-only monitoring | No established native energy-report source; values remain unavailable |
+| Original C1000 main 1.7.1 | `charging_pps_series_c_0002` uploads observed; [schema investigation](unused-device-data.md) is separate and no conversion is implemented |
+| C300, BLE-only monitoring | No established native energy-report source; values remain unavailable |
 
 Physical units are **unverified on both Gen 2 models**. AC input includes
 charging and bypass; AC output describes delivered load energy. Neither
@@ -74,7 +77,11 @@ solix-link gateway-energy --gateway-url http://127.0.0.1:8765 \
 - **Browser:** Device energy counters panel shows raw values, nominal kWh,
   firmware basis and independent freshness, even when live power is stale.
 - **HA:** Up to 16 optional mode/channel energy sensors are discovered after
-  reports arrive. Enable the desired diagnostics in the entity registry.
+  reports arrive. Enable the desired diagnostics in the entity registry, or use
+  the integration's **Configure → Enable newly discovered native energy
+  sensors** option. It defaults off and changes only new entity defaults;
+  existing enable/disable choices remain in the entity registry. It does not
+  request device reports, alter counters or enable statistics.
   Attributes include raw group counters, conversion basis, epochs and receipt
   time. Availability follows report freshness and successful gateway polling,
   independently of live telemetry. Missing values never become zero.
