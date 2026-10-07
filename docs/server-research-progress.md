@@ -1248,3 +1248,31 @@ summary. It was shortened from **258 to 122 lines**; detailed research and
 operation instructions remain linked guides. No runtime implementation,
 deployment, service or automation changed. Native counter calibration and
 physical metering/retention tests remain open.
+
+## 2026-10-07 — App kWh provenance and existing native counters
+
+The [app-energy audit](app-energy-statistics.md) clarifies that Gen 2 firmware
+already accumulates energy, and local captures previously obtained its raw
+reports on both Gen 2 models. Gateway power history is a separate fallback;
+it is not the only potential local source of accumulated consumption.
+
+In retained Flutter image **`8537b4f8…25c070`**, the chart repository's actual
+direct calls lead to `S1S2DeviceCommand.getChargeSessionChartModel` at
+**`02991c18`**, the `power_service/v2/device/energy_analysis` cloud bridge,
+response parsers for `pps_total`/`energy_unit`, and kWh chart formatting.
+Four exact call instructions and seven pool constants passed static checks.
+This establishes a cloud-history display path, not its availability on every
+model or the server's mapping from particular protobuf accounting groups.
+
+Public upstream API source was independently pinned to commit
+**`e97113abaf18eeb7a3923260749f80c86562601c`**. Its PPS energy response example
+has explicit kWh units and AC/DC charging/consumption categories. Endpoint and
+response-unit assertions passed; full source hashes are recorded in the guide.
+Only public GitHub source was downloaded. No account or station endpoint was
+contacted and no captured headers/identifiers were sent.
+
+**41 decoder/offline-analysis tests passed in 0.06 seconds** on the existing
+Python environment. Vendor code was inspected statically, without execution;
+this batch adds no firmware replay or physical tests. Reports remain opt-in,
+raw and excluded from HA lifetime statistics pending category/unit/epoch
+handling. No AP, gateway, HA, station setting or automation changed.

@@ -131,6 +131,12 @@ not automatically backfill earlier daily consumption.
 
 ## Native counters and verification
 
+The stations **already accumulate energy themselves**; these counters are not
+invented by the phone. A separate [app chart audit](app-energy-statistics.md)
+traces a cloud-history request and its returned kWh totals. Local report
+capture/decoding already exists; exact app-category mapping and counter epochs
+are the remaining native integration work.
+
 Gen 2 firmware has raw AC-input/output and other-port counters. A1763 main
 1.1.4.9 instruction replay supports nominal Wh arithmetic, but physical scale,
 snapshot timing, missed callbacks, wrapping and reset/retention behavior remain
