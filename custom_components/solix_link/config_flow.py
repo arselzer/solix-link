@@ -10,7 +10,7 @@ from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers import selector
 
 from .api import GatewayAuthError, GatewayClient, GatewayError, gateway_id, normalize_url
-from .const import CONF_NATIVE_ENERGY_ENABLED, CONF_TOKEN, CONF_URL, DOMAIN
+from .const import CONF_HISTORY_ENERGY_ENABLED, CONF_NATIVE_ENERGY_ENABLED, CONF_TOKEN, CONF_URL, DOMAIN
 
 
 def schema(defaults: dict, *, token_only: bool = False) -> vol.Schema:
@@ -93,14 +93,17 @@ class SolixConfigFlow(ConfigFlow, domain=DOMAIN):
 
 
 class SolixOptionsFlow(OptionsFlowWithReload):
-    """Choose defaults for future diagnostics without changing station settings."""
+    """Choose energy entity defaults without changing station settings."""
 
     async def async_step_init(self, user_input: dict | None = None) -> ConfigFlowResult:
         options = self.config_entry.options
         if user_input is not None:
-            return self.async_create_entry(title="", data={**options,
-                CONF_NATIVE_ENERGY_ENABLED: user_input[CONF_NATIVE_ENERGY_ENABLED]})
+            return self.async_create_entry(title="", data={**options, **{
+                key: user_input[key] for key in (CONF_NATIVE_ENERGY_ENABLED, CONF_HISTORY_ENERGY_ENABLED)
+                if key in user_input}})
         return self.async_show_form(step_id="init", data_schema=vol.Schema({
             vol.Required(CONF_NATIVE_ENERGY_ENABLED,
                 default=options.get(CONF_NATIVE_ENERGY_ENABLED, False) is True): bool,
+            vol.Required(CONF_HISTORY_ENERGY_ENABLED,
+                default=options.get(CONF_HISTORY_ENERGY_ENABLED, False) is True): bool,
         }))

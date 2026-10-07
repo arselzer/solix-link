@@ -98,10 +98,27 @@ def test_ambiguous_boundaries_latch_quarantine_across_restart(tmp_path, boundary
     assert later["meter"]["energy_kwh"] == first["meter"]["energy_kwh"]
 
 
-@pytest.mark.parametrize("model,firmware", [("c2000_gen2", "2.1.6.4"), ("c1000_gen2", "1.1.4.10"),
+@pytest.mark.parametrize("model,firmware", [("c2000_gen2", "2.1.6.5"), ("c1000_gen2", "1.1.4.10"),
                                          ("c1000_gen2", None)])
 def test_no_meter_for_unqualified_model_or_version(model, firmware):
     assert "meter" not in ingest(NativeEnergyStore(model), firmware=firmware)
+
+
+def test_c2000_observed_estimates_use_assumed_wh_without_rescaling_and_persist(tmp_path):
+    path = tmp_path / "energy.json"
+    store = NativeEnergyStore("c2000_gen2", path)
+    first = ingest(store, firmware="2.1.6.4")
+    second = ingest(store, NOW+540, 130, firmware="2.1.6.4")
+    assert second["meter"]["energy_kwh"] == {"ac_input": 0.03, "ac_output": 0.03}
+    assert second["meter"]["conversion_basis"] == "assumed_wh"
+    assert not second["meter"]["units_verified"] and second["meter"]["available"]
+    restored = NativeEnergyStore("c2000_gen2", path)
+    third = ingest(restored, NOW+1080, 140, firmware=None)
+    assert third["meter"]["generation"] == first["meter"]["generation"]
+    assert third["meter"]["energy_kwh"]["ac_output"] == 0.04
+    decreased = ingest(restored, NOW+1620, 1, firmware="2.1.6.4")
+    assert decreased["meter"]["status"] == "quarantined" and not decreased["meter"]["available"]
+    assert decreased["meter"]["energy_kwh"]["ac_input"] == 0.04
 
 
 def test_legacy_persistence_is_migrated_without_backfilling_or_new_generation_on_restart(tmp_path):

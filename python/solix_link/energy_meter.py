@@ -13,7 +13,7 @@ MAX_POWER_W = 10000
 
 def update_energy_meter(previous: dict | None, reports: list[dict], *, model: str,
                         firmware_version: str | None, receipt: float, groups: dict) -> dict | None:
-    """Count only ordered, bounded Standard AC deltas on qualified A1763 firmware.
+    """Count ordered Standard AC deltas on the observed Gen 2 firmware versions.
 
     A persistent quarantine freezes totals on ambiguous boundaries. Older
     uploads and exact timestamp duplicates do not refresh the accepted baseline.
@@ -28,7 +28,7 @@ def update_energy_meter(previous: dict | None, reports: list[dict], *, model: st
             meter["rejected_reports"] += 1
         return meter
 
-    if model != "c1000_gen2" or firmware_version != "1.1.4.9":
+    if (model, firmware_version) not in (("c1000_gen2", "1.1.4.9"), ("c2000_gen2", "2.1.6.4")):
         return quarantine("firmware_changed")
     if len(reports) != 1:
         return quarantine("batch_order_unknown")

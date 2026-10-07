@@ -2,10 +2,13 @@
 
 ## Support and meaning
 
-C1000 Gen 2 **main 1.1.4.9** can supply two Energy-compatible HA sensors:
+C1000 Gen 2 **main 1.1.4.9** and C2000 Gen 2 **main 2.1.6.4** can supply two Energy-compatible HA sensors:
 **Observed Standard AC input energy estimate** and **Observed Standard AC output
 energy estimate**. They count ordered increases in native Standard-mode counters
-using the firmware-supported nominal **1 Wh/raw unit**. Both include mains
+using **1 Wh/raw unit**: firmware-supported nominal units on C1000 Gen 2,
+and explicitly **assumed** units on C2000 Gen 2. No 0.9 correction is applied.
+The sampled watt integral is not ground truth for calibrating counters.
+Both include mains
 bypass; neither measures battery-only charge/discharge. Other modes are not
 included. A TOU/backup interval may therefore leave these Standard totals flat.
 
@@ -13,8 +16,11 @@ The first usable report establishes a zero baseline. Existing device totals are
 not credited, and no earlier daily consumption is backfilled. The accumulator
 is an **observed estimate**, not a calibrated lifetime meter. Independent meter
 calibration and physical restart retention remain outstanding. C2000's unresolved
-[scaling discrepancy](native-energy-validation.md) keeps its native counters out
-of statistics; original C1000 uses a different report schema.
+[scaling discrepancy](native-energy-validation.md) remains visible through
+`conversion_basis: assumed_wh` and `units_verified: false`; statistics describe
+an estimate, not a calibrated meter. Original C1000 uses a different report
+schema. Every supported model can instead use the separate
+[all-mode power-history estimates](home-assistant-energy-dashboard.md).
 
 ## Persistence, ordering and uncertain boundaries
 

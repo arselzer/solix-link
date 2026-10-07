@@ -9,7 +9,7 @@ from homeassistant.core import callback
 
 from .api import numeric, parse_tou_plan, snapshot_available
 from .coordinator import SolixConfigEntry
-from .const import CONF_NATIVE_ENERGY_ENABLED
+from .const import CONF_HISTORY_ENERGY_ENABLED, CONF_NATIVE_ENERGY_ENABLED
 from .entity import SolixEntity
 from .history import history_available
 from .native_energy import ENERGY_CHANNELS, GROUP_NAMES, validate_native_energy
@@ -45,8 +45,7 @@ DESCRIPTIONS = (
       for key in ("dc_input_power_raw", "controller_error_code", "battery_health_raw", "ac_frequency_raw")),
 )
 
-# Lifetime integrals are explicitly estimates. No statistics state class or
-# Energy-dashboard registration is supplied for these incomplete histories.
+# Original history diagnostics retain their existing entity/statistics contract.
 HISTORY_DESCRIPTIONS = (
     *(SensorEntityDescription(key=f"history_ac_{channel}_energy_kwh_estimate",
                              translation_key=f"history_ac_{channel}_energy_kwh_estimate",
@@ -70,6 +69,13 @@ HISTORY_DESCRIPTIONS = (
                             device_class=SensorDeviceClass.ENUM, options=["continuous", "gap", "pending"],
                             entity_category=EntityCategory.DIAGNOSTIC, entity_registry_enabled_default=False),
 )
+
+HISTORY_ENERGY_DESCRIPTIONS = tuple(
+    SensorEntityDescription(key=f"energy_ac_{channel}_kwh_estimate",
+        translation_key=f"energy_ac_{channel}_kwh_estimate",
+        device_class=SensorDeviceClass.ENERGY, native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
+        state_class=SensorStateClass.TOTAL, entity_category=None, entity_registry_enabled_default=False)
+    for channel in ("input", "output"))
 
 # Reported mode counters are uncalibrated and can decrease. No long-term energy
 # statistics are advertised until model-specific scaling and resets are known.
@@ -110,6 +116,14 @@ async def async_setup_entry(hass, entry: SolixConfigEntry, async_add_entities) -
                     if (name, description.key) not in added:
                         added.add((name, description.key))
                         entities.append(SolixHistorySensor(coordinator, name, description))
+                history = snapshot["history"]
+                for channel, description in zip(("input", "output"), HISTORY_ENERGY_DESCRIPTIONS):
+                    if (history.get("generation") and history.get("collection_start") is not None
+                            and history["lifetime_totals"][f"ac_{channel}_coverage_seconds"] > 0
+                            and (name, description.key) not in added):
+                        added.add((name, description.key))
+                        entities.append(SolixHistoryEnergySensor(coordinator, name, description, channel,
+                            enabled_default=getattr(entry, "options", {}).get(CONF_HISTORY_ENERGY_ENABLED) is True))
             energy = validate_native_energy(snapshot.get("native_energy"), model=snapshot.get("model")) if snapshot.get("protocol") == "native_mqtt" else None
             if energy is not None:
                 for description in NATIVE_ENERGY_DESCRIPTIONS:
@@ -316,3 +330,42 @@ class SolixHistorySensor(SolixEntity, SensorEntity):
         # have valid persisted history with an open recording gap.
         return (self.coordinator.last_update_success and self.native_value is not None
                 and history_available(self.snapshot.get("history"), self.snapshot, now=time.time()))
+
+
+class SolixHistoryEnergySensor(SolixHistorySensor):
+    """All-model AC estimate with a persisted source epoch and HA continuity guard."""
+
+    def __init__(self, coordinator, name, description, channel: str, *, enabled_default: bool = False) -> None:
+        super().__init__(coordinator, name, description)
+        self.channel = channel
+        self._energy_enabled_default = enabled_default
+
+    @property
+    def entity_registry_enabled_default(self) -> bool:
+        return self._energy_enabled_default
+
+    @property
+    def native_value(self):
+        return self.snapshot.get("history", {}).get("lifetime_totals", {}).get(
+            f"ac_{self.channel}_energy_kwh_estimate")
+
+    @property
+    def last_reset(self):
+        start = self.snapshot.get("history", {}).get("collection_start")
+        return datetime.fromtimestamp(start, UTC) if start is not None else None
+
+    @property
+    def available(self) -> bool:
+        history = self.snapshot.get("history", {})
+        return (getattr(self.coordinator, "history_accounting_ready", False) and super().available
+                and bool(history.get("generation")) and self.last_reset is not None
+                and history.get("lifetime_totals", {}).get(f"ac_{self.channel}_coverage_seconds", 0) > 0)
+
+    @property
+    def extra_state_attributes(self) -> dict:
+        history = self.snapshot.get("history", {})
+        totals = history.get("lifetime_totals", {})
+        return {**super().extra_state_attributes, "generation": history.get("generation"),
+                "coverage_seconds": totals.get(f"ac_{self.channel}_coverage_seconds"),
+                "includes_bypass": True, "complete_lifetime_energy": False,
+                "conversion_basis": "trapezoidal_watt_seconds", "mode_group": "all_observed_modes"}

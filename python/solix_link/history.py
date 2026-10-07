@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from collections.abc import Callable, Iterable, Mapping
-from dataclasses import dataclass, replace
+from dataclasses import dataclass, field, replace
 import fcntl
 import math
 import os
@@ -12,6 +12,8 @@ import sqlite3
 import stat
 from threading import RLock
 import time
+import re
+import uuid
 from typing import Any
 
 
@@ -67,6 +69,7 @@ class _Station:
     previous: _Reading | None = None
     signature: _Reading | None = None
     restarted: bool = False
+    generation: str = field(default_factory=lambda: uuid.uuid4().hex)
 
 
 class HistoryStore:
@@ -112,11 +115,11 @@ class HistoryStore:
             if (opened.st_dev, opened.st_ino) != (current.st_dev, current.st_ino):
                 raise ValueError("History file changed while opening")
             version = self._db.execute("PRAGMA user_version").fetchone()[0]
-            if version not in (0, 1):
+            if version not in (0, 1, 2):
                 raise ValueError("Unsupported history database version")
             tables = {row[0] for row in self._db.execute(
                 "SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'")}
-            if (version == 0 and tables) or (version == 1 and tables != {"stations", "samples"}):
+            if (version == 0 and tables) or (version in (1, 2) and tables != {"stations", "samples"}):
                 raise ValueError("Unrecognized history database")
             self._db.execute("PRAGMA journal_mode=DELETE")
             self._db.execute("PRAGMA foreign_keys=ON")
@@ -141,21 +144,33 @@ class HistoryStore:
                     );
                     CREATE INDEX IF NOT EXISTS samples_station_time ON samples(name, timestamp, id);
                     CREATE INDEX IF NOT EXISTS samples_time ON samples(timestamp, id);
-                    PRAGMA user_version=1;
                 """)
+                # executescript commits its schema statements; explicitly begin
+                # so generation assignment and the version marker migrate together.
+                self._db.execute("BEGIN IMMEDIATE")
                 columns = {row[1] for row in self._db.execute("PRAGMA table_info(stations)")}
                 if "collection_start" not in columns:
                     self._db.execute("ALTER TABLE stations ADD COLUMN collection_start REAL")
+                if "generation" not in columns:
+                    if version == 2:
+                        raise ValueError("Invalid history generation schema")
+                    self._db.execute("ALTER TABLE stations ADD COLUMN generation TEXT")
+                    for row in self._db.execute("SELECT name FROM stations").fetchall():
+                        self._db.execute("UPDATE stations SET generation=? WHERE name=?",
+                                         (uuid.uuid4().hex, row["name"]))
+                self._db.execute("PRAGMA user_version=2")
             self._states: dict[str, _Station] = {}
             for row in self._db.execute("SELECT * FROM stations"):
                 if (not _valid_name(row["name"]) or row["model"] not in _MODELS
-                        or row["protocol"] not in _PROTOCOLS or len(self._states) >= _MAX_STATIONS):
+                        or row["protocol"] not in _PROTOCOLS or len(self._states) >= _MAX_STATIONS
+                        or type(row["generation"]) is not str
+                        or not re.fullmatch(r"[0-9a-f]{32}", row["generation"])):
                     raise ValueError("Invalid history station metadata")
                 state = _Station(row["model"], row["protocol"], row["highwater"],
                                  (row["input_kwh"], row["output_kwh"], row["input_seconds"],
                                   row["output_seconds"], row["gaps"]), bool(row["gap_open"]),
                                  bool(row["has_samples"]), row["collection_start"],
-                                 restarted=bool(row["has_samples"]))
+                                 restarted=bool(row["has_samples"]), generation=row["generation"])
                 latest = self._db.execute(
                     "SELECT * FROM samples WHERE name=? AND timestamp=? AND battery IS NOT NULL "
                     "ORDER BY id DESC LIMIT 1", (row["name"], state.highwater),
@@ -234,14 +249,14 @@ class HistoryStore:
             return self._stats()
 
     def _save_station(self, name: str, state: _Station) -> None:
-        self._db.execute("""INSERT INTO stations VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        self._db.execute("""INSERT INTO stations VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ON CONFLICT(name) DO UPDATE SET model=excluded.model, protocol=excluded.protocol,
             highwater=excluded.highwater, input_kwh=excluded.input_kwh, output_kwh=excluded.output_kwh,
             input_seconds=excluded.input_seconds, output_seconds=excluded.output_seconds,
             gaps=excluded.gaps, gap_open=excluded.gap_open, has_samples=excluded.has_samples,
-            collection_start=excluded.collection_start""",
+            collection_start=excluded.collection_start, generation=excluded.generation""",
             (name, state.model, state.protocol, state.highwater, *state.totals,
-             int(state.gap_open), int(state.has_samples), state.collection_start))
+             int(state.gap_open), int(state.has_samples), state.collection_start, state.generation))
 
     def _insert(self, name: str, timestamp: float, reading: _Reading | None, *, gap: bool,
                 gap_delta: int = 0, interval_start: float | None = None,
@@ -470,7 +485,7 @@ class HistoryStore:
                     crossed_gap, max_interval = False, None
             state = self._states[name]
             return {"name": name, "model": state.model, "protocol": state.protocol, "estimated": True,
-                    "collection_start": state.collection_start,
+                    "collection_start": state.collection_start, "generation": state.generation,
                     "points": points, "totals": dict(zip(_TOTAL_KEYS, aggregates)),
                     "lifetime_totals": dict(zip(_TOTAL_KEYS, state.totals)),
                     "window": {"since": start, "until": end}, "limits": self._limits(),
@@ -482,8 +497,8 @@ class HistoryStore:
         ``updated_at`` is the last successful complete cache poll, not the HTTP
         request time. ``gap_open`` describes integration continuity; it does
         not establish that every power channel was present in a report.
-        Collection start identifies the first accepted report for a public
-        name, not the device or a globally unique database reset identifier.
+        Generation identifies the persisted station history, not a device boot.
+        Migrating version 1 preserves all existing samples and cumulative totals.
         """
         with self._lock:
             self._check_open()
@@ -497,7 +512,7 @@ class HistoryStore:
                     if timestamp is not None:
                         _epoch(timestamp)
                 stations.append({"name": name, "model": state.model, "protocol": state.protocol,
-                                 "collection_start": state.collection_start,
+                                 "collection_start": state.collection_start, "generation": state.generation,
                                  "last_seen_timestamp": state.highwater,
                                  "lifetime_totals": dict(zip(_TOTAL_KEYS, counters)),
                                  "gap_open": state.gap_open})

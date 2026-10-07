@@ -97,9 +97,10 @@ solix-link gateway-energy --gateway-url http://127.0.0.1:8765 \
 
 The original mode-counter diagnostics retain **no statistics state class**.
 Separate [observed Standard AC estimates](native-energy-meter.md) on qualified
-C1000 Gen 2 firmware have `total` and an explicit persisted initialization time;
+C1000 Gen 2 1.1.4.9 and C2000 Gen 2 2.1.6.4 firmware have `total` and an explicit persisted initialization time;
 they can supply HA Energy consumption from their first accepted baseline.
 Ambiguous boundaries quarantine them rather than inferring device resets.
+C2000 conversion stays explicitly `assumed_wh`; no fitted rescaling is applied.
 C2000 conversion, physical calibration and station restart retention remain
 unresolved. An [Integral helper](home-assistant-energy-dashboard.md) remains a
 power-derived option. No calibrated battery-energy claim is made here.

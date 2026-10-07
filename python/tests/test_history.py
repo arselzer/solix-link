@@ -436,6 +436,64 @@ def test_database_has_one_process_owner_until_close(tmp_path):
     reopened.close()
 
 
+def test_version_one_migration_preserves_energy_and_adds_stable_generation(tmp_path):
+    path = tmp_path / "private" / "history.sqlite3"
+    clock = Clock()
+    store = HistoryStore(path, clock=clock)
+    record(store, clock, 1000)
+    record(store, clock, 1005)
+    before = store.query("original")
+    store.close()
+    # Construct the actual previous schema, including retained samples/totals.
+    with sqlite3.connect(path) as db:
+        db.execute("ALTER TABLE stations DROP COLUMN generation")
+        db.execute("PRAGMA user_version=1")
+    reopened = HistoryStore(path, clock=clock)
+    after = reopened.query("original")
+    assert after["points"] == before["points"]
+    assert after["lifetime_totals"] == before["lifetime_totals"]
+    assert after["collection_start"] == before["collection_start"]
+    assert len(after["generation"]) == 32
+    assert reopened.summary()["stations"][0]["generation"] == after["generation"]
+    reopened.close()
+    again = HistoryStore(path, clock=clock)
+    assert again.query("original")["generation"] == after["generation"]
+    again.close()
+    with sqlite3.connect(path) as db:
+        assert db.execute("PRAGMA user_version").fetchone()[0] == 2
+
+
+def test_failed_generation_migration_rolls_back_schema_and_version(tmp_path, monkeypatch):
+    import solix_link.history as module
+    path = tmp_path / "private" / "history.sqlite3"
+    store = HistoryStore(path, clock=Clock())
+    store.record([snapshot()])
+    store.close()
+    with sqlite3.connect(path) as db:
+        db.execute("ALTER TABLE stations DROP COLUMN generation")
+        db.execute("PRAGMA user_version=1")
+    def fail():
+        raise OSError("synthetic random source failure")
+    monkeypatch.setattr(module.uuid, "uuid4", fail)
+    with pytest.raises(OSError):
+        HistoryStore(path, clock=Clock())
+    with sqlite3.connect(path) as db:
+        assert db.execute("PRAGMA user_version").fetchone()[0] == 1
+        assert "generation" not in {row[1] for row in db.execute("PRAGMA table_info(stations)")}
+        assert db.execute("SELECT COUNT(*) FROM samples").fetchone()[0] == 1
+
+
+@pytest.mark.parametrize("model,protocol", [("c300", "legacy"), ("c1000", "prime"),
+    ("c1000_gen2", "native_mqtt"), ("c2000_gen2", "native_mqtt")])
+def test_all_supported_models_supply_kwh_with_no_station_commands(history, model, protocol):
+    store, clock = history
+    record(store, clock, 1000, model=model, protocol=protocol)
+    record(store, clock, 1005, model=model, protocol=protocol)
+    row = store.summary()["stations"][0]
+    assert row["lifetime_totals"]["ac_output_energy_kwh_estimate"] == pytest.approx(500*5/3600000)
+    assert row["generation"] == store.query("original")["generation"]
+
+
 def test_database_version_rejected_and_descriptor_released(tmp_path):
     private = tmp_path / "private"
     private.mkdir(mode=0o700)

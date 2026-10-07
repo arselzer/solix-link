@@ -1,8 +1,30 @@
 # AC energy and the Home Assistant Energy dashboard
 
-Source review on **2026-10-07**, based on SOLIX Link **`1fb28c0`** and Home
-Assistant Core **2026.9.4**. This documents existing functionality and the
-remaining implementation; no helper, deployment or station setting was changed.
+Implementation updated **2026-10-07**. The earlier Integral-helper source audit
+used Home Assistant Core **2026.9.4**; the live installation uses **2026.7.4**.
+
+## Built-in energy entities
+
+| Model | AC input/output energy estimate | Observed native Standard AC estimate |
+| --- | --- | --- |
+| C300 AC | Cached power history, when the channel is reported | Not established |
+| Original C1000 | Cached power history | Installed 1.7.1 native schema unresolved |
+| C1000 Gen 2 | Cached power history, all observed modes | 1.1.4.9 nominal Wh |
+| C2000 Gen 2 | Cached power history, all observed modes | 2.1.6.4 assumed Wh, no rescaling |
+
+Enable history collection on the gateway and **Configure → Enable newly
+discovered AC energy estimates** in HA, or enable the two entities individually.
+The new entities are **AC input energy estimate** and **AC output energy estimate**:
+energy/kWh, `state_class: total`, no diagnostic category and a persisted history
+initialization time as `last_reset`. Once Recorder has registered statistics,
+select the appropriate sensor under **Energy → Individual devices**. Existing
+history diagnostics keep their old IDs and do not gain a statistics state class.
+
+Power-history and native estimates cover overlapping flows. Choose **one source
+and one AC boundary per consumption**, rather than adding both estimates or both
+input/output. Native estimates cover Standard mode only and retain their unit
+assumptions; history estimates omit recording gaps. Neither is battery-only
+energy. Initial lifetime values do not backfill earlier daily consumption.
 
 ## What already measures kWh
 
@@ -37,12 +59,13 @@ one boundary or configure appropriate upstream relationships. HA documents
 individual-device hierarchies to avoid counting nested loads twice.
 [Individual devices](https://www.home-assistant.io/docs/energy/individual-devices/)
 
-## Why the existing HA energy sensors are not selectable
+## Diagnostics versus statistics
 
 The two [HA history energy entities](home-assistant-history.md) already have
 `device_class: energy` and `unit_of_measurement: kWh`, but are disabled by
 default and intentionally have **no statistics state class**. Enabling them
-only enables diagnostics; it does not make them Energy-dashboard inputs.
+only enables diagnostics; it does not make them Energy-dashboard inputs. Use
+the separately named built-in estimates described above.
 
 For cumulative energy, HA requires `state_class: total` or `total_increasing`,
 a supported unit, and a sensor without statistics errors. Keep the chosen
@@ -104,23 +127,23 @@ restoration; they were inspected, not executed here.
 [Implementation](https://github.com/home-assistant/core/blob/2026.9.4/homeassistant/components/integration/sensor.py),
 [Upstream tests](https://github.com/home-assistant/core/blob/2026.9.4/tests/components/integration/test_sensor.py)
 
-## Recommended built-in implementation
+## Built-in continuity handling
 
 Prefer opt-in Energy-compatible entities backed by the existing gateway
 integrals; this preserves their explicit gaps and higher-frequency telemetry
 instead of integrating HA's polled values a second time.
 
-1. Add a persisted database generation/station epoch, exposed by the bounded
+1. A persisted database generation/station epoch is exposed by the bounded
    history summary. Preserve it across normal restarts and pruning; change it
    on genuine recreation/reset. Public-name changes already create new history.
-2. Persist HA continuity checks across integration reloads and reject
-   unexplained regressions. Current checks are in memory; collection-start
-   timestamps alone cannot identify every database replacement.
-3. Add disabled-by-default energy entities with kWh and an appropriate state
+2. HA persists continuity checks across integration reloads and rejects
+   unexplained regressions. A new generation is accepted only when its first
+   source timestamp follows the previous accepted source timestamp.
+3. Separate disabled-by-default energy entities have kWh and an appropriate state
    class. HA recommends `total` for never-resetting totals; genuine reset
    counters need explicit reset handling or `total_increasing`. Test the
    chosen semantics, including a replacement first observed above zero.
-4. Verify statistics through the real HA Recorder: unavailable periods,
+4. Verification includes synthetic unavailable periods,
    gateway/HA restart, sample pruning, resets, device renaming and partial
    fleets. Keep coverage/gap diagnostics and clear “estimate” names. Dashboard
    selection remains a user configuration step.
@@ -152,14 +175,14 @@ is consistent with integer rounding; C2000 shows a repeatable roughly 11%
 discrepancy, with a 0.9 Wh/unit hypothesis fitting its tested Standard AC
 channels. This is a comparison to reported watts, not independent calibration.
 The separate [observed Standard AC estimates](native-energy-meter.md) now
-provide Energy-compatible C1000 Gen 2 entities with persisted ordering and
+provide Energy-compatible C1000 Gen 2 and C2000 Gen 2 entities with persisted ordering and
 quarantine guards. They begin at a fresh zero baseline, omit ambiguous intervals
 and do not claim calibrated lifetime or battery energy. C2000 scaling and the
 physical station restart test remain open.
 
 Focused verification covers history arithmetic, summaries and entity behavior
-using synthetic readings and HA doubles. No live configuration or battery was
-accessed; results are recorded in [research progress](server-research-progress.md).
+using synthetic readings and HA doubles. Deployment and actual HA Recorder
+results are recorded separately in [research progress](server-research-progress.md).
 
 Public source SHA-256 pins for the gap/statistics review:
 

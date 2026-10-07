@@ -80,9 +80,9 @@ C1000 Gen 2 provides a useful parallel reference: 24 reports over 3.83 hours,
 0.99380 output**. These are still comparisons to reported watts, not independent
 electrical measurements.
 
-C2000 can use a future explicitly labelled **empirical estimate** with the
-same persistent guards; enabling that does not require restarting the station.
-It is not implemented by this audit. Verified native scaling still requires
+C2000 now exposes an explicitly labelled **assumed-unit estimate** with the
+same persistent guards and 1 Wh/raw unit; enabling that did not restart the station.
+The estimate was added separately from this passive audit. Verified native scaling still requires
 independent meter evidence or equivalent firmware/timing proof. Integrating
 its already-supported AC watt readings is the separate available estimate
 path described in [HA consumption options](home-assistant-energy-dashboard.md).
@@ -135,19 +135,20 @@ for sampling or measurement error. `physical_units_verified` and
 Seventeen added synthetic cases exercise alternative scales, bound edges, gaps,
 zero reference and invalid inputs; all **42 energy-analysis tests** pass.
 
-## What remains before native HA statistics
+## What remains for physical calibration
 
 The [observed Standard AC meter](native-energy-meter.md) now implements
 persistent ordering/duplicate guards, quarantine and separately named
-Energy-compatible C1000 Gen 2 estimates. It counts observed deltas from zero,
+Energy-compatible C1000 Gen 2 and C2000 Gen 2 estimates. It counts observed deltas from zero,
 not complete device lifetime energy. The physical scaling/retention items below
-remain open; C2000 is still excluded from native statistics. No remote ordinary
+remain open; C2000 statistics retain `assumed_wh`, not calibrated units. No remote ordinary
 C1000 Gen 2 restart route is verified, and the user is unavailable for the
 button test.
 
 1. **Scaling:** compare against an independent plug-in energy meter at multiple
    steady loads. C1000 Gen 2 has consistent nominal Wh evidence; C2000 still
-   needs confirmation of its 0.9 hypothesis, separately by intended channel.
+   needs an independent measurement to distinguish scale from sampling/timing,
+   separately by intended channel. No 0.9 correction is enabled.
 2. **Retention:** capture native reports before and after an ordinary restart
    of the noncritical C1000 Gen 2. Record exactly which restart was performed;
    a button restart does not establish full battery-disconnection retention.
@@ -156,8 +157,8 @@ button test.
    receipt. Deduplicate/reject out-of-order data, quarantine unknown decreases
    and multi-report batches, and preserve meter baselines across gateway/HA
    restarts. A decrease alone cannot identify a legitimate reset.
-4. **HA accounting:** expose independently named mode/channel sensors with
-   tested persistent continuity and statistics semantics. Do not sum overlapping
+4. **HA accounting:** separately named AC estimates now have persistent
+   continuity and statistics semantics. Do not sum overlapping
    backup groups or silently treat AC output as battery discharge.
 
 HA accepts estimated energy sensors; laboratory calibration is not a platform

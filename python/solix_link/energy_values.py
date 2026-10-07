@@ -47,14 +47,16 @@ def validate_energy_meter(value: object, *, model: str, firmware: str | None,
     """Whitelist persisted observed deltas and recompute their nominal kWh.
 
     This is a gateway meter generation, not the device's boot/reset epoch.
-    Only Standard AC on A1763 1.1.4.9 has the current scaling qualification.
+    C1000 Gen 2 uses firmware-derived nominal Wh; C2000 Gen 2 uses assumed Wh.
+    Neither conversion establishes physical calibration or battery-only energy.
     """
-    if (type(value) is not dict or model != "c1000_gen2"
+    if (type(value) is not dict or model not in ("c1000_gen2", "c2000_gen2")
             or type(value.get("schema_version")) is not int or value["schema_version"] != 1
             or type(value.get("generation")) is not str or not re.fullmatch(r"[0-9a-f]{32}", value["generation"])
             or value.get("status") not in ("tracking", "quarantined") or value.get("reason") not in METER_REASONS
             or (value["status"] == "tracking") != (value["reason"] == "none")
-            or value["status"] == "tracking" and firmware != "1.1.4.9"
+            or value["status"] == "tracking" and (model, firmware) not in (
+                ("c1000_gen2", "1.1.4.9"), ("c2000_gen2", "2.1.6.4"))
             or any(not _timestamp(value.get(key)) for key in ("started_at", "last_event_timestamp", "last_receipt_at"))
             or not value["started_at"] <= value["last_receipt_at"] <= reported_at
             or not -5 <= value["last_receipt_at"] - value["last_event_timestamp"] < MAX_REPORT_AGE
@@ -74,7 +76,8 @@ def validate_energy_meter(value: object, *, model: str, firmware: str | None,
     result = {key: value[key] for key in ("schema_version", "generation", "started_at", "last_event_timestamp",
         "last_receipt_at", "status", "reason", "accepted_reports", "rejected_reports")}
     result.update(channels=clean, energy_kwh={key: row["total_raw"] / 1000 for key, row in clean.items()},
-                  conversion_basis="nominal_wh", estimated=True, units_verified=False,
+                  conversion_basis="nominal_wh" if model == "c1000_gen2" else "assumed_wh",
+                  estimated=True, units_verified=False,
                   includes_bypass=True, group="standard", max_report_age_seconds=MAX_REPORT_AGE)
     result["available"] = (value["status"] == "tracking" and _timestamp(now)
         and -5 <= now - value["last_receipt_at"] < MAX_REPORT_AGE

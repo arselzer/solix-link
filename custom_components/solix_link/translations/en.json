@@ -32,9 +32,9 @@
   "options": {
     "step": {
       "init": {
-        "title": "Energy diagnostics",
-        "description": "Enable newly discovered native energy sensors automatically. Counters remain uncalibrated and are not lifetime Energy dashboard statistics. Existing entity enable/disable choices are preserved. Collection must also be enabled on the AP service.",
-        "data": {"native_energy_enabled": "Enable newly discovered native energy sensors"}
+        "title": "Energy estimates",
+        "description": "Enable newly discovered energy entities. Power-history estimates work across supported models and modes; native observed estimates cover Standard AC on tested Gen 2 firmware. These are estimates, include bypass and must not be added together for the same consumption. Existing entity choices are preserved. History and native report collection must be enabled on the gateway.",
+        "data": {"native_energy_enabled": "Enable newly discovered native energy sensors", "history_energy_enabled": "Enable newly discovered AC energy estimates"}
       }
     }
   },
@@ -65,6 +65,8 @@
     "sensor": {
       "native_energy_kwh": {"name": "{group} {channel} energy (unverified)"},
       "native_meter_kwh": {"name": "Observed {group} {channel} energy estimate"},
+      "energy_ac_input_kwh_estimate": {"name": "AC input energy estimate"},
+      "energy_ac_output_kwh_estimate": {"name": "AC output energy estimate"},
       "control_availability": {"name": "Blocked controls"},
       "battery": {"name": "Battery"},
       "temperature": {"name": "Temperature"},

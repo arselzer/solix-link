@@ -39,6 +39,10 @@ freed pages for reuse, so pruning does not promise an immediate file-size
 reduction. Lifetime estimates survive row pruning. Changing a station's name
 starts a separate history; history contains no hardware identity to match it
 to an old name.
+SQLite schema version 2 adds a random persisted `generation` per station.
+Version 1 migration preserves existing totals, timestamps and samples. Normal
+restarts and pruning preserve generations; recreating a database produces new
+ones. Before downgrading to an older gateway, restore its pre-migration backup.
 Names preserve their exact public spelling, including spaces, Unicode and
 quotes; no aliases or normalization are applied. They must contain 1–64
 printable characters and cannot be blank or contain control characters/NUL.
@@ -89,7 +93,7 @@ Responses contain:
   `max_source_interval_seconds`; missing readings are `null`.
 - `totals`: estimated input/output kWh, per-channel coverage seconds and gap
   count for whole intervals inside the retained requested window.
-- `lifetime_totals` and `collection_start`: persisted estimates since this
+- `lifetime_totals`, `collection_start` and `generation`: persisted estimates since this
   named station's first saved report, including intervals whose rows expired.
 - `window`, `limits`, `estimated: true` and `truncated`.
 

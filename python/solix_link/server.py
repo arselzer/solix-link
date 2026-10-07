@@ -518,7 +518,7 @@ def create_app(service: MonitorService, token: str | None = None, *, allow_contr
             if meter is not None:
                 lines.append(f"solix_native_meter_started_at_seconds{label} {meter['started_at']}")
                 for channel, value in meter["energy_kwh"].items():
-                    labels = f'{{device="{name}",group="standard",channel="{channel}",basis="nominal_wh"}}'
+                    labels = f'{{device="{name}",group="standard",channel="{channel}",basis="{meter["conversion_basis"]}"}}'
                     lines.append(f"solix_native_meter_energy_kwh_estimate{labels} {value}")
             lines.append(f"solix_native_energy_report_available{label} {int(bool(energy and energy['available']))}")
             if energy is not None:

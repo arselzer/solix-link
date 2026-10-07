@@ -1530,3 +1530,94 @@ source hash are unchanged; its interpretation is clarified in the
 All **44 focused energy-analysis tests passed** with Python **3.14.4** /
 pytest **9.1.1**. This synthetic suite is not physical calibration. The new
 public files contain no retained device readings or private identifiers.
+
+
+## 2026-10-07 — kWh estimates for every supported model
+
+Added two separately named **AC input/output energy estimate** entities for
+C300 AC, original C1000, C1000 Gen 2 and C2000 Gen 2. Their source is the
+existing gateway AC-power history, across observed modes. They have energy/kWh,
+`state_class: total`, no diagnostic category and explicit history initialization
+times. Discovery requires real channel coverage and a persisted generation;
+missing channels and legacy summaries do not create zero-valued statistics.
+Existing eight history diagnostics retain their IDs and statistics contract.
+A new opt-in HA option controls defaults for newly discovered estimates.
+
+SQLite schema **2** adds a random station history generation. The version-1
+migration is atomic and preserves samples, cumulative estimates and timestamps.
+HA now persists validated high-water observations before exposing energy
+statistics. Reloads preserve regression checks; failed writes and malformed
+stored continuity disable statistics without stopping telemetry. Same-generation
+counter/time/epoch regressions, missing generations, source-context changes and
+old database copies are rejected. A genuinely new history starts a new `total`
+epoch only if its first source timestamp follows the prior accepted report.
+A pending empty history can accept its first real observation.
+
+C2000 Gen 2 **2.1.6.4** gains guarded native **Observed Standard AC input/output
+energy estimate** entities, alongside C1000 Gen 2 **1.1.4.9**. C2000 uses
+**assumed 1 Wh/raw unit**, not the fitted 0.9 correction. Counter decreases,
+ambiguous ordering, changed firmware, long gaps and implausible jumps remain
+persistent quarantine conditions. Native unit and reset/retention calibration
+remain unresolved; these are observed estimates, not calibrated lifetime meters.
+Original C1000 **1.7.1** still uses history: its native report layout has not
+been established. Neither AC source isolates battery-only energy or bypass.
+SDK/API, CLI/TUI energy rows and Prometheus preserve the native conversion basis;
+SDK history now retains the public generation. Existing browser history and
+native kWh panels continue to display their established sources.
+
+**Verification:** Python **3.14.4**, pytest **9.1.1**; **1,389 focused tests passed**
+across energy/history/gateway APIs and the HA contract suite. New synthetic
+cases cover all four models, atomic migration success/failure, reload and
+rollback, fresh epochs, missing channels, storage failure/recovery and C2000
+assumed-unit persistence/quarantine. No electrical experiment was performed.
+
+The user explicitly requested updating Home Assistant too. Installed local wheel
+`solix_link-0.1.0-py3-none-any.whl`, SHA-256
+`4f6ef8ea376edeb2e7c0f5f2e19f53a8fef52f94cb8a2e47853753ee3e9602cd`;
+all **77 packaged source/assets** were byte-compared to the repository. Updated
+the existing gateway/AP worker code and eight HA component files with private
+rollback copies of packages, component, native state and SQLite history.
+Only host monitoring services and HA restarted; all three stations remained
+fresh with AC enabled afterward, protected settings and network/identity
+configuration hashes unchanged. No station restart or output/settings control
+command was sent; automations remain unchanged.
+
+Actual HA **2026.7.4** reports **10 enabled numeric energy entities**, all
+`energy`/`kWh`/`total`, no diagnostic category and explicit `last_reset`:
+**6 history estimates** across the three deployed models and **4 native observed
+estimates** across both Gen 2s. Recorder has registered all ten with `has_sum`
+and kWh statistics units. Twelve per-channel coverage/gap/continuity diagnostics
+were enabled through the normal entity registry. HA's normal options flow
+sets both energy-discovery options; entity choices remain in its registry.
+The persisted continuity store contains three station records. C300 support is
+synthetic here; it is not configured on this deployment. Sensor selection under
+Energy remains a user choice: select one source and one AC boundary for each
+consumption, with upstream relationships for chained stations.
+
+A subsequent normal HA integration reload retained all ten numeric/statistics
+entities, their generations and reset timestamps without decreasing energy.
+The installed SDK returned kWh, channel coverage and public history generations
+for each configured model. Actual cached Prometheus output retains `nominal_wh`
+and `assumed_wh` separately. These are monitoring/accounting checks, not
+independent electrical calibration or a physical station-restart test.
+
+Inspected the actual HA storage loader: malformed JSON is renamed to a
+`.corrupt.*` artifact and can return `None`. The energy guard now checks for an
+existing file or retained corruption evidence before loading, and refuses to
+treat that `None` as first setup. Synthetic tests distinguish genuine absence,
+an empty load of existing storage and already-renamed corruption. This final
+HA-only safeguard was installed with component rollback; gateway/AP and
+stations stayed running. Public installed package ownership was restored to
+the existing runtime user after the root installer left restricted files.
+Modes and source bytes were preserved; no private credentials or logs changed.
+Final live verification retained all ten enabled Recorder statistics. The
+C2000 accepted two ordinary periodic reports and its observed AC-output
+estimate increased, with protected settings still matching the baseline and
+AC enabled. This verifies passive data propagation, not the assumed physical
+unit conversion.
+
+Raw telemetry, deployment baselines and HA state/statistics output are retained
+only in the owner-restricted ignored private directory. Physical counter
+calibration and station-restart retention checks still require independent
+measurements and the authorized C1000 button test; the server-backed C2000
+was left operating.

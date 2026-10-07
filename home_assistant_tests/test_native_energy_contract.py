@@ -118,6 +118,22 @@ def test_component_validates_meter_the_same_as_sdk_and_strips_private_values():
     assert "PRIVATE" not in json.dumps(native.validate_native_energy(data, now=NOW))
 
 
+def test_c2000_observed_sensors_keep_assumed_units_and_are_energy_compatible(platform):
+    store = NativeEnergyStore("c2000_gen2")
+    data = None
+    for at, value in ((NOW-1200, 100), (NOW-600, 120)):
+        data = store.ingest([{"protobuf_name": REPORT_NAME, "units_verified": False, "event_timestamp": at,
+            "groups": {"standard": {"ac_input_energy_raw": value, "ac_output_energy_raw": value}}}],
+            reported_at=at, firmware_version="2.1.6.4")
+    assert native.validate_native_energy(data, now=NOW) == validate_native_energy(data, now=NOW)
+    _, sensors = entities(platform, snapshot(native_energy=data))
+    meters = [s for s in sensors if isinstance(s, platform.sensor.SolixNativeMeterSensor)]
+    assert len(meters) == 2
+    assert all(s.available and s.native_value == 0.02 for s in meters)
+    assert all(s.extra_state_attributes["conversion_basis"] == "assumed_wh" for s in meters)
+    assert all(s.entity_description.state_class == "total" for s in meters)
+
+
 def test_discovery_exposes_only_reported_counters_no_statistics_or_fake_zero(platform):
     source, sensors = entities(platform, snapshot(native_energy=energy()))
     assert len(sensors) == 3

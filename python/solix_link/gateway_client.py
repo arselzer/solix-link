@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import re
 import math
 import os
 from pathlib import Path
@@ -258,6 +259,8 @@ class GatewayClient:
                 raise ValueError
             return {"name": name, "model": result["model"], "protocol": result["protocol"],
                     "estimated": True, "collection_start": start, "points": points, **totals,
+                    **({"generation": result["generation"]} if type(result.get("generation")) is str
+                        and re.fullmatch(r"[0-9a-f]{32}", result["generation"]) else {}),
                     "window": {key: window[key] for key in ("since", "until")},
                     "truncated": result["truncated"], "limits": {key: limits[key] for key in bounds}}
         except (KeyError, TypeError, ValueError):

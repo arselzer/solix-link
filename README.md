@@ -32,8 +32,9 @@ firmware specific; detailed capabilities are in the [Python guide](python/README
   settings exports. Concurrent HTTP writes are coordinated per station.
 - Save battery/power charts and **estimated AC input/output kWh** with coverage
   and gaps; view Gen 2 [native energy counters and nominal kWh](docs/native-energy-values.md)
-  in the API, terminal F7, browser and optional HA diagnostics. Qualified C1000
-  Gen 2 firmware also supplies [observed AC estimates for HA Energy](docs/native-energy-meter.md).
+  in the API, terminal F7, browser and HA. All supported models have
+  [HA Energy-compatible AC estimates](docs/home-assistant-energy-dashboard.md);
+  both Gen 2 models also expose [observed native Standard AC estimates](docs/native-energy-meter.md).
 - Preview solar/price charging policies; optionally prepare HA charging
   blueprints. Previews send no commands and automations start disabled.
 

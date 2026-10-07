@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import math
+import re
+from pathlib import Path
 import time
 from typing import Any
 
@@ -73,9 +75,14 @@ def _station(raw: Any, updated: float | None, max_power: float) -> dict:
         maximum = max_power * covered / 3600000
         if covered == 0 and energy != 0 or energy > maximum + max(1e-9, maximum * 1e-9):
             raise HistoryValidationError()
-    return {"name": raw["name"], "model": model, "protocol": protocol,
+    result = {"name": raw["name"], "model": model, "protocol": protocol,
             "collection_start": start, "last_seen_timestamp": seen,
             "lifetime_totals": totals, "gap_open": raw["gap_open"]}
+    if "generation" in raw:
+        if type(raw["generation"]) is not str or not re.fullmatch(r"[0-9a-f]{32}", raw["generation"]):
+            raise HistoryValidationError()
+        result["generation"] = raw["generation"]
+    return result
 
 
 def parse_history_summary(raw: Any, *, now: float | None = None) -> dict:
@@ -138,14 +145,57 @@ def history_available(history: Any, snapshot: dict, *, now: float | None = None)
 
 
 def history_nonregressing(previous: dict | None, current: dict) -> bool:
-    """An epoch change may reset totals; unchanged epochs must remain monotonic."""
-    if previous is None or previous["collection_start"] != current["collection_start"]:
+    """Accept a new database only after the previous observation ended.
+
+    A copied/rolled-back database must not establish a fresh statistics epoch.
+    Legacy endpoints can still supply diagnostics without a generation.
+    """
+    if previous is None:
         return True
     if (previous["model"], previous["protocol"]) != (current["model"], current["protocol"]):
         return False
+    before_generation, after_generation = previous.get("generation"), current.get("generation")
+    if before_generation is not None:
+        if after_generation is None:
+            return False
+        if before_generation != after_generation:
+            return (current["collection_start"] is not None
+                    and previous["last_seen_timestamp"] is not None
+                    and current["collection_start"] > previous["last_seen_timestamp"]
+                    and current.get("updated_at") is not None
+                    and previous.get("updated_at") is not None
+                    and current["updated_at"] >= previous["updated_at"])
+        pending = (previous["collection_start"] is None and previous["last_seen_timestamp"] is None
+                   and not any(previous["lifetime_totals"].values()))
+        if previous["collection_start"] != current["collection_start"] and not pending:
+            return False
+    elif previous["collection_start"] != current["collection_start"]:
+        return True
     for key in ("updated_at", "last_seen_timestamp"):
         before, after = previous.get(key), current.get(key)
         if before is not None and (after is None or after < before):
             return False
     return all(current["lifetime_totals"][key] >= previous["lifetime_totals"][key]
                for key in TOTAL_KEYS)
+
+
+def parse_history_highwater(raw: Any) -> dict[str, dict]:
+    """Validate persisted continuity without making old observations fresh."""
+    if not isinstance(raw, dict) or set(raw) != {"stations"} or not isinstance(raw["stations"], list) or len(raw["stations"]) > 32:
+        raise HistoryValidationError()
+    result = {}
+    for item in raw["stations"]:
+        if not isinstance(item, dict):
+            raise HistoryValidationError()
+        updated = _timestamp(item.get("updated_at"))
+        station = _station(item, updated, 10000)
+        if station["name"] in result:
+            raise HistoryValidationError()
+        result[station["name"]] = {**station, "updated_at": updated}
+    return result
+
+
+def history_storage_evidence(path: str) -> bool:
+    """HA can rename corrupt JSON and return None; that is not a fresh baseline."""
+    target = Path(path)
+    return target.exists() or any(target.parent.glob(target.name + ".corrupt.*"))

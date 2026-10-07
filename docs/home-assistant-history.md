@@ -4,7 +4,9 @@ The SOLIX Link integration can display the gateway's optional persistent AC
 energy estimates. Enable recording on the gateway as described in
 [Persistent history](persistent-history.md), then enable the desired diagnostic
 entities in **Settings → Devices & services → SOLIX Link → device → Entities**.
-No Home Assistant entity or charging automation is enabled by this feature.
+Diagnostics remain optional. Two separately named Energy-compatible AC estimates
+can be enabled using **Configure → Enable newly discovered AC energy estimates**.
+No charging automation or station setting is changed.
 
 ## Entities and meaning
 
@@ -31,10 +33,12 @@ sampler/source timestamps, interval limit and `estimated: true` attributes.
 AC input can include mains passing through to attached loads. AC output can
 come from mains or battery. These are neither firmware energy counters nor
 calibrated meters, and do not measure energy stored in the battery. No energy
-statistics state class or automatic Energy-dashboard enrollment is provided.
-Derived AC energy can nevertheless be suitable for **individual device
-consumption** once statistics and continuity are implemented; native battery
-counter calibration is not a prerequisite for that separate feature. See
+statistics state class is provided for these eight diagnostics. Separately,
+**AC input energy estimate** and **AC output energy estimate** have kWh,
+`state_class: total`, no diagnostic category and an explicit history initialization
+time as `last_reset`. They work for C300, original C1000 and both Gen 2 models,
+after that channel has nonzero recorded coverage and a persisted generation.
+See
 [HA Energy options and implementation requirements](home-assistant-energy-dashboard.md).
 
 ## Availability, epochs and limits
@@ -50,13 +54,18 @@ the future. First-report and collection-start timestamps may be unknown.
 Changing a station's public name starts different history. Within an unchanged
 collection-start epoch, decreasing totals, coverage, gap count or timestamps
 are rejected for that station until the previous values are reached again.
-An explicitly changed epoch permits a reset. This check is held in integration
-memory and resets when HA reloads the integration. Collection start is not a
-database UUID: recreation that repeats the same first telemetry timestamp
-cannot be distinguished from an in-place reset. Unknown legacy epoch starts
-remain unknown. Persisted epoch and regression handling are needed before
-these particular entities gain long-term statistics; metrological calibration
-and battery-energy accounting remain separate concerns.
+A new database generation permits a reset only when its collection start is
+later than the previous accepted report. Same-generation changes to collection
+start, old database copies, model/transport changes and regressions are rejected.
+HA persists validated high-water observations in its normal integration storage
+before exposing the Energy estimates. Reloads retain the checks; failed writes
+or malformed stored continuity make the Energy estimates unavailable while
+live telemetry and diagnostics continue. Legacy endpoints without a generation
+still supply diagnostics, not the new statistics entities. Metrological
+calibration and battery-energy accounting remain separate concerns.
+HA can rename malformed JSON and return an empty load; existing or retained
+`.corrupt.*` continuity evidence therefore cannot establish a fresh baseline.
+Restore the validated continuity backup rather than deleting the evidence.
 
 ## Read-only API contract
 
