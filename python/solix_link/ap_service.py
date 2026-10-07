@@ -189,7 +189,7 @@ class APService:
                 response, chunked = api_response(path, request, station.config, credentials,
                                                  energy_reports=self.energy_reports)
                 if "/" + path.lstrip("/") == "/equipment/logging/upload_pb_events":
-                    self.mqtt.record("energy_report", reports=decode_energy_events(request))
+                    station.ingest_energy(decode_energy_events(request))
                 writer.write(http_reply(response, credentials=chunked))
                 await writer.drain()
                 self.mqtt.record("api_response", path=path, size=len(response),

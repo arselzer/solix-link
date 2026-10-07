@@ -158,9 +158,11 @@ class GatewayClient:
             raise GatewayReadError("Gateway returned an invalid station snapshot")
         # Remaining metrics are filtered by the terminal's existing public
         # measurement allowlist before presentation or policy evaluation.
+        from .energy_values import validate_native_energy
         return {"name": document["name"], "model": document["model"], "protocol": document["protocol"],
                 "connected": document["connected"], "available": document["available"],
                 "last_seen_timestamp": document.get("last_seen_timestamp"), "metrics": document["metrics"],
+                "native_energy": validate_native_energy(document.get("native_energy"), model=document["model"]) if document["protocol"] == "native_mqtt" else None,
                 "tou_plan_readback": validate_plan_readback(document.get("tou_plan_readback")) if (
                     document["model"] in ("c1000_gen2", "c2000_gen2") and document["protocol"] == "native_mqtt") else None,
                 "power_flow": document.get("power_flow") if document.get("power_flow") in (
@@ -180,6 +182,10 @@ class GatewayClient:
         if not _name(name):
             raise GatewayReadError("Use an exact bounded public station name")
         return self._station(self._get("/devices/" + quote(name, safe="")), name)
+
+    def energy(self, name: str) -> dict | None:
+        """Return cached native counters, never query a station or cloud endpoint."""
+        return self.snapshot(name)["native_energy"]
 
     def control_availability(self, name: str) -> dict:
         if not _name(name):

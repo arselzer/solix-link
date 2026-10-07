@@ -8,6 +8,7 @@ import time
 from typing import TYPE_CHECKING, Any
 
 from .api import COMMANDS, METRICS, numeric, snapshot_available
+from .native_energy import validate_native_energy
 
 if TYPE_CHECKING:
     from homeassistant.core import HomeAssistant
@@ -64,6 +65,7 @@ def diagnostics_report(snapshots: dict, *, now: float | None = None) -> dict[str
             "power_flow": power_flow if isinstance(power_flow, str) and power_flow in POWER_FLOWS else "unknown",
             "controls": sorted({c for c in controls if isinstance(c, str) and c in COMMANDS}),
             "metrics": metrics,
+            "native_energy": validate_native_energy(snapshot.get("native_energy"), model=model, now=now) if protocol == "native_mqtt" else None,
         })
     return {"station_count": len(stations), "stations": stations}
 

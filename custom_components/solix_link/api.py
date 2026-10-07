@@ -227,6 +227,10 @@ def parse_snapshot(value: Any) -> dict:
     result["controls"] = sorted(set(controls) & COMMANDS)
     result["tou_plan_readback"] = parse_tou_plan(value.get("tou_plan_readback")) if (
         value["model"] in ("c1000_gen2", "c2000_gen2") and value["protocol"] == "native_mqtt") else None
+    result["native_energy"] = None
+    if value.get("native_energy") is not None and value["protocol"] == "native_mqtt":
+        from .native_energy import validate_native_energy
+        result["native_energy"] = validate_native_energy(value["native_energy"], model=value["model"])
     result["metrics"] = {key: metric for key, metric in value["metrics"].items()
                          if key in METRICS and (numeric(metric) is not None or isinstance(metric, str))}
     if value.get("power_flow") in ("unknown", "battery", "grid", "transitioning"):

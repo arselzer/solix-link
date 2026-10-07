@@ -6,6 +6,12 @@ saved history and charging-policy previews. It never starts a station transport,
 opens the gateway's SQLite database or sends HTTP setting commands, even when
 the gateway advertises controls.
 
+**F7 Energy** shows the selected station's cached Gen 2 raw counters and nominal
+kWh, with separate mode groups, receipt freshness and observation epochs. It
+works with local AP or gateway snapshots and sends no energy query. The line
+fallback and `gateway-energy` command expose the same values. Reporting and
+physical units remain subject to the [native energy limits](native-energy-values.md).
+
 ## Connect explicitly
 
 ```sh

@@ -22,6 +22,7 @@ from .native_mqtt import (RADIO_NATIVE_PATTERN, RADIO_QUERY_RESPONSES, NativeMqt
 from .protocol import DATA_RESPONSE, Model, decode_telemetry, parse_packet, parse_tlvs, timezone_confer
 from .tou import PowerFlowTimeout, TouPeriod, periods_from_d9, power_flow, validate_periods
 from .plan_readback import plan_from_d9, validate_plan_readback
+from .energy_store import NativeEnergyStore
 
 
 def _original_settings(payload: bytes, *, require_inactive_ac_timer: bool = False) -> tuple[dict, bytes]:
@@ -132,6 +133,7 @@ class LocalMqttServer:
         self.topic = self.commands.status().topic
         self.connection: _Connection | None = None
         self.metrics: dict = {}
+        self.energy = NativeEnergyStore(config.model.value, directory / "energy-state.json")
         self.last_seen: float | None = None
         self.tou_plan_readback: dict | None = None
         self.error: str | None = None
@@ -147,8 +149,15 @@ class LocalMqttServer:
                 "available": bool(connected and self.last_seen and time.time() - self.last_seen < 30),
                 "last_seen_timestamp": self.last_seen, "error": self.error, "metrics": self.metrics.copy(),
                 "tou_plan_readback": validate_plan_readback(self.tou_plan_readback),
+                "native_energy": self.energy.snapshot(),
                 "control_enabled": self.allow_control,
                 "power_flow": power_flow(self.metrics) if self.config.model != Model.C1000 and connected and self.last_seen and time.time() - self.last_seen < 30 else "unknown"}
+
+    def ingest_energy(self, reports: list[dict]) -> None:
+        """Accept a routed HTTP upload without touching MQTT telemetry freshness."""
+        self.energy.ingest(reports, firmware_version=self.metrics.get("software_version"))
+        self.record("energy_report", reports=reports)
+        self.changed()
 
     def record(self, event: str, **fields) -> None:
         # Full protocol evidence is deliberately kept only in this private file.

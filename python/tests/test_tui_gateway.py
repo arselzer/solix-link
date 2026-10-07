@@ -39,6 +39,41 @@ class FakeGateway:
         return saved_history(name)
 
 
+def test_energy_panel_reads_only_cached_snapshot_and_shows_epoch():
+    pytest.importorskip("textual")
+    from textual.widgets import DataTable, Static, TabbedContent
+    from solix_link.energy_store import NativeEnergyStore
+    from solix_link.energy_report import REPORT_NAME
+
+    class EnergyGateway(FakeGateway):
+        def snapshot(self, name):
+            result = super().snapshot(name)
+            report = {"protobuf_name": REPORT_NAME, "units_verified": False,
+                      "groups": {"standard": {"ac_input_energy_raw": 1250, "ac_output_duration_raw": 4}}}
+            result["native_energy"] = NativeEnergyStore("c1000_gen2").ingest([report],
+                reported_at=self.timestamp, firmware_version="1.1.4.9")
+            return result
+
+    async def run():
+        client = EnergyGateway()
+        backend = backend_for(client)
+        app = create_app(backend=backend)
+        async with app.run_test(size=(110, 44)) as pilot:
+            await pilot.pause()
+            await pilot.press("ctrl+o")
+            await pilot.pause()
+            before = len(client.calls)
+            await pilot.press("f7")
+            await pilot.pause()
+            assert app.query_one("#tabs", TabbedContent).active == "energy"
+            table = app.query_one("#energy-table", DataTable)
+            assert table.row_count == 2
+            assert any("1.250000" in table.get_row_at(index) for index in range(table.row_count))
+            assert "epoch 1" in str(app.query_one("#energy-summary", Static).render())
+            assert len(client.calls) == before
+    asyncio.run(run())
+
+
 def backend_for(client):
     def prohibited(*_args, **_kwargs):
         pytest.fail("Gateway target must not activate BLE, AP worker or writes")

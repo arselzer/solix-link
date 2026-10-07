@@ -72,6 +72,7 @@ HA alerts, partial settings comparisons and audit limits are documented in
 | `POST /devices/{name}/adaptive-preview` | Evaluate the separate surplus/price TOU contract against cached status; returns settings and candidate plans with no executor |
 | `GET/HEAD /history` | Report optional recorder availability and bounded storage statistics |
 | `GET/HEAD /devices/{name}/history?since=...&until=...&limit=1000` | Query saved readings and estimated AC energy/coverage; timestamps are Unix seconds |
+| `GET/HEAD /devices/{name}/energy` | Cached native Gen 2 energy counters, nominal kWh and independent report freshness; `null` when unavailable |
 
 HTTP writes are serialized per station. Optional `expected` and `coordination`
 fields add cached precondition checks and restart-aware request deduplication;
@@ -85,6 +86,11 @@ days. See [history semantics](persistent-history.md) and
 [preview schema and limits](charging-policy-preview.md) and
 [adaptive contract](adaptive-policy-preview.md). These routes send no
 station requests or enables the prepared HA charging automation.
+
+Native energy uploads are distinct from power-integrated history. Station
+snapshots and SSE include sanitized `native_energy`; `/metrics` also exposes
+raw and unverified kWh gauges. Collection uses the AP worker's separate
+`--energy-reports` opt-in. See [contract, persistence and units](native-energy-values.md).
 
 GET `/devices` returns stations, freshness, `power_flow`, metrics and the
 available `controls` and configured `timezone_name`.

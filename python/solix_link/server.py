@@ -158,11 +158,13 @@ def create_app(service: MonitorService, token: str | None = None, *, allow_contr
         return name in service.devices and name in request.state.principal.read
 
     def status_with_controls(status: dict, principal: Principal) -> dict:
+        from .energy_values import validate_native_energy
         commands = getattr(service, "supported_commands", None)
         config = service.devices.get(status["name"])
         private_fields = {"address", "serial_number", "account_id", "owner_id", "owner_user_id", "client_id", "raw_tlvs"}
         public = {key: value for key, value in status.items() if key not in private_fields}
         public["metrics"] = {key: value for key, value in status["metrics"].items() if key not in private_fields}
+        public["native_energy"] = validate_native_energy(status.get("native_energy"), model=status.get("model")) if status.get("protocol") == "native_mqtt" else None
         public["tou_plan_readback"] = validate_plan_readback(status.get("tou_plan_readback")) if (
             status.get("model") in ("c1000_gen2", "c2000_gen2") and status.get("protocol") == "native_mqtt") else None
         if public.get("error"):
@@ -213,6 +215,12 @@ def create_app(service: MonitorService, token: str | None = None, *, allow_contr
         if not readable(request, name):
             return PlainTextResponse("Unknown device", status_code=404)
         return status_with_controls(service.snapshot(name), request.state.principal)
+
+    @app.api_route("/devices/{name}/energy", methods=["GET", "HEAD"])
+    async def native_energy(name: str, request: Request):
+        if not readable(request, name):
+            return PlainTextResponse("Unknown device", status_code=404)
+        return {"name": name, "native_energy": status_with_controls(service.snapshot(name), request.state.principal)["native_energy"]}
 
     @app.api_route("/devices/{name}/settings-export", methods=["GET", "HEAD"])
     async def settings_export(name: str, request: Request):
@@ -490,6 +498,8 @@ def create_app(service: MonitorService, token: str | None = None, *, allow_contr
     @app.api_route("/metrics", methods=["GET", "HEAD"])
     async def metrics(request: Request):
         lines = []
+        for metric in ("report_available", "reported_at_seconds", "counter_epoch", "raw", "kwh_unverified"):
+            lines.append(f"# TYPE solix_native_energy_{metric} gauge")
         for status in snapshots(request):
             name = status["name"].replace("\\", "\\\\").replace('"', '\\"').replace("\n", "\\n")
             label = f'{{device="{name}"}}'
@@ -500,6 +510,19 @@ def create_app(service: MonitorService, token: str | None = None, *, allow_contr
                 if isinstance(value, (int, float)) and not isinstance(value, bool):
                     metric = re.sub(r"[^a-zA-Z0-9_]", "_", key)
                     lines.append(f"solix_gen2_{metric}{label} {value}")
+            energy = status.get("native_energy")
+            lines.append(f"solix_native_energy_report_available{label} {int(bool(energy and energy['available']))}")
+            if energy is not None:
+                lines.append(f"solix_native_energy_reported_at_seconds{label} {energy['reported_at']}")
+                lines.append(f"solix_native_energy_counter_epoch{label} {energy['counter_epoch']}")
+                # Gauges, never Prometheus counters: wire totals can decrease.
+                for group, values in energy["groups"].items():
+                    for key, value in values["raw"].items():
+                        labels = f'{{device="{name}",group="{group}",field="{key}"}}'
+                        lines.append(f"solix_native_energy_raw{labels} {value}")
+                    for channel, value in values["energy_kwh"].items():
+                        labels = f'{{device="{name}",group="{group}",channel="{channel}",basis="{energy["conversion_basis"]}"}}'
+                        lines.append(f"solix_native_energy_kwh_unverified{labels} {value}")
         return PlainTextResponse("\n".join(lines) + "\n")
 
     if web_ui:

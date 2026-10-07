@@ -65,15 +65,19 @@ models may fail; no request was made with any user's device identifiers.
 
 ## Local implementation boundary
 
-SOLIX Link already decodes these uploaded reports into private `energy_report`
-records when opt-in AP reporting is enabled with `--energy-reports`. This is
+SOLIX Link decodes these uploaded reports into private `energy_report` records
+and per-station persisted `native_energy` snapshots, visible in the SDK, API,
+CLI, terminal F7, browser and optional HA diagnostics. See
+[native energy values](native-energy-values.md). Reporting is requested with
+the explicit `--energy-reports` AP-worker opt-in. This is
 an HTTP reporting path alongside native MQTT, not an incoming MQTT energy
 query. Reporting is off by default; enabling it changes the station's analytics
 flag when it next fetches the point-switch endpoint. Nothing was enabled here.
 
-The SDK keeps recovered fields as `*_energy_raw` with `units_verified: false`.
-Next, map report groups/channels to the app categories, check Wh-to-kWh scaling
-per model, preserve counter epochs and persist validated deltas. Do not sum
+The SDK preserves recovered `*_energy_raw` alongside nominal, unverified kWh
+conversions and observation epochs. Next, map report groups/channels to app
+categories, check Wh-to-kWh scaling per model, validate device reset/retention
+epochs and persist validated deltas. Do not sum
 backup groups or label AC input as battery-only charging without evidence.
 Device counters could cover intervals the gateway did not observe **if their
 continuity and retention are established**. Power-integrated history remains

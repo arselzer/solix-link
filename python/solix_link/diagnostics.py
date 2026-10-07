@@ -6,6 +6,7 @@ import math
 import re
 import time
 from collections.abc import Iterable
+from .energy_values import validate_native_energy
 
 
 MODELS = frozenset({"c1000", "c1000_gen2", "c2000_gen2", "c300"})
@@ -70,6 +71,7 @@ def gateway_diagnostics(snapshots: Iterable[dict], *, now: float | None = None) 
             "freshness_limit_seconds": limit,
             "availability_reason": reason,
             "next_step": NEXT_STEPS[reason],
+            "native_energy": validate_native_energy(snapshot.get("native_energy"), model=model, now=now) if protocol == "native_mqtt" else None,
         })
     return {
         "schema_version": 1,

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, nextTick, reactive, ref, watch } from 'vue';
 import StationHistory from './StationHistory.vue';
+import NativeEnergy from './NativeEnergy.vue';
 import StationActivity from './StationActivity.vue';
 import FleetOverview from './FleetOverview.vue';
 import ControlAvailability from './ControlAvailability.vue';
@@ -139,6 +140,7 @@ function review(value: Proposal) {
             <section class="metric-card" data-testid="supply-reading"><div class="metric-top"><span>Supply source</span><span class="metric-arrow supply-arrow" aria-hidden="true">⌁</span></div><div class="metric-value source-value">{{ flow }}</div><p>{{ String(selected.metrics.usage_mode ?? 'Mode unknown').replaceAll('_', ' ') }}<span v-if="selected.metrics.active_tariff && selected.metrics.active_tariff !== 'none'"> · {{ String(selected.metrics.active_tariff).replaceAll('_', ' ') }}</span></p></section>
           </div>
           <StationHistory :key="selected.name" :station="selected" :samples="history" :now="now" :request="gateway.readOnly" />
+          <NativeEnergy :key="selected.name" :station="selected" :now="now" />
           <div class="station-details"><span>Upper charge limit <strong>{{ format(numberMetric(selected, 'max_charge_percentage'), '%') }}</strong></span><span>Discharge floor <strong>{{ format(numberMetric(selected, 'min_charge_percentage'), '%') }}</strong></span><span>Reserve <strong>{{ format(numberMetric(selected, 'backup_reserve_percentage'), '%') }}</strong></span><span>Temperature <strong>{{ format(numberMetric(selected, 'temperature_c'), '°C') }}</strong></span><span>Firmware <strong>{{ selected.metrics.software_version ?? '—' }}</strong></span><span v-if="selected.model === 'c1000_gen2' && [0, 1].includes(numberMetric(selected, 'pv_weak_light_locked') ?? -1)" data-testid="pv-weak-light-lock" title="Firmware-derived C1000 Gen 2 flag; physical PV behavior untested.">PV weak-light lock <strong>{{ numberMetric(selected, 'pv_weak_light_locked') === 1 ? 'Active' : 'Inactive' }}</strong></span></div>
           <button class="secondary" data-testid="settings-export" :disabled="busy || polling" @click="gateway.exportSettings(selected.name)">Download partial settings</button>
           <StationActivity :key="selected.name" :station="selected" :busy="busy" :request="gateway.readOnly" />

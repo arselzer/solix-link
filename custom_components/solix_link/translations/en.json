@@ -54,6 +54,7 @@
       "dc_power_saving_mode_enabled": {"name": "DC Smart mode enabled"}
     },
     "sensor": {
+      "native_energy_kwh": {"name": "{group} {channel} energy (unverified)"},
       "control_availability": {"name": "Blocked controls"},
       "battery": {"name": "Battery"},
       "temperature": {"name": "Temperature"},

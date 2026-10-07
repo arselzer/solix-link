@@ -202,6 +202,12 @@ def _show_status(status: dict) -> None:
     if "device_timeout_minutes" in metrics:
         minutes = metrics["device_timeout_minutes"]
         print(f"  Device Timeout: {'Never' if minutes == 0 else str(minutes) + ' minutes'}")
+    from .energy_values import native_energy_rows, validate_native_energy
+    energy = validate_native_energy(status.get("native_energy"), model=status.get("model")) if status.get("protocol") == "native_mqtt" else None
+    if energy:
+        print(f"  Native energy: {'recent' if energy['available'] else 'stale'} report; epoch {energy['counter_epoch']}; units unverified")
+        for group, key, raw, kwh in native_energy_rows(energy):
+            print(f"  {group} / {key}: {raw} raw; {kwh} nominal kWh")
 
 
 def device_timeout_menu(device: DeviceConfig | APServiceConfig, config_path: Path,
@@ -498,6 +504,7 @@ def run_gateway_menu(client) -> None:
             action = choose(f"Gateway: {selected} · read only", [
                 "Cached status (no station request)", "Saved AC/battery history",
                 "Charging policy preview (commands sent: 0)", "Select another station",
+                "Native energy counters / nominal kWh (cached)",
             ])
             if action is None:
                 return
@@ -524,6 +531,9 @@ def run_gateway_menu(client) -> None:
                                         export_age=prompt("Export age (seconds)"))
                 print("Read-only preview uses this laptop's clock. No policy/HA state or settings are changed.")
                 print(json.dumps(result, indent=2))
+            elif action == 4:
+                print("Native counters are uncalibrated, may reset, and include bypass. Mode groups are not summed.")
+                print(json.dumps(client.energy(selected), indent=2))
         except KeyboardInterrupt:
             print("Stopped.")
         except Exception as error:

@@ -26,6 +26,7 @@ class Demo:
         self.comparison_power_w = None
         self.preview_slot_count = None
         self.plan_readback = None
+        self.native_energy = {}
     async def start(self): pass
     async def stop(self): pass
     def supported_commands(self, name):
@@ -75,7 +76,8 @@ class Demo:
         return {"name":name,"model":"c1000" if original else "c1000_gen2" if c1000 else "c2000_gen2","protocol":"native_mqtt" if local else "prime" if updated else "legacy" if original else "native_mqtt",
                 "connected":self.connected,"available":self.available,"last_seen_timestamp":self.last_seen or now - 2,
                 "metrics":metrics,"power_flow":"unknown" if original else "battery" if c1000 else "grid",
-                "tou_plan_readback": None if original else self.plan_readback}
+                "tou_plan_readback": None if original else self.plan_readback,
+                "native_energy": self.native_energy.get(name)}
     def snapshots(self): return [self.snapshot(name) for name in self.devices]
     async def check_setup(self):
         return {"schema": 1, "ok": True, "read_only": True,

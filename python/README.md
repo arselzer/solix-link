@@ -49,6 +49,13 @@ AP-service Python APIs use `APServiceConfig`, `APService` and
 `ap_service_request`; configuration is `ap_service.json`. Add
 `ap-service-run --energy-reports` for optional local analytics capture. The
 counter units remain unverified; no HA energy statistics are derived from them.
+Per-device `native_energy` snapshots now carry raw counters, nominal kWh,
+receipt freshness and persisted observation epochs. View them with
+`gateway-energy --gateway-url http://127.0.0.1:8765 --name office`, terminal F7,
+the line menu or browser. The SDK exports `NativeEnergyStore`,
+`decode_energy_events` and `validate_native_energy`.
+See [native energy values](../docs/native-energy-values.md) for private persistence,
+reporting opt-in and model-specific conversion limits.
 
 The HTTP gateway optionally retains private battery/AC-power readings with
 `--history-file /private/history/readings.sqlite3 --history-retention-days 7`.

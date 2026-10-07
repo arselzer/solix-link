@@ -31,7 +31,8 @@ firmware specific; detailed capabilities are in the [Python guide](python/README
 - Review UPS observations, command history, control prerequisites and partial
   settings exports. Concurrent HTTP writes are coordinated per station.
 - Save battery/power charts and **estimated AC input/output kWh** with coverage
-  and gaps. See [HA Energy options](docs/home-assistant-energy-dashboard.md).
+  and gaps; view Gen 2 [native energy counters and nominal kWh](docs/native-energy-values.md)
+  in the API, terminal F7, browser and optional HA diagnostics.
 - Preview solar/price charging policies; optionally prepare HA charging
   blueprints. Previews send no commands and automations start disabled.
 

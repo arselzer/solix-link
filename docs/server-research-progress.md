@@ -1276,3 +1276,62 @@ Python environment. Vendor code was inspected statically, without execution;
 this batch adds no firmware replay or physical tests. Reports remain opt-in,
 raw and excluded from HA lifetime statistics pending category/unit/epoch
 handling. No AP, gateway, HA, station setting or automation changed.
+
+## 2026-10-07 — Native energy values across the interfaces
+
+Implemented [passive native energy values](native-energy-values.md), based on
+public baseline **`e0986a328d43`**. Gen 2 HTTP energy uploads now feed a
+per-profile private `energy-state.json`, with mode-separated raw counters,
+nominal kWh, report receipt time, received-event counts and conservative
+observation epochs. Fixed fleet routing: energy uploads belong to the station
+selected by the validated request identity, rather than the primary station.
+Receipt does not update MQTT connection or live-power freshness.
+
+Python SDK exports, gateway JSON/SSE, a scoped cached `/devices/{name}/energy`
+route, read-only `gateway-energy`, line menus, terminal F7, the Vue dashboard,
+Prometheus gauges and optional HA diagnostics expose the same contract.
+Nested private fields are stripped and conversions/freshness recomputed;
+absent counters remain absent. State survives worker restart, unsafe/corrupt
+state is preserved, clock regressions are rejected, and decreases or uncertain
+upload batches never produce fabricated lifetime deltas. HA discovers missing
+channels later without duplicate entities and isolates each station.
+
+Physical scaling remains unverified. Only C1000 Gen 2 **main 1.1.4.9** receives
+the firmware-inferred nominal-Wh basis; C2000 and other versions explicitly
+show an assumed conversion. Backup groups are not summed, raw durations are
+not converted, and AC counters are not presented as battery-only energy.
+Native HA energy entities are disabled by default, diagnostic, and have **no
+statistics state class**. Meter calibration, true device epochs, wrap/reorder,
+retention and real Recorder validation are still required for native lifetime
+statistics. Original C1000/C300 and BLE do not acquire a fabricated report source.
+
+Verification used **Python 3.14.4**, **pytest 9.1.1**, **FastAPI 0.142.2**,
+**Node 22.20.0**, **Vite 8.0.3** and the existing private Playwright Chromium.
+The affected Python/HA selection passed **624 tests in 29.17 seconds**; after
+final receipt validation, gauge declarations, scope and discovery cases,
+**90 focused tests passed in 7.26 seconds** (overlapping selections).
+`npm run build:dashboard` passed Vue/TypeScript checks and bundled the assets;
+**33 browser scenarios passed**, including native values, stale reports,
+unverified conversions, identity stripping and zero control writes. The
+[energy-panel screenshot](images/web-native-energy.png) contains synthetic
+data only. Existing unrelated screenshot changes were discarded.
+
+The first broader run exposed an optional HA parser import incompatible with
+standalone contract fixtures; this was fixed and rerun successfully. Browser
+checks used the already installed private Chromium after the default cache
+lookup failed. HA tests use scoped doubles, not a live Recorder. No new static
+firmware proof, instruction replay or physical energy test is claimed.
+
+Public source SHA-256 pins:
+
+| Source | SHA-256 |
+| --- | --- |
+| Python `energy_values.py` and HA `native_energy.py` | `723a7eb6146407a38084731889ca130e89ea18ca3f0a6a29c31cb5280a46f1d8` |
+| Python `energy_store.py` | `ea02a19c0eb65d498ec3213ac4512a7df2b13f8000b5917159f90739dbc7a634` |
+| Dashboard `nativeEnergy.ts` | `9b58238f886d05407f661e624bc9d0f2e00d27112684bc4be71eef705a811af6` |
+
+No station, account endpoint, station profile, HA configuration or phone capture
+was accessed. Live services, AP reporting options, automations and deployments
+were not changed. AGENTS.md is unchanged. The next hardware work is independent
+meter/counter/time calibration and noncritical retention/reset tests; C2000's
+server supply must remain untouched.

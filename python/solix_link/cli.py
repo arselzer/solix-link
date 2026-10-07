@@ -39,6 +39,11 @@ def parser() -> argparse.ArgumentParser:
     gateway_history.add_argument("--until", type=float, help="UNIX seconds; default gateway clock")
     gateway_history.add_argument("--limit", type=int, default=200, help="1–2000 points (default 200)")
 
+    energy = subcommands.add_parser("gateway-energy", help="Read cached native energy counters and nominal kWh as JSON; no station requests")
+    energy.add_argument("--gateway-url", required=True)
+    energy.add_argument("--gateway-token-file", type=Path)
+    energy.add_argument("--name", required=True, help="Exact public station name")
+
     availability = subcommands.add_parser("control-availability", help="Explain cached gateway control prerequisites; GET only")
     availability.add_argument("--gateway-url", required=True)
     availability.add_argument("--gateway-token-file", type=Path)
@@ -484,6 +489,10 @@ def main(argv: list[str] | None = None) -> int:
             from .gateway_client import GatewayClient
             client = GatewayClient(args.gateway_url, args.gateway_token_file)
             print(json.dumps(client.history(args.name, since=args.since, until=args.until, limit=args.limit), indent=2))
+        elif args.command == "gateway-energy":
+            from .gateway_client import GatewayClient
+            energy = GatewayClient(args.gateway_url, args.gateway_token_file).energy(args.name)
+            print(json.dumps({"name": args.name, "native_energy": energy}, indent=2))
         elif args.command == "control-availability":
             from .gateway_client import GatewayClient
             report = GatewayClient(args.gateway_url, args.gateway_token_file).control_availability(args.name)

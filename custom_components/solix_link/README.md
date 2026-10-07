@@ -39,7 +39,13 @@ Authorization header. Treat HA configuration backups as containing credentials.
   reported by the gateway. Native Gen 2 Usage mode also exposes validated
   `saved_tou_plan` and independently checked `saved_tou_plan_fresh` attributes;
   missing readback remains unknown. Power sensors support HA statistics and can feed
-  HA's Integral helper; no unverified firmware energy counters are published.
+  HA's Integral helper.
+- Optional native Gen 2 energy diagnostics: separate mode/channel counters in
+  nominal kWh, with raw values, firmware basis, receipt time and observation
+  epochs in attributes. Discovered only after AP energy uploads arrive, disabled
+  by default, and independently stale after 30 minutes. Units/reset behavior
+  remain unverified; no lifetime statistics state class is supplied. See
+  [native energy collection and limits](../../docs/native-energy-values.md).
 - Optional history diagnostics: estimated AC input/output kWh, coverage and gaps.
   These currently have no energy statistics state class. See
   [Energy-dashboard options and remaining work](../../docs/home-assistant-energy-dashboard.md).

@@ -228,6 +228,8 @@ def public_snapshot(snapshot: dict) -> dict:
     result["error"] = "ConnectionError" if snapshot.get("error") is not None else None
     from .plan_readback import validate_plan_readback
     result["tou_plan_readback"] = validate_plan_readback(snapshot.get("tou_plan_readback"))
+    from .energy_values import validate_native_energy
+    result["native_energy"] = validate_native_energy(snapshot.get("native_energy"), model=snapshot.get("model")) if snapshot.get("protocol") == "native_mqtt" else None
     return result
 
 
@@ -839,6 +841,7 @@ def create_app(config_path: Path = DEFAULT_CONFIG, ap_service_directory: Path | 
                     "↑ / ↓, Enter      Select a station, setting or option\n"
                     "F1–F4             Overview, Controls, Hourly plan, Events\n"
                     "F5 / F6           Saved history / read-only policy preview\n"
+                    "F7                Native energy counters / nominal kWh\n"
                     "F8                Check saved AP setup (read-only)\n"
                     "Ctrl+O            Connect to the selected station\n"
                     "Ctrl+S            Scan nearby Bluetooth stations\n"
@@ -903,6 +906,7 @@ def create_app(config_path: Path = DEFAULT_CONFIG, ap_service_directory: Path | 
             Binding("f4", "panel('events')", "Events", priority=True),
             Binding("f5", "panel('history')", "History", priority=True),
             Binding("f6", "panel('preview')", "Preview", priority=True),
+            Binding("f7", "panel('energy')", "Energy", priority=True),
             Binding("f8", "check_ap_setup", "AP check", priority=True),
             Binding("ctrl+o", "connect", "Connect", show=False, priority=True),
             Binding("ctrl+s", "scan", "Scan", priority=True),
@@ -941,7 +945,7 @@ def create_app(config_path: Path = DEFAULT_CONFIG, ap_service_directory: Path | 
         #history-actions { height: auto; }
         #history-hours { width: 1fr; }
         #history-summary, #history-note { height: auto; color: #a8bdd4; }
-        #history-table { height: 1fr; border: round #2c4866; }
+        #history-table, #energy-table { height: 1fr; border: round #2c4866; }
         #preview-result { height: 16; border: round #2c4866; }
         #readings { height: 1fr; }
         #event-log { height: 1fr; border: round #2c4866; }
@@ -1004,7 +1008,7 @@ def create_app(config_path: Path = DEFAULT_CONFIG, ap_service_directory: Path | 
                         yield Button("Add to AP", id="add-to-ap", disabled=True)
                     yield Static("Scan nearby stations or choose a saved station.", id="discovery-hint", markup=False)
                 yield Static("Disconnected · Choose a station, then Connect.", id="connection-status", markup=False)
-                yield Static("Tab / Shift+Tab navigate · Enter select · F1–F6 panels · ? help", id="keyboard-hint", markup=False)
+                yield Static("Tab / Shift+Tab navigate · Enter select · F1–F7 panels · ? help", id="keyboard-hint", markup=False)
                 with Grid(id="cards"):
                     yield Static("BATTERY\n—", classes="card", id="battery", markup=False)
                     yield Static("POWER\n—", classes="card", id="power", markup=False)
@@ -1050,6 +1054,10 @@ def create_app(config_path: Path = DEFAULT_CONFIG, ap_service_directory: Path | 
                         yield Static("Configure --gateway-url and --gateway-token-file. The gateway alone owns its history database.",
                                      id="history-summary", markup=False)
                         yield DataTable(id="history-table", zebra_stripes=True, cursor_type="row")
+                    with TabPane("Energy", id="energy"):
+                        yield Static("Native device counters · nominal kWh, units unverified\nGroups are separate. AC includes bypass; this is not stored battery energy.", classes="hint", markup=False)
+                        yield Static("No native energy report. Requires opt-in --energy-reports on a Gen 2 AP worker.", id="energy-summary", markup=False)
+                        yield DataTable(id="energy-table", zebra_stripes=True, cursor_type="row")
                     with TabPane("Preview", id="preview"):
                         with VerticalScroll(id="preview-scroll"):
                             yield Static("Read-only charging policy preview · commands sent: 0\nUses the local clock and current cached snapshot. Simulated armed/latch values in the file do not enable automation.", classes="hint", markup=False)
@@ -1079,6 +1087,8 @@ def create_app(config_path: Path = DEFAULT_CONFIG, ap_service_directory: Path | 
             history = self.query_one("#history-table", DataTable)
             for title in ("UTC report time", "AC in W", "AC out W", "SOC %", "Source Δs", "Gap"):
                 history.add_column(title)
+            for title in ("Mode group", "Counter", "Raw", "kWh (unverified)"):
+                self.query_one("#energy-table", DataTable).add_column(title)
             self.configure_controls()
             self.query_one("#station", Select).focus()
             self.set_interval(2, self.poll)
@@ -1089,8 +1099,8 @@ def create_app(config_path: Path = DEFAULT_CONFIG, ap_service_directory: Path | 
             self.set_class(event.size.width < 82, "narrow")
             self.set_class(event.size.height < 32 or event.size.width < 58, "compact")
             self.query_one("#keyboard-hint", Static).update(
-                "Tab / Enter · F1–F6 panels · F10 help" if event.size.width < 82
-                else "Tab / Shift+Tab navigate · Enter select · F1–F6 panels · ? help"
+                "Tab / Enter · F1–F7 panels · F10 help" if event.size.width < 82
+                else "Tab / Shift+Tab navigate · Enter select · F1–F7 panels · ? help"
             )
 
         def event_log(self, message: str) -> None:
@@ -1221,6 +1231,24 @@ def create_app(config_path: Path = DEFAULT_CONFIG, ap_service_directory: Path | 
             self.query_one("#compact-summary", Static).update(
                 f"Battery {metrics.get('battery_percentage', '—')}% · {incoming} W in · {outgoing} W out · {flow}"
             )
+            from .energy_values import native_energy_rows, validate_native_energy
+            energy = validate_native_energy(snapshot.get("native_energy"), now=time.time())
+            energy_table = self.query_one("#energy-table", DataTable)
+            energy_rows = native_energy_rows(energy)
+            if energy_rows != getattr(self, "energy_rows", []):
+                cursor, scroll = energy_table.cursor_row, energy_table.scroll_y
+                energy_table.clear()
+                for row in energy_rows:
+                    energy_table.add_row(*row)
+                if energy_rows:
+                    energy_table.move_cursor(row=min(cursor, len(energy_rows) - 1), column=0, scroll=False)
+                    energy_table.scroll_to(y=scroll, animate=False)
+                self.energy_rows = energy_rows
+            self.query_one("#energy-summary", Static).update(
+                f"{'Recent' if energy['available'] else 'Stale'} report · {max(0, int(time.time() - energy['reported_at']))}s old · "
+                f"epoch {energy['counter_epoch']} · {energy['continuity'].replace('_', ' ')} · "
+                f"{energy['conversion_basis'].replace('_', ' ')} · {energy['received_reports']} received reports"
+                if energy else "No native energy report. Requires opt-in --energy-reports on a Gen 2 AP worker; no BLE energy query is established.")
             table = self.query_one("#readings", DataTable)
             keys = tuple(key for key in METRIC_LABELS if key in metrics)
             if keys != self.reading_keys:
@@ -1418,7 +1446,7 @@ def create_app(config_path: Path = DEFAULT_CONFIG, ap_service_directory: Path | 
             self.screen.set_focus(None)
             self.query_one("#tabs", TabbedContent).active = panel
             widget = {"overview": "readings", "controls": "setting", "plan": "plan-text", "events": "event-log",
-                      "history": "history-load", "preview": "preview-file"}[panel]
+                      "history": "history-load", "preview": "preview-file", "energy": "energy-table"}[panel]
             self.screen.set_focus(self.query_one(f"#{widget}"))
 
         def action_help(self) -> None:

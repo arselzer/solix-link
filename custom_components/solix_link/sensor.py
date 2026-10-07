@@ -11,6 +11,7 @@ from .api import numeric, parse_tou_plan, snapshot_available
 from .coordinator import SolixConfigEntry
 from .entity import SolixEntity
 from .history import history_available
+from .native_energy import ENERGY_CHANNELS, GROUP_NAMES, validate_native_energy
 
 PARALLEL_UPDATES = 0
 DESCRIPTIONS = (
@@ -69,6 +70,16 @@ HISTORY_DESCRIPTIONS = (
                             entity_category=EntityCategory.DIAGNOSTIC, entity_registry_enabled_default=False),
 )
 
+# Reported mode counters are uncalibrated and can decrease. No long-term energy
+# statistics are advertised until model-specific scaling and resets are known.
+NATIVE_ENERGY_DESCRIPTIONS = tuple(
+    SensorEntityDescription(key=f"native_energy_{group}_{channel}", translation_key="native_energy_kwh",
+        device_class=SensorDeviceClass.ENERGY, native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
+        entity_category=EntityCategory.DIAGNOSTIC, entity_registry_enabled_default=False)
+    for group in GROUP_NAMES for channel in ENERGY_CHANNELS)
+NATIVE_ENERGY_COORDINATES = {f"native_energy_{group}_{channel}": (group, channel)
+                             for group in GROUP_NAMES for channel in ENERGY_CHANNELS}
+
 
 async def async_setup_entry(hass, entry: SolixConfigEntry, async_add_entities) -> None:
     coordinator = entry.runtime_data
@@ -93,6 +104,13 @@ async def async_setup_entry(hass, entry: SolixConfigEntry, async_add_entities) -
                     if (name, description.key) not in added:
                         added.add((name, description.key))
                         entities.append(SolixHistorySensor(coordinator, name, description))
+            energy = validate_native_energy(snapshot.get("native_energy"), model=snapshot.get("model")) if snapshot.get("protocol") == "native_mqtt" else None
+            if energy is not None:
+                for description in NATIVE_ENERGY_DESCRIPTIONS:
+                    group, channel = NATIVE_ENERGY_COORDINATES[description.key]
+                    if channel in energy["groups"].get(group, {}).get("energy_kwh", {}) and (name, description.key) not in added:
+                        added.add((name, description.key))
+                        entities.append(SolixNativeEnergySensor(coordinator, name, description, group, channel))
         if entities:
             async_add_entities(entities)
 
@@ -153,6 +171,44 @@ class SolixSensor(SolixEntity, SensorEntity):
                 age = time.time() - plan["reported_at"]
                 attributes.update(saved_tou_plan=plan, saved_tou_plan_fresh=self.available
                                   and snapshot_available(self.snapshot, 30) and -5 <= age < 30)
+        return attributes
+
+
+class SolixNativeEnergySensor(SolixEntity, SensorEntity):
+    """Cached mode-specific counter, independent of the live power stream."""
+
+    def __init__(self, coordinator, name, description, group: str, channel: str) -> None:
+        super().__init__(coordinator, name, description.key)
+        self.entity_description = description
+        self.group, self.channel = group, channel
+        self._attr_translation_placeholders = {"group": group.replace("_", " ").title(), "channel": channel.replace("_", " ").upper()}
+
+    @property
+    def report(self):
+        if self.snapshot.get("protocol") != "native_mqtt":
+            return None
+        return validate_native_energy(self.snapshot.get("native_energy"), model=self.snapshot.get("model"), now=time.time())
+
+    @property
+    def native_value(self):
+        report = self.report
+        return report["groups"].get(self.group, {}).get("energy_kwh", {}).get(self.channel) if report else None
+
+    @property
+    def available(self) -> bool:
+        report = self.report
+        return bool(self.coordinator.last_update_success and report and report["available"] and self.native_value is not None)
+
+    @property
+    def extra_state_attributes(self) -> dict:
+        attributes = {**super().extra_state_attributes, "source": "device_energy_report", "units_verified": False,
+                      "mode_group": self.group, "channel": self.channel, "includes_bypass": self.channel in ("ac_input", "ac_output")}
+        report = self.report
+        if report:
+            attributes.update({key: report[key] for key in ("reported_at", "counter_epoch", "counter_epoch_started_at",
+                "received_reports", "batch_reports", "continuity", "conversion_basis", "firmware_version", "max_report_age_seconds")})
+            attributes["raw_counter"] = report["groups"].get(self.group, {}).get("raw", {}).get(f"{self.channel}_energy_raw")
+            attributes["raw_group_counters"] = dict(report["groups"].get(self.group, {}).get("raw", {}))
         return attributes
 
 

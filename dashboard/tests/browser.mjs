@@ -112,6 +112,33 @@ try {
   cases++; console.log(`Scenario ${cases} passed`);
 
   const savedPlanPosts = posts;
+  const energyNow = await page.evaluate(() => Date.now() / 1000);
+  const nativeEnergy = { schema_version: 1, source: 'device_energy_report', model: 'c1000_gen2',
+    firmware_version: '1.1.4.9', units_verified: false, reported_at: energyNow - 600,
+    counter_epoch_started_at: energyNow - 1200, counter_epoch: 2, received_reports: 3, batch_reports: 1,
+    continuity: 'counter_decreased', groups: { standard: { raw: { ac_input_energy_raw: 1250,
+      ac_output_energy_raw: 1200, ac_output_duration_raw: 12 }, energy_kwh: { ac_input: 999 }, secret: 'PRIVATE-ENERGY' },
+      time_of_use: { raw: { ac_output_energy_raw: 300 } } } };
+  await change({ native_energy: { 'Office · C1000 Gen 2': nativeEnergy } });
+  await refresh();
+  const energyPanel = page.getByTestId('native-energy');
+  assert.match(await energyPanel.textContent(), /Recent report/);
+  assert.match(await energyPanel.textContent(), /1\.250000/);
+  assert.match(await energyPanel.textContent(), /Epoch 2/);
+  assert.doesNotMatch(await energyPanel.textContent(), /PRIVATE-ENERGY|999/);
+  assert.equal(await energyPanel.locator('tbody tr').count(), 4);
+  await energyPanel.screenshot({ path: `${root}/docs/images/web-native-energy.png` });
+  await change({ native_energy: { 'Office · C1000 Gen 2': { ...nativeEnergy, reported_at: energyNow - 1801,
+    counter_epoch_started_at: energyNow - 2000 } } });
+  await refresh();
+  assert.match(await energyPanel.textContent(), /Stale report/);
+  assert.match(await energyPanel.textContent(), /1\.250000/);
+  assert.equal(posts, savedPlanPosts);
+  await change({ native_energy: {} });
+  await refresh();
+  assert.match(await energyPanel.textContent(), /Waiting for an energy upload/);
+  cases++; console.log(`Scenario ${cases} passed`);
+
   const planNow = await page.evaluate(() => Date.now() / 1000);
   const freshPlan = { schema_version: 1, enabled: false, source: 'status_d9', reported_at: planNow - 2,
     periods: [{ tariff: 'off_peak', start_hour: 0, end_hour: 6 }, { tariff: 'peak', start_hour: 6, end_hour: 24 }] };

@@ -49,6 +49,12 @@ every 30 seconds. Missing/stale readings, outages and restarts produce gaps.
 AC energy estimates include coverage and cannot measure stored battery energy;
 see [storage and accounting semantics](persistent-history.md).
 
+The **Device energy counters** panel separately displays received Gen 2 mode
+counters, raw durations, nominal kWh, observation epochs and report freshness.
+It requires AP energy uploads, not saved power history; missing reports remain
+unknown. Physical units remain unverified and groups are not summed. See
+[collection, conversion and HA limits](native-energy-values.md).
+
 Native Gen 2 stations also have a **Charging policy preview** form. Enter manual
 export/price samples and thresholds to evaluate cached status and see proposed
 watts/reserve. Its armed checkbox is a simulation assumption; it never changes

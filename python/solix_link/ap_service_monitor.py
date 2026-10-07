@@ -11,6 +11,7 @@ from .ap_service_config import APServiceConfig, load_ap_service_profiles
 from .commands import native_commands_for_model, validate_command
 from .ap_service import ap_service_request
 from .protocol import Model
+from .energy_values import validate_native_energy
 
 
 class APServiceMonitor:
@@ -34,6 +35,7 @@ class APServiceMonitor:
             latest = status.get("last_seen_timestamp")
             status["connected"] = bool(fresh and status.get("connected"))
             status["available"] = bool(status["connected"] and latest and time.time() - latest < 30)
+            status["native_energy"] = validate_native_energy(status.get("native_energy"), model=self.devices[name].model.value)
             if not status["available"] or self.devices[name].model == Model.C1000:
                 status["power_flow"] = "unknown"
             return status
