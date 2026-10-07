@@ -1208,3 +1208,43 @@ the preexisting untracked `python/build/` is excluded from this work.
 
 Public feature contracts and synthetic screenshots:
 [control readiness and coordination](control-readiness-and-coordination.md).
+
+## 2026-10-07 — AC kWh, HA Energy requirements and README simplification
+
+Reviewed source checkpoint **`1fb28c0`**, now on `main`. The gateway already
+persists separate AC input/output kWh estimates from cached power telemetry;
+they survive sample pruning/restart but exclude unknown intervals. The two
+optional HA history energy entities are disabled and have `state_class=None`,
+so enabling their diagnostics does not make them Energy-dashboard inputs.
+
+The [new energy guide](home-assistant-energy-dashboard.md) separates AC device
+consumption from native battery accounting. Individual-device energy support
+does **not** require establishing firmware counter units first. The recommended
+software work is persisted database/station epochs, reload-safe regression
+checks, opt-in statistics entities and real HA Recorder/reset verification.
+Input tracks station wall draw including charging/bypass; output tracks AC
+load delivery from mains or battery. Neither isolates battery energy.
+
+Official HA documentation and Core **2026.9.4** public source were inspected.
+Selected actual Integral methods were replayed with synthetic states and
+replaced HA callbacks. A 60-second `unavailable` recovery at 100 W adds zero
+with trapezoidal/left and **0.001666667 kWh** with right. Numeric endpoints
+100 W one hour apart add **0.1 kWh** with each method: the helper has no
+maximum telemetry-gap check. Its timer likewise assumes unchanged numeric
+power is constant. Source hashes, helper settings and limitations are saved
+in the guide; downloaded public source and synthetic result metadata remain
+ignored/private. This is Python method replay, not firmware replay or live HA.
+
+**233 focused tests passed in 0.59 seconds** with Python **3.14.4** / pytest
+**9.1.1**: `python/tests/test_history.py`, `test_history_summary.py` and
+`home_assistant_tests/test_history_contract.py`. Tests use synthetic readings,
+HA platform doubles and temporary loopback HTTP fixtures. The restricted
+first run stalled at a loopback case and was interrupted; reviewed execution
+completed the same selection. No live HA configuration, station profile,
+phone capture, private identity, BLE/MQTT connection or station was accessed.
+
+The README now starts with the supported-device table and a six-item capability
+summary. It was shortened from **258 to 122 lines**; detailed research and
+operation instructions remain linked guides. No runtime implementation,
+deployment, service or automation changed. Native counter calibration and
+physical metering/retention tests remain open.

@@ -40,6 +40,9 @@ Authorization header. Treat HA configuration backups as containing credentials.
   `saved_tou_plan` and independently checked `saved_tou_plan_fresh` attributes;
   missing readback remains unknown. Power sensors support HA statistics and can feed
   HA's Integral helper; no unverified firmware energy counters are published.
+- Optional history diagnostics: estimated AC input/output kWh, coverage and gaps.
+  These currently have no energy statistics state class. See
+  [Energy-dashboard options and remaining work](../../docs/home-assistant-energy-dashboard.md).
 - Numbers: AC charging power limit, charge cap and backup reserve. A number is
   created only for a supported model when telemetry exists and the gateway
   advertises that command. Charging-power ranges are original C1000/A1761

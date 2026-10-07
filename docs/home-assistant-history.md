@@ -32,6 +32,10 @@ AC input can include mains passing through to attached loads. AC output can
 come from mains or battery. These are neither firmware energy counters nor
 calibrated meters, and do not measure energy stored in the battery. No energy
 statistics state class or automatic Energy-dashboard enrollment is provided.
+Derived AC energy can nevertheless be suitable for **individual device
+consumption** once statistics and continuity are implemented; native battery
+counter calibration is not a prerequisite for that separate feature. See
+[HA Energy options and implementation requirements](home-assistant-energy-dashboard.md).
 
 ## Availability, epochs and limits
 
@@ -50,8 +54,9 @@ An explicitly changed epoch permits a reset. This check is held in integration
 memory and resets when HA reloads the integration. Collection start is not a
 database UUID: recreation that repeats the same first telemetry timestamp
 cannot be distinguished from an in-place reset. Unknown legacy epoch starts
-remain unknown. These limits are another reason not to treat the estimates as
-long-term calibrated energy statistics.
+remain unknown. Persisted epoch and regression handling are needed before
+these particular entities gain long-term statistics; metrological calibration
+and battery-energy accounting remain separate concerns.
 
 ## Read-only API contract
 

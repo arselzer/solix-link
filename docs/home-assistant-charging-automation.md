@@ -149,14 +149,15 @@ loads; it is not the battery's stored energy. Output energy represents AC load
 delivery. Their difference does not establish battery energy or conversion
 efficiency when other inputs, outputs and losses are present.
 
-The gateway already makes stale power entities unavailable. Before adding an
-Integral result to the Energy dashboard, verify the target HA release's
-unavailable/restart behavior with a known constant load and a telemetry gap:
-it must not silently count the last valid watts through an unknown interval.
-This audit did not execute Integral or Recorder, and no helpers were configured.
-Keep the integration's reported source values and mark these totals as derived
-estimates. Firmware `*_energy_raw` values remain excluded because physical
-scaling, reset epochs and cross-model behavior are not fully established.
+The gateway already makes stale power entities unavailable. A later
+[HA 2026.9.4 source/method audit](home-assistant-energy-dashboard.md) found that
+trapezoidal and left methods skip an explicit unavailable interval on recovery,
+while numeric endpoints alone do not enforce a maximum telemetry gap. Integral
+does not supply the gateway recorder's coverage diagnostics. Verify the target
+HA release's outage/restart behavior before relying on it; no helper or live
+Recorder was exercised here. Mark totals as derived AC estimates. Firmware
+`*_energy_raw` values remain excluded because physical scaling, reset epochs
+and cross-model behavior are not fully established.
 
 The [read-only policy preview](charging-policy-preview.md) lets you check manual
 price/export inputs against cached native Gen 2 status through CLI, browser or

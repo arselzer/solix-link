@@ -1,0 +1,152 @@
+# AC energy and the Home Assistant Energy dashboard
+
+Source review on **2026-10-07**, based on SOLIX Link **`1fb28c0`** and Home
+Assistant Core **2026.9.4**. This documents existing functionality and the
+remaining implementation; no helper, deployment or station setting was changed.
+
+## What already measures kWh
+
+The optional gateway [history recorder](persistent-history.md) integrates
+reported **AC input and AC output watts** separately. With `--history-file`
+enabled, `GET /history/summary` returns persisted
+`ac_input_energy_kwh_estimate` and `ac_output_energy_kwh_estimate` totals.
+Per-device history, CLI `gateway-history`, terminal F5 and browser saved charts
+also expose these estimates. The recorder uses cached telemetry, without
+additional station requests.
+
+For valid consecutive samples:
+
+`estimated kWh = (previous W + current W) / 2 × seconds / 3,600,000`
+
+For example, 100 W for one covered hour is 0.1 kWh. Both endpoints must have
+valid power and increasing source timestamps within the recorder's interval
+limit, normally 15 seconds. Repeated cached readings add nothing; missing,
+stale or conflicting reports and process restarts break the chain. Totals
+survive restart and sample pruning, but excluded intervals are not recovered.
+Coverage seconds and gap counts describe that limitation.
+
+| Intended consumption | Suitable channel | Meaning |
+| --- | --- | --- |
+| Station and attached loads drawing from the wall | AC input energy | Includes battery charging and mains bypass |
+| Servers/appliances supplied by the AC sockets | AC output energy | Load delivery from mains or battery |
+| Battery charge/discharge or stored energy | Neither AC channel | Bypass, other ports, losses and changes in stored energy prevent isolation |
+
+Choose the boundary that answers the question. Input and output are overlapping
+flows; do not add them as independent consumption. For chained stations, use
+one boundary or configure appropriate upstream relationships. HA documents
+individual-device hierarchies to avoid counting nested loads twice.
+[Individual devices](https://www.home-assistant.io/docs/energy/individual-devices/)
+
+## Why the existing HA energy sensors are not selectable
+
+The two [HA history energy entities](home-assistant-history.md) already have
+`device_class: energy` and `unit_of_measurement: kWh`, but are disabled by
+default and intentionally have **no statistics state class**. Enabling them
+only enables diagnostics; it does not make them Energy-dashboard inputs.
+
+For cumulative energy, HA requires `state_class: total` or `total_increasing`,
+a supported unit, and a sensor without statistics errors. Keep the chosen
+entity recorded so long-term statistics can be collected. Current power
+entities already have `device_class: power`, `state_class: measurement` and W;
+they can provide power views, but cannot supply accumulated kWh by themselves.
+[Energy FAQ](https://www.home-assistant.io/docs/energy/faq/),
+[Long-term statistics](https://www.home-assistant.io/docs/configuration/long-term-statistics/)
+
+Being an estimate does **not** disqualify a sensor. Native-counter calibration
+is a separate investigation; derived AC consumption can be supported without
+solving battery accounting.
+
+## Available option: HA Integral helper
+
+Create an **Integral** helper under **Settings → Devices & services → Helpers**.
+Use the desired AC power sensor, metric prefix **k**, and time unit **h** to
+produce kWh. For frequently sampled variable power, start with trapezoidal
+integration; left integration is useful for loads that change in steps.
+Then select the resulting energy sensor under Energy's individual devices.
+HA restores the accumulated helper value across restart.
+[Integral helper](https://www.home-assistant.io/integrations/integration/)
+
+Example only; replace the entity ID with the existing station's W sensor:
+
+```yaml
+sensor:
+  - platform: integration
+    source: sensor.example_station_ac_input_power
+    name: Example station AC input energy estimate
+    unit_prefix: k
+    unit_time: h
+    method: trapezoidal
+    round: 6
+    max_sub_interval: 0
+```
+
+The helper's `max_sub_interval` forces integration while a numeric source is
+unchanged; it is **not** a maximum telemetry gap. Zero disables that timer.
+Keep unavailable readings unavailable, rather than converting them to zero or
+holding the last watts indefinitely. This fallback does not reproduce the
+gateway recorder's per-channel coverage or 15-second interval rejection.
+
+### Gap audit and evidence limits
+
+Selected methods from the actual HA **2026.9.4** implementation were replayed
+with synthetic states; HA callbacks were replaced. With 100 W and a 60-second
+explicit unavailable interval, trapezoidal and left methods add zero during
+recovery; right adds 0.001666667 kWh using the new power. When both endpoints
+remain numeric an hour apart, all three add 0.1 kWh: none checks source
+freshness or rejects the long interval. Timer source review likewise shows
+that a still-numeric value is treated as constant. Use trapezoidal or left for
+this fallback and verify outage/restart behavior on the target HA release.
+
+This is bounded Python method replay and source inspection, **not** a running
+HA integration, Recorder test or physical metering experiment. The official
+source tests also cover unavailable-source timer cancellation and state
+restoration; they were inspected, not executed here.
+[Implementation](https://github.com/home-assistant/core/blob/2026.9.4/homeassistant/components/integration/sensor.py),
+[Upstream tests](https://github.com/home-assistant/core/blob/2026.9.4/tests/components/integration/test_sensor.py)
+
+## Recommended built-in implementation
+
+Prefer opt-in Energy-compatible entities backed by the existing gateway
+integrals; this preserves their explicit gaps and higher-frequency telemetry
+instead of integrating HA's polled values a second time.
+
+1. Add a persisted database generation/station epoch, exposed by the bounded
+   history summary. Preserve it across normal restarts and pruning; change it
+   on genuine recreation/reset. Public-name changes already create new history.
+2. Persist HA continuity checks across integration reloads and reject
+   unexplained regressions. Current checks are in memory; collection-start
+   timestamps alone cannot identify every database replacement.
+3. Add disabled-by-default energy entities with kWh and an appropriate state
+   class. HA recommends `total` for never-resetting totals; genuine reset
+   counters need explicit reset handling or `total_increasing`. Test the
+   chosen semantics, including a replacement first observed above zero.
+4. Verify statistics through the real HA Recorder: unavailable periods,
+   gateway/HA restart, sample pruning, resets, device renaming and partial
+   fleets. Keep coverage/gap diagnostics and clear “estimate” names. Dashboard
+   selection remains a user configuration step.
+
+HA initially establishes a statistics baseline; existing lifetime values do
+not automatically backfill earlier daily consumption.
+[Sensor statistics contract](https://developers.home-assistant.io/docs/core/entity/sensor/)
+
+## Native counters and verification
+
+Gen 2 firmware has raw AC-input/output and other-port counters. A1763 main
+1.1.4.9 instruction replay supports nominal Wh arithmetic, but physical scale,
+snapshot timing, missed callbacks, wrapping and reset/retention behavior remain
+unverified across models. Those `*_energy_raw` values remain excluded from
+HA lifetime statistics. Battery energy needs independent AC/DC measurements,
+controlled SOC changes and per-model reset/retention tests.
+[Counter epochs](gen2-energy-epochs.md)
+
+Focused verification covers history arithmetic, summaries and entity behavior
+using synthetic readings and HA doubles. No live configuration or battery was
+accessed; results are recorded in [research progress](server-research-progress.md).
+
+Public source SHA-256 pins for the gap/statistics review:
+
+| HA 2026.9.4 path | SHA-256 |
+| --- | --- |
+| `homeassistant/components/integration/sensor.py` | `d752a7cb511adb20a2f19372346897034de7f837b11f2343e89e8449d7db2923` |
+| `tests/components/integration/test_sensor.py` | `899ebc4a45f4b878beb3d1ee715df35b32cdbbd6afa5790a88688e0e914d5d43` |
+| `homeassistant/components/sensor/recorder.py` | `ea8cf79e9367fb80f07b34594e659b92f04ecdefb2f11feb4d2be644c213de69` |
