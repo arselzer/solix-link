@@ -64,6 +64,7 @@
     },
     "sensor": {
       "native_energy_kwh": {"name": "{group} {channel} energy (unverified)"},
+      "native_meter_kwh": {"name": "Observed {group} {channel} energy estimate"},
       "control_availability": {"name": "Blocked controls"},
       "battery": {"name": "Battery"},
       "temperature": {"name": "Temperature"},

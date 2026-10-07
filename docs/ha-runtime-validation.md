@@ -397,3 +397,37 @@ These are live HA registry/state and cached telemetry checks, not independent
 electrical-continuity or kWh calibration measurements. Original C1000 uploads
 use an unsupported separate format, investigated in the
 [unused-data audit](unused-device-data.md). Raw deployment outputs remain private.
+
+## Observed native AC meter deployment, 2026-10-07
+
+The follow-on [guarded meter](native-energy-meter.md) was installed from a local
+wheel with SHA-256
+`df874453c0af994ed5d2eb15c8a0fe2d83791e990841189fba9b2d8871cbfae4`.
+All 77 packaged source/assets matched repository input. Installation used
+`--no-index --no-deps`, retaining dependency versions and private rollback
+backups. Existing AP/gateway services and HA restarted to load code. Profiles,
+credentials, network/service configuration and history were preserved; all
+protected settings and static configuration hashes matched after recovery.
+
+Actual **HA 2026.7.4** discovered and enabled **two new C1000 Gen 2 sensors**
+through the existing native-energy option, without changing individual registry
+choices. They have numeric kWh states, energy class, `state_class: total`, an
+explicit persisted initialization `last_reset`, and no Diagnostic category.
+The actual `recorder/list_statistic_ids` API returned both with **`has_sum: true`**
+and **`statistics_unit_of_measurement: kWh`**. This confirms live statistics
+registration/eligibility. It does not validate a physical energy delta or a
+Recorder reset experiment. Existing 32 mode-counter diagnostics remain enabled
+without a statistics state class.
+
+The first scheduled C1000 Gen 2 report established its new observed zero
+baseline, with meter status `tracking`; no old cumulative value was backfilled.
+All three stations were fresh with AC enabled at final verification. No
+station control/output/reset command, cloud call, identity change or charging
+automation activation was used. Only local monitoring restarted. The user
+confirmed they were unavailable for the pending physical button restart;
+ordinary remote station restart support remains unverified.
+
+Select the appropriate **Observed Standard AC ... energy estimate** in
+Energy → Individual devices. These estimates include bypass and exclude TOU
+and backup groups. No dashboard boundary was selected automatically. Raw
+requests, meter readings, registry IDs and verification details remain private.

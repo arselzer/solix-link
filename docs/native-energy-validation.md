@@ -67,6 +67,14 @@ zero reference and invalid inputs; all **42 energy-analysis tests** pass.
 
 ## What remains before native HA statistics
 
+The [observed Standard AC meter](native-energy-meter.md) now implements
+persistent ordering/duplicate guards, quarantine and separately named
+Energy-compatible C1000 Gen 2 estimates. It counts observed deltas from zero,
+not complete device lifetime energy. The physical scaling/retention items below
+remain open; C2000 is still excluded from native statistics. No remote ordinary
+C1000 Gen 2 restart route is verified, and the user is unavailable for the
+button test.
+
 1. **Scaling:** compare against an independent plug-in energy meter at multiple
    steady loads. C1000 Gen 2 has consistent nominal Wh evidence; C2000 still
    needs confirmation of its 0.9 hypothesis, separately by intended channel.

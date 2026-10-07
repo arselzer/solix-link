@@ -500,6 +500,8 @@ def create_app(service: MonitorService, token: str | None = None, *, allow_contr
         lines = []
         for metric in ("report_available", "reported_at_seconds", "counter_epoch", "raw", "kwh_unverified"):
             lines.append(f"# TYPE solix_native_energy_{metric} gauge")
+        for metric in ("available", "energy_kwh_estimate", "started_at_seconds"):
+            lines.append(f"# TYPE solix_native_meter_{metric} gauge")
         for status in snapshots(request):
             name = status["name"].replace("\\", "\\\\").replace('"', '\\"').replace("\n", "\\n")
             label = f'{{device="{name}"}}'
@@ -511,6 +513,13 @@ def create_app(service: MonitorService, token: str | None = None, *, allow_contr
                     metric = re.sub(r"[^a-zA-Z0-9_]", "_", key)
                     lines.append(f"solix_gen2_{metric}{label} {value}")
             energy = status.get("native_energy")
+            meter = energy.get("meter") if energy is not None else None
+            lines.append(f"solix_native_meter_available{label} {int(bool(meter and meter['available']))}")
+            if meter is not None:
+                lines.append(f"solix_native_meter_started_at_seconds{label} {meter['started_at']}")
+                for channel, value in meter["energy_kwh"].items():
+                    labels = f'{{device="{name}",group="standard",channel="{channel}",basis="nominal_wh"}}'
+                    lines.append(f"solix_native_meter_energy_kwh_estimate{labels} {value}")
             lines.append(f"solix_native_energy_report_available{label} {int(bool(energy and energy['available']))}")
             if energy is not None:
                 lines.append(f"solix_native_energy_reported_at_seconds{label} {energy['reported_at']}")

@@ -54,6 +54,70 @@ def entities(platform, data):
     return source, [entity for entity in result if isinstance(entity, platform.sensor.SolixNativeEnergySensor)]
 
 
+def metered(at=NOW-600, value=100, *, store=None):
+    store = NativeEnergyStore("c1000_gen2") if store is None else store
+    report = {"protobuf_name": REPORT_NAME, "units_verified": False, "event_timestamp": at,
+              "groups": {"standard": {"ac_input_energy_raw": value, "ac_output_energy_raw": value}}}
+    return store.ingest([report], reported_at=at, firmware_version="1.1.4.9")
+
+
+def test_meter_sensor_is_energy_compatible_with_explicit_persistent_reset_time(platform):
+    store = NativeEnergyStore("c1000_gen2")
+    first = metered(NOW-1200, store=store)
+    data = metered(store=store, value=125)
+    source, sensors = entities(platform, snapshot(model="c1000_gen2", native_energy=data))
+    meters = [sensor for sensor in sensors if isinstance(sensor, platform.sensor.SolixNativeMeterSensor)]
+    assert len(meters) == 2
+    for sensor in meters:
+        assert sensor.native_value == 0.025 and sensor.available
+        assert sensor.entity_description.state_class == "total"
+        assert sensor.entity_description.device_class == "energy"
+        assert sensor.entity_description.entity_category is None
+        assert sensor.last_reset.timestamp() == first["meter"]["started_at"]
+        assert sensor.extra_state_attributes["estimated"] is True
+        assert sensor.extra_state_attributes["complete_lifetime_energy"] is False
+        assert sensor.extra_state_attributes["source"] == "observed_device_counter_deltas"
+    # A HA/integration reload uses the gateway's epoch and total, not a new baseline.
+    _, restored = entities(platform, snapshot(model="c1000_gen2", native_energy=data))
+    assert [(s.native_value, s.last_reset) for s in restored if isinstance(s, platform.sensor.SolixNativeMeterSensor)] == [
+        (s.native_value, s.last_reset) for s in meters]
+    old_generation = meters[0].extra_state_attributes["generation"]
+    source.data["station"]["native_energy"] = metered(NOW-10)
+    assert meters[0].last_reset.timestamp() == NOW-10
+    assert meters[0].extra_state_attributes["generation"] != old_generation
+    assert meters[0].native_value == 0
+
+
+def test_quarantined_and_missing_meters_cannot_feed_statistics(platform):
+    store = NativeEnergyStore("c1000_gen2")
+    data = metered(NOW-1200, store=store)
+    source, sensors = entities(platform, snapshot(model="c1000_gen2", native_energy=data))
+    meter = next(s for s in sensors if isinstance(s, platform.sensor.SolixNativeMeterSensor))
+    source.data["station"]["native_energy"] = metered(store=store, value=5)
+    assert meter.native_value == 0 and not meter.available
+    assert meter.extra_state_attributes["reason"] == "counter_decreased"
+    source.last_update_success = False
+    assert not meter.available
+    source.data["station"].pop("native_energy")
+    assert meter.native_value is None and meter.last_reset is None and not meter.available
+
+
+@pytest.mark.parametrize("age,success,expected", [(1799, True, True), (1800, True, False),
+                                               (-6, True, False), (1, False, False)])
+def test_meter_source_and_receipt_freshness(platform, age, success, expected):
+    _, sensors = entities(platform, snapshot(model="c1000_gen2", native_energy=metered(NOW-age)))
+    meter = next(s for s in sensors if isinstance(s, platform.sensor.SolixNativeMeterSensor))
+    meter.coordinator.last_update_success = success
+    assert meter.available is expected
+
+
+def test_component_validates_meter_the_same_as_sdk_and_strips_private_values():
+    data = metered()
+    data["meter"].update(secret="PRIVATE", energy_kwh={"ac_output": 999}, units_verified=True)
+    assert native.validate_native_energy(data, now=NOW) == validate_native_energy(data, now=NOW)
+    assert "PRIVATE" not in json.dumps(native.validate_native_energy(data, now=NOW))
+
+
 def test_discovery_exposes_only_reported_counters_no_statistics_or_fake_zero(platform):
     source, sensors = entities(platform, snapshot(native_energy=energy()))
     assert len(sensors) == 3

@@ -11,11 +11,12 @@ import time
 
 from .ap_service_config import private_write
 from .energy_report import REPORT_NAME
-from .energy_values import MAX_INTEGER, SOURCE, energy_groups, validate_native_energy
+from .energy_values import MAX_INTEGER, SOURCE, _timestamp, energy_groups, validate_native_energy
+from .energy_meter import update_energy_meter
 
 
 class NativeEnergyStore:
-    """Persist latest counters only; never infer wraps, lifetime energy or resets."""
+    """Persist snapshots and qualified observed deltas; never infer device resets."""
 
     def __init__(self, model: str, path: Path | None = None) -> None:
         self.model, self.path = model, path
@@ -49,6 +50,11 @@ class NativeEnergyStore:
                 raise ValueError("Invalid native energy counters")
             groups.append(counters)
         previous = self.state
+        # MQTT may not have supplied a version yet immediately after restart.
+        # Keep the last observed version; an actual different readback quarantines
+        # the meter. A missing readback never creates a new scaling claim.
+        if firmware_version is None and previous is not None:
+            firmware_version = previous["firmware_version"]
         receipt = time.time() if reported_at is None else reported_at
         if type(receipt) not in (int, float) or not 0 < receipt < 253402300800 or not math.isfinite(receipt):
             raise ValueError("Invalid energy receipt time")
@@ -69,6 +75,12 @@ class NativeEnergyStore:
             "counter_epoch_started_at": receipt if previous is None or boundary else previous["counter_epoch_started_at"],
             "continuity": "batch_order_unknown" if len(groups) > 1 else "counter_decreased" if decreased else "increasing" if previous else "first_report",
             "groups": {group: {"raw": counters} for group, counters in raw.items()}}
+        timestamp = reports[-1].get("event_timestamp")
+        state["event_timestamp"] = timestamp if _timestamp(timestamp) else None
+        meter = update_energy_meter(previous.get("meter") if previous else None, reports, model=self.model,
+            firmware_version=firmware_version, receipt=receipt, groups=raw)
+        if meter is not None:
+            state["meter"] = meter
         result = validate_native_energy(state, model=self.model, now=receipt)
         if result is None or result["received_reports"] > MAX_INTEGER:
             raise ValueError("Invalid native energy state")

@@ -50,7 +50,7 @@ def platform(monkeypatch):
     install("homeassistant")
     install("homeassistant.components")
     install("homeassistant.components.sensor", SensorEntity=type("SensorEntity", (), {}),
-        SensorEntityDescription=Description, SensorStateClass=SimpleNamespace(MEASUREMENT="measurement"),
+        SensorEntityDescription=Description, SensorStateClass=SimpleNamespace(MEASUREMENT="measurement", TOTAL="total"),
         SensorDeviceClass=SimpleNamespace(BATTERY="battery", TEMPERATURE="temperature",
             POWER="power", ENUM="enum", TIMESTAMP="timestamp", ENERGY="energy"))
     install("homeassistant.components.binary_sensor", BinarySensorEntity=type("BinarySensorEntity", (), {}),

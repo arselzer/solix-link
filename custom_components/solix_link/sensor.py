@@ -80,6 +80,11 @@ NATIVE_ENERGY_DESCRIPTIONS = tuple(
     for group in GROUP_NAMES for channel in ENERGY_CHANNELS)
 NATIVE_ENERGY_COORDINATES = {f"native_energy_{group}_{channel}": (group, channel)
                              for group in GROUP_NAMES for channel in ENERGY_CHANNELS}
+NATIVE_METER_DESCRIPTIONS = tuple(
+    SensorEntityDescription(key=f"native_meter_standard_{channel}", translation_key="native_meter_kwh",
+        device_class=SensorDeviceClass.ENERGY, native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
+        state_class=SensorStateClass.TOTAL, entity_category=None, entity_registry_enabled_default=False)
+    for channel in ("ac_input", "ac_output"))
 
 
 async def async_setup_entry(hass, entry: SolixConfigEntry, async_add_entities) -> None:
@@ -113,6 +118,13 @@ async def async_setup_entry(hass, entry: SolixConfigEntry, async_add_entities) -
                         added.add((name, description.key))
                         entities.append(SolixNativeEnergySensor(coordinator, name, description, group, channel,
                             enabled_default=getattr(entry, "options", {}).get(CONF_NATIVE_ENERGY_ENABLED) is True))
+                if energy.get("meter") is not None:
+                    for description in NATIVE_METER_DESCRIPTIONS:
+                        if (name, description.key) not in added:
+                            added.add((name, description.key))
+                            entities.append(SolixNativeMeterSensor(coordinator, name, description, "standard",
+                                description.key.removeprefix("native_meter_standard_"),
+                                enabled_default=getattr(entry, "options", {}).get(CONF_NATIVE_ENERGY_ENABLED) is True))
         if entities:
             async_add_entities(entities)
 
@@ -216,6 +228,41 @@ class SolixNativeEnergySensor(SolixEntity, SensorEntity):
                 "received_reports", "batch_reports", "continuity", "conversion_basis", "firmware_version", "max_report_age_seconds")})
             attributes["raw_counter"] = report["groups"].get(self.group, {}).get("raw", {}).get(f"{self.channel}_energy_raw")
             attributes["raw_group_counters"] = dict(report["groups"].get(self.group, {}).get("raw", {}))
+        return attributes
+
+
+class SolixNativeMeterSensor(SolixNativeEnergySensor):
+    """Ordered observed AC deltas with a persistent, explicit HA meter epoch."""
+
+    @property
+    def meter(self):
+        report = self.report
+        return report.get("meter") if report else None
+
+    @property
+    def native_value(self):
+        meter = self.meter
+        return meter["energy_kwh"].get(self.channel) if meter else None
+
+    @property
+    def available(self) -> bool:
+        meter = self.meter
+        return bool(self.coordinator.last_update_success and meter and meter["available"])
+
+    @property
+    def last_reset(self):
+        meter = self.meter
+        return datetime.fromtimestamp(meter["started_at"], UTC) if meter else None
+
+    @property
+    def extra_state_attributes(self) -> dict:
+        attributes = {**super().extra_state_attributes, "estimated": True,
+                      "source": "observed_device_counter_deltas", "complete_lifetime_energy": False}
+        meter = self.meter
+        if meter:
+            attributes.update({key: meter[key] for key in ("generation", "status", "reason",
+                "accepted_reports", "rejected_reports", "last_event_timestamp", "last_receipt_at")})
+            attributes["anchor_counter_raw"] = meter["channels"][self.channel]["counter_raw"]
         return attributes
 
 

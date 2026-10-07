@@ -1411,3 +1411,70 @@ class was enabled. The [validation report](native-energy-validation.md) records
 the precise remaining checks: independent meter/load comparisons, a captured
 noncritical C1000 Gen 2 restart, radio-time/order-aware persistent baselines
 and defined HA reset semantics. C2000's server power must remain untouched.
+
+## 2026-10-07: guarded observed native energy accounting
+
+The user authorized restarting the noncritical C1000 Gen 2, then confirmed they
+were unavailable for a physical button restart. No verified ordinary remote
+restart command was found in the implemented model allowlist or documented
+routes. A generic app analytics string and factory/upgrade reset handlers do
+not establish such support. The restart retention experiment remains pending;
+**zero station reset/output/control commands** were sent. A cached baseline
+showed all three stations fresh with AC enabled before software changes.
+
+New [observed Standard AC accounting](native-energy-meter.md) preserves request
+`utc_ts` separately from receipt time and persists a gateway meter generation,
+raw anchors and integer deltas. It begins at zero on the first valid report,
+ignores duplicate/older timestamped reports without renewing their freshness,
+and quarantines counter decreases, conflicting clocks, ambiguous batches,
+unknown timestamps/coverage, firmware changes, long gaps and impossible deltas.
+No device reset, width wrap or energy across uncertain intervals is inferred.
+Only **C1000 Gen 2 main 1.1.4.9 Standard AC input/output** qualifies at the
+nominal 1 Wh/raw-unit scale. Physical calibration, other modes and C2000's 0.9
+hypothesis remain unresolved. The retained timestamp field shape is integer
+UNIX seconds; public logs contain no original values or identifying fields.
+
+The SDK/API/SSE carry `native_energy.meter`, terminal/line views add observed
+rows and Prometheus adds explicitly estimated gauges. Two separate HA energy
+entities use kWh, `total` and a persisted gateway initialization `last_reset`,
+with no Diagnostic category. Existing raw mode-counter diagnostics remain
+unchanged. Synthetic tests cover restart migration, atomic-write failure,
+quarantine persistence, freshness, de-duplication, epoch replacement, HA reload
+and public API filtering. They do not execute the HA Recorder or a real battery.
+
+Verification: **1,145 energy/HA contract tests**, then **116 final focused
+energy/API/HA checks** and **182 selected energy/freshness checks**, passed with
+Python **3.14.4**, pytest **9.1.1**. These sets overlap and must not be summed.
+The wheel was built offline and all **77 package files** compared byte-for-byte
+with repository sources. SHA-256:
+`df874453c0af994ed5d2eb15c8a0fe2d83791e990841189fba9b2d8871cbfae4`.
+
+The backed-up runtime and HA component were upgraded locally; AP/gateway and
+HA restarted to load code. All three stations recovered fresh with AC enabled,
+every protected baseline field and static profile/credential hash matched.
+This was a monitoring restart, not a station retention or electrical test.
+Observers, network configuration, identities, automation activation and station
+power settings were left unchanged. The live HA statistics check is tracked in
+[the deployment record](ha-runtime-validation.md).
+Final actual HA **2026.7.4** checks found both new C1000 Gen 2 estimates enabled,
+numeric and outside Diagnostics, with energy/kWh, `total` and `last_reset`.
+The Recorder metadata API registered both with `has_sum: true` and statistics
+unit kWh. The first scheduled native report established a zero baseline with
+status `tracking`; all three stations were fresh and AC-enabled. This proves
+live discovery/statistics eligibility, not measured electrical accuracy or
+physical restart retention. No Energy dashboard boundary was auto-selected.
+
+Public source SHA-256 pins:
+
+| Source | SHA-256 |
+| --- | --- |
+| `python/solix_link/energy_meter.py` | `85d1ec13d1ab4eccbab600e61da30e9164fa9b4cffc437d388a9716f78189dfe` |
+| `python/solix_link/energy_values.py` (also HA validator) | `7c8845be5c566eea2a1520403f948ed5b21fd5b22b0bc19d15bacb54c64d064e` |
+| `python/solix_link/energy_store.py` | `1bf92e462c0d0174504913541a7d3f0c8dfb34156da57ea9eee473e669b7aa05` |
+| `python/solix_link/energy_report.py` | `75578289fe148f9427286899f2f080adfa243c9f8d331970ab8888b38253bc48` |
+| `custom_components/solix_link/sensor.py` | `af8001019c07deb983a89ccfcb75195b32accccf4ff3bc382123fb6b868954ee` |
+
+Private baselines, reports, installation backups, registry IDs, auth material
+and detailed verification remain ignored with restricted permissions.
+AGENTS.md is unchanged. Remaining hardware: an independent energy meter and
+a captured ordinary C1000 Gen 2 button restart; do not restart the C2000.

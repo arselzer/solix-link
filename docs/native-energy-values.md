@@ -48,6 +48,10 @@ invalid. Its schema version is 1, with source `device_energy_report`:
 - `reported_at`: host receipt time, **not** an MCU measurement timestamp.
   `available` requires a report younger than 1,800 seconds, allowing five seconds
   of clock skew; energy receipt never refreshes live power/MQTT freshness.
+- `event_timestamp`: the radio request-construction timestamp when valid, or
+  null; it does not establish MCU measurement time or order batch members.
+- Optional `meter`: persistently guarded observed Standard AC deltas for
+  C1000 Gen 2 main 1.1.4.9. See [observed estimates](native-energy-meter.md).
 - `received_reports`, `batch_reports`, `counter_epoch` and
   `counter_epoch_started_at`: persisted observation metadata.
 - `continuity`: first report, increasing/nondecreasing counters, a counter
@@ -85,14 +89,17 @@ solix-link gateway-energy --gateway-url http://127.0.0.1:8765 \
   the integration's **Configure → Enable newly discovered native energy
   sensors** option. It defaults off and changes only new entity defaults;
   existing enable/disable choices remain in the entity registry. It does not
-  request device reports, alter counters or enable statistics.
+  request device reports or alter counters. It also applies to the two separately
+  named observed estimates when their qualified meter is present.
   Attributes include raw group counters, conversion basis, epochs and receipt
   time. Availability follows report freshness and successful gateway polling,
   independently of live telemetry. Missing values never become zero.
 
-HA native sensors have energy/kWh units but **no statistics state class**.
-They are not selectable as lifetime consumption in the Energy dashboard yet.
-An [Integral helper](home-assistant-energy-dashboard.md) remains the existing
-power-derived option. Native statistics need model-specific meter calibration,
-reset/wrap/reorder and reboot-retention evidence, plus a tested persistent
-statistics epoch strategy. No calibrated battery-energy claim is made here.
+The original mode-counter diagnostics retain **no statistics state class**.
+Separate [observed Standard AC estimates](native-energy-meter.md) on qualified
+C1000 Gen 2 firmware have `total` and an explicit persisted initialization time;
+they can supply HA Energy consumption from their first accepted baseline.
+Ambiguous boundaries quarantine them rather than inferring device resets.
+C2000 conversion, physical calibration and station restart retention remain
+unresolved. An [Integral helper](home-assistant-energy-dashboard.md) remains a
+power-derived option. No calibrated battery-energy claim is made here.

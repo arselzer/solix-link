@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import base64
 import binascii
+import math
 from collections.abc import Iterator
 
 REPORT_NAME = "charging_pps_series_c_0009"
@@ -78,13 +79,23 @@ def decode_energy_report(payload: bytes) -> dict:
 
 
 def decode_energy_events(request: dict) -> list[dict]:
-    """Decode a local logging request, discarding account/serial/event metadata."""
+    """Decode counters and the request's radio construction time, not MCU time.
+
+    Batches share this request timestamp; it does not order their members.
+    Invalid/missing time leaves diagnostics usable but cannot qualify metering.
+    Account, serial and unrelated event metadata are discarded.
+    """
     if not isinstance(request, dict) or request.get("protobuf_name") != REPORT_NAME:
         raise ValueError("Unsupported energy report schema")
     events = request.get("events")
     if not isinstance(events, list) or not 1 <= len(events) <= 32:
         raise ValueError("Invalid energy report events")
     reports = []
+    timestamp = request.get("utc_ts")
+    if type(timestamp) is str and timestamp.isascii() and timestamp.isdigit() and len(timestamp) <= 11:
+        timestamp = int(timestamp)
+    if type(timestamp) not in (int, float) or not 0 < timestamp < 253402300800 or not math.isfinite(timestamp):
+        timestamp = None
     for event in events:
         params = event.get("params") if isinstance(event, dict) else None
         encoded = params.get("payload") if isinstance(params, dict) else None
@@ -94,5 +105,5 @@ def decode_energy_events(request: dict) -> list[dict]:
             payload = base64.b64decode(encoded, validate=True)
         except (binascii.Error, ValueError) as exc:
             raise ValueError("Invalid encoded energy report") from exc
-        reports.append(decode_energy_report(payload))
+        reports.append({**decode_energy_report(payload), "event_timestamp": timestamp})
     return reports
