@@ -39,6 +39,43 @@ def test_gen2_native_preference_cancel_sends_nothing(monkeypatch, tmp_path):
     interactive.preference_menu(SimpleNamespace(name="office", model=Model.C1000_GEN2), tmp_path / "config.json", tmp_path)
 
 
+@pytest.mark.parametrize("selection,seconds", [("1", 30), ("2", 60)])
+def test_c2000_native_screen_menu_has_only_qualified_values(monkeypatch, tmp_path, capsys, selection, seconds):
+    requests = []
+    async def request(directory, action, **values):
+        requests.append((action, values))
+        return {}
+    monkeypatch.setattr(interactive, "ap_service_request", request)
+    monkeypatch.setattr(interactive, "_show_status", lambda value: None)
+    inputs(monkeypatch, ["1", selection, "1"])
+    interactive.preference_menu(SimpleNamespace(name="ups", model=Model.C2000_GEN2), tmp_path / "config.json", tmp_path)
+    assert requests == [("set-display-timeout", {"name": "ups", "seconds": seconds})]
+    output = capsys.readouterr().out
+    assert "1. 30 seconds" in output and "2. 60 seconds" in output
+    assert "Hardware validation is pending" in output
+    assert "Never" not in output and "AC sockets" not in output
+
+
+def test_c2000_native_screen_cancel_sends_nothing(monkeypatch, tmp_path):
+    async def request(*args, **values):
+        raise AssertionError("Cancelled command must not be sent")
+    monkeypatch.setattr(interactive, "ap_service_request", request)
+    inputs(monkeypatch, ["1", "2", "0"])
+    interactive.preference_menu(SimpleNamespace(name="ups", model=Model.C2000_GEN2), tmp_path / "config.json", tmp_path)
+
+
+def test_c2000_prime_preferences_are_reachable_without_idle_timeout(monkeypatch, tmp_path, capsys):
+    device = SimpleNamespace(name="ups", model=Model.C2000_GEN2, protocol="prime")
+    called = []
+    monkeypatch.setattr(interactive, "select_device", lambda path: device)
+    monkeypatch.setattr(interactive, "ensure_paired", lambda selected, path: selected)
+    monkeypatch.setattr(interactive, "preference_menu", lambda *args: called.append(args))
+    inputs(monkeypatch, ["5", "0"])
+    interactive.run_interactive(tmp_path / "config.json")
+    assert called == [(device, tmp_path / "config.json")]
+    assert "Set Device Timeout" not in capsys.readouterr().out
+
+
 def test_no_arguments_launch_guided_mode_only_in_a_terminal(monkeypatch, tmp_path, capsys):
     called = []
     monkeypatch.setattr(cli, "tui_available", lambda: False)
@@ -117,12 +154,13 @@ def test_nonroot_native_setup_prints_explicit_command_without_spawning(monkeypat
     assert "private directory'" in output  # The displayed path is shell-quoted.
 
 
-def test_interactive_native_session_stops_owned_child(monkeypatch, tmp_path):
+@pytest.mark.parametrize("model", [Model.C1000_GEN2, Model.C2000_GEN2])
+def test_interactive_native_session_stops_owned_child(monkeypatch, tmp_path, model, capsys):
     import signal
     directory = tmp_path / "ap_service"
     directory.mkdir(mode=0o700)
     spawned = []
-    monkeypatch.setattr(interactive, "load_ap_service_profiles", lambda path: {"ups": (SimpleNamespace(name="ups", model=Model.C1000_GEN2), path)})
+    monkeypatch.setattr(interactive, "load_ap_service_profiles", lambda path: {"ups": (SimpleNamespace(name="ups", model=model), path)})
     class Child:
         returncode = None
         def __init__(self, command, **kwargs):
@@ -144,3 +182,5 @@ def test_interactive_native_session_stops_owned_child(monkeypatch, tmp_path):
     assert "--allow-control" not in spawned[0].command
     assert "--provision" not in spawned[0].command
     assert next(directory.glob("interactive-*.log")).stat().st_mode & 0o777 == 0o600
+    if model == Model.C2000_GEN2:
+        assert "Screen timeout controls disabled" in capsys.readouterr().out

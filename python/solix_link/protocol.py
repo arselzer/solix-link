@@ -257,8 +257,9 @@ def decode_telemetry(payload: bytes, model: Model | None = None) -> tuple[dict[s
         expansion = values.get(0xC0, b"")
         if expansion:
             tail = expansion[1 + expansion[0]:]
-            if len(tail) >= 15:
-                metrics["expansion_battery_count"] = int(tail[12] == 1)
+            if len(tail) >= 15 and tail[12] in (0, 1):
+                # This is an observed presence flag, not an arbitrary count.
+                metrics["expansion_battery_count"] = tail[12]
     if model == Model.C1000_GEN2:
         from .clock_screen import decode_clock_screen
         from .disaster_plan import decode_disaster_plan

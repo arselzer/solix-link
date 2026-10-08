@@ -11,6 +11,7 @@ const rows = computed(() => telemetryRows(props.station, props.now));
   <details v-if="rows.length" class="panel reported-telemetry" data-testid="reported-telemetry">
     <summary>Ports, runtime &amp; component firmware</summary>
     <p>Reported port power and device estimates. Countdown values describe current timers; zero means no active countdown. Wi-Fi signal uses its own query time.</p>
+    <p v-if="station.original_counters">Original report counters have unknown units and reset behavior. They are excluded from kWh totals.</p>
     <dl><div v-for="row in rows" :key="row.key" :data-testid="`telemetry-${row.key}`"><dt>{{ row.label }}</dt><dd>{{ row.value }}</dd></div></dl>
   </details>
 </template>

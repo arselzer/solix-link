@@ -137,6 +137,7 @@ class LocalMqttServer:
         self.last_seen: float | None = None
         self.tou_plan_readback: dict | None = None
         self.wifi_signal: dict | None = None
+        self.original_counters: dict | None = None
         self.error: str | None = None
         self._server: asyncio.Server | None = None
         self._tasks: set[asyncio.Task] = set()
@@ -152,6 +153,7 @@ class LocalMqttServer:
                 "last_seen_timestamp": self.last_seen, "error": self.error, "metrics": self.metrics.copy(),
                 "tou_plan_readback": validate_plan_readback(self.tou_plan_readback),
                 "native_energy": self.energy.snapshot(),
+                "original_counters": self.original_counters,
                 "wifi_signal": validate_wifi_signal(self.wifi_signal, model=self.config.model.value,
                                                      protocol="native_mqtt"),
                 "control_enabled": self.allow_control,
@@ -161,6 +163,18 @@ class LocalMqttServer:
         """Accept a routed HTTP upload without touching MQTT telemetry freshness."""
         self.energy.ingest(reports, firmware_version=self.metrics.get("software_version"))
         self.record("energy_report", reports=reports)
+        self.changed()
+
+    def ingest_original_counters(self, reports: list[dict]) -> None:
+        from .original_counters import REPORT_NAME, validate_original_counters
+        report = validate_original_counters({"schema_version": 1, "protobuf_name": REPORT_NAME,
+            "units_verified": False, "layout_provenance": "main_1_5_9_encoder",
+            "firmware_version": self.metrics.get("software_version"),
+            "reported_at": time.time(), "reports": reports}, model=self.config.model.value, protocol="native_mqtt")
+        if report is None:
+            raise ValueError("Invalid original counter upload")
+        self.original_counters = report
+        self.record("original_counter_report", report=report)
         self.changed()
 
     def record(self, event: str, **fields) -> None:
@@ -317,7 +331,48 @@ class LocalMqttServer:
         request = self.commands.display_timeout(seconds)
         if self.config.model == Model.C1000:
             return await self._set_original_setting(request, "display_timeout_seconds", seconds)
+        if self.config.model == Model.C2000_GEN2:
+            return await self._set_c2000_screen_timeout(request, seconds)
         return await self._set_c1000_setting(request, "display_timeout_seconds", seconds)
+
+    async def _set_c2000_screen_timeout(self, request: NativeMqttRequest, seconds: int) -> dict:
+        """Change only the BLE-established screen field, protecting full raw state.
+
+        This native route has synthetic coverage, not a C2000 hardware replay.
+        No retries, output commands or automatic restoration are sent.
+        """
+        async with self._control_lock:
+            connection = self._control_connection()
+
+            async def fresh():
+                reply = await connection.request(self.commands.status())
+                if not reply or reply[0] != 0:
+                    raise RuntimeError("C2000 status request failed")
+                metrics, fields = decode_telemetry(reply[1:], self.config.model)
+                a4, d9 = fields.get(0xA4, b""), fields.get(0xD9, b"")
+                periods_from_d9(d9)
+                if (len(a4) != 34 or a4[0] != 4
+                        or metrics.get("software_version") != "2.1.6.4"
+                        or metrics.get("display_timeout_seconds") not in (30, 60)
+                        or any(len(fields.get(tag, b"")) < size or fields[tag][0] != 4
+                               for tag, size in ((0xA7, 5), (0xB2, 4)))
+                        or any(type(metrics.get(key)) is not int or metrics[key] not in (0, 1)
+                               for key in ("ac_output_enabled", "dc_output_enabled", "ac_input_connected"))
+                        or any(type(metrics.get(key)) is not int or metrics[key] != 0 for key in
+                               ("ac_output_timer_remaining_seconds", "dc_output_timer_remaining_seconds"))):
+                    raise ValueError("C2000 screen timeout requires main 2.1.6.4, complete settings and inactive countdowns")
+                return a4, d9, metrics
+
+            before_a4, before_d9, before = await fresh()
+            expected = bytearray(before_a4)
+            expected[16:18] = seconds.to_bytes(2, "little")
+            await connection.request(request)
+            a4, d9, metrics = await fresh()
+            if (a4 != bytes(expected) or d9[2:] != before_d9[2:]
+                    or any(metrics[key] != before[key] for key in
+                           ("ac_output_enabled", "dc_output_enabled", "ac_input_connected"))):
+                raise RuntimeError("C2000 screen timeout or protected settings not confirmed; setting may have changed")
+            return self._tou_result(d9, metrics)
 
     async def set_light_mode(self, mode: int) -> dict:
         """Set original C1000 light mode without writing output switches."""

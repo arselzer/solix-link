@@ -12,6 +12,7 @@ from .commands import native_commands_for_model, validate_command
 from .ap_service import ap_service_request
 from .protocol import Model
 from .energy_values import validate_native_energy
+from .original_counters import validate_original_counters
 from .wifi_signal import POLL_INTERVAL_SECONDS, validate_wifi_signal
 
 
@@ -39,6 +40,7 @@ class APServiceMonitor:
             status["connected"] = bool(fresh and status.get("connected"))
             status["available"] = bool(status["connected"] and latest and time.time() - latest < 30)
             status["native_energy"] = validate_native_energy(status.get("native_energy"), model=self.devices[name].model.value)
+            status["original_counters"] = validate_original_counters(status.get("original_counters"), model=self.devices[name].model.value, protocol="native_mqtt")
             status["wifi_signal"] = validate_wifi_signal(status.get("wifi_signal"),
                 model=self.devices[name].model.value, protocol="native_mqtt")
             if not status["available"] or self.devices[name].model == Model.C1000:

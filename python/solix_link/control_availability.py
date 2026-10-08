@@ -105,6 +105,13 @@ def control_availability(snapshot: dict, advertised, permitted, *, gateway_enabl
                        if not valid_preference(key, metrics.get(key), exported["model"])]
             if missing:
                 reasons.append("missing_or_invalid_metrics")
+            if (snapshot.get("model") == "c2000_gen2" and snapshot.get("protocol") == "native_mqtt"
+                    and command == "set-display-timeout"):
+                if metrics.get("software_version") != "2.1.6.4":
+                    reasons.append("firmware_unqualified")
+                if any(type(metrics.get(key)) is not int or metrics[key] != 0 for key in
+                       ("ac_output_timer_remaining_seconds", "dc_output_timer_remaining_seconds")):
+                    reasons.append("countdown_must_be_inactive")
             if snapshot.get("model") == "c1000_gen2" and snapshot.get("protocol") == "native_mqtt":
                 if command in ("set-ac-power-saving", "set-dc-power-saving", "set-clock-brightness"):
                     if metrics.get("software_version") != "1.1.4.9":

@@ -1,0 +1,135 @@
+blueprint:
+  name: SOLIX Link owned price charging
+  description: >-
+    Opt-in all-day price charging/battery use for C1000 Gen 2 main 1.1.4.9.
+    Starts disabled. Requires an empty Standard plan, configured reserve,
+    mains, AC output on, fast charging off, and inactive backup/clock/timers.
+    Prices and thresholds use the sensor's currency/kWh. Persistent plans
+    continue while HA is offline. Disarming requests release of an owned plan;
+    an uncertain result or manual change requires reconciliation. Hold leaves
+    the current plan in place. No zero-import or charging-pause guarantee.
+  domain: automation
+  input:
+    station:
+      name: C1000 Gen 2
+      selector:
+        device:
+          integration: solix_link
+    price:
+      name: Electricity price (currency/kWh)
+      selector:
+        entity:
+          domain: sensor
+    armed:
+      name: Arming helper
+      description: Keep off until the reserve, empty plan, and thresholds are checked.
+      selector:
+        entity:
+          domain: input_boolean
+    override:
+      name: Manual override helper
+      description: Create an input_select with none, hold, charge, grid, battery.
+      selector:
+        entity:
+          domain: input_select
+    charge_start:
+      name: Start charging below this price
+      default: 0.15
+      selector:
+        number:
+          min: -1000
+          max: 1000
+          step: 0.001
+          mode: box
+    charge_stop:
+      name: Stop charging above this price
+      default: 0.20
+      selector:
+        number:
+          min: -1000
+          max: 1000
+          step: 0.001
+          mode: box
+    discharge_stop:
+      name: Stop battery use below this price
+      default: 0.30
+      selector:
+        number:
+          min: -1000
+          max: 1000
+          step: 0.001
+          mode: box
+    discharge_start:
+      name: Start battery use above this price
+      default: 0.35
+      selector:
+        number:
+          min: -1000
+          max: 1000
+          step: 0.001
+          mode: box
+    minimum_reserve:
+      name: Required configured reserve (%)
+      default: 20
+      selector:
+        number:
+          min: 5
+          max: 95
+          step: 5
+    soc_resume_margin:
+      name: Battery use restart margin above reserve (%)
+      default: 5
+      selector:
+        number:
+          min: 1
+          max: 25
+    cooldown:
+      name: Minimum seconds between changes
+      default: 300
+      selector:
+        number:
+          min: 60
+          max: 86400
+          step: 1
+          mode: box
+    price_max_age:
+      name: Maximum price age in seconds
+      default: 300
+      selector:
+        number:
+          min: 1
+          max: 3600
+          step: 1
+          mode: box
+initial_state: false
+mode: single
+max_exceeded: silent
+triggers:
+  - trigger: time_pattern
+    minutes: "/1"
+  - trigger: state
+    entity_id: !input armed
+  - trigger: state
+    entity_id: !input override
+variables:
+  armed_entity: !input armed
+  override_entity: !input override
+conditions:
+  - condition: template
+    value_template: "{{ is_state(armed_entity, 'off') or (is_state(armed_entity, 'on') and states(override_entity) in ['none', 'hold', 'charge', 'grid', 'battery']) }}"
+actions:
+  - action: solix_link.price_policy
+    data:
+      device_id: !input station
+      price_entity: !input price
+      mode: "{{ 'apply' if is_state(armed_entity, 'on') else 'release' }}"
+      armed: "{{ is_state(armed_entity, 'on') }}"
+      override: "{{ states(override_entity) if states(override_entity) in ['none', 'hold', 'charge', 'grid', 'battery'] else 'hold' }}"
+      charge_start: !input charge_start
+      charge_stop: !input charge_stop
+      discharge_stop: !input discharge_stop
+      discharge_start: !input discharge_start
+      minimum_reserve: !input minimum_reserve
+      soc_resume_margin: !input soc_resume_margin
+      cooldown: !input cooldown
+      price_max_age: !input price_max_age

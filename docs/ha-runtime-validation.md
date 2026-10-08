@@ -471,3 +471,41 @@ checks** after the unit correction, Vue type-check/build and **34 synthetic
 browser scenarios**, including RSSI expiry. Cached/live presentation does not
 establish watt calibration, runtime accuracy, countdown behavior or electrical
 continuity. Baselines, HA registry/state output and local logs remain private.
+
+## Owned price policy and extra data, 2026-10-08
+
+Upgraded the gateway and HA **2026.7.4** component with private backups, rollback
+copies of history/energy continuity, and unchanged service arguments. All **81**
+package source/assets matched the local wheel, SHA-256
+`038c9fbb90f068391268e08162acced23034ba9fcaa37f30274803aa0f8c2845`.
+The user CLI can import the new modules with its ordinary permissions.
+The final package-only refresh aligns the line-menu C2000 screen control and
+help text; it preserves history and does not restart HA a second time. A final
+help-only correction was atomic and required no additional monitoring restart.
+
+HA loaded the price-policy service, C2000 screen selector, two expansion
+presence entities and the C1000 Gen 2 ownership diagnostic. A real HA service
+call in explicitly **disarmed preview** returned `would_send: false`, `unowned`,
+with no ownership file created. The installed price blueprint is disabled and
+the automations configuration hash is unchanged. No automatic policy was run.
+
+The C2000 selector offers only 30/60 seconds and identifies the pending native
+hardware test; its physical BLE evidence remains separate. No setter was
+tested on C2000. No expansion SOC/temperature entity was fabricated for absent
+packs. All eight original raw-counter diagnostics are registered and remain
+disabled. At the final cached check the gateway awaited a fresh passive upload
+after worker restart; missing counters are not replaced with zero.
+
+All three stations recovered fresh telemetry with AC reported enabled. Protected
+fields and identity/network-file hashes matched the baseline; all ten existing
+Energy-compatible sensors retained numeric kWh and `total` state class.
+No station restart, output switch, setting experiment or cloud request occurred.
+This verifies software recovery and reported states, not electrical continuity.
+
+Verification: **1,504 focused Python/HA tests**, **69 final HA checks** and
+**51 CLI/policy follow-up checks** after review, Vue type-check/build,
+**35 synthetic browser scenarios**, and service
+registration/defaults against the installed HA libraries using fake devices.
+Three bounded actual-encoder replays of original main **1.5.9** still pass;
+neither installed main **1.7.1** execution nor original counter units are thereby
+established. Raw verification data remains owner-restricted and ignored.

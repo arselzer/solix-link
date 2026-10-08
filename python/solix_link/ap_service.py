@@ -41,7 +41,11 @@ def api_response(path: str, request: dict, config: APServiceConfig, credentials:
         data = {"timezone": timezone_confer(config.timezone_name)[1].decode()}
     elif path == "/equipment/logging/upload_pb_events":
         # Local acknowledgement only; the cloud's response schema is unverified.
-        decode_energy_events(request)
+        if config.model == Model.C1000:
+            from .original_counters import decode_original_counter_events
+            decode_original_counter_events(request)
+        else:
+            decode_energy_events(request)
         data = {}
     elif path == "/equipment/agreement/get_device_point_switch":
         # Recovered C1000 radio 0.3.3.0 accepts the first param's exact name and
@@ -189,7 +193,11 @@ class APService:
                 response, chunked = api_response(path, request, station.config, credentials,
                                                  energy_reports=self.energy_reports)
                 if "/" + path.lstrip("/") == "/equipment/logging/upload_pb_events":
-                    station.ingest_energy(decode_energy_events(request))
+                    if station.config.model == Model.C1000:
+                        from .original_counters import decode_original_counter_events
+                        station.ingest_original_counters(decode_original_counter_events(request))
+                    else:
+                        station.ingest_energy(decode_energy_events(request))
                 writer.write(http_reply(response, credentials=chunked))
                 await writer.drain()
                 self.mqtt.record("api_response", path=path, size=len(response),

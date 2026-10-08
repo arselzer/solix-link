@@ -186,6 +186,7 @@ function addPeriod() {
       </div>
       <div v-if="allowed('set-display-timeout')" class="setting">
         <label for="display-timeout">Screen timeout</label><p>Current {{ observed('display_timeout_seconds', ' s') }}</p>
+        <p v-if="station.model === 'c2000_gen2' && station.protocol === 'native_mqtt'">30/60 seconds only. MQTT support awaits a device test.</p>
         <div class="setting-input"><select id="display-timeout" v-model="draft.seconds" :disabled="!writable"><option v-for="seconds in displayTimes" :key="seconds" :value="String(seconds)">{{ seconds === 0 ? 'Never' : `${seconds} seconds` }}</option></select>
           <button class="secondary" :disabled="!writable || !displayValid" @click="propose({ command: 'set-display-timeout', seconds: Number(draft.seconds) }, 'Change screen timeout?', 'Set the display timeout.', [draft.seconds === '0' ? 'Never' : `${draft.seconds} seconds`])">Apply</button></div>
       </div>

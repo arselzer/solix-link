@@ -20,11 +20,16 @@ REQUEST_ID = re.compile(r"[A-Za-z0-9_-]{16,64}\Z", re.ASCII)
 VERSION = re.compile(r"\d{1,3}(?:\.\d{1,3}){1,4}\Z", re.ASCII)
 EXTRA_METRICS = {"ac_input_connected", "ac_output_enabled", "dc_output_enabled", "usage_mode",
     "active_tariff", "tou_schedule_slot_count", "clock_screen_enabled", "clock_screen_transfer_status_raw",
+    "ac_output_timer_remaining_seconds", "dc_output_timer_remaining_seconds",
     "ac_output_timeout_seconds", "dc_output_timeout_seconds", "disaster_preparation_active", "software_version", "software_version_module"}
 PREFERENCE_METRICS = set().union(*CONTROL_METRICS.values())
 
 
 def valid_metric(key: str, value: object, model: str | None) -> bool:
+    if key in ("ac_output_timer_remaining_seconds", "dc_output_timer_remaining_seconds"):
+        # Protect inactive timers without trying to compare a running countdown
+        # against a value captured several seconds earlier.
+        return type(value) is int and value == 0
     if key in PREFERENCE_METRICS:
         return valid_preference(key, value, model)
     if key in ("software_version", "software_version_module"):
@@ -40,9 +45,9 @@ def valid_metric(key: str, value: object, model: str | None) -> bool:
     return key in EXTRA_METRICS and type(value) is int and value in (0, 1)
 
 
-def make_preconditions(snapshot: dict) -> dict:
+def make_preconditions(snapshot: dict, *, now: float | None = None) -> dict:
     """Guard known cached configuration and power flags, never identities."""
-    exported = export_settings(snapshot)
+    exported = export_settings(snapshot, now=now)
     metrics = snapshot.get("metrics", {})
     selected = {key: metrics[key] for key in sorted(PREFERENCE_METRICS | EXTRA_METRICS)
                 if key in metrics and valid_metric(key, metrics[key], exported["model"])}

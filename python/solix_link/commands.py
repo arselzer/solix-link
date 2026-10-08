@@ -29,13 +29,13 @@ NATIVE_C1000_COMMANDS = ("set-temperature-unit", "set-off-grid-alert", "set-disc
 
 
 def native_commands_for_model(model: Model) -> tuple[str, ...]:
-    """Return only controls verified for the configured native MQTT model."""
+    """Return model-specific controls; backend guards validate fresh readback."""
     if model == Model.C1000:
         return original_native_commands()
     if model == Model.C1000_GEN2:
         return NATIVE_COMMANDS + NATIVE_C1000_COMMANDS
     if model == Model.C2000_GEN2:
-        return NATIVE_COMMANDS
+        return NATIVE_COMMANDS + ("set-display-timeout",)
     return ()
 
 

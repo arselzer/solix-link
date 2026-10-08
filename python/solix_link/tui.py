@@ -19,6 +19,7 @@ from .tou import TouPeriod, power_flow, validate_periods
 
 
 METRIC_LABELS = {
+    **{f"original_counter_{index}_raw": f"Original report counter {index} (raw, units unknown)" for index in range(1, 9)},
     "battery_percentage": "Battery (%)",
     "battery_status": "Battery activity",
     "temperature_c": "Temperature (°C)",
@@ -54,6 +55,9 @@ METRIC_LABELS = {
     "active_tariff": "Active tariff",
     "tou_schedule_slot_count": "Tariff periods",
     "display_timeout_seconds": "Display timeout (s)",
+    "expansion_battery_count": "Expansion pack present (0/1)",
+    "expansion_battery_percentage": "Expansion battery (%)",
+    "expansion_temperature_c": "Expansion temperature (°C)",
     "display_brightness": "Display brightness (1 low, 2 medium, 3 high)",
     "port_memory_enabled": "Output port memory enabled",
     "device_timeout_minutes": "Device Timeout (min; 0 = Never)",
@@ -137,6 +141,8 @@ def controls_for(target: Target) -> tuple[Control, ...]:
                 Control("clock-first-brightness", "Clock first-window High", "on = High, off = Normal; disabled clock, no transfer and no countdowns required"),
                 Control("clock-second-brightness", "Clock second-window High", "on = High, off = Normal; saved selector only, does not enable the clock"),
             )
+        if target.model == Model.C2000_GEN2:
+            items += (Control("display-timeout", "Display timeout", "30 or 60 seconds; native round trip pending"),)
         return items
     limits = {
         Model.C300: "100, 200, 300 or 330 W",
@@ -233,14 +239,20 @@ def public_snapshot(snapshot: dict) -> dict:
     )}
     result["metrics"] = {
         key: value for key, value in metrics.items()
-        if key in METRIC_LABELS and isinstance(value, (int, float, str))
+        if key in METRIC_LABELS and not key.startswith("original_counter_") and isinstance(value, (int, float, str))
     }
-    from .telemetry_values import COMPONENT_VERSIONS, duration_value, telemetry_supported, version_value
+    from .telemetry_values import COMPONENT_VERSIONS, duration_value, expansion_value, telemetry_supported, version_value
     model = snapshot.get("model")
     if model is not None:
         for key, value in tuple(result["metrics"].items()):
             if not telemetry_supported(key, model):
                 result["metrics"].pop(key)
+            elif key in ("expansion_battery_count", "expansion_battery_percentage", "expansion_temperature_c"):
+                checked = expansion_value(key, metrics, model=model)
+                if checked is None:
+                    result["metrics"].pop(key)
+                else:
+                    result["metrics"][key] = checked
             elif key in COMPONENT_VERSIONS:
                 result["metrics"][key] = version_value(value) or "unknown"
             elif key == "time_remaining_minutes" or key.endswith("_timer_remaining_seconds"):
@@ -251,6 +263,12 @@ def public_snapshot(snapshot: dict) -> dict:
     result["tou_plan_readback"] = validate_plan_readback(snapshot.get("tou_plan_readback"))
     from .energy_values import validate_native_energy
     result["native_energy"] = validate_native_energy(snapshot.get("native_energy"), model=snapshot.get("model")) if snapshot.get("protocol") == "native_mqtt" else None
+    from .original_counters import COUNTERS, original_counter_value, validate_original_counters
+    result["original_counters"] = validate_original_counters(snapshot.get("original_counters"), model=model, protocol=snapshot.get("protocol"))
+    for index, key in enumerate(COUNTERS, 1):
+        value = original_counter_value(result["original_counters"], index, model=model, protocol=snapshot.get("protocol"))
+        if value is not None:
+            result["metrics"][f"original_{key}"] = value
     from .wifi_signal import validate_wifi_signal
     result["wifi_signal"] = validate_wifi_signal(snapshot.get("wifi_signal"),
         model=snapshot.get("model"), protocol=snapshot.get("protocol"))
@@ -664,7 +682,7 @@ class TuiBackend:
                         raise ValueError("Fresh connected telemetry is required for display and port-memory controls")
                     field, metric, options = {
                         "display-brightness": ("level", "display_brightness", (1, 2, 3)),
-                        "display-timeout": ("seconds", "display_timeout_seconds", (20, 30, 60, 300, 1800) if target.model == Model.C1000 else (0, 10, 20, 30, 60, 300, 1800)),
+                        "display-timeout": ("seconds", "display_timeout_seconds", (30, 60) if target.model == Model.C2000_GEN2 else (20, 30, 60, 300, 1800) if target.model == Model.C1000 else (0, 10, 20, 30, 60, 300, 1800)),
                         "port-memory": ("enabled", "port_memory_enabled", (0, 1)),
                     }[action]
                     current = snapshot.get("metrics", {}).get(metric)

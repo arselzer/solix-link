@@ -13,11 +13,24 @@ from .const import CONF_HISTORY_ENERGY_ENABLED, CONF_NATIVE_ENERGY_ENABLED
 from .entity import SolixEntity
 from .history import history_available
 from .native_energy import ENERGY_CHANNELS, GROUP_NAMES, validate_native_energy
-from .telemetry import COMPONENT_VERSIONS, duration_value, telemetry_supported, version_value
+from .telemetry import COMPONENT_VERSIONS, duration_value, expansion_value, telemetry_supported, version_value
 from .wifi_signal import validate_wifi_signal
+from .original_counters import COUNTERS, original_counter_value, validate_original_counters
 
 PARALLEL_UPDATES = 0
 DESCRIPTIONS = (
+    *(SensorEntityDescription(key=f"original_{key}", translation_key="original_counter",
+                             entity_category=EntityCategory.DIAGNOSTIC, entity_registry_enabled_default=False)
+      for key in COUNTERS),
+    SensorEntityDescription(key="price_policy", translation_key="price_policy",
+                            device_class=SensorDeviceClass.ENUM, options=["unowned", "active", "pending", "blocked", "storage_error"],
+                            entity_category=EntityCategory.DIAGNOSTIC),
+    SensorEntityDescription(key="expansion_battery_percentage", translation_key="expansion_battery_percentage",
+                            device_class=SensorDeviceClass.BATTERY, native_unit_of_measurement=PERCENTAGE,
+                            state_class=SensorStateClass.MEASUREMENT),
+    SensorEntityDescription(key="expansion_temperature_c", translation_key="expansion_temperature_c",
+                            device_class=SensorDeviceClass.TEMPERATURE, native_unit_of_measurement=UnitOfTemperature.CELSIUS,
+                            state_class=SensorStateClass.MEASUREMENT),
     SensorEntityDescription(key="control_availability", translation_key="control_availability",
                             entity_category=EntityCategory.DIAGNOSTIC, entity_registry_enabled_default=True),
     SensorEntityDescription(key="battery_percentage", translation_key="battery", device_class=SensorDeviceClass.BATTERY,
@@ -124,9 +137,14 @@ async def async_setup_entry(hass, entry: SolixConfigEntry, async_add_entities) -
                     continue
                 if key == "ac_frequency_raw" and snapshot.get("model") != "c2000_gen2":
                     continue
-                present = key in (snapshot if key in ("power_flow", "last_seen_timestamp", "control_availability") else snapshot["metrics"])
+                present = key in (snapshot if key in ("power_flow", "last_seen_timestamp", "control_availability", "price_policy") else snapshot["metrics"])
+                if key in ("expansion_battery_percentage", "expansion_temperature_c"):
+                    present = expansion_value(key, snapshot["metrics"], model=snapshot["model"]) is not None
                 if key == "wifi_rssi_dbm":
                     present = snapshot.get("wifi_signal") is not None
+                if key.startswith("original_counter_"):
+                    report = validate_original_counters(snapshot.get("original_counters"), model=snapshot["model"], protocol=snapshot["protocol"])
+                    present = report is not None and any(key.removeprefix("original_") in row["counters"] for row in report["reports"])
                 if present and (name, key) not in added:
                     added.add((name, key))
                     entities.append(SolixSensor(coordinator, name, description))
@@ -169,10 +187,19 @@ class SolixSensor(SolixEntity, SensorEntity):
     def __init__(self, coordinator, name, description: SensorEntityDescription) -> None:
         super().__init__(coordinator, name, description.key)
         self.entity_description = description
+        if description.key.startswith("original_counter_"):
+            self._attr_translation_placeholders = {"index": description.key.split("_")[2]}
 
     @property
     def native_value(self):
         key = self.entity_description.key
+        if key == "price_policy":
+            return self.snapshot.get("price_policy", {}).get("phase")
+        if key.startswith("original_counter_"):
+            return original_counter_value(self.snapshot.get("original_counters"), int(key.split("_")[2]),
+                model=self.snapshot.get("model"), protocol=self.snapshot.get("protocol"), now=time.time())
+        if key in ("expansion_battery_percentage", "expansion_temperature_c"):
+            return expansion_value(key, self.snapshot.get("metrics", {}), model=self.snapshot.get("model"))
         if not telemetry_supported(key, self.snapshot.get("model")):
             return None
         if key == "wifi_rssi_dbm":
@@ -210,13 +237,23 @@ class SolixSensor(SolixEntity, SensorEntity):
 
     @property
     def available(self) -> bool:
-        if self.entity_description.key == "control_availability":
+        if self.entity_description.key in ("control_availability", "price_policy"):
             return self.native_value is not None and self.coordinator.last_update_success
         return self.native_value is not None and super().available
 
     @property
     def extra_state_attributes(self) -> dict:
         attributes = dict(super().extra_state_attributes)
+        if self.entity_description.key.startswith("original_counter_"):
+            report = validate_original_counters(self.snapshot.get("original_counters"), model=self.snapshot.get("model"), protocol=self.snapshot.get("protocol"), now=time.time())
+            if report is not None:
+                attributes.update({key: report[key] for key in ("protobuf_name", "units_verified", "layout_provenance",
+                    "installed_layout_verified", "firmware_version", "reported_at", "batch_order_unknown")})
+        if self.entity_description.key == "price_policy":
+            attributes.update(self.snapshot.get("price_policy", {}))
+            attributes["persistent_plan_continues_offline"] = True
+        if self.entity_description.key in ("expansion_battery_percentage", "expansion_temperature_c"):
+            attributes["source"] = "reported_present_expansion_pack"
         if self.entity_description.key == "control_availability":
             report = self.snapshot.get("control_availability")
             if report is not None:

@@ -30,7 +30,7 @@ def row(report, command):
 
 def test_allowlists_and_model_transport_explanations():
     counts = {Model.C300: (3, 0, 0), Model.C1000: (8, 9, 9),
-              Model.C1000_GEN2: (0, 4, 16), Model.C2000_GEN2: (0, 3, 5)}
+              Model.C1000_GEN2: (0, 4, 16), Model.C2000_GEN2: (0, 3, 6)}
     for model, expected in counts.items():
         assert tuple(len(commands_for_transport(model, transport))
                      for transport in ("legacy", "prime", "native_mqtt")) == expected
@@ -38,7 +38,8 @@ def test_allowlists_and_model_transport_explanations():
     report = control_availability(snapshot(), supported, supported, gateway_enabled=True, now=1001)
     assert row(report, "set-charge-power")["ready"]
     assert row(report, "set-backup-reserve")["ready"]
-    assert "transport_unsupported" in row(report, "set-display-timeout")["reasons"]
+    assert "missing_or_invalid_metrics" in row(report, "set-display-timeout")["reasons"]
+    assert "transport_unsupported" not in row(report, "set-display-timeout")["reasons"]
     assert "model_unsupported" in row(report, "set-clock-brightness")["reasons"]
     assert report["preflight_only"] and report["backend_validation_required"]
 

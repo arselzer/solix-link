@@ -15,6 +15,21 @@ export function telemetryRows(station: Station, now: number): TelemetryRow[] {
   const rows: TelemetryRow[] = [];
   const fresh = telemetryFresh(station, now);
   const add = (key: string, label: string, value: string) => rows.push({ key, label, value });
+  if (['c1000', 'c2000_gen2'].includes(station.model)) {
+    const present = station.metrics.expansion_battery_count;
+    if (present === 0 || present === 1) {
+      add('expansion_battery_present', 'Expansion pack', fresh ? present ? 'Present' : 'Absent' : 'Unavailable');
+      if (present === 1 && station.model === 'c1000') {
+        for (const [key, label, low, high, unit] of [
+          ['expansion_battery_percentage', 'Expansion battery', 0, 100, '%'],
+          ['expansion_temperature_c', 'Expansion temperature', -40, 125, '°C'],
+        ] as const) {
+          const value = numberMetric(station, key);
+          add(key, label, fresh && value !== null && Number.isInteger(value) && value >= low && value <= high ? `${value} ${unit}` : 'Unavailable');
+        }
+      }
+    }
+  }
   for (const [key, label, models] of ports) {
     if (!models.includes(station.model) || !(key in station.metrics)) continue;
     const value = numberMetric(station, key);
@@ -45,6 +60,30 @@ export function telemetryRows(station: Station, now: number): TelemetryRow[] {
     add(key, label, fresh && typeof value === 'string' && value.length <= 24 && /^[0-9]{1,3}(?:\.[0-9]{1,3}){1,4}$/.test(value) ? value : 'Unavailable');
   }
   const signal = station.wifi_signal;
+  const raw = station.original_counters;
+  if (station.model === 'c1000' && station.protocol === 'native_mqtt' && raw && typeof raw === 'object') {
+    const report = raw as Record<string, unknown>;
+    const age = typeof report.reported_at === 'number' ? now / 1000 - report.reported_at : NaN;
+    const reports = report.reports;
+    if (report.schema_version === 1 && report.protobuf_name === 'charging_pps_series_c_0002'
+      && report.units_verified === false && report.layout_provenance === 'main_1_5_9_encoder'
+      && Array.isArray(reports) && reports.length > 0 && reports.length <= 32) {
+      if (reports.length !== 1) add('original_counter_batch', 'Original report counters', 'Batch ordering unknown');
+      else {
+        const counters = reports[0]?.counters;
+        if (counters && typeof counters === 'object') {
+          for (let index = 1; index <= 8; index++) {
+            const key = `counter_${index}_raw`;
+            if (!(key in counters)) continue;
+            const value = counters[key];
+            const valid = fresh && Number.isFinite(age) && age >= -5 && age < 7200
+              && typeof value === 'number' && Number.isSafeInteger(value) && value >= 0;
+            add(`original_${key}`, `Original counter ${index} (raw; units unknown)`, valid ? String(value) : 'Unavailable');
+          }
+        }
+      }
+    }
+  }
   if (station.model === 'c1000_gen2' && station.protocol === 'native_mqtt' && signal && typeof signal === 'object') {
     const report = signal as Record<string, unknown>;
     const age = typeof report.observed_at === 'number' ? now / 1000 - report.observed_at : NaN;

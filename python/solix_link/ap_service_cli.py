@@ -65,7 +65,7 @@ def add_commands(subcommands) -> None:
                                ("ap-service-set-fast-charge", "Set original/Gen 2 C1000 fast charge with fresh retained readback"),
                                ("ap-service-set-display-brightness", "Set original/Gen 2 C1000 native MQTT display brightness"),
                                ("ap-service-set-clock-brightness", "Set C1000 Gen 2 inactive clock-window brightness selector"),
-                               ("ap-service-set-display-timeout", "Set original/Gen 2 C1000 native MQTT screen timeout"),
+                               ("ap-service-set-display-timeout", "Set native MQTT screen timeout (C2000: 30/60 s; hardware test pending)"),
                                ("ap-service-set-light", "Set and confirm original C1000 native MQTT light mode"),
                                ("ap-service-set-dc-power-saving", "Set original/Gen 2 C1000 native DC Smart; requires DC output OFF"),
                                ("ap-service-set-ac-power-saving", "Set original/Gen 2 C1000 native AC Smart; requires AC OFF and inactive countdowns"),
@@ -112,7 +112,7 @@ def add_commands(subcommands) -> None:
                                 help="Stored window brightness only; requires disabled clock and no asset transfer")
         elif command == "ap-service-set-display-timeout":
             parser.add_argument("--seconds", type=int, choices=[0, 10, 20, 30, 60, 300, 1800], required=True,
-                                help="Screen timeout in seconds; original C1000 excludes 0/10; Gen 2 0 means Never")
+                                help="Screen timeout: original C1000 excludes 0/10; C1000 Gen 2 allows Never (0); C2000 Gen 2 only 30/60 (hardware test pending)")
         elif command == "ap-service-set-port-memory":
             parser.add_argument("--enabled", choices=["on", "off"], required=True,
                                 help="Off clears output-recovery bookkeeping; turning On does not restore it")

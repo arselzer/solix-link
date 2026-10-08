@@ -231,6 +231,9 @@ def device_timeout_menu(device: DeviceConfig | APServiceConfig, config_path: Pat
 
 def preference_menu(device: DeviceConfig | APServiceConfig, config_path: Path, directory: Path | None = None) -> None:
     clock_windows = {}
+    display_times = ((30, 60) if device.model == Model.C2000_GEN2 else
+                     (20, 30, 60, 300, 1800) if device.model == Model.C1000 else
+                     (0, 10, 20, 30, 60, 300, 1800))
     original = device.model == Model.C1000 and getattr(device, "protocol", None) == "legacy"
     if original:
         commands = ["set-temperature-unit", "set-fast-charge", "set-ac-power-saving", "set-dc-power-saving"]
@@ -257,6 +260,8 @@ def preference_menu(device: DeviceConfig | APServiceConfig, config_path: Path, d
             clock_windows = {len(commands): 1, len(commands) + 1: 2}
             commands += ["set-clock-brightness", "set-clock-brightness"]
             labels += ["First clock window brightness", "Second clock window brightness"]
+    elif device.model == Model.C2000_GEN2 and (directory is not None or getattr(device, "protocol", None) == "prime"):
+        commands, labels = ["set-display-timeout"], ["Screen timeout"]
     else:
         print("These preferences are unavailable for this station profile.")
         return
@@ -270,8 +275,8 @@ def preference_menu(device: DeviceConfig | APServiceConfig, config_path: Path, d
     options = {
         "set-temperature-unit": ["Celsius", "Fahrenheit"],
         "set-display-brightness": ["Low", "Medium", "High"],
-        "set-display-timeout": ["20 seconds", "30 seconds", "60 seconds", "5 minutes", "30 minutes"] if device.model == Model.C1000
-                               else ["Never", "10 seconds", "20 seconds", "30 seconds", "60 seconds", "5 minutes", "30 minutes"],
+        "set-display-timeout": ["Never" if seconds == 0 else f"{seconds} seconds" if seconds < 300
+                                else f"{seconds // 60} minutes" for seconds in display_times],
         "set-light": ["Off", "Low", "Medium", "High", "SOS"],
         "set-clock-brightness": ["Normal", "High"],
     }.get(command, ["Off", "On"])
@@ -294,11 +299,13 @@ def preference_menu(device: DeviceConfig | APServiceConfig, config_path: Path, d
         print(ORIGINAL_FAST_CHARGE_WARNING)
     if command == "set-port-memory":
         print("Off clears output-recovery bookkeeping; turning On does not restore that transient state.")
+    if command == "set-display-timeout" and device.model == Model.C2000_GEN2 and directory is not None:
+        print("Native MQTT requires main 2.1.6.4 and inactive countdowns. Hardware validation is pending; no automatic retry or restoration.")
     if choose("Confirm preference change", ["Apply selected preference"]) is None:
         return
     if directory is not None:
         fields = ({"level": value + 1} if command == "set-display-brightness" else
-                  {"seconds": ((20, 30, 60, 300, 1800) if device.model == Model.C1000 else (0, 10, 20, 30, 60, 300, 1800))[value]} if command == "set-display-timeout" else
+                  {"seconds": display_times[value]} if command == "set-display-timeout" else
                   {"mode": value} if command == "set-light" else
                   {"fahrenheit": value == 1} if command == "set-temperature-unit" else
                   {"window": clock_windows[selected], "high": value == 1} if command == "set-clock-brightness" else
@@ -309,7 +316,7 @@ def preference_menu(device: DeviceConfig | APServiceConfig, config_path: Path, d
         arguments = ({"unit": "fahrenheit" if value else "celsius"} if command == "set-temperature-unit" else
                      {"enabled": "on" if value else "off"} if command == "set-ac-output" else
                      {"level": value + 1} if command == "set-display-brightness" else
-                     {"seconds": (20, 30, 60, 300, 1800)[value]} if command == "set-display-timeout" else
+                     {"seconds": display_times[value]} if command == "set-display-timeout" else
                      {"mode": ("off", "low", "medium", "high", "sos")[value]} if command == "set-light" else
                      {"enabled": "on" if value else "off"})
         asyncio.run(_set(argparse.Namespace(command=command, name=device.name, config=config_path, **arguments)))
@@ -384,6 +391,8 @@ def native_session(directory: Path, config_path: Path, *, provision: bool, allow
             if config.model == Model.C1000_GEN2:
                 options.append("Set Device Timeout (Never / idle shutdown)" if allow_control else "Device Timeout controls disabled")
                 options.append("Charging, display and port-memory preferences" if allow_control else "Station preferences disabled")
+            elif config.model == Model.C2000_GEN2:
+                options.append("Screen timeout (native hardware test pending)" if allow_control else "Screen timeout controls disabled")
             options.append("Stop this AP session")
             selected = choose("AP-service session", options)
             if selected is None or selected == len(options) - 1:
@@ -420,6 +429,8 @@ def native_session(directory: Path, config_path: Path, *, provision: bool, allow
                 elif selected == 7 and allow_control and config.model == Model.C1000_GEN2:
                     device_timeout_menu(config, config_path, directory)
                 elif selected == 8 and allow_control and config.model == Model.C1000_GEN2:
+                    preference_menu(config, config_path, directory)
+                elif selected == 7 and allow_control and config.model == Model.C2000_GEN2:
                     preference_menu(config, config_path, directory)
             except (ValueError, OSError, RuntimeError, TimeoutError) as error:
                 print(f"{type(error).__name__}: {error}. Check fresh status before retrying a control write.")
@@ -558,12 +569,17 @@ def run_interactive(config_path: Path, ap_service_directory: Path | None = None,
             "Select / rescan a station", "Monitor over Bluetooth", "Connect MQTT / isolated Wi-Fi",
             "Serve Bluetooth status over HTTP",
         ]
+        preference_action = None
         if selected and (selected.model == Model.C1000
                          or selected.model == Model.C1000_GEN2 and selected.protocol == "prime"):
             options.append("Set Device Timeout (Never / idle shutdown)")
+            preference_action = len(options)
             options.append("Station preferences (temperature / fast charge / power saving)" if selected.model == Model.C1000 and selected.protocol == "legacy"
                            else "Station preferences (display / light / temperature)" if selected.model == Model.C1000
                            else "Station preferences (fast charging)")
+        elif selected and selected.model == Model.C2000_GEN2 and selected.protocol == "prime":
+            preference_action = len(options)
+            options.append("Station preferences (screen timeout)")
         protocol_action = None
         if selected and len(protocol_choices(selected.model)) > 1:
             protocol_action = len(options)
@@ -595,10 +611,10 @@ def run_interactive(config_path: Path, ap_service_directory: Path | None = None,
                 host = prompt("HTTP listen address", "127.0.0.1")
                 port = int(prompt("HTTP port", "8765"))
                 run_server(MonitorService([selected]), host, port)
+            elif action == preference_action:
+                preference_menu(selected, config_path)
             elif action == 4:
                 device_timeout_menu(selected, config_path)
-            elif action == 5:
-                preference_menu(selected, config_path)
         except KeyboardInterrupt:
             print("Stopped.")
         except Exception as error:

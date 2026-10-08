@@ -39,6 +39,7 @@
     }
   },
   "services": {
+    "price_policy": {"name": "Owned price charging policy", "description": "Opt-in C1000 Gen 2 1.1.4.9 all-day TOU plan ownership. Persistent plans continue while HA is offline. C2000 and original C1000 excluded. No output switching or automatic retries after uncertain results.", "fields": {"device_id": {"name": "C1000 Gen 2"}, "price_entity": {"name": "Price sensor", "description": "Fresh price in currency/kWh. Thresholds use this same unit."}, "mode": {"name": "Mode", "description": "Preview sends nothing. Apply needs armed. Release clears only a confirmed owned plan. Reset clears ownership only after an empty Standard plan is present."}, "armed": {"name": "Armed"}, "override": {"name": "Manual override", "description": "Hold leaves the persistent plan unchanged."}, "charge_start": {"name": "Charge start price"}, "charge_stop": {"name": "Charge stop price"}, "discharge_stop": {"name": "Battery use stop price"}, "discharge_start": {"name": "Battery use start price"}, "cooldown": {"name": "Cooldown (seconds)"}, "price_max_age": {"name": "Maximum price age (seconds)"}, "minimum_reserve": {"name": "Required configured reserve (%)"}, "soc_resume_margin": {"name": "Battery use restart margin (%)"}}},
     "set_tou_plan": {
       "name": "Set Time-of-Use plan",
       "description": "Store or activate a schedule on a gateway-enabled C1000 Gen 2 or C2000 Gen 2 using native MQTT. Peak can discharge the battery with mains connected. Use Return to grid to confirm grid supply.",
@@ -51,6 +52,7 @@
   },
   "entity": {
     "binary_sensor": {
+      "expansion_battery_present": {"name": "Expansion pack present"},
       "mains_present": {"name": "Mains present"},
       "ac_output_enabled": {"name": "AC output enabled"},
       "ac_fast_charge_enabled": {"name": "Fast charging enabled"},
@@ -63,6 +65,11 @@
       "dc_power_saving_mode_enabled": {"name": "DC Smart mode enabled"}
     },
     "sensor": {
+      "price_policy": {"name": "Price policy ownership", "state": {"unowned": "Unowned", "active": "Active", "pending": "Pending", "blocked": "Blocked", "storage_error": "Storage Error"}},
+      "expansion_battery_percentage": {"name": "Expansion battery"},
+      "expansion_temperature_c": {"name": "Expansion temperature"},
+      "original_counter": {"name": "Original report counter {index} (raw)"},
+
       "dc_input_power_w": {"name": "DC input power"},
       "solar_input_power_w": {"name": "Solar input power"},
       "input_power_w": {"name": "Total input power"},

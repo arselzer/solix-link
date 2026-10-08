@@ -1659,3 +1659,67 @@ independent runtime/countdown checks, native counter scale/reset verification,
 original C1000 charging measurements and any actual electrical-behavior claim.
 See [reported telemetry](reported-telemetry.md) and
 [HA runtime validation](ha-runtime-validation.md#reported-telemetry-deployment-2026-10-07).
+
+## Controls, owned price automation and extra data, 2026-10-08
+
+Public baseline: `2dfda1f464b41eaae4c7213be21b63c3127e9508`, `main`.
+Completed software work from the next three priorities:
+
+1. **C2000 control work:** added native screen timeout with only 30/60-second
+   values, exact main **2.1.6.4** qualification, complete typed baseline and
+   preservation/readback checks. HA now also recognizes its existing Prime
+   screen route. Native encoding is inferred from verified BLE and the existing
+   Gen 2 envelope; synthetic tests cover ignored writes, lost ACKs, changed
+   outputs, unknown settings bytes and backup state. **Native physical replay
+   remains pending.** Temperature/idle/Fast/memory/Smart setters still lack
+   sufficient C2000-specific evidence; full control parity is not claimed.
+2. **Price automation:** new pure owned-plan decisions and HA executor, durable
+   pre-write latch, exact gateway preconditions, manual-intervention detection,
+   reserve/hysteresis/cooldown/freshness guards and explicit release/reset.
+   Only C1000 Gen 2 **1.1.4.9** is qualified. Existing previews are unchanged;
+   the new blueprint starts disabled. Stale prices and unavailable HA cannot
+   clear an already persistent plan; limitations and recovery are documented in
+   [owned price charging](owned-price-charging.md).
+3. **Additional data:** expansion presence and original-model pack SOC/temperature
+   are gated by explicit presence. Original `_0002` uploads now use a separate
+   eight-number raw diagnostic contract in API/SDK, terminal, browser, metrics
+   and optional HA sensors. Ambiguous batches have no invented latest value.
+   No physical units, lifetime totals or Gen 2 channel names are assigned.
+   Extra C2000 protobuf blocks remain unmapped and private strings stay omitted.
+
+Evidence: **1,504 focused Python/HA tests**, **69 final HA checks**, **51 CLI/policy
+follow-up checks**, **35 browser scenarios**, Vue build, and real installed-HA
+service schema checks with fake devices. Re-ran **three bounded actual-encoder cases** against public original
+main **1.5.9**, firmware SHA-256
+`b295ee8613f5c96e70dcc905896df516621cab4dc590bb580eac6b84519911a6`.
+The replay tool SHA-256 remains
+`f729ae173b93311e456931d286533e7a3880ffcbc7c2badd74b1d17a1c81b907`.
+The installed original main **1.7.1** is not instruction-replayed or calibrated.
+Python **3.14.4**, Node **22.14.0**, Vite **8.0.3**, HA **2026.7.4** were used.
+
+Deployed local wheel SHA-256
+`038c9fbb90f068391268e08162acced23034ba9fcaa37f30274803aa0f8c2845`,
+with all **81** package files verified. HA loaded the new screen selector,
+two presence entities, ownership diagnostic and preview-by-default service.
+A disarmed real service preview sent no station setting command and saved no
+ownership. The blueprint remains disabled; automation configuration is unchanged.
+The final package also aligns the line-based C2000 screen menu and CLI help;
+its package-only update preserved history and did not restart HA again. The last
+help-only correction was applied atomically without another monitoring restart.
+All three stations are fresh, AC reported on, ten kWh sensors numeric, protected
+fields and identity/network hashes unchanged. No station restart, C2000 setting
+experiment or cloud request occurred. All eight original raw diagnostics are
+registered and remain disabled. The gateway cache awaits a fresh passive upload
+after worker restart; absence is not substituted with zero counters.
+
+Private baselines, synthetic replay output, HA results and rollback copies are
+retained under ignored `.solix-private/features-20261008/` with restricted modes.
+Public screenshots use synthetic data. `AGENTS.md` and the preexisting
+untracked `python/build/` were preserved.
+
+Next hardware requirements: supervised C2000 screen-only native round trip;
+model-specific evidence for remaining C2000 setters; original loaded charging
+and counter scaling/reset measurements; actual expansion-pack telemetry;
+supervised price cycling and independently measured power flow. The C2000's
+server supply remains excluded from output/reset experiments. See
+[additional controls/data](additional-controls-and-data.md) for exact limits.

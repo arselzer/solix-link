@@ -92,6 +92,21 @@ def test_ha_sends_one_post_with_guarded_context_or_legacy_fallback(context, fail
     asyncio.run(run())
 
 
+def test_owned_policy_keeps_exact_decision_baseline_without_replacing_preconditions():
+    async def run():
+        raw = status(); raw.update(additions(raw))
+        baseline = api.parse_snapshot(raw)
+        calls = []
+        client = api.GatewayClient(None, "http://synthetic.test", "synthetic-token")
+        async def request(method, path, body=None):
+            assert method == "POST", "A second GET would silently replace the ownership baseline"
+            calls.append(deepcopy(body)); return raw
+        client._request = request
+        await client.async_command(raw["name"], {"command": "set-charge-power", "watts": 300}, expected_snapshot=baseline)
+        assert len(calls) == 1 and calls[0]["expected"] == baseline["command_context"]["expected"]
+    asyncio.run(run())
+
+
 def test_diagnostic_sensor_explains_stale_controls_without_claiming_power_state(platform):
     raw = snapshot(available=False, metrics={"ac_charging_power_limit_w": 300})
     raw.update(additions(raw))
@@ -99,7 +114,7 @@ def test_diagnostic_sensor_explains_stale_controls_without_claiming_power_state(
     coord = coordinator({raw["name"]: parsed})
     description = next(item for item in platform.sensor.DESCRIPTIONS if item.key == "control_availability")
     entity = platform.sensor.SolixSensor(coord, raw["name"], description)
-    assert entity.available and entity.native_value == 5
+    assert entity.available and entity.native_value == 6
     assert description.entity_category == "diagnostic" and description.state_class is None
     attrs = entity.extra_state_attributes
     assert attrs["preflight_only"] and attrs["backend_validation_required"]

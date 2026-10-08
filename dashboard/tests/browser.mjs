@@ -99,6 +99,8 @@ try {
   assert.ok((await page.getByTestId('telemetry-dc_output_timer_remaining_seconds').textContent()).includes('No active countdown'));
   assert.ok((await page.getByTestId('telemetry-software_version_bms').textContent()).includes('3.4.5.6'));
   assert.equal(await page.getByTestId('telemetry-usb_a1_power_w').count(), 0);
+  assert.deepEqual(await page.locator('#display-timeout option').evaluateAll((items) => items.map((item) => item.value)), ['30', '60']);
+  assert.ok((await page.locator('.setting').filter({ has: page.locator('#display-timeout') }).textContent()).includes('awaits a device test'));
   await page.getByTestId('station-select').selectOption('Office · C1000 Gen 2');
   const wifiReport = { schema_version: 1, source: 'radio_ap_info', main_version: '1.1.4.9', radio_version: '0.3.3.0',
     settings_unchanged: true, observed_at: simulatedNow / 1000 - 1, wifi_rssi_dbm: -42 };
@@ -112,6 +114,33 @@ try {
   await change({ wifi_signal: {} });
   await refresh();
   assert.equal(await page.getByTestId('telemetry-wifi_rssi_dbm').count(), 0);
+  cases++; console.log(`Scenario ${cases} passed`);
+  const originalRaw = { schema_version: 1, protobuf_name: 'charging_pps_series_c_0002', units_verified: false,
+    layout_provenance: 'main_1_5_9_encoder', firmware_version: '1.7.1', reported_at: simulatedNow / 1000,
+    reports: [{ counters: Object.fromEntries(Array.from({ length: 8 }, (_, i) => [`counter_${i + 1}_raw`, (i + 1) * 123])), event_timestamp: simulatedNow / 1000 }] };
+  await change({ overrides: { 'Office · C1000 Gen 2': {}, 'Server · C2000 Gen 2': {}, 'Spare · C1000': {}, 'Updated · C1000': {},
+    'Local · C1000': { expansion_battery_count: 1, expansion_battery_percentage: 75, expansion_temperature_c: 25 } },
+    original_counters: { 'Local · C1000': originalRaw } });
+  await page.getByTestId('station-select').selectOption('Local · C1000');
+  await refresh();
+  await page.getByTestId('reported-telemetry').locator('summary').click();
+  assert.ok((await page.getByTestId('telemetry-expansion_battery_percentage').textContent()).includes('75 %'));
+  assert.ok((await page.getByTestId('telemetry-expansion_temperature_c').textContent()).includes('25 °C'));
+  assert.ok((await page.getByTestId('telemetry-original_counter_1_raw').textContent()).includes('123'));
+  await page.screenshot({ path: `${root}/docs/images/web-dashboard-expansion-counters.png`, fullPage: true });
+  await change({ original_counters: { 'Local · C1000': { ...originalRaw, reports: [{ counters: { counter_1_raw: Number.MAX_SAFE_INTEGER + 1 } }] } } });
+  await refresh();
+  assert.ok((await page.getByTestId('telemetry-original_counter_1_raw').textContent()).includes('Unavailable'));
+  await change({ original_counters: { 'Local · C1000': { ...originalRaw, reports: [...originalRaw.reports, ...originalRaw.reports] } },
+    overrides: { 'Office · C1000 Gen 2': {}, 'Server · C2000 Gen 2': {}, 'Spare · C1000': {}, 'Updated · C1000': {},
+      'Local · C1000': { expansion_battery_count: 0, expansion_battery_percentage: 75, expansion_temperature_c: 25 } } });
+  await refresh();
+  assert.equal(await page.getByTestId('telemetry-expansion_battery_percentage').count(), 0);
+  assert.equal(await page.getByTestId('telemetry-original_counter_1_raw').count(), 0);
+  assert.ok((await page.getByTestId('telemetry-original_counter_batch').textContent()).includes('Batch ordering unknown'));
+  await change({ overrides: { 'Office · C1000 Gen 2': {}, 'Server · C2000 Gen 2': {}, 'Spare · C1000': {}, 'Updated · C1000': {}, 'Local · C1000': {} }, original_counters: {} });
+  await page.getByTestId('station-select').selectOption('Office · C1000 Gen 2');
+  await refresh();
   cases++; console.log(`Scenario ${cases} passed`);
   assert.equal(await page.locator('#temperature-unit').count(), 1);
   assert.equal(await page.locator('#off-grid-alert').count(), 1);
@@ -133,7 +162,7 @@ try {
   const explanations = page.getByTestId('control-availability');
   await explanations.locator('summary').click();
   await explanations.getByRole('checkbox', { name: 'Include unsupported controls' }).check();
-  assert.match(await explanations.locator('tr').filter({ hasText: 'set-display-timeout' }).textContent(), /Unavailable on this transport/);
+  assert.match(await explanations.locator('tr').filter({ hasText: 'set-display-timeout' }).textContent(), /Cached prerequisites met/);
   assert.match(await explanations.locator('tr').filter({ hasText: 'set-clock-brightness' }).textContent(), /Not established for this model/);
   await mkdir(`${root}/docs/images`, { recursive: true });
   await explanations.screenshot({ path: `${root}/docs/images/web-control-availability.png` });
@@ -455,7 +484,7 @@ try {
   assert.equal(await page.locator('#ac-power-saving').count(), 0);
   assert.equal(await page.locator('#dc-power-saving').count(), 0);
   assert.equal(await page.locator('#display-brightness').count(), 0);
-  assert.equal(await page.locator('#display-timeout').count(), 0);
+  assert.equal(await page.locator('#display-timeout').count(), 1);
   assert.equal(await page.locator('#port-memory').count(), 0);
   await change({ readonly: true });
   await refresh();

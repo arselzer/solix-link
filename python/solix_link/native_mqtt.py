@@ -184,13 +184,18 @@ class NativeMqttCommands:
         return self._request("0103", tlv(0xA3, bytes((1, level))), milliseconds=True)
 
     def display_timeout(self, seconds: int) -> NativeMqttRequest:
-        """Set C1000 screen timeout with model-specific allowed durations."""
+        """Set screen timeout with model-specific allowed durations.
+
+        C2000's 30/60-second field is verified over BLE. Its native envelope
+        uses the established Gen 2 controller route; hardware replay of that
+        particular native setter is still pending.
+        """
         if self.model == Model.C1000:
             return self._original_setting("display_timeout", seconds)
-        if self.model != Model.C1000_GEN2:
-            raise ValueError("Display timeout supports C1000 Gen 2 only")
-        if type(seconds) is not int or seconds not in (0, 10, 20, 30, 60, 300, 1800):
-            raise ValueError("Display timeout must be 0, 10, 20, 30, 60, 300, or 1800 seconds")
+        allowed = (30, 60) if self.model == Model.C2000_GEN2 else (0, 10, 20, 30, 60, 300, 1800)
+        self._require_gen2("Display timeout")
+        if type(seconds) is not int or seconds not in allowed:
+            raise ValueError(f"Display timeout must be one of {allowed} seconds")
         return self._request("0103", tlv(0xA4, b"\x02" + seconds.to_bytes(2, "little")), milliseconds=True)
 
     def clock_brightness(self, window: int, high: bool) -> NativeMqttRequest:

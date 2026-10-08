@@ -116,10 +116,11 @@ def test_invalid_values_fail_before_io(tmp_path, builder, method, invalid):
 
 @pytest.mark.parametrize("builder,method,value,tag,offset,width,metric", CASES)
 def test_c2000_and_read_only_service_refuse_before_io(tmp_path, builder, method, value, tag, offset, width, metric):
-    server, station = preferences(tmp_path, model=Model.C2000_GEN2)
-    with pytest.raises(ValueError):
-        asyncio.run(getattr(server, method)(value))
-    assert station.requests == []
+    if builder != "display_timeout":
+        server, station = preferences(tmp_path, model=Model.C2000_GEN2)
+        with pytest.raises(ValueError):
+            asyncio.run(getattr(server, method)(value))
+        assert station.requests == []
     server, station = preferences(tmp_path, allow_control=False)
     with pytest.raises(PermissionError):
         asyncio.run(getattr(server, method)(value))

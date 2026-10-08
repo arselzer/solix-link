@@ -32,6 +32,14 @@ such as `monitor`, `serve` and `ap-service-status` keep their scripted behavior.
 | `c1000_gen2` — A1763 | BLE and native MQTT tested live | Charge limits/power, display/device timeout, fast charge; native reserve, tariffs/grid return, temperature/alert, brightness/screen timeout, port memory and guarded discharge floor |
 | `c2000_gen2` — A1783 | Tested live | Upper charge cap, charging power, screen timeout; native reserve, all-day Peak and confirmed grid return |
 
+C2000 native screen timeout is now prepared with model-specific 30/60-second
+limits, exact main 2.1.6.4 guards and full settings/output preservation checks.
+Its BLE write is physically verified; this native setter still awaits a
+hardware round trip. See [additional controls/data](../docs/additional-controls-and-data.md)
+for expansion telemetry and original C1000's separate unitless report counters.
+The [owned HA price policy](../docs/owned-price-charging.md) is opt-in and starts
+disabled; CLI/browser adaptive previews remain read-only.
+
 C300 DC variants are not supported. The distribution and CLI are `solix-link`;
 the Python import is `solix_link`. Existing `solix-gen2` commands and
 `solix_gen2` imports remain compatibility aliases to the same implementation.

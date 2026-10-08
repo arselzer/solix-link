@@ -67,6 +67,9 @@ def test_exact_native_c1000_preferences_pass_and_metrics_survive_filtering(comma
 @pytest.mark.parametrize("model,protocol", [("c1000_gen2", "prime"), ("c2000_gen2", "native_mqtt"),
                                            ("c2000_gen2", "prime"), ("c1000", "legacy"), ("c300", "legacy")])
 def test_native_preferences_reject_wrong_model_or_transport_even_if_advertised(command, field, value, metric, baseline, model, protocol):
+    if model == "c2000_gen2" and command == "set-display-timeout":
+        api.validate_command(station(model=model, protocol=protocol), {"command": command, field: value})
+        return
     with pytest.raises(ValueError):
         api.validate_command(station(model=model, protocol=protocol), {"command": command, field: value})
 

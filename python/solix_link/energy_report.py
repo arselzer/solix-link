@@ -78,14 +78,9 @@ def decode_energy_report(payload: bytes) -> dict:
     return {"protobuf_name": REPORT_NAME, "units_verified": False, "groups": groups}
 
 
-def decode_energy_events(request: dict) -> list[dict]:
-    """Decode counters and the request's radio construction time, not MCU time.
-
-    Batches share this request timestamp; it does not order their members.
-    Invalid/missing time leaves diagnostics usable but cannot qualify metering.
-    Account, serial and unrelated event metadata are discarded.
-    """
-    if not isinstance(request, dict) or request.get("protobuf_name") != REPORT_NAME:
+def _event_payloads(request: dict, report_name: str) -> list[tuple[bytes, int | float | None]]:
+    """Bounded payloads and radio construction time; discard envelope identities."""
+    if not isinstance(request, dict) or request.get("protobuf_name") != report_name:
         raise ValueError("Unsupported energy report schema")
     events = request.get("events")
     if not isinstance(events, list) or not 1 <= len(events) <= 32:
@@ -105,5 +100,11 @@ def decode_energy_events(request: dict) -> list[dict]:
             payload = base64.b64decode(encoded, validate=True)
         except (binascii.Error, ValueError) as exc:
             raise ValueError("Invalid encoded energy report") from exc
-        reports.append({**decode_energy_report(payload), "event_timestamp": timestamp})
+        reports.append((payload, timestamp))
     return reports
+
+
+def decode_energy_events(request: dict) -> list[dict]:
+    """Decode Gen 2 counters. Batch time does not order individual events."""
+    return [{**decode_energy_report(payload), "event_timestamp": timestamp}
+            for payload, timestamp in _event_payloads(request, REPORT_NAME)]

@@ -88,6 +88,11 @@ class SolixSelect(SolixEntity, SelectEntity):
         super().__init__(coordinator, name, description.key)
         self.entity_description = description
         self.command = SETTINGS[description.key]
+        if description.key == "display_timeout_seconds" and self.snapshot.get("model") == "c2000_gen2":
+            self._attr_extra_state_attributes = {
+                "validated_transport": "BLE 30/60-second write and readback",
+                "native_transport_validation": "Synthetic preservation tests; hardware round trip pending",
+            }
         if description.key in CLOCK_BRIGHTNESS_WINDOWS:
             self._attr_extra_state_attributes = {
                 "setting_scope": "Changes an inactive clock window's stored brightness flag; does not enable clock.",

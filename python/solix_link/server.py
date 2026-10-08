@@ -160,12 +160,14 @@ def create_app(service: MonitorService, token: str | None = None, *, allow_contr
     def status_with_controls(status: dict, principal: Principal) -> dict:
         from .energy_values import validate_native_energy
         from .wifi_signal import validate_wifi_signal
+        from .original_counters import validate_original_counters
         commands = getattr(service, "supported_commands", None)
         config = service.devices.get(status["name"])
         private_fields = {"address", "serial_number", "account_id", "owner_id", "owner_user_id", "client_id", "raw_tlvs"}
         public = {key: value for key, value in status.items() if key not in private_fields}
         public["metrics"] = {key: value for key, value in status["metrics"].items() if key not in private_fields}
         public["native_energy"] = validate_native_energy(status.get("native_energy"), model=status.get("model")) if status.get("protocol") == "native_mqtt" else None
+        public["original_counters"] = validate_original_counters(status.get("original_counters"), model=status.get("model"), protocol=status.get("protocol"))
         public["wifi_signal"] = validate_wifi_signal(status.get("wifi_signal"),
             model=status.get("model"), protocol=status.get("protocol"))
         public["tou_plan_readback"] = validate_plan_readback(status.get("tou_plan_readback")) if (
@@ -500,7 +502,10 @@ def create_app(service: MonitorService, token: str | None = None, *, allow_contr
 
     @app.api_route("/metrics", methods=["GET", "HEAD"])
     async def metrics(request: Request):
+        from .original_counters import original_counter_value
+        from .telemetry_values import expansion_value
         lines = []
+        lines.append("# TYPE solix_original_counter_raw gauge")
         for metric in ("report_available", "reported_at_seconds", "counter_epoch", "raw", "kwh_unverified"):
             lines.append(f"# TYPE solix_native_energy_{metric} gauge")
         for metric in ("available", "energy_kwh_estimate", "started_at_seconds"):
@@ -512,9 +517,15 @@ def create_app(service: MonitorService, token: str | None = None, *, allow_contr
             if status["last_seen_timestamp"] is not None:
                 lines.append(f"solix_gen2_last_seen_timestamp_seconds{label} {status['last_seen_timestamp']}")
             for key, value in status["metrics"].items():
+                if key in ("expansion_battery_count", "expansion_battery_percentage", "expansion_temperature_c"):
+                    value = expansion_value(key, status["metrics"], model=status["model"])
                 if isinstance(value, (int, float)) and not isinstance(value, bool):
                     metric = re.sub(r"[^a-zA-Z0-9_]", "_", key)
                     lines.append(f"solix_gen2_{metric}{label} {value}")
+            for index in range(1, 9):
+                value = original_counter_value(status.get("original_counters"), index, model=status["model"], protocol=status["protocol"])
+                if value is not None and value <= 2**53 - 1:
+                    lines.append(f'solix_original_counter_raw{{device="{name}",field="{index}"}} {value}')
             signal = status.get("wifi_signal")
             signal_available = bool(status["available"] and signal and signal["available"])
             lines.append(f"solix_wifi_signal_available{label} {int(signal_available)}")

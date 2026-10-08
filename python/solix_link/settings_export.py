@@ -20,7 +20,7 @@ FIELDS = {
         "ac_off_grid_alert_enabled", "clock_screen_first_brightness_flag_raw",
         "clock_screen_second_brightness_flag_raw"},
     "c2000_gen2": {"ac_charging_power_limit_w", "max_charge_percentage",
-        "min_charge_percentage", "backup_reserve_percentage"},
+        "min_charge_percentage", "backup_reserve_percentage", "display_timeout_seconds"},
 }
 
 
@@ -38,7 +38,7 @@ def _valid(key: str, value: object, model: str) -> bool:
     if key == "device_timeout_minutes":
         return value in (0, 30, 60, 120, 240, 360, 720, 1440)
     if key == "display_timeout_seconds":
-        return value in (0, 10, 20, 30, 60, 300, 1800)
+        return value in ((30, 60) if model == "c2000_gen2" else (0, 10, 20, 30, 60, 300, 1800))
     if key == "display_brightness":
         return value in (1, 2, 3)
     if key == "light_mode":

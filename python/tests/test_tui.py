@@ -94,7 +94,7 @@ def test_native_target_uses_initialized_profile_model_and_limits(tmp_path, model
     controls = controls_for(target)
     minimum = 100 if model == Model.C1000_GEN2 else 300
     assert next(control for control in controls if control.key == "charge-power").hint == f"{minimum}–{maximum} W, in 100 W steps"
-    expected = {"charge-power", "charge-cap", "reserve"}
+    expected = {"charge-power", "charge-cap", "reserve", "display-timeout"}
     if model == Model.C1000_GEN2:
         expected |= {"temperature-unit", "off-grid-alert", "discharge-floor", "device-timeout", "fast-charge",
                      "display-brightness", "display-timeout", "port-memory", "dc-power-saving", "ac-power-saving",

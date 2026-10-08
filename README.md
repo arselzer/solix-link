@@ -9,7 +9,7 @@ dashboard, optional FastAPI/Vue web dashboard and Home Assistant integration.
 | Device | Python Bluetooth | Native local MQTT | Tested / limitations |
 | --- | --- | --- | --- |
 | C1000 Gen 2, A1763 | Monitoring, charge limits/power, display timeout, fast charge | Charging/fast/reserve, tariffs, display/memory, discharge floor, temperature/alert, guarded Smart and clock brightness | Main 1.1.4.9 / radio 0.3.3.0; Smart requires its output off and inactive countdowns; older 1.1.4.3 uses legacy BLE |
-| C2000 Gen 2, A1783 | Monitoring, power/cap, display timeout | Charging/reserve, tariffs and return to grid | Main 2.1.6.4; AC-output writes blocked |
+| C2000 Gen 2, A1783 | Monitoring, power/cap, display timeout | Charging/reserve, tariffs, return to grid; screen timeout ready for native testing | Main 2.1.6.4; native screen setter has synthetic coverage; AC-output writes blocked |
 | Original C1000, A1761 | Twelve legacy controls; ten Prime controls | Charging power, Fast, device/screen timeout, brightness, light, temperature unit and guarded AC/DC Smart | Legacy 1.5.1; Prime/native main 1.7.1 / radio 0.3.3.0; Smart requires its output off; AC Smart/Prime AC output require no active AC timer; charging rates/reboot retention unverified |
 | C300/C300X AC, A1722/A1723 | Monitoring, AC output, light, charging power, display timeout | — | C300X tested; C300 sibling untested; C300 DC unsupported |
 | Solarbank 3 E2700 Pro, A17C5 | Separate Web Bluetooth app | — | Browser telemetry tested; no Python profile |
@@ -36,8 +36,10 @@ firmware specific; detailed capabilities are in the [Python guide](python/README
   in the API, terminal F7, browser and HA. All supported models have
   [HA Energy-compatible AC estimates](docs/home-assistant-energy-dashboard.md);
   both Gen 2 models also expose [observed native Standard AC estimates](docs/native-energy-meter.md).
-- Preview solar/price charging policies; optionally prepare HA charging
-  blueprints. Previews send no commands and automations start disabled.
+- Preview solar/price charging policies; opt into HA surplus or
+  [owned price charging](docs/owned-price-charging.md). Automations start disabled.
+  [Additional data](docs/additional-controls-and-data.md) includes expansion
+  presence/SOC/temperature and original C1000 raw report diagnostics.
 
 ## Start locally
 

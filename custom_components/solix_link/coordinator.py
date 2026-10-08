@@ -14,6 +14,7 @@ from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, Upda
 
 from .api import GatewayAuthError, GatewayClient, GatewayError, gateway_id
 from .const import DOMAIN, POLL_SECONDS
+from .price_policy import confirmed_state, price_decision, validate_store
 from .history import (HISTORY_DISCOVERY_SECONDS, HISTORY_POLL_SECONDS,
                       HistoryValidationError, history_nonregressing, parse_history_highwater,
                       parse_history_summary, history_storage_evidence)
@@ -36,9 +37,92 @@ class SolixCoordinator(DataUpdateCoordinator[dict[str, dict]]):
         self._history_storage_valid = True
         self.history_accounting_ready = False
         self._history_store = None
+        self._price_store = None
+        self._price_loaded = False
+        self._price_storage_valid = True
+        self._price_states: dict[str, dict] = {}
         if hass is not None:
             from homeassistant.helpers.storage import Store
             self._history_store = Store(hass, 1, f"{DOMAIN}.energy_continuity.{entry.entry_id}")
+            self._price_store = Store(hass, 1, f"{DOMAIN}.price_policy.{entry.entry_id}")
+
+    async def _async_restore_price(self) -> None:
+        if self._price_loaded:
+            return
+        if self._price_store is None:
+            self._price_loaded = True
+            return
+        try:
+            self._price_states = validate_store(await self._price_store.async_load())
+        except (OSError, ValueError, TypeError, HomeAssistantError):
+            self._price_storage_valid = False
+            _LOGGER.error("Unable to restore price policy ownership; automatic price commands are blocked")
+        self._price_loaded = True
+
+    async def _async_save_price(self, name: str, state: dict | None) -> None:
+        if self._price_store is None or not self._price_storage_valid:
+            raise HomeAssistantError("Price policy ownership storage is unavailable")
+        states = dict(self._price_states)
+        if state is None:
+            states.pop(name, None)
+        else:
+            states[name] = state
+        validate_store({"stations": states})
+        try:
+            await self._price_store.async_save({"stations": states})
+        except asyncio.CancelledError:
+            # Storage can finish after task cancellation. Do not continue in
+            # this coordinator with an ownership state that may now be stale.
+            self._price_storage_valid = False
+            raise
+        self._price_states = states
+
+    def _attach_price(self, data: dict[str, dict]) -> dict[str, dict]:
+        result = dict(data)
+        for name, snapshot in data.items():
+            if (snapshot.get("model") == "c1000_gen2" and snapshot.get("protocol") == "native_mqtt"
+                    or name in self._price_states or "price_policy" in snapshot or not self._price_storage_valid):
+                state = self._price_states.get(name, {})
+                result[name] = {**snapshot, "price_policy": {
+                    "phase": "storage_error" if not self._price_storage_valid else state.get("phase", "unowned"),
+                    "decision": state.get("decision"), "changed_at": state.get("changed_at"),
+                }}
+        return result
+
+    async def async_price_policy(self, name: str, config: dict, *, price: float | None = None,
+                                 price_timestamp: float | None = None, armed: bool = False,
+                                 override: str = "none", mode: str = "preview") -> dict:
+        """Persist a latch before one guarded plan change; never retry uncertainty."""
+        if mode not in ("preview", "apply", "release", "reset"):
+            raise HomeAssistantError("Invalid price policy mode")
+        async with self._io_lock:
+            await self._async_restore_price()
+            if not self._price_storage_valid:
+                raise HomeAssistantError("Price policy ownership storage is invalid")
+            data = dict(self.data or {})
+            snapshot = await self.client.async_device(name)
+            data[name] = snapshot
+            result = price_decision(snapshot, config, self._price_states.get(name), now=time.time(),
+                price=price, price_timestamp=price_timestamp, armed=armed, override=override,
+                action=mode if mode in ("release", "reset") else "evaluate")
+            try:
+                if mode != "preview":
+                    if result["next_state"] != self._price_states.get(name):
+                        await self._async_save_price(name, result["next_state"])
+                    if result["command"] is not None:
+                        # The exact decision snapshot supplies the optimistic
+                        # gateway preconditions. Do not fetch a new baseline
+                        # that silently accepts intervening manual changes.
+                        data[name] = await self.client.async_command(name, result["command"], expected_snapshot=snapshot)
+                        confirmed = confirmed_state(data[name], result["next_state"], now=time.time())
+                        await self._async_save_price(name, None if mode == "release" else confirmed)
+            finally:
+                self.async_set_updated_data(self._attach_price(self._attach_history(data)))
+            return {key: result[key] for key in ("eligible", "reason", "decision")} | {
+                "would_send": result["command"] is not None,
+                "phase": self._price_states.get(name, {}).get("phase", "unowned"),
+                "electrical_behavior_verified": False,
+            }
 
     async def _async_restore_history(self) -> None:
         if self._history_loaded:
@@ -120,11 +204,12 @@ class SolixCoordinator(DataUpdateCoordinator[dict[str, dict]]):
         try:
             async with self._io_lock:
                 await self._async_restore_history()
+                await self._async_restore_price()
                 data = await self.client.async_devices()
                 await self._async_history()
                 data = self._attach_history(data)
                 await self._async_save_history()
-                return data
+                return self._attach_price(data)
         except GatewayAuthError as err:
             raise ConfigEntryAuthFailed("Gateway authentication failed") from err
         except GatewayError as err:
@@ -136,6 +221,8 @@ class SolixCoordinator(DataUpdateCoordinator[dict[str, dict]]):
         async with self._io_lock:
             data = dict(self.data or {})
             try:
+                if name in self._price_states:
+                    await self._async_save_price(name, {**self._price_states[name], "phase": "blocked"})
                 data[name] = await self.client.async_command(name, payload)
             except (GatewayError, ValueError) as err:
                 error = err
@@ -144,7 +231,7 @@ class SolixCoordinator(DataUpdateCoordinator[dict[str, dict]]):
                 except GatewayError:
                     if name in data:
                         data[name] = {**data[name], "connected": False, "available": False}
-            self.async_set_updated_data(self._attach_history(data))
+            self.async_set_updated_data(self._attach_price(self._attach_history(data)))
         if error is not None:
             raise HomeAssistantError(str(error)) from error
 

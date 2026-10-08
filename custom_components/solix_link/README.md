@@ -22,6 +22,15 @@ Authorization header. Treat HA configuration backups as containing credentials.
 
 ## Entities and actions
 
+Optional [owned price charging](../../docs/owned-price-charging.md) adds a
+preview-by-default service and disabled blueprint for C1000 Gen 2. Persistent
+ownership, reserve guards and uncertainty latches prevent automatic takeover
+of existing plans. C2000 and original C1000 remain excluded from this executor.
+
+[Additional controls/data](../../docs/additional-controls-and-data.md) include
+C2000 screen timeout (native hardware test pending), expansion presence-gated
+SOC/temperature and disabled, unitless original counter diagnostics.
+
 Reported USB/DC/solar power sensors, guarded remaining-time estimates, current
 AC/DC countdowns and component firmware diagnostics are discovered only for
 models that report them. Native C1000 Gen 2 Wi-Fi signal is optional: enable

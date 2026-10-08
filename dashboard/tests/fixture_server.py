@@ -28,6 +28,7 @@ class Demo:
         self.plan_readback = None
         self.native_energy = {}
         self.wifi_signal = {}
+        self.original_counters = {}
     async def start(self): pass
     async def stop(self): pass
     def supported_commands(self, name):
@@ -35,7 +36,7 @@ class Demo:
         if name.startswith("Local"): return list(native_commands_for_model(Model.C1000))
         if name.startswith("Updated"): return original_prime_commands()
         if name.startswith("Spare"): return ["set-charge-power", "set-device-timeout", "set-temperature-unit", "set-fast-charge", "set-ac-power-saving", "set-dc-power-saving"]
-        return list(NATIVE_COMMANDS) + (list(NATIVE_C1000_COMMANDS) if name.startswith("Office") else [])
+        return list(NATIVE_COMMANDS) + (list(NATIVE_C1000_COMMANDS) if name.startswith("Office") else ["set-display-timeout"])
     def snapshot(self, name):
         c1000 = name.startswith("Office")
         updated = name.startswith("Updated")
@@ -66,7 +67,8 @@ class Demo:
                            clock_screen_first_brightness_flag_raw=0, clock_screen_second_brightness_flag_raw=0)
         if not original and not c1000:
             metrics.update(software_version_controller="1.2.3.4", software_version_inverter="2.3.4.5",
-                           software_version_bms="3.4.5.6", ac_output_timer_remaining_seconds=0, dc_output_timer_remaining_seconds=0)
+                           software_version_bms="3.4.5.6", display_timeout_seconds=30,
+                           ac_output_timer_remaining_seconds=0, dc_output_timer_remaining_seconds=0)
         if original:
             metrics.update(usb_c1_power_w=15, usb_c2_power_w=0, usb_a1_power_w=3, usb_a2_power_w=0,
                            dc_input_power_w=0, time_remaining_minutes="unknown", dc_output_timer_remaining_seconds=0)
@@ -84,7 +86,8 @@ class Demo:
                 "connected":self.connected,"available":self.available,"last_seen_timestamp":self.last_seen or now - 2,
                 "metrics":metrics,"power_flow":"unknown" if original else "battery" if c1000 else "grid",
                 "tou_plan_readback": None if original else self.plan_readback,
-                "native_energy": self.native_energy.get(name), "wifi_signal": self.wifi_signal.get(name)}
+                "native_energy": self.native_energy.get(name), "wifi_signal": self.wifi_signal.get(name),
+                "original_counters": self.original_counters.get(name)}
     def snapshots(self): return [self.snapshot(name) for name in self.devices]
     async def check_setup(self):
         return {"schema": 1, "ok": True, "read_only": True,

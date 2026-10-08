@@ -1,3 +1,60 @@
+price_policy:
+  fields:
+    device_id:
+      required: true
+      selector:
+        device:
+          integration: solix_link
+    price_entity:
+      selector:
+        entity:
+          domain: sensor
+    mode:
+      default: preview
+      selector:
+        select:
+          options: [preview, apply, release, reset]
+    armed:
+      default: false
+      selector:
+        boolean:
+    override:
+      default: none
+      selector:
+        select:
+          options: [none, hold, charge, grid, battery]
+    charge_start:
+      default: 0.15
+      selector:
+        number: {min: -1000, max: 1000, step: 0.001, mode: box}
+    charge_stop:
+      default: 0.20
+      selector:
+        number: {min: -1000, max: 1000, step: 0.001, mode: box}
+    discharge_stop:
+      default: 0.30
+      selector:
+        number: {min: -1000, max: 1000, step: 0.001, mode: box}
+    discharge_start:
+      default: 0.35
+      selector:
+        number: {min: -1000, max: 1000, step: 0.001, mode: box}
+    cooldown:
+      default: 300
+      selector:
+        number: {min: 60, max: 86400, step: 1, mode: box}
+    price_max_age:
+      default: 300
+      selector:
+        number: {min: 1, max: 3600, step: 1, mode: box}
+    minimum_reserve:
+      default: 20
+      selector:
+        number: {min: 5, max: 95, step: 5}
+    soc_resume_margin:
+      default: 5
+      selector:
+        number: {min: 1, max: 25, step: 1}
 set_tou_plan:
   fields:
     device_id:

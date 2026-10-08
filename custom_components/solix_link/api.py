@@ -19,6 +19,7 @@ COMMANDS = frozenset({"set-charge-power", "set-charge-cap", "set-backup-reserve"
                       "set-fast-charge", "set-ac-power-saving", "set-dc-power-saving",
                       "set-display-brightness", "set-display-timeout", "set-port-memory", "set-light", "set-clock-brightness"})
 METRICS = frozenset({"battery_percentage", "temperature_c", "output_power_w",
+                    "expansion_battery_count", "expansion_battery_percentage", "expansion_temperature_c",
                     "ac_input_power_w", "ac_output_power_w", "dc_output_power_w",
                     "dc_input_power_w", "solar_input_power_w", "input_power_w",
                     "usb_c1_power_w", "usb_c2_power_w", "usb_c3_power_w", "usb_a1_power_w", "usb_a2_power_w",
@@ -150,6 +151,7 @@ EXPECTED_METRICS = frozenset({"ac_charging_power_limit_w", "max_charge_percentag
     "ac_power_saving_mode_enabled", "dc_power_saving_mode_enabled", "ac_input_connected", "ac_output_enabled",
     "dc_output_enabled", "usage_mode", "active_tariff", "tou_schedule_slot_count", "clock_screen_enabled",
     "clock_screen_transfer_status_raw", "ac_output_timeout_seconds", "dc_output_timeout_seconds",
+    "ac_output_timer_remaining_seconds", "dc_output_timer_remaining_seconds",
     "disaster_preparation_active",
     "software_version", "software_version_module"})
 
@@ -232,6 +234,10 @@ def parse_snapshot(value: Any) -> dict:
     result["tou_plan_readback"] = parse_tou_plan(value.get("tou_plan_readback")) if (
         value["model"] in ("c1000_gen2", "c2000_gen2") and value["protocol"] == "native_mqtt") else None
     result["native_energy"] = None
+    result["original_counters"] = None
+    if value.get("original_counters") is not None:
+        from .original_counters import validate_original_counters
+        result["original_counters"] = validate_original_counters(value["original_counters"], model=value["model"], protocol=value["protocol"])
     result["wifi_signal"] = None
     if value.get("wifi_signal") is not None and value["model"] == "c1000_gen2" and value["protocol"] == "native_mqtt":
         from .wifi_signal import validate_wifi_signal
@@ -335,6 +341,13 @@ def display_brightness_options(snapshot: dict) -> list[str]:
 
 
 def display_timeout_options(snapshot: dict) -> list[str]:
+    if snapshot.get("model") == "c2000_gen2":
+        value = snapshot.get("metrics", {}).get("display_timeout_seconds")
+        if (snapshot.get("protocol") in ("prime", "native_mqtt")
+                and "set-display-timeout" in snapshot.get("controls", [])
+                and type(value) is int and value in (30, 60)):
+            return ["30_seconds", "1_minute"]
+        return []
     if original_encrypted_preferences(snapshot):
         value = snapshot.get("metrics", {}).get("display_timeout_seconds")
         if ("set-display-timeout" in snapshot.get("controls", [])
@@ -630,10 +643,12 @@ class GatewayClient:
             raise GatewayError("Gateway returned a different device")
         return snapshot
 
-    async def async_command(self, name: str, payload: dict) -> dict:
+    async def async_command(self, name: str, payload: dict, *, expected_snapshot: dict | None = None) -> dict:
         if not self.token:
             raise GatewayAuthError("A gateway token is required for controls")
-        snapshot = await self.async_device(name)
+        snapshot = await self.async_device(name) if expected_snapshot is None else expected_snapshot
+        if snapshot.get("name") != name:
+            raise ValueError("Command baseline belongs to another station")
         validate_command(snapshot, payload)
         body = dict(payload)
         context = snapshot.get("command_context")

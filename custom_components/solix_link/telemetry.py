@@ -13,6 +13,10 @@ PORT_MODELS = {
 
 
 def telemetry_supported(key: str, model: str) -> bool:
+    if key in ("expansion_battery_percentage", "expansion_temperature_c"):
+        return model == "c1000"
+    if key in ("expansion_battery_present", "expansion_battery_count"):
+        return model in ("c1000", "c2000_gen2")
     if key in PORT_MODELS:
         return model in PORT_MODELS[key]
     if key in COMPONENT_VERSIONS:
@@ -22,6 +26,25 @@ def telemetry_supported(key: str, model: str) -> bool:
     if key == "wifi_rssi_dbm":
         return model == "c1000_gen2"
     return True
+
+
+def expansion_value(key: str, metrics: dict, *, model: str) -> int | None:
+    """Require explicit presence; an absent pack must never become zero SOC."""
+    if not telemetry_supported(key, model):
+        return None
+    count = metrics.get("expansion_battery_count")
+    if type(count) is not int or count not in (0, 1):
+        return None
+    if key in ("expansion_battery_present", "expansion_battery_count"):
+        return count
+    value = metrics.get(key)
+    if count != 1 or type(value) is not int:
+        return None
+    if key == "expansion_battery_percentage":
+        return value if 0 <= value <= 100 else None
+    if key == "expansion_temperature_c":
+        return value if -40 <= value <= 125 else None
+    return None
 
 
 def version_value(value: object) -> str | None:

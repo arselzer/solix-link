@@ -7,9 +7,11 @@ from homeassistant.const import EntityCategory
 from .api import binary_state, snapshot_available
 from .coordinator import SolixConfigEntry
 from .entity import SolixEntity
+from .telemetry import expansion_value
 
 PARALLEL_UPDATES = 0
 DESCRIPTIONS = (
+    BinarySensorEntityDescription(key="expansion_battery_present", translation_key="expansion_battery_present"),
     BinarySensorEntityDescription(key="telemetry_available", translation_key="telemetry_available",
                                   entity_category=EntityCategory.DIAGNOSTIC),
     BinarySensorEntityDescription(key="battery_reserve_low", translation_key="battery_reserve_low"),
@@ -55,6 +57,8 @@ async def async_setup_entry(hass, entry: SolixConfigEntry, async_add_entities) -
                     continue
                 present = (key in snapshot["metrics"] or key == "telemetry_available"
                            or key == "battery_reserve_low" and "ups_state" in snapshot)
+                if key == "expansion_battery_present":
+                    present = expansion_value(key, snapshot["metrics"], model=snapshot["model"]) is not None
                 if present and (name, key) not in added:
                     added.add((name, key))
                     entities.append(SolixBinarySensor(coordinator, name, description))
@@ -76,6 +80,9 @@ class SolixBinarySensor(SolixEntity, BinarySensorEntity):
 
     @property
     def is_on(self) -> bool | None:
+        if self.entity_description.key == "expansion_battery_present":
+            return binary_state(expansion_value("expansion_battery_present", self.snapshot.get("metrics", {}),
+                                                model=self.snapshot.get("model")))
         if self.entity_description.key == "telemetry_available":
             state = self.snapshot.get("ups_state")
             return (self.coordinator.last_update_success and snapshot_available(self.snapshot,

@@ -161,10 +161,12 @@ class GatewayClient:
         # measurement allowlist before presentation or policy evaluation.
         from .energy_values import validate_native_energy
         from .wifi_signal import validate_wifi_signal
+        from .original_counters import validate_original_counters
         return {"name": document["name"], "model": document["model"], "protocol": document["protocol"],
                 "connected": document["connected"], "available": document["available"],
                 "last_seen_timestamp": document.get("last_seen_timestamp"), "metrics": document["metrics"],
                 "native_energy": validate_native_energy(document.get("native_energy"), model=document["model"]) if document["protocol"] == "native_mqtt" else None,
+                "original_counters": validate_original_counters(document.get("original_counters"), model=document["model"], protocol=document["protocol"]),
                 "wifi_signal": validate_wifi_signal(document.get("wifi_signal"), model=document["model"], protocol=document["protocol"]),
                 "tou_plan_readback": validate_plan_readback(document.get("tou_plan_readback")) if (
                     document["model"] in ("c1000_gen2", "c2000_gen2") and document["protocol"] == "native_mqtt") else None,
