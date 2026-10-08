@@ -115,6 +115,9 @@ def integration(monkeypatch):
     install("homeassistant.exceptions", ConfigEntryAuthFailed=type("AuthFailed", (Exception,), {}),
             HomeAssistantError=type("HAError", (Exception,), {}))
     install("homeassistant.helpers")
+    install("homeassistant.helpers.issue_registry", IssueSeverity=SimpleNamespace(ERROR="error"),
+            async_create_issue=lambda *_args, **_kwargs: None,
+            async_delete_issue=lambda *_args, **_kwargs: None)
     install("homeassistant.helpers.aiohttp_client", async_get_clientsession=lambda hass: None)
     install("homeassistant.helpers.selector", TextSelector=lambda config: config,
             TextSelectorConfig=lambda **kwargs: SimpleNamespace(**kwargs),

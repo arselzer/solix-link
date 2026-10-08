@@ -74,3 +74,178 @@ set_tou_plan:
           end_hour: 24
       selector:
         object:
+charging_policy:
+  fields:
+    device_id:
+      required: true
+      selector:
+        device:
+          integration: solix_link
+    price_entity:
+      selector:
+        entity:
+          domain: sensor
+    mode:
+      default: preview
+      selector:
+        select:
+          options:
+          - preview
+          - apply
+          - release
+          - reset
+    armed:
+      default: false
+      selector:
+        boolean: null
+    override:
+      default: none
+      selector:
+        select:
+          options:
+          - none
+          - hold
+          - charge
+          - grid
+          - battery
+    charge_start:
+      default: 0.15
+      selector:
+        number:
+          min: -1000
+          max: 1000
+          step: 0.001
+          mode: box
+    charge_stop:
+      default: 0.2
+      selector:
+        number:
+          min: -1000
+          max: 1000
+          step: 0.001
+          mode: box
+    discharge_stop:
+      default: 0.3
+      selector:
+        number:
+          min: -1000
+          max: 1000
+          step: 0.001
+          mode: box
+    discharge_start:
+      default: 0.35
+      selector:
+        number:
+          min: -1000
+          max: 1000
+          step: 0.001
+          mode: box
+    cooldown:
+      default: 300
+      selector:
+        number:
+          min: 60
+          max: 86400
+          step: 1
+          mode: box
+    price_max_age:
+      default: 300
+      selector:
+        number:
+          min: 1
+          max: 3600
+          step: 1
+          mode: box
+    minimum_reserve:
+      default: 20
+      selector:
+        number:
+          min: 5
+          max: 95
+          step: 5
+    soc_resume_margin:
+      default: 5
+      selector:
+        number:
+          min: 1
+          max: 25
+          step: 1
+    policy:
+      default: price
+      selector:
+        select:
+          options:
+          - price
+          - surplus
+    export_entity:
+      selector:
+        entity:
+          domain: sensor
+    positive_export_confirmed:
+      default: false
+      selector:
+        boolean: null
+    idle_watts:
+      default: 100
+      selector:
+        number:
+          min: 100
+          max: 1200
+          step: 100
+          mode: box
+    maximum_watts:
+      default: 1000
+      selector:
+        number:
+          min: 100
+          max: 1200
+          step: 100
+          mode: box
+    maximum_step_w:
+      default: 100
+      selector:
+        number:
+          min: 100
+          max: 1200
+          step: 100
+          mode: box
+    export_start:
+      default: 600
+      selector:
+        number:
+          min: 0
+          max: 20000
+          step: 1
+          mode: box
+    export_stop:
+      default: 300
+      selector:
+        number:
+          min: 0
+          max: 20000
+          step: 1
+          mode: box
+    export_max_age:
+      default: 30
+      selector:
+        number:
+          min: 1
+          max: 3600
+          step: 1
+          mode: box
+    target_export_w:
+      default: 100
+      selector:
+        number:
+          min: 0
+          max: 20000
+          step: 1
+          mode: box
+    deadband_w:
+      default: 50
+      selector:
+        number:
+          min: 0
+          max: 20000
+          step: 1
+          mode: box

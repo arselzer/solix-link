@@ -251,7 +251,8 @@ class SolixSensor(SolixEntity, SensorEntity):
                     "installed_layout_verified", "firmware_version", "reported_at", "batch_order_unknown")})
         if self.entity_description.key == "price_policy":
             attributes.update(self.snapshot.get("price_policy", {}))
-            attributes["persistent_plan_continues_offline"] = True
+            attributes["persistent_plan_continues_offline"] = attributes.get("owner") == "price"
+            attributes["saved_settings_persist_offline"] = True
         if self.entity_description.key in ("expansion_battery_percentage", "expansion_temperature_c"):
             attributes["source"] = "reported_present_expansion_pack"
         if self.entity_description.key == "control_availability":

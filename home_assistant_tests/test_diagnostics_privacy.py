@@ -103,3 +103,14 @@ def test_unloaded_or_failed_setup_exports_no_configuration_or_exception():
     report = asyncio.run(diagnostics.async_get_config_entry_diagnostics(None, entry))
     assert report == {"gateway_authenticated": None, "last_poll_success": False,
                       "station_count": 0, "stations": []}
+
+
+def test_policy_diagnostics_export_only_fixed_status_values():
+    raw=snapshot(price_policy={"phase":"blocked","owner":"surplus","reason":"manual_intervention_detected",
+        "armed":True,"override":"hold","account_id":"private account","protected":{"private":"secret"}})
+    report=diagnostics.diagnostics_report({"private map key":raw},now=1000)
+    policy=report["stations"][0]["charging_policy"]
+    assert policy==dict(phase="blocked",owner="surplus",reason="manual_intervention_detected",armed=True,override="hold")
+    assert "private" not in json.dumps(report)
+    raw["price_policy"]["reason"]="private error"
+    assert "reason" not in diagnostics.diagnostics_report({"station":raw},now=1000)["stations"][0]["charging_policy"]

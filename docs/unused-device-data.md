@@ -55,8 +55,10 @@ mode counters, not lifetime consumption or measured stored battery energy.
 **Implementation update, 2026-10-08:** the original upload now has a separate
 bounded numeric decoder and unitless diagnostics, with no Gen 2 channel aliases
 or kWh conversion. Expansion presence-gated telemetry is also integrated.
-See [additional controls/data](additional-controls-and-data.md). Live discovery
-of original counter sensors awaits a new passive upload after deployment.
+See [additional controls/data](additional-controls-and-data.md). Eight original
+counter diagnostics are registered and remain disabled; a fresh passive upload
+is needed after worker restart. The [calibration workflow](energy-calibration-workflow.md)
+can now record independent-meter comparisons without assigning verified units.
 
 The public **main 1.5.9** image has SHA-256
 `b295ee8613f5c96e70dcc905896df516621cab4dc590bb580eac6b84519911a6`.

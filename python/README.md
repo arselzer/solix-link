@@ -38,7 +38,9 @@ Its BLE write is physically verified; this native setter still awaits a
 hardware round trip. See [additional controls/data](../docs/additional-controls-and-data.md)
 for expansion telemetry and original C1000's separate unitless report counters.
 The [owned HA price policy](../docs/owned-price-charging.md) is opt-in and starts
-disabled; CLI/browser adaptive previews remain read-only.
+disabled; it now shares one owner with surplus charging and exposes
+[HA Repairs](../docs/charging-controller-and-repairs.md).
+CLI/browser adaptive previews remain read-only.
 
 C300 DC variants are not supported. The distribution and CLI are `solix-link`;
 the Python import is `solix_link`. Existing `solix-gen2` commands and
@@ -68,7 +70,13 @@ See [native energy values](../docs/native-energy-values.md) for private persiste
 reporting opt-in and model-specific conversion limits.
 The optional `native_energy.meter` object retains integer deltas, its gateway
 generation and both radio/receipt timestamps across restart. C2000 native
-conversion remains unqualified for statistics.
+conversion remains assumed rather than physically calibrated.
+
+`solix-link energy-calibration create`, `record --guided` and `report` compare
+fresh cached counter uploads with independent cumulative AC-meter kWh. Records
+are private and reset/timing boundaries exclude ambiguous deltas. No fitted scale
+changes HA statistics or runtime conversions. See the
+[workflow and Python API limits](../docs/energy-calibration-workflow.md).
 
 The HTTP gateway optionally retains private battery/AC-power readings with
 `--history-file /private/history/readings.sqlite3 --history-retention-days 7`.

@@ -14,7 +14,9 @@ from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, Upda
 
 from .api import GatewayAuthError, GatewayClient, GatewayError, gateway_id
 from .const import DOMAIN, POLL_SECONDS
-from .price_policy import confirmed_state, price_decision, validate_store
+from .charging_controller import confirmed_state, controller_decision, owner, validate_store
+from .repair_notifications import sync_repairs
+from .price_policy import _number
 from .history import (HISTORY_DISCOVERY_SECONDS, HISTORY_POLL_SECONDS,
                       HistoryValidationError, history_nonregressing, parse_history_highwater,
                       parse_history_summary, history_storage_evidence)
@@ -41,6 +43,7 @@ class SolixCoordinator(DataUpdateCoordinator[dict[str, dict]]):
         self._price_loaded = False
         self._price_storage_valid = True
         self._price_states: dict[str, dict] = {}
+        self._policy_runtime: dict[str, dict] = {}
         if hass is not None:
             from homeassistant.helpers.storage import Store
             self._history_store = Store(hass, 1, f"{DOMAIN}.energy_continuity.{entry.entry_id}")
@@ -53,11 +56,18 @@ class SolixCoordinator(DataUpdateCoordinator[dict[str, dict]]):
             self._price_loaded = True
             return
         try:
-            self._price_states = validate_store(await self._price_store.async_load())
+            path = getattr(self._price_store, "path", None)
+            evidence = (await self.hass.async_add_executor_job(history_storage_evidence, path)
+                        if isinstance(path, str) else False)
+            raw = await self._price_store.async_load()
+            if raw is None and evidence:
+                raise ValueError("Charging ownership storage was lost or corrupt")
+            self._price_states = validate_store(raw)
         except (OSError, ValueError, TypeError, HomeAssistantError):
             self._price_storage_valid = False
-            _LOGGER.error("Unable to restore price policy ownership; automatic price commands are blocked")
+            _LOGGER.error("Unable to restore charging ownership; automatic charging commands are blocked")
         self._price_loaded = True
+        sync_repairs(self, self.data or {})
 
     async def _async_save_price(self, name: str, state: dict | None) -> None:
         if self._price_store is None or not self._price_storage_valid:
@@ -75,6 +85,9 @@ class SolixCoordinator(DataUpdateCoordinator[dict[str, dict]]):
             # this coordinator with an ownership state that may now be stale.
             self._price_storage_valid = False
             raise
+        except (OSError, ValueError, TypeError, HomeAssistantError) as err:
+            self._price_storage_valid = False
+            raise HomeAssistantError("Charging ownership could not be persisted; commands are blocked") from err
         self._price_states = states
 
     def _attach_price(self, data: dict[str, dict]) -> dict[str, dict]:
@@ -85,27 +98,46 @@ class SolixCoordinator(DataUpdateCoordinator[dict[str, dict]]):
                 state = self._price_states.get(name, {})
                 result[name] = {**snapshot, "price_policy": {
                     "phase": "storage_error" if not self._price_storage_valid else state.get("phase", "unowned"),
+                    "owner": owner(state) if state else None,
                     "decision": state.get("decision"), "changed_at": state.get("changed_at"),
+                    **self._policy_runtime.get(name, {}),
                 }}
+        sync_repairs(self, result)
         return result
 
     async def async_price_policy(self, name: str, config: dict, *, price: float | None = None,
                                  price_timestamp: float | None = None, armed: bool = False,
                                  override: str = "none", mode: str = "preview") -> dict:
+        return await self.async_charging_policy(name, config, policy="price", price=price,
+            price_timestamp=price_timestamp, armed=armed, override=override, mode=mode)
+
+    async def async_charging_policy(self, name: str, config: dict, *, policy: str,
+                                    price: float | None = None, price_timestamp: float | None = None,
+                                    export: float | None = None, export_timestamp: float | None = None,
+                                    armed: bool = False, override: str = "none", mode: str = "preview") -> dict:
         """Persist a latch before one guarded plan change; never retry uncertainty."""
         if mode not in ("preview", "apply", "release", "reset"):
             raise HomeAssistantError("Invalid price policy mode")
         async with self._io_lock:
-            await self._async_restore_price()
-            if not self._price_storage_valid:
-                raise HomeAssistantError("Price policy ownership storage is invalid")
             data = dict(self.data or {})
-            snapshot = await self.client.async_device(name)
-            data[name] = snapshot
-            result = price_decision(snapshot, config, self._price_states.get(name), now=time.time(),
-                price=price, price_timestamp=price_timestamp, armed=armed, override=override,
-                action=mode if mode in ("release", "reset") else "evaluate")
             try:
+                await self._async_restore_price()
+                if not self._price_storage_valid:
+                    raise HomeAssistantError("Charging ownership storage is invalid")
+                snapshot = await self.client.async_device(name)
+                data[name] = snapshot
+                result = controller_decision(snapshot, config, self._price_states.get(name), policy=policy,
+                    now=time.time(), price=price, price_timestamp=price_timestamp,
+                    export=export, export_timestamp=export_timestamp, armed=armed, override=override,
+                    action=mode if mode in ("release", "reset") else "evaluate")
+                # Preview must not replace the executor's health/arming record.
+                if mode != "preview" and result["reason"] != "another_policy_owns_station":
+                    signal_timestamp = price_timestamp if policy == "price" else export_timestamp
+                    self._policy_runtime[name] = {"policy": policy, "mode": mode,
+                        "armed": armed, "override": override, "reason": result["reason"],
+                        "checked_at": time.time(),
+                        "signal_timestamp": signal_timestamp if _number(signal_timestamp) else None,
+                        "signal_max_age": config["price_max_age" if policy == "price" else "export_max_age"]}
                 if mode != "preview":
                     if result["next_state"] != self._price_states.get(name):
                         await self._async_save_price(name, result["next_state"])
@@ -121,6 +153,7 @@ class SolixCoordinator(DataUpdateCoordinator[dict[str, dict]]):
             return {key: result[key] for key in ("eligible", "reason", "decision")} | {
                 "would_send": result["command"] is not None,
                 "phase": self._price_states.get(name, {}).get("phase", "unowned"),
+                "owner": owner(self._price_states.get(name)),
                 "electrical_behavior_verified": False,
             }
 
@@ -221,6 +254,9 @@ class SolixCoordinator(DataUpdateCoordinator[dict[str, dict]]):
         async with self._io_lock:
             data = dict(self.data or {})
             try:
+                await self._async_restore_price()
+                if not self._price_storage_valid:
+                    raise HomeAssistantError("Charging ownership storage is invalid; reconcile before manual controls")
                 if name in self._price_states:
                     await self._async_save_price(name, {**self._price_states[name], "phase": "blocked"})
                 data[name] = await self.client.async_command(name, payload)

@@ -65,8 +65,12 @@ def test_latch_is_durable_before_write_and_uncertainty_never_retries(integration
             assert len(client.writes) == (0 if problem in ("save_before", "corrupt_store") else 1)
             if client.writes:
                 assert c._price_states["synthetic"]["phase"] == "pending"
-                result = await evaluate()
-                assert result["reason"] == "manual_reconciliation_required" and len(client.writes) == 1
+                if problem == "save_after":
+                    with pytest.raises(Exception): await evaluate()
+                    assert not c._price_storage_valid and len(client.writes) == 1
+                else:
+                    result = await evaluate()
+                    assert result["reason"] == "manual_reconciliation_required" and len(client.writes) == 1
                 # A new coordinator after restart also refuses to replay.
                 fresh = integration.coordinator.SolixCoordinator(None, Entry("synthetic", client.url), client)
                 fresh._price_store = store

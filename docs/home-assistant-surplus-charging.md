@@ -1,74 +1,44 @@
-# Optional adaptive surplus charging
+# Optional owned surplus charging
 
 The [surplus blueprint](../blueprints/automation/solix_link/surplus_charging.yaml)
-adds opt-in charging-limit adjustment for native **C1000 Gen 2 / 1.1.4.9**.
-It is prepared locally, **not installed or activated**. Original C1000 needs
-physical charging measurements; C2000 needs an established charging-override
-readback before this adaptive executor can include it. Other firmware versions
-are excluded from this first automation. The existing
-[fixed price/export blueprint](home-assistant-charging-automation.md) is unchanged.
+now calls `solix_link.charging_policy` with `policy: surplus`. It shares the same
+durable per-station owner as price charging. Only native **C1000 Gen 2 main
+1.1.4.9** qualifies. It starts disabled and is never activated by installation.
 
-## Decision
+## Prepare
 
-The external sensor must report **W with positive values meaning grid export**.
-Verify that sign before enabling. Start/Stop export thresholds provide hysteresis.
-When surplus is available, the candidate saved limit is:
+1. Configure the reserve yourself (at least the policy minimum, default 20%).
+   Start with an empty Standard plan, Fast off, mains and AC output on, and
+   inactive disaster/clock/output countdowns. Original C1000 and C2000 are excluded.
+2. Choose a fresh **W** sensor and independently verify positive values mean grid
+   export. The blueprint's confirmation checkbox defaults false.
+3. Create an arming Toggle initially off and an override Dropdown with `none`,
+   `hold`, `charge`. Choose nonzero idle/maximum watts, bounded step, deadband,
+   target export, start/stop hysteresis and cooldown. Preview before arming.
+4. Enable only after measured consumption tests on noncritical hardware. Use one
+   shared policy per station. Release price ownership before selecting surplus.
 
-```text
-error = measured export - target remaining export
-candidate = current limit                       within deadband
-candidate = floor((current limit + error)/100)*100 otherwise
-```
+The target is current saved watts plus measured export minus target export,
+rounded down to 100 W steps, clamped to the configured range and maximum change.
+Within deadband it holds; without opportunity it steps toward nonzero idle.
+Below reserve, or with `charge`, it steps toward maximum. This changes a saved
+charging limit, not measured battery power; it does not promise zero import,
+true pause or battery discharge. Reserve and caps are preserved.
 
-Clamp to configured nonzero idle/maximum watts, then limit each cycle's change
-to `maximum_step_w`. Below the greater of saved/minimum reserve, or with manual
-`charge`, step toward maximum watts. With no opportunity, step toward idle.
-Manual `hold` stops all commands. Reserve can only increase; charge cap and
-discharge floor remain unchanged.
+## Ownership and migration
 
-The sensor reports grid export, and the command sets a charging preference.
-Neither establishes actual battery charging power. Bypass, load changes,
-firmware and charging taper affect consumption. This does not promise zero
-import, charging pause, battery use or AC-input disable.
+The integration persists a pending latch before each command and requires fresh
+protected readback. Manual changes or uncertainty block further automatic writes.
+Disarming requests guarded restoration of the original watt limit; Hold leaves
+the current setting. HA outages and stale signals leave saved settings in place.
+The blueprint also starts disabled after HA restart.
 
-## Prepare in Home Assistant
+**Recreate older surplus automations:** helper-latch and per-entity inputs were
+replaced. No reserve-raising sequence or separate latch helper remains. An
+existing automation is not silently migrated or enabled. Existing read-only
+adaptive previews retain their original proposal contract.
 
-1. Copy the YAML to `<HA config>/blueprints/automation/solix_link/` and create
-   an automation with the integration's station and its matching entities,
-   including the read-only **Disaster preparation active** diagnostic. Unknown
-   or active blocks commands; it is not a complete disaster-plan export.
-2. Create distinct Toggle helpers for arming and the command latch. Leave
-   arming off. Create a dedicated Dropdown helper with `none`, `hold`, `charge`;
-   start at `hold`. Do not share helpers across stations.
-3. Confirm the export sensor's units/sign. Choose reserve, nonzero watt limits,
-   thresholds, deadband, target export, bounded step and cooldown. Preview those
-   values first using the [adaptive preview](adaptive-policy-preview.md).
-4. Use one controller per station. Keep the automation disabled until you can
-   validate its consumption response on a noncritical load. No C2000 hardware
-   experiment or automatic activation was performed for this implementation.
-
-`initial_state: false` keeps the resulting automation disabled after restart.
-Turning arming off or selecting `hold` pauses new decisions; it does not undo
-an already saved limit. Restore preferences explicitly if needed.
-
-## Guards and failures
-
-Every command sequence requires fresh native telemetry, mains connected, AC
-output enabled, Fast off, Standard mode/no active tariff, valid percentage/watt
-bounds, correct entity roles and ownership, a fresh signal, arming and cooldown.
-The original model is rejected. Conditions are rechecked after raising reserve.
-If the charging limit changes concurrently, the following watt write stops.
-
-The dedicated latch is set before commands and cleared only on success. A
-rejection, lost confirmation, stale data, manual hold or conflicting limit during a
-sequence leaves it on. Review fresh readings and the automation trace before
-clearing it; automatic rollback/retry is not provided. This HA latch is not a
-distributed lock against another independent controller.
-
-Synthetic tests render the actual YAML and compare decisions with the pure
-preview for C1000 Gen 2, including manual overrides, freshness/ownership,
-failure and between-command intervention. C2000/original/other firmware are
-explicitly rejected; A1763 disaster activity is checked before and between
-commands. This validates the decision contract,
-not HA's live automation engine or electrical behavior. Price-driven TOU
-execution remains a preview: persistent plan ownership/recovery is unresolved.
+See [shared ownership and Repairs](charging-controller-and-repairs.md) for
+release/reset, storage errors, diagnostics, external-controller limits and
+physical validation requirements. Price execution uses the same owner via the
+existing [price action](owned-price-charging.md).

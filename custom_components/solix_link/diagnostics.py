@@ -24,6 +24,30 @@ TEXT_METRICS = {
     "ac_output_frequency_setting_hz": frozenset({"unknown"}),
 }
 VERSION = re.compile(r"[0-9]{1,3}(?:\.[0-9]{1,3}){1,5}\Z")
+POLICY_REASONS = frozenset({"disarmed", "manual_hold", "unowned", "another_policy_owns_station",
+    "policy_clock_regressed", "manual_reconciliation_required", "manual_intervention_detected",
+    "qualified_connected_c1000_gen2_required", "fresh_saved_plan_required",
+    "empty_or_owned_all_day_plan_required", "protected_charging_baseline_required",
+    "plan_activation_readback_required", "guarded_gateway_commands_required",
+    "empty_standard_baseline_required", "restore_empty_standard_plan_before_reset",
+    "restore_original_power_before_reset", "ownership_reset", "fresh_finite_price_required",
+    "fresh_finite_export_required", "export_sign_confirmation_required", "configure_reserve_before_arming",
+    "current_power_outside_policy_range", "unchanged", "cooldown", "plan_change", "power_change"})
+
+
+def policy_diagnostics(value: object) -> dict | None:
+    if type(value) is not dict or value.get("phase") not in ("unowned", "active", "pending", "blocked", "storage_error"):
+        return None
+    result = {"phase": value["phase"]}
+    for key, allowed in (("owner", ("price", "surplus")), ("decision", ("grid", "battery", "charge", "idle")),
+                         ("override", ("none", "hold", "charge", "grid", "battery")),
+                         ("reason", POLICY_REASONS)):
+        field = value.get(key)
+        if isinstance(field, str) and field in allowed:
+            result[key] = field
+    if type(value.get("armed")) is bool:
+        result["armed"] = value["armed"]
+    return result
 
 
 def diagnostics_report(snapshots: dict, *, now: float | None = None) -> dict[str, Any]:
@@ -66,6 +90,7 @@ def diagnostics_report(snapshots: dict, *, now: float | None = None) -> dict[str
             "controls": sorted({c for c in controls if isinstance(c, str) and c in COMMANDS}),
             "metrics": metrics,
             "native_energy": validate_native_energy(snapshot.get("native_energy"), model=model, now=now) if protocol == "native_mqtt" else None,
+            "charging_policy": policy_diagnostics(snapshot.get("price_policy")),
         })
     return {"station_count": len(stations), "stations": stations}
 

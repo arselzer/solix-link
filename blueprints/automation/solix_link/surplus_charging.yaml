@@ -1,205 +1,61 @@
 blueprint:
-  name: SOLIX Link - adaptive Gen 2 surplus charging
+  name: SOLIX Link owned surplus charging
   description: >-
-    Opt-in surplus-following charging for C1000 Gen 2, firmware 1.1.4.9.
-    Uses positive grid export in W, stepped nonzero charging limits, a
-    deadband, hysteresis and cooldown. Requires fresh native MQTT telemetry,
-    connected mains, AC output enabled, Fast off, Standard mode and a confirmed
-    inactive disaster-preparation flag. Other models/firmware are excluded.
-    Preserves the charge cap and only raises the backup reserve. Below the
-    reserve, steps toward the maximum charging limit. Manual override can
-    hold or request charging. A failure leaves the command latch on for review.
-    Does not promise zero import, pause charging or measure battery charging
-    power. Original C1000 is excluded. Use one controller per station.
-    The resulting automation starts disabled, including after HA restarts.
+    Disabled by default. C1000 Gen 2 main 1.1.4.9 only. Uses the same durable
+    owner as price charging; release before switching policies. Requires a
+    configured reserve, empty Standard plan, fresh positive-export W sensor,
+    mains and AC output on, Fast off, and inactive backup/clock/countdowns.
+    Steps nonzero charging limits only. Disarming requests guarded restoration
+    of the original power limit. Hold leaves the saved setting unchanged.
+    No zero-import or true charging-pause guarantee. Recreate automations
+    made from the older helper-latch surplus blueprint; input names changed.
   domain: automation
-  homeassistant:
-    min_version: 2026.7.4
   input:
     station:
-      name: C1000 Gen 2 SOLIX Link device
+      name: C1000 Gen 2
       selector:
         device:
-          filter:
-            - integration: solix_link
-              model: c1000_gen2
+          integration: solix_link
+    export_sensor:
+      name: Grid export sensor (W)
+      selector:
+        entity:
+          domain: sensor
     armed:
-      name: Policy enabled helper
-      description: Create a dedicated Toggle helper and leave it off initially.
+      name: Arming helper
       selector:
         entity:
-          filter:
-            - domain: input_boolean
-    command_latch:
-      name: Command latch helper
-      description: >-
-        A second, distinct Toggle helper. On means a command is running or
-        its result needs review. Never clear it automatically after failure.
-      selector:
-        entity:
-          filter:
-            - domain: input_boolean
-    telemetry:
-      name: Last telemetry
-      description: Select the station's SOLIX Link Last telemetry timestamp.
-      selector:
-        entity:
-          filter:
-            - domain: sensor
-              integration: solix_link
-              device_class: timestamp
-    mains:
-      name: Mains present
-      selector:
-        entity:
-          filter:
-            - domain: binary_sensor
-              integration: solix_link
-    ac_enabled:
-      name: AC output enabled
-      selector:
-        entity:
-          filter:
-            - domain: binary_sensor
-              integration: solix_link
-    fast:
-      name: Fast charging enabled
-      description: C1000 Gen 2 switch, or C2000 Gen 2 read-only binary sensor.
-      selector:
-        entity:
-          filter:
-            - domain: [switch, binary_sensor]
-              integration: solix_link
-    battery:
-      name: Battery percentage
-      selector:
-        entity:
-          filter:
-            - domain: sensor
-              integration: solix_link
-              device_class: battery
-    disaster:
-      name: Disaster preparation active
-      description: Select this station's read-only SOLIX Link diagnostic; unknown or active blocks every write.
-      selector:
-        entity:
-          filter:
-            - domain: binary_sensor
-              integration: solix_link
-    power:
-      name: AC charging power limit
-      selector:
-        entity:
-          filter:
-            - domain: number
-              integration: solix_link
-              device_class: power
-    reserve:
-      name: Backup reserve
-      selector:
-        entity:
-          filter:
-            - domain: number
-              integration: solix_link
-    charge_cap:
-      name: Charge cap
-      selector:
-        entity:
-          filter:
-            - domain: number
-              integration: solix_link
-    usage_mode:
-      name: Usage mode
-      selector:
-        entity:
-          filter:
-            - domain: sensor
-              integration: solix_link
-    tariff:
-      name: Active tariff
-      selector:
-        entity:
-          filter:
-            - domain: sensor
-              integration: solix_link
+          domain: input_boolean
     manual_override:
-      name: Manual override Select helper
-      description: >-
-        Create a dedicated Dropdown helper with exactly none, hold and charge.
-        Start at hold; none permits following surplus, charge requests the
-        maximum limit in bounded steps. Every choice still requires all guards.
+      name: Override helper (none, hold, charge)
       selector:
         entity:
-          filter:
-            - domain: input_select
-    target_export_w:
-      name: Target remaining export (W)
-      default: 200
+          domain: input_select
+    positive_export_confirmed:
+      name: Positive sensor values mean grid export (verified)
+      default: false
+      selector:
+        boolean:
+    minimum_reserve:
+      name: Required configured reserve (%)
+      default: 20
       selector:
         number:
-          min: 0
-          max: 20000
-          step: 10
+          min: 5
+          max: 95
+          step: 5
           mode: box
-    deadband_w:
-      name: Export deadband (W)
+    idle_watts:
+      name: Nonzero idle limit (W)
       default: 100
-      selector:
-        number:
-          min: 0
-          max: 1000
-          step: 10
-          mode: box
-    maximum_step_w:
-      name: Maximum charging-limit change per cycle (W)
-      default: 200
       selector:
         number:
           min: 100
           max: 1200
           step: 100
           mode: box
-    export_sensor:
-      name: Positive solar export sensor
-      description: >-
-        Must report W, with positive values meaning export. Do not select kW,
-        cumulative energy, or a grid sensor whose positive sign means import.
-      default: []
-      selector:
-        entity:
-          filter:
-            - domain: sensor
-              device_class: power
-    export_start:
-      name: Start charging when export reaches (W)
-      default: 600
-      selector:
-        number:
-          min: 0
-          max: 20000
-          step: 10
-          mode: box
-    export_stop:
-      name: Keep charging until export drops below (W)
-      default: 300
-      selector:
-        number:
-          min: 0
-          max: 20000
-          step: 10
-          mode: box
-    export_max_age:
-      name: Maximum age of export reports (seconds)
-      default: 30
-      selector:
-        number:
-          min: 5
-          max: 300
-          step: 1
-          mode: box
-    charging_watts:
-      name: Maximum charging limit (W)
-      description: Use 100 W steps, maximum 1200 W for C1000 Gen 2.
+    maximum_watts:
+      name: Maximum limit (W)
       default: 1000
       selector:
         number:
@@ -207,219 +63,102 @@ blueprint:
           max: 1200
           step: 100
           mode: box
-    idle_watts:
-      name: Other-times charging limit (W)
-      description: >-
-        Still permits charging. Minimum 100 W for C1000 Gen 2.
-        This is not an AC input or whole-house power budget.
-      default: 300
+    maximum_step_w:
+      name: Maximum change per cycle (W)
+      default: 100
       selector:
         number:
           min: 100
           max: 1200
           step: 100
           mode: box
-    minimum_reserve:
-      name: Minimum backup reserve (%)
-      description: >-
-        Only raises the stored reserve, never lowers it. Below the actual
-        reserve, step toward the maximum charging limit regardless of export.
-      default: 20
+    export_start:
+      name: Start export threshold (W)
+      default: 600
       selector:
         number:
-          min: 5
-          max: 100
-          step: 5
+          min: 0
+          max: 20000
+          step: 1
           mode: box
-    cooldown:
-      name: Minimum time between command sequences (seconds)
-      default: 180
+    export_stop:
+      name: Stop export threshold (W)
+      default: 300
       selector:
         number:
-          min: 60
+          min: 0
+          max: 20000
+          step: 1
+          mode: box
+    target_export_w:
+      name: Target remaining export (W)
+      default: 100
+      selector:
+        number:
+          min: 0
+          max: 20000
+          step: 1
+          mode: box
+    deadband_w:
+      name: Export deadband (W)
+      default: 50
+      selector:
+        number:
+          min: 0
+          max: 20000
+          step: 1
+          mode: box
+    export_max_age:
+      name: Maximum signal age (seconds)
+      default: 30
+      selector:
+        number:
+          min: 1
           max: 3600
           step: 1
           mode: box
-
+    cooldown:
+      name: Cooldown (seconds)
+      default: 300
+      selector:
+        number:
+          min: 60
+          max: 86400
+          step: 1
+          mode: box
 initial_state: false
 mode: single
 max_exceeded: silent
 triggers:
   - trigger: time_pattern
-    minutes: /1
+    minutes: "/1"
   - trigger: state
     entity_id: !input armed
-    to: "on"
+  - trigger: state
+    entity_id: !input manual_override
 variables:
-  station: !input station
-  armed: !input armed
-  command_latch: !input command_latch
-  telemetry: !input telemetry
-  mains: !input mains
-  ac_enabled: !input ac_enabled
-  fast: !input fast
-  battery: !input battery
-  disaster: !input disaster
-  power: !input power
-  reserve: !input reserve
-  charge_cap: !input charge_cap
-  usage_mode: !input usage_mode
-  tariff: !input tariff
-  manual_override: !input manual_override
-  target_export_w: !input target_export_w
-  deadband_w: !input deadband_w
-  maximum_step_w: !input maximum_step_w
-  export_sensor: !input export_sensor
-  export_start: !input export_start
-  export_stop: !input export_stop
-  export_max_age: !input export_max_age
-  charging_watts: !input charging_watts
-  idle_watts: !input idle_watts
-  minimum_reserve: !input minimum_reserve
-  cooldown: !input cooldown
+  armed_entity: !input armed
+  override_entity: !input manual_override
 conditions:
   - condition: template
-    value_template: >-
-      {{ armed != command_latch and is_state(armed, 'on')
-         and is_state(command_latch, 'off')
-         and states(manual_override) in ['none', 'charge'] }}
-  - condition: template
-    value_template: &station_safety >-
-      {% set ns = namespace(ok=true) %}
-      {% for entity, role in [(telemetry, 'last_seen_timestamp'), (mains, 'ac_input_connected'),
-                              (ac_enabled, 'ac_output_enabled'), (fast, 'ac_fast_charge_enabled'),
-                              (battery, 'battery_percentage'), (power, 'ac_charging_power_limit_w'),
-                              (reserve, 'backup_reserve_percentage'), (charge_cap, 'max_charge_percentage'),
-                              (usage_mode, 'usage_mode'), (tariff, 'active_tariff'),
-                              (disaster, 'disaster_preparation_active')] %}
-        {% if entity not in device_entities(station) or not has_value(entity)
-              or state_attr(entity, 'solix_link_role') != role
-              or state_attr(entity, 'solix_link_protocol') != 'native_mqtt' %}
-          {% set ns.ok = false %}
-        {% endif %}
-      {% endfor %}
-      {% set seen = as_timestamp(states(telemetry), none) %}
-      {% set age = as_timestamp(now()) - seen if seen is not none else 999999 %}
-      {{ ns.ok and armed != command_latch and is_state(armed, 'on')
-         and [telemetry, mains, ac_enabled, fast, battery, power, reserve,
-              charge_cap, usage_mode, tariff, disaster]|unique|list|count == 11
-         and states(manual_override) in ['none', 'charge']
-         and device_attr(station, 'model') == 'c1000_gen2'
-         and device_attr(station, 'sw_version') == '1.1.4.9'
-         and is_state(disaster, 'off')
-         and -5 <= age <= 30 and is_state(mains, 'on')
-         and is_state(ac_enabled, 'on') and is_state(fast, 'off')
-         and is_state(usage_mode, 'standard') and is_state(tariff, 'none')
-         and is_number(states(battery)) and 0 <= states(battery)|float <= 100
-         and is_number(states(power)) and is_number(states(reserve))
-         and is_number(states(charge_cap))
-         and state_attr(power, 'unit_of_measurement') == 'W'
-         and state_attr(reserve, 'unit_of_measurement') == '%'
-         and state_attr(charge_cap, 'unit_of_measurement') == '%'
-         and state_attr(battery, 'unit_of_measurement') == '%' }}
-  - condition: template
-    value_template: &signal_safety >-
-      {% set s = states[export_sensor] if export_sensor is string else none %}
-      {% set age = as_timestamp(now()) - as_timestamp(s.last_reported)
-                   if s is not none else 999999 %}
-      {{ s is not none and is_number(s.state) and -5 <= age <= export_max_age
-         and s.attributes.get('unit_of_measurement') == 'W'
-         and 0 <= export_stop < export_start <= 20000 and 5 <= export_max_age <= 300 }}
-  - condition: template
-    value_template: &policy_bounds >-
-      {% set minimum = 100 %}
-      {% set maximum = 1200 %}
-      {{ minimum <= idle_watts <= charging_watts <= maximum
-         and idle_watts <= states(power)|float <= charging_watts
-         and 0 <= target_export_w <= 20000 and 0 <= deadband_w <= 1000
-         and 100 <= maximum_step_w <= 1200 and maximum_step_w % 100 == 0
-         and 60 <= cooldown <= 3600
-         and idle_watts % 100 == 0 and charging_watts % 100 == 0
-         and minimum <= states(power)|float <= maximum
-         and states(power)|float % 100 == 0
-         and states(charge_cap)|float in [80, 85, 90, 95, 100]
-         and 5 <= states(reserve)|float <= states(charge_cap)|float
-         and states(reserve)|float % 5 == 0
-         and minimum_reserve % 5 == 0
-         and is_number(state_attr(reserve, 'min'))
-         and state_attr(reserve, 'min') <= minimum_reserve <= states(charge_cap)|float
-         and 5 <= minimum_reserve <= 100 }}
-  - condition: template
-    value_template: &cooldown_safety >-
-      {{ has_value(command_latch)
-         and as_timestamp(now()) - as_timestamp(states[command_latch].last_changed) >= cooldown }}
+    value_template: "{{ is_state(armed_entity, 'off') or (is_state(armed_entity, 'on') and states(override_entity) in ['none', 'hold', 'charge']) }}"
 actions:
-  - condition: template
-    value_template: >-
-      {{ armed != command_latch and is_state(armed, 'on')
-         and is_state(command_latch, 'off')
-         and states(manual_override) in ['none', 'charge'] }}
-  - condition: template
-    value_template: *station_safety
-  - condition: template
-    value_template: *signal_safety
-  - condition: template
-    value_template: *policy_bounds
-  - condition: template
-    value_template: *cooldown_safety
-  - variables:
-      baseline_power: "{{ states(power)|int }}"
-      desired_watts: &desired_watts_template >-
-        {% set watts = states(power)|int %}
-        {% set export = states(export_sensor)|float %}
-        {% set active = watts > idle_watts %}
-        {% set opportunity = export >= (export_stop if active else export_start) %}
-        {% set emergency = states(battery)|float < [minimum_reserve, states(reserve)|float]|max %}
-        {% if emergency or is_state(manual_override, 'charge') %}
-          {% set target = charging_watts %}
-        {% elif not opportunity %}
-          {% set target = idle_watts %}
-        {% else %}
-          {% set error = export - target_export_w %}
-          {% set target = watts if error|abs <= deadband_w else ((watts + error) // 100)|int * 100 %}
-        {% endif %}
-        {% set target = [idle_watts, [charging_watts, target]|min]|max %}
-        {{ [watts - maximum_step_w, [watts + maximum_step_w, target]|min]|max|int }}
-  - condition: template
-    value_template: >-
-      {{ states(reserve)|float < minimum_reserve or states(power)|float != desired_watts|float }}
-  - action: input_boolean.turn_on
-    target:
-      entity_id: !input command_latch
-  - condition: template
-    value_template: *station_safety
-  - condition: template
-    value_template: *signal_safety
-  - condition: template
-    value_template: *policy_bounds
-  - if:
-      - condition: template
-        value_template: "{{ states(reserve)|float < minimum_reserve }}"
-    then:
-      - action: number.set_value
-        target:
-          entity_id: !input reserve
-        data:
-          value: !input minimum_reserve
-  - condition: template
-    value_template: *station_safety
-  - condition: template
-    value_template: *signal_safety
-  - condition: template
-    value_template: *policy_bounds
-  - condition: template
-    value_template: "{{ states(power)|float == baseline_power|float }}"
-  - variables:
-      desired_watts: *desired_watts_template
-  - if:
-      - condition: template
-        value_template: "{{ states(power)|float != desired_watts|float }}"
-    then:
-      - action: number.set_value
-        target:
-          entity_id: !input power
-        data:
-          value: "{{ desired_watts|int }}"
-  - action: input_boolean.turn_off
-    target:
-      entity_id: !input command_latch
+  - action: solix_link.charging_policy
+    data:
+      device_id: !input station
+      policy: surplus
+      export_entity: !input export_sensor
+      mode: "{{ 'apply' if is_state(armed_entity, 'on') else 'release' }}"
+      armed: "{{ is_state(armed_entity, 'on') }}"
+      override: "{{ states(override_entity) if states(override_entity) in ['none', 'hold', 'charge'] else 'hold' }}"
+      positive_export_confirmed: !input positive_export_confirmed
+      minimum_reserve: !input minimum_reserve
+      idle_watts: !input idle_watts
+      maximum_watts: !input maximum_watts
+      maximum_step_w: !input maximum_step_w
+      export_start: !input export_start
+      export_stop: !input export_stop
+      target_export_w: !input target_export_w
+      deadband_w: !input deadband_w
+      export_max_age: !input export_max_age
+      cooldown: !input cooldown

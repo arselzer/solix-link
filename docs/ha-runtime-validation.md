@@ -509,3 +509,32 @@ registration/defaults against the installed HA libraries using fake devices.
 Three bounded actual-encoder replays of original main **1.5.9** still pass;
 neither installed main **1.7.1** execution nor original counter units are thereby
 established. Raw verification data remains owner-restricted and ignored.
+
+## Shared charging and Repairs deployment, 2026-10-08
+
+Upgraded the local package and HA **2026.7.4** component after **1,420 focused
+Python/HA tests** and fake-device checks against the installed HA service-schema
+and Repairs APIs. No frontend rebuild was required. All **84** installed package
+files match the release wheel, SHA-256
+`66d81c2b502498e22df6ae50e782a1e39ba31020de70f322fb48b7004a62ff94`.
+
+The integration registers `charging_policy` and the compatible `price_policy`
+action. HA's ownership diagnostic now carries owner, decision, reason and override.
+Repairs uses existing state only; it sends no station command. The new surplus
+blueprint is installed disabled, alongside the disabled price blueprint. No
+automation was created or migrated, and the automation configuration hash is
+unchanged. No old surplus blueprint reference existed before replacement.
+
+An actual local HA `charging_policy` call with `policy: surplus`, `mode: preview`
+and `armed: false` returned `disarmed`, `would_send: false`, `unowned`. No ownership
+file or station-setting command resulted. The new calibration CLI and public
+Python exports work under ordinary user permissions; no physical meter readings
+were collected and no candidate scale was applied.
+
+Monitoring recovered on all three stations with AC reported enabled. All ten
+Energy-compatible sensors retained numeric kWh states. Protected settings,
+identity/network hashes and persisted history/energy continuity were preserved.
+There was no station restart, output switch, C2000 setting experiment or cloud
+request. This establishes software recovery and reported state, not electrical
+continuity or physical charging behavior. Raw proofs and rollback copies remain
+private under `.solix-private/charging-reliability-20261008/`.

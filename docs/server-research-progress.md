@@ -1723,3 +1723,59 @@ and counter scaling/reset measurements; actual expansion-pack telemetry;
 supervised price cycling and independently measured power flow. The C2000's
 server supply remains excluded from output/reset experiments. See
 [additional controls/data](additional-controls-and-data.md) for exact limits.
+
+## Shared charging ownership, Repairs and calibration — 2026-10-08
+
+Public baseline: `69556c497b5c4fbfe1759f2f6ac0d4560511062f`, `main`.
+Implemented the next three software priorities:
+
+1. **HA Repairs:** actionable entry/station-scoped issues for charging storage
+   failures, pending/blocked ownership, unusable/expired execution signals and
+   quarantined native meters. Fixed text and anonymous labels omit identities
+   and raw errors. Missing reports cannot falsely clear energy quarantine.
+   Sanitized HA diagnostics now include allowlisted policy status/reasons.
+2. **One price/surplus owner:** the new `charging_policy` action and existing
+   price action share the same coordinator lock and durable store. Existing
+   price records remain valid. Surplus uses bounded nonzero watts, confirmed
+   export sign and configured reserve; release restores only its original watts
+   after full matching protected readback. Neither policy can take over or reset
+   the other. Corruption evidence, save failure and cancellation block replay.
+   The surplus blueprint now calls this service and starts disabled. Older
+   helper-latch surplus automations require explicit recreation; none was migrated.
+3. **Guided calibration evidence:** Python APIs and CLI `energy-calibration
+   create/record/report`, including terminal prompts and cached HTTP/offline
+   sources. Private atomic locked sessions retain sanitized numeric observations,
+   explicit physical-event markers and independent cumulative AC-meter readings.
+   Reset/epoch/version/mode/timing/gap boundaries exclude comparisons. Candidate
+   ratios never certify units or change runtime/HA conversions.
+
+Final verification: **1,420 focused Python/HA tests**. Installed HA **2026.7.4**
+library checks used temporary public source and fake devices/services to validate
+both signal units, preview defaults and the Repairs API signature. Python
+**3.14.4** was used. No frontend source/assets changed, no new firmware replay
+was performed, and no physical meter samples or charging-cycle tests are claimed.
+
+All **84** installed package source/assets match release wheel SHA-256
+`66d81c2b502498e22df6ae50e782a1e39ba31020de70f322fb48b7004a62ff94`.
+Updated HA/package with private rollback copies of code, history and energy
+continuity. HA loaded both policy actions. An explicitly disarmed surplus preview
+returned `would_send: false`, `unowned`; no ownership file was created. Both
+blueprints remain disabled, automation configuration is unchanged, and ordinary
+user CLI help/imports work. All three stations recovered fresh telemetry with
+AC reported on; all ten kWh sensors remain numeric. Protected settings and
+identity/network-file hashes match the baseline. No station-setting experiment,
+station restart, C2000 setting change or cloud request was made.
+
+Private captures of deployment metadata, HA responses and rollback copies are
+under ignored `.solix-private/charging-reliability-20261008/` with restricted
+permissions. `AGENTS.md` and preexisting untracked `python/build/` are unchanged.
+See [shared ownership/Repairs](charging-controller-and-repairs.md) and
+[calibration workflow](energy-calibration-workflow.md).
+
+Remaining hardware work: independently verify export sign and consumption
+response before arming; measure original and Gen 2 input/output intervals at
+different stable loads; label ordinary noncritical station restarts and compare
+post-restart counters. MCU sampling timing, channel semantics, physical scales,
+mode transitions and retained epochs remain unqualified. C2000 screen native
+validation and other preference/identity research remain separate, supervised
+work; its server supply stays excluded from output/reset experiments.

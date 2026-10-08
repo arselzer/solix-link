@@ -119,6 +119,8 @@ def parser() -> argparse.ArgumentParser:
     replay = subcommands.add_parser("policy-replay", help="Replay saved adaptive-preview frames; no commands or physical prediction")
     replay.add_argument("--timeline-file", type=Path, required=True)
     replay.add_argument("--format", choices=("json", "svg"), default="json", help="JSON decisions or a standalone SVG visualization")
+    from .energy_calibration_cli import add_parser as add_calibration_parser
+    add_calibration_parser(subcommands)
 
     mqtt = subcommands.add_parser("mqtt-bridge", help="Publish BLE status and supported settings through a local MQTT broker")
     mqtt.add_argument("--config", type=Path, default=DEFAULT_CONFIG)
@@ -519,6 +521,9 @@ def main(argv: list[str] | None = None) -> int:
             from .charging_preview_cli import read_document
             print(json.dumps(compare_settings(read_document(args.before, 32768),
                                               read_document(args.after, 32768)), indent=2))
+        elif args.command == "energy-calibration":
+            from .energy_calibration_cli import run
+            print(json.dumps(run(args), indent=2, allow_nan=False))
         elif args.command == "scan":
             asyncio.run(_scan(args.timeout))
         elif args.command == "ble-inspect":

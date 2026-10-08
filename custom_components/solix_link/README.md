@@ -27,6 +27,13 @@ preview-by-default service and disabled blueprint for C1000 Gen 2. Persistent
 ownership, reserve guards and uncertainty latches prevent automatic takeover
 of existing plans. C2000 and original C1000 remain excluded from this executor.
 
+`solix_link.charging_policy` now gives price and surplus the
+[same durable owner](../../docs/charging-controller-and-repairs.md). The
+**Charging policy ownership** diagnostic includes the current owner, decision,
+reason and override. HA Repairs explains storage failures, pending/blocked
+ownership, stale signals and native-energy quarantine. Recreate automations
+using the older surplus blueprint; the new blueprint remains disabled.
+
 [Additional controls/data](../../docs/additional-controls-and-data.md) include
 C2000 screen timeout (native hardware test pending), expansion presence-gated
 SOC/temperature and disabled, unitless original counter diagnostics.

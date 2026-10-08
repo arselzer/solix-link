@@ -39,7 +39,8 @@
     }
   },
   "services": {
-    "price_policy": {"name": "Owned price charging policy", "description": "Opt-in C1000 Gen 2 1.1.4.9 all-day TOU plan ownership. Persistent plans continue while HA is offline. C2000 and original C1000 excluded. No output switching or automatic retries after uncertain results.", "fields": {"device_id": {"name": "C1000 Gen 2"}, "price_entity": {"name": "Price sensor", "description": "Fresh price in currency/kWh. Thresholds use this same unit."}, "mode": {"name": "Mode", "description": "Preview sends nothing. Apply needs armed. Release clears only a confirmed owned plan. Reset clears ownership only after an empty Standard plan is present."}, "armed": {"name": "Armed"}, "override": {"name": "Manual override", "description": "Hold leaves the persistent plan unchanged."}, "charge_start": {"name": "Charge start price"}, "charge_stop": {"name": "Charge stop price"}, "discharge_stop": {"name": "Battery use stop price"}, "discharge_start": {"name": "Battery use start price"}, "cooldown": {"name": "Cooldown (seconds)"}, "price_max_age": {"name": "Maximum price age (seconds)"}, "minimum_reserve": {"name": "Required configured reserve (%)"}, "soc_resume_margin": {"name": "Battery use restart margin (%)"}}},
+    "price_policy": {"name": "Owned price charging policy", "description": "Price policy using the shared charging owner. C1000 Gen 2 1.1.4.9 only. Release before switching to surplus; persistent plans continue while HA is offline.", "fields": {"device_id": {"name": "C1000 Gen 2"}, "price_entity": {"name": "Price sensor", "description": "Fresh price in currency/kWh. Thresholds use this same unit."}, "mode": {"name": "Mode", "description": "Preview sends nothing. Apply needs armed. Release clears only a confirmed owned plan. Reset clears ownership only after an empty Standard plan is present."}, "armed": {"name": "Armed"}, "override": {"name": "Manual override", "description": "Hold leaves the persistent plan unchanged."}, "charge_start": {"name": "Charge start price"}, "charge_stop": {"name": "Charge stop price"}, "discharge_stop": {"name": "Battery use stop price"}, "discharge_start": {"name": "Battery use start price"}, "cooldown": {"name": "Cooldown (seconds)"}, "price_max_age": {"name": "Maximum price age (seconds)"}, "minimum_reserve": {"name": "Required configured reserve (%)"}, "soc_resume_margin": {"name": "Battery use restart margin (%)"}}},
+    "charging_policy": {"name": "Owned charging policy", "description": "Preview or apply one owned price-plan or surplus-power operation. Only C1000 Gen 2 1.1.4.9; release the current owner before switching policy. No output switching. Uncertain results require reconciliation.", "fields": {"device_id": {"name": "C1000 Gen 2"}, "price_entity": {"name": "Price sensor", "description": "Fresh price in currency/kWh. Thresholds use this same unit."}, "mode": {"name": "Mode", "description": "Preview sends nothing. Apply requires arming. Release restores only this policy’s confirmed baseline. Reset is read-only after the baseline has been restored manually."}, "armed": {"name": "Armed"}, "override": {"name": "Manual override", "description": "Hold leaves the persistent plan unchanged."}, "charge_start": {"name": "Charge start price"}, "charge_stop": {"name": "Charge stop price"}, "discharge_stop": {"name": "Battery use stop price"}, "discharge_start": {"name": "Battery use start price"}, "cooldown": {"name": "Cooldown (seconds)"}, "price_max_age": {"name": "Maximum price age (seconds)"}, "minimum_reserve": {"name": "Required configured reserve (%)"}, "soc_resume_margin": {"name": "Battery use restart margin (%)"}, "policy": {"name": "Policy", "description": "Price and surplus share one durable owner per station."}, "export_entity": {"name": "Grid export sensor", "description": "Fresh W, with positive values meaning export. Confirm the sign before arming."}, "positive_export_confirmed": {"name": "Positive export sign verified"}, "idle_watts": {"name": "Nonzero idle charging limit (W)"}, "maximum_watts": {"name": "Maximum charging limit (W)"}, "maximum_step_w": {"name": "Maximum change per cycle (W)"}, "export_start": {"name": "Export start threshold (W)"}, "export_stop": {"name": "Export stop threshold (W)"}, "export_max_age": {"name": "Maximum export age (seconds)"}, "target_export_w": {"name": "Target remaining export (W)"}, "deadband_w": {"name": "Export deadband (W)"}}},
     "set_tou_plan": {
       "name": "Set Time-of-Use plan",
       "description": "Store or activate a schedule on a gateway-enabled C1000 Gen 2 or C2000 Gen 2 using native MQTT. Peak can discharge the battery with mains connected. Use Return to grid to confirm grid supply.",
@@ -48,6 +49,24 @@
         "enabled": {"name": "Enable Time-of-Use", "description": "Activate the plan, or store it while in Standard mode."},
         "periods": {"name": "Periods", "description": "Up to six non-overlapping periods with tariff (peak, mid_peak, off_peak), start_hour and end_hour. Use whole hours 0–24; split overnight periods."}
       }
+    }
+  },
+  "issues": {
+    "charging_storage": {
+      "title": "Charging ownership could not be restored",
+      "description": "Automatic charging is blocked. Check HA storage permissions and the SOLIX Link diagnostics. Preserve the ownership file and inspect the station before restoring a known-good backup. Do not delete it to force a retry."
+    },
+    "charging_reconciliation": {
+      "title": "Charging control needs review: {station}",
+      "description": "A command result is uncertain or settings changed manually. A saved plan or power limit may still be active. Inspect fresh settings, restore the policy baseline explicitly if appropriate, then use the matching charging_policy reset action. Reset sends no station command; output switching is unnecessary."
+    },
+    "charging_signal": {
+      "title": "Charging signal is stale: {station}",
+      "description": "The armed charging policy has no usable fresh price/export reading. Check the sensor unit, freshness and automation. The last saved setting remains in place; stale signals do not pause charging or clear a persistent plan. Disarm and release the matching owned policy if appropriate."
+    },
+    "energy_quarantine": {
+      "title": "Energy counter continuity needs review: {station}",
+      "description": "The observed energy meter stopped accepting deltas ({reason}). Existing totals are retained. Inspect counter/firmware/reset evidence with the calibration workflow and restore documented continuity before resuming. Do not delete HA energy statistics or infer missing battery energy."
     }
   },
   "entity": {
@@ -65,7 +84,7 @@
       "dc_power_saving_mode_enabled": {"name": "DC Smart mode enabled"}
     },
     "sensor": {
-      "price_policy": {"name": "Price policy ownership", "state": {"unowned": "Unowned", "active": "Active", "pending": "Pending", "blocked": "Blocked", "storage_error": "Storage Error"}},
+      "price_policy": {"name": "Charging policy ownership", "state": {"unowned": "Unowned", "active": "Active", "pending": "Pending", "blocked": "Blocked", "storage_error": "Storage Error"}},
       "expansion_battery_percentage": {"name": "Expansion battery"},
       "expansion_temperature_c": {"name": "Expansion temperature"},
       "original_counter": {"name": "Original report counter {index} (raw)"},

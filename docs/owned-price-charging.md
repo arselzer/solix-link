@@ -41,11 +41,16 @@ and output timers are required. Original C1000 and C2000 are excluded: original
 charging behavior and C2000's charging override readback remain insufficiently
 qualified for automatic policy execution.
 
-The **Price policy ownership** diagnostic shows `active`, `pending`, `blocked`
+The **Charging policy ownership** diagnostic shows `active`, `pending`, `blocked`
 or a storage error; `unowned` means no policy owns a plan. Manual HA controls revoke
 ownership before their write. Changes observed through another client also
 block the policy; polling cannot detect changes made and reverted between reads.
 Do not run another charging automation on the same station.
+
+Price and surplus now use the same durable owner. Release the matching policy
+before switching kinds; neither can reset or take over the other's state. The
+existing price action remains supported. See
+[shared charging ownership and Repairs](charging-controller-and-repairs.md).
 
 | Service mode | Effect |
 | --- | --- |

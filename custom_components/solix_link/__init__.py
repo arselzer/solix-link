@@ -16,6 +16,7 @@ from .api import GatewayClient, GatewayError, device_id
 from .const import CONF_TOKEN, CONF_URL, DOMAIN
 from .coordinator import SolixConfigEntry, SolixCoordinator
 from .price_policy import CONFIG_KEYS
+from .charging_controller import SURPLUS_KEYS
 
 PLATFORMS = [Platform.SENSOR, Platform.BINARY_SENSOR, Platform.NUMBER, Platform.BUTTON,
              Platform.SELECT, Platform.SWITCH]
@@ -61,26 +62,62 @@ async def async_setup(hass: HomeAssistant, config: dict) -> bool:
         except (OSError, ValueError, GatewayError) as err:
             raise HomeAssistantError("Price policy could not confirm its plan; inspect ownership before retrying") from err
 
+    async def charging_policy(call: ServiceCall) -> dict:
+        coordinator, name = selected(call.data["device_id"])
+        policy = call.data["policy"]
+        state = hass.states.get(call.data["price_entity" if policy == "price" else "export_entity"])
+        value = timestamp = None
+        unit = state.attributes.get("unit_of_measurement") if state is not None else None
+        if state is not None and (unit == "W" if policy == "surplus" else isinstance(unit, str) and unit.endswith("/kWh")):
+            try:
+                value, timestamp = float(state.state), state.last_reported.timestamp()
+            except (ValueError, TypeError, AttributeError):
+                pass
+        signals = {"price": value, "price_timestamp": timestamp} if policy == "price" else {
+            "export": value, "export_timestamp": timestamp}
+        keys = CONFIG_KEYS if policy == "price" else SURPLUS_KEYS
+        try:
+            return await coordinator.async_charging_policy(name,
+                {key: call.data[key] for key in keys}, policy=policy,
+                armed=call.data["armed"], override=call.data["override"], mode=call.data["mode"], **signals)
+        except (OSError, ValueError, GatewayError) as err:
+            raise HomeAssistantError("Charging policy could not confirm its setting; inspect ownership before retrying") from err
+
     hass.services.async_register(DOMAIN, "set_tou_plan", set_tou_plan, schema=vol.Schema({
         vol.Required("device_id"): str,
         vol.Required("periods"): [dict],
         vol.Required("enabled"): bool,
     }))
+    price_schema = {
+        vol.Required("device_id"): str,
+        vol.Optional("price_entity", default=""): str,
+        vol.Optional("mode", default="preview"): vol.In(("preview", "apply", "release", "reset")),
+        vol.Optional("armed", default=False): bool,
+        vol.Optional("override", default="none"): vol.In(("none", "hold", "charge", "grid", "battery")),
+        vol.Optional("charge_start", default=0.15): vol.Coerce(float),
+        vol.Optional("charge_stop", default=0.20): vol.Coerce(float),
+        vol.Optional("discharge_stop", default=0.30): vol.Coerce(float),
+        vol.Optional("discharge_start", default=0.35): vol.Coerce(float),
+        vol.Optional("cooldown", default=300): int,
+        vol.Optional("price_max_age", default=300): int,
+        vol.Optional("minimum_reserve", default=20): int,
+        vol.Optional("soc_resume_margin", default=5): int,
+    }
     hass.services.async_register(DOMAIN, "price_policy", price_policy, supports_response=SupportsResponse.OPTIONAL,
-        schema=vol.Schema({
-            vol.Required("device_id"): str,
-            vol.Optional("price_entity", default=""): str,
-            vol.Optional("mode", default="preview"): vol.In(("preview", "apply", "release", "reset")),
-            vol.Optional("armed", default=False): bool,
-            vol.Optional("override", default="none"): vol.In(("none", "hold", "charge", "grid", "battery")),
-            vol.Optional("charge_start", default=0.15): vol.Coerce(float),
-            vol.Optional("charge_stop", default=0.20): vol.Coerce(float),
-            vol.Optional("discharge_stop", default=0.30): vol.Coerce(float),
-            vol.Optional("discharge_start", default=0.35): vol.Coerce(float),
-            vol.Optional("cooldown", default=300): int,
-            vol.Optional("price_max_age", default=300): int,
-            vol.Optional("minimum_reserve", default=20): int,
-            vol.Optional("soc_resume_margin", default=5): int,
+        schema=vol.Schema(price_schema))
+    hass.services.async_register(DOMAIN, "charging_policy", charging_policy, supports_response=SupportsResponse.OPTIONAL,
+        schema=vol.Schema({**price_schema,
+            vol.Optional("policy", default="price"): vol.In(("price", "surplus")),
+            vol.Optional("export_entity", default=""): str,
+            vol.Optional("positive_export_confirmed", default=False): bool,
+            vol.Optional("idle_watts", default=100): int,
+            vol.Optional("maximum_watts", default=1000): int,
+            vol.Optional("maximum_step_w", default=100): int,
+            vol.Optional("export_start", default=600): vol.Coerce(float),
+            vol.Optional("export_stop", default=300): vol.Coerce(float),
+            vol.Optional("export_max_age", default=30): int,
+            vol.Optional("target_export_w", default=100): vol.Coerce(float),
+            vol.Optional("deadband_w", default=50): vol.Coerce(float),
         }))
     return True
 

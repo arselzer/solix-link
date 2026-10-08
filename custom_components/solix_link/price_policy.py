@@ -22,7 +22,10 @@ DECISIONS = ("grid", "charge", "battery")
 
 
 def _number(value: object) -> bool:
-    return type(value) in (int, float) and math.isfinite(value)
+    try:
+        return type(value) in (int, float) and math.isfinite(value)
+    except OverflowError:
+        return False
 
 
 def _integer(value: object, low: int, high: int) -> bool:
