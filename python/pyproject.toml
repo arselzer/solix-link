@@ -14,6 +14,7 @@ dependencies = ["bleak>=0.21", "cryptography>=41"]
 server = ["fastapi>=0.115,<1", "uvicorn>=0.30,<1"]
 mqtt = ["paho-mqtt>=2,<3"]
 tui = ["textual>=8.2,<9"]
+test = ["pytest>=8,<10", "httpx>=0.27,<1", "aiohttp>=3.10,<4", "PyYAML>=6,<7", "Jinja2>=3,<4"]
 
 [project.scripts]
 solix-link = "solix_link.cli:main"

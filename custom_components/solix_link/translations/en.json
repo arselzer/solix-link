@@ -64,6 +64,10 @@
       "title": "Charging signal is stale: {station}",
       "description": "The armed charging policy has no usable fresh price/export reading. Check the sensor unit, freshness and automation. The last saved setting remains in place; stale signals do not pause charging or clear a persistent plan. Disarm and release the matching owned policy if appropriate."
     },
+    "native_energy_continuity": {
+      "title": "Native energy statistics are blocked: {station}",
+      "description": "The persisted HA continuity check rejected this meter ({reason}). Raw diagnostics remain available. Preserve HA and gateway state, inspect permissions or backup/reset evidence, and restore a current valid source. Do not delete continuity files or energy statistics to force acceptance. A new meter epoch must start after the last accepted observation."
+    },
     "energy_quarantine": {
       "title": "Energy counter continuity needs review: {station}",
       "description": "The observed energy meter stopped accepting deltas ({reason}). Existing totals are retained. Inspect counter/firmware/reset evidence with the calibration workflow and restore documented continuity before resuming. Do not delete HA energy statistics or infer missing battery energy."

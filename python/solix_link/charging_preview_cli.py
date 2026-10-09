@@ -27,8 +27,11 @@ def read_document(path: Path, limit: int) -> object:
         raise ChargingPolicyRequestError() from None
 
 
-def offline_preview(snapshot_file: Path, request_file: Path, *, adaptive: bool = False) -> dict:
-    if adaptive:
+def offline_preview(snapshot_file: Path, request_file: Path, *, adaptive: bool = False, controller: bool = False) -> dict:
+    if controller:
+        from .controller_preview import preview_controller
+        preview = preview_controller
+    elif adaptive:
         from .adaptive_policy import preview_adaptive_policy
         preview = preview_adaptive_policy
     else:
@@ -37,7 +40,7 @@ def offline_preview(snapshot_file: Path, request_file: Path, *, adaptive: bool =
                    read_document(request_file, MAX_PREVIEW_BYTES))
 
 
-def native_preview(directory: Path, name: str | None, request_file: Path, *, adaptive: bool = False) -> dict:
+def native_preview(directory: Path, name: str | None, request_file: Path, *, adaptive: bool = False, controller: bool = False) -> dict:
     from .ap_service_config import load_ap_service
     from .ap_service_monitor import APServiceMonitor
     config = load_ap_service(directory / "ap_service.json")
@@ -45,9 +48,14 @@ def native_preview(directory: Path, name: str | None, request_file: Path, *, ada
     selected = name or config.name
     if selected not in monitor.devices:
         raise ValueError("Unknown configured station")
-    if adaptive:
+    snapshot = monitor.snapshot(selected)
+    if controller:
+        from .controller_preview import cached_controller_snapshot, preview_controller
+        snapshot = cached_controller_snapshot(snapshot, monitor.supported_commands(selected))
+        preview = preview_controller
+    elif adaptive:
         from .adaptive_policy import preview_adaptive_policy
         preview = preview_adaptive_policy
     else:
         preview = preview_charging_policy
-    return preview(monitor.snapshot(selected), read_document(request_file, MAX_PREVIEW_BYTES))
+    return preview(snapshot, read_document(request_file, MAX_PREVIEW_BYTES))

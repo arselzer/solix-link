@@ -22,6 +22,7 @@ import uvicorn
 from .commands import validate_command
 from .charging_policy import ChargingPolicyRequestError, MAX_PREVIEW_BYTES, preview_charging_policy
 from .adaptive_policy import preview_adaptive_policy
+from .controller_preview import preview_controller
 from .diagnostics import gateway_diagnostics
 from .manager import MonitorService
 from .tou import PowerFlowTimeout
@@ -350,7 +351,10 @@ def create_app(service: MonitorService, token: str | None = None, *, allow_contr
                     result[key] = value
                 return result
             body = json.loads(raw, object_pairs_hook=unique_object)
-            return preview(service.snapshot(name), body)
+            snapshot = service.snapshot(name)
+            if preview is preview_controller:
+                snapshot = status_with_controls(snapshot, request.state.principal)
+            return preview(snapshot, body)
         except (ChargingPolicyRequestError, ValueError, UnicodeError, RecursionError):
             return JSONResponse({"error": "InvalidChargingPreview", "commands_sent": 0,
                                  "settings_may_have_changed": False}, status_code=400)
@@ -362,6 +366,10 @@ def create_app(service: MonitorService, token: str | None = None, *, allow_contr
     @app.post("/devices/{name}/adaptive-preview")
     async def adaptive_preview(name: str, request: Request):
         return await evaluate_preview(name, request, preview_adaptive_policy)
+
+    @app.post("/devices/{name}/controller-preview")
+    async def controller_preview(name: str, request: Request):
+        return await evaluate_preview(name, request, preview_controller)
 
     @app.post("/devices/{name}/commands")
     async def command(name: str, request: Request):

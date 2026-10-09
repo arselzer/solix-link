@@ -70,6 +70,7 @@ HA alerts, partial settings comparisons and audit limits are documented in
 | `POST /devices/{name}/settings-compare` | Compare a supplied partial baseline against cached preferences; sends no commands |
 | `POST /devices/{name}/charging-preview` | Evaluate a bounded manual price/export request against cached native Gen 2 telemetry; returns proposals with zero commands |
 | `POST /devices/{name}/adaptive-preview` | Evaluate the separate surplus/price TOU contract against cached status; returns settings and candidate plans with no executor |
+| `POST /devices/{name}/controller-preview` | Preview the exact HA price/surplus rules with simulated ownership and advertised-control guards; sends no commands |
 | `GET/HEAD /history` | Report optional recorder availability and bounded storage statistics |
 | `GET/HEAD /devices/{name}/history?since=...&until=...&limit=1000` | Query saved readings and estimated AC energy/coverage; timestamps are Unix seconds |
 | `GET/HEAD /devices/{name}/energy` | Cached native Gen 2 energy counters, nominal kWh and independent report freshness; `null` when unavailable |
@@ -84,8 +85,9 @@ History is disabled unless `serve` or `ap-service-serve` receives
 `--history-file /private/history/readings.sqlite3`; retention defaults to seven
 days. See [history semantics](persistent-history.md) and
 [preview schema and limits](charging-policy-preview.md) and
-[adaptive contract](adaptive-policy-preview.md). These routes send no
-station requests or enables the prepared HA charging automation.
+[exploratory adaptive contract](adaptive-policy-preview.md) and
+[exact controller preview](controller-policy-preview.md). These routes send no
+station requests and do not enable HA charging automation.
 
 Native energy uploads are distinct from power-integrated history. Station
 snapshots and SSE include sanitized `native_energy`; `/metrics` also exposes

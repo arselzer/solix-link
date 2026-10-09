@@ -1,17 +1,21 @@
 # Adaptive charging and battery-use previews
 
+These are **exploratory** rules. For previews using the same guards as the
+implemented HA executor, choose the [HA controller preview](controller-policy-preview.md).
+That mode never proposes raising reserve and explicitly simulates ownership.
+
 `solix_link.adaptive_policy.preview_adaptive_policy(snapshot, request, now=...)`
 adds two opt-in, pure proposals for native **C1000 Gen 2 / C2000 Gen 2**.
 Original C1000 remains excluded. The function reads supplied dictionaries,
 copies validated settings, and sends **zero commands**. It has no executor,
 automation activation, configuration writer or station connection.
 
-The existing charge-only preview and HA blueprint keep their previous behavior.
-The separate [surplus blueprint](home-assistant-surplus-charging.md) implements
-opt-in bounded charging steps in HA; it is prepared but not activated. Preview
-functions and HTTP endpoints still send no commands. Price-driven TOU execution
-and automatic ownership/restoration of persistent plans remain unresolved.
-The new contract is available through the Python function and offline CLI:
+The fixed charge-only and adaptive preview contracts remain available. The
+[shared HA controller](charging-controller-and-repairs.md) separately implements
+opt-in price TOU and bounded surplus charging with durable ownership/release.
+Its blueprints are disabled; no automatic charging was activated in the recorded
+deployment. Preview functions and HTTP endpoints send no commands. This
+exploratory contract is available through the Python function and offline CLI:
 
 ```sh
 solix-link charging-preview --adaptive \
@@ -24,14 +28,13 @@ gateway's cached snapshot. It works with controls disabled and never calls
 the worker or station. The original `/charging-preview` endpoint retains its
 contract. Both reject duplicate JSON keys and bodies above 4096 bytes.
 
-Terminal F6 now has an explicit **Fixed / Adaptive** selector; use the matching
-request file. Optional manual value/age inputs retain all original validation
+Terminal F6 offers **HA controller / Exploratory fixed / Exploratory adaptive**
+choices; use the matching request file. Optional manual value/age inputs retain validation
 and never write the file or returned state. The cached AP CLI also accepts
 `ap-service-charging-preview --adaptive`.
 
-The compiled Vue dashboard offers **Fixed charging / Adaptive solar /
-Price-driven battery use** choices and candidate-plan explanations. Its bundle
-is type-checked and covered by synthetic browser scenarios on this branch.
+The compiled Vue dashboard labels fixed/adaptive choices **Exploratory**, beside
+the HA controller modes. Its bundle is type-checked and covered by synthetic browser scenarios.
 There is no Apply action for either preview contract.
 
 For sequence testing and a standalone visualization, see

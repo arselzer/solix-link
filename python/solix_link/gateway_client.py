@@ -162,6 +162,9 @@ class GatewayClient:
         from .energy_values import validate_native_energy
         from .wifi_signal import validate_wifi_signal
         from .original_counters import validate_original_counters
+        from .commands import COMMAND_FIELDS
+        controls = document.get("controls", [])
+        preview_controls = [c for c in controls if type(c) is str and c in COMMAND_FIELDS] if type(controls) is list else []
         return {"name": document["name"], "model": document["model"], "protocol": document["protocol"],
                 "connected": document["connected"], "available": document["available"],
                 "last_seen_timestamp": document.get("last_seen_timestamp"), "metrics": document["metrics"],
@@ -172,6 +175,7 @@ class GatewayClient:
                     document["model"] in ("c1000_gen2", "c2000_gen2") and document["protocol"] == "native_mqtt") else None,
                 "power_flow": document.get("power_flow") if document.get("power_flow") in (
                     "unknown", "grid", "battery", "transitioning") else "unknown", "control_enabled": False,
+                "preview_controls": preview_controls,
                 "error": "ConnectionError" if document.get("error") is not None else None}
 
     def devices(self) -> list[dict]:

@@ -81,12 +81,13 @@ def test_preference_gateway_rejects_unknown_fields_and_wrong_types(command, fiel
 
 @pytest.mark.parametrize("model", [Model.C1000_GEN2, Model.C2000_GEN2])
 @pytest.mark.parametrize("enabled", [True, False])
-def test_native_capabilities_do_not_add_c2000_preferences(tmp_path, model, enabled):
+def test_native_capabilities_keep_c2000_preferences_limited_to_screen_timeout(tmp_path, model, enabled):
     config = APServiceConfig("office", "wlan_unused", "phy9", "AT", "A1763SYNTHETIC001", "a" * 40, model=model)
     private_write(tmp_path / "status.json", json.dumps({"control_enabled": enabled}))
     controls = APServiceMonitor(config, tmp_path).supported_commands("office")
     for command, *_ in PREFERENCES:
-        assert (command in controls) is (enabled and model == Model.C1000_GEN2)
+        supported = model == Model.C1000_GEN2 or command == "set-display-timeout"
+        assert (command in controls) is (enabled and supported)
 
 
 @pytest.mark.parametrize("action,text,command,fields", [

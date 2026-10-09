@@ -55,16 +55,21 @@ It requires AP energy uploads, not saved power history; missing reports remain
 unknown. Physical units remain unverified and groups are not summed. See
 [collection, conversion and HA limits](native-energy-values.md).
 
-Native Gen 2 stations also have a **Charging policy preview** form. Enter manual
-export/price samples and thresholds to evaluate cached status and see proposed
-watts/reserve. Its armed checkbox is a simulation assumption; it never changes
-HA helpers, enables automation or sends a setting. Positive-export confirmation
-does not independently validate a sensor. There is no Apply action for proposals.
-See [guards and request schema](charging-policy-preview.md).
+Native Gen 2 stations also have a **Charging policy preview** form. The default
+**HA controller** modes call the same guarded price/surplus decision function as
+HA, with explicitly simulated ownership. Reserve must already be configured;
+only native C1000 Gen 2 / 1.1.4.9 qualifies. Enter manual signal samples and
+thresholds; this does not independently validate an export sensor or read HA's
+actual saved owner. There is no Apply action for proposals.
+See [exact guards and request schema](controller-policy-preview.md).
 
-The compiled dashboard also offers adaptive solar-surplus and price-driven
-battery-use previews, simulated overrides/latch/cooldown and candidate-plan
-explanations. These remain read-only. See [the adaptive contract](adaptive-policy-preview.md).
+![HA controller preview using synthetic telemetry](images/web-controller-preview.png)
+
+The separate **Exploratory** fixed/adaptive choices retain their existing
+contracts, including C2000 proposals and possible reserve increases. Simulated
+overrides, previous-preview state and candidate plans do not establish executed
+settings or ownership. See [fixed preview](charging-policy-preview.md) and
+[adaptive contract](adaptive-policy-preview.md).
 
 Controls follow the selected station's advertised capabilities. Each change
 requires a review and explicit confirmation; offline or busy controls are

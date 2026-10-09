@@ -59,6 +59,8 @@ HA **Settings → System → Repairs** now reports:
 - pending or blocked ownership requiring manual reconciliation;
 - unusable or expired signals for an armed executor;
 - quarantined observed native energy counters.
+- native-meter continuity/storage failures that block Energy statistics
+  (prepared 2026-10-09; see [continuity guard](native-energy-meter.md#ha-continuity-guard--prepared-2026-10-09)).
 
 Issues use fixed text and anonymous station labels, not identities, URLs or raw
 errors. They deduplicate by integration entry and station. Missing energy data
@@ -70,3 +72,7 @@ with informational recovery instructions and no automatic repair flow.
 Stopping HA, stale signals, manual Hold or disabling an automation leaves the
 last saved setting in place. The blueprints also start disabled after HA restart.
 Ownership/readback establishes settings, not electrical charging behavior.
+
+Browser, terminal F6 and CLI also provide the
+[exact controller rules as a read-only simulation](controller-policy-preview.md).
+They use supplied ownership; HA's own preview action uses the actual saved owner.

@@ -8,22 +8,23 @@ import time
 
 from .charging_policy import ChargingPolicyRequestError, MAX_PREVIEW_BYTES, preview_charging_policy
 from .adaptive_policy import preview_adaptive_policy
+from .controller_preview import preview_controller
 from .charging_preview_cli import read_document
 
 
 def manual_preview(snapshot: dict, request_file: Path, *, price_value: str = "", price_age: str = "",
                    export_value: str = "", export_age: str = "", now: float | None = None,
-                   adaptive: bool = False) -> dict:
+                   adaptive: bool = False, controller: bool = False) -> dict:
     """Keep file signals, or replace explicitly paired manual value/age inputs."""
     now = time.time() if now is None else now
     request = read_document(request_file, MAX_PREVIEW_BYTES)
     # Validate the complete original request even when overrides are supplied.
-    preview = preview_adaptive_policy if adaptive else preview_charging_policy
+    preview = preview_controller if controller else preview_adaptive_policy if adaptive else preview_charging_policy
     preview(snapshot, request, now=now)
-    state = request["state"].copy() if adaptive else None
-    request = {"config": request["config"].copy(),
+    state = request["state"].copy() if adaptive and not controller else None
+    request = {**request, "config": request["config"].copy(),
                "signals": {key: value.copy() for key, value in request["signals"].items()}}
-    if adaptive:
+    if adaptive and not controller:
         request["state"] = state
     for role, value_text, age_text, minimum, maximum in (
         ("price", price_value, price_age, -1000, 1000),

@@ -47,6 +47,8 @@ def test_parser_drops_private_fields_and_ignores_incoming_derived_values(platfor
 
 
 def entities(platform, data):
+    # Entity-only tests assume the separate persisted coordinator gate passed.
+    data = {**data, "native_meter_accounting": {"ready": True, "reason": "none"}}
     source = coordinator({"station": data})
     result = []
     entry = SimpleNamespace(runtime_data=source, async_on_unload=lambda _callback: None)

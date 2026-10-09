@@ -143,7 +143,9 @@ def add_commands(subcommands) -> None:
     preview.add_argument("--directory", type=Path, required=True)
     preview.add_argument("--name", help="Configured station; defaults to the primary profile")
     preview.add_argument("--request-file", type=Path, required=True)
-    preview.add_argument("--adaptive", action="store_true", help="Opt in to read-only surplus/TOU proposals")
+    preview_kind = preview.add_mutually_exclusive_group()
+    preview_kind.add_argument("--adaptive", action="store_true", help="Exploratory surplus/TOU simulation")
+    preview_kind.add_argument("--controller", action="store_true", help="Exact HA controller guards with simulated ownership")
 
 
 def _device(args, name: str):
@@ -273,7 +275,7 @@ def dispatch(args) -> None:
                    activity_retention_days=args.activity_retention_days)
     elif args.command == "ap-service-charging-preview":
         from .charging_preview_cli import native_preview
-        print(json.dumps(native_preview(args.directory, args.name, args.request_file, adaptive=args.adaptive), indent=2))
+        print(json.dumps(native_preview(args.directory, args.name, args.request_file, adaptive=args.adaptive, controller=args.controller), indent=2))
     else:
         command = {"ap-service-status": "status", "ap-service-readiness": "readiness", "ap-service-set-charge-power": "set-charge-power",
                    "ap-service-wireless-state": "wireless-state",

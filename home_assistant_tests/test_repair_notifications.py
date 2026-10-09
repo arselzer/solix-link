@@ -61,3 +61,14 @@ def test_registry_updates_are_scoped_and_deduplicated_without_device_requests(in
     # Include the monitored station so its resolved ownership can be reconciled.
     repairs.sync_repairs(coordinator,{"PRIVATE-ID":{}})
     assert not registry
+
+
+def test_native_continuity_repairs_survive_missing_reports_and_clear_only_on_acceptance(integration):
+    repairs = module(integration)
+    data = {"PRIVATE-ID": {"native_meter_accounting": {"ready": False, "reason": "counter_regressed"}}}
+    active, _ = repairs.repair_conditions(data, {}, {}, storage_valid=True, now=NOW)
+    key = next(key for key in active if key.startswith("native_energy_continuity"))
+    assert "PRIVATE-ID" not in json.dumps(active)
+    assert key not in repairs.repair_conditions({"PRIVATE-ID": {}}, {}, {}, storage_valid=True, now=NOW)[1]
+    data["PRIVATE-ID"]["native_meter_accounting"] = {"ready": True, "reason": "none"}
+    assert key in repairs.repair_conditions(data, {}, {}, storage_valid=True, now=NOW)[1]

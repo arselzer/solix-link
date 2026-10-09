@@ -17,10 +17,11 @@ from .energy_store import NativeEnergyStore
 from .energy_calibration import (new_session as new_calibration_session,
                                  append_observation as append_calibration_observation, calibration_report)
 from .charging_controller import controller_decision
+from .controller_preview import preview_controller
 
 __all__ = ["Model", "SolixMonitor", "discover", "MqttTelemetry", "NativeMqttCommands",
            "NativeMqttRequest", "decode_mqtt_telemetry", "APServiceConfig", "initialize_ap_service",
            "load_ap_service", "load_ap_service_profiles", "add_ap_service_device", "IsolatedAP", "LocalMqttServer", "APService", "ap_service_request",
            "TouPeriod", "PowerFlowTimeout", "power_flow", "export_settings", "compare_settings", "plan_is_fresh", "validate_plan_readback",
            "decode_energy_report", "decode_energy_events", "validate_native_energy", "native_energy_rows", "NativeEnergyStore",
-           "new_calibration_session", "append_calibration_observation", "calibration_report", "controller_decision"]
+           "new_calibration_session", "append_calibration_observation", "calibration_report", "controller_decision", "preview_controller"]

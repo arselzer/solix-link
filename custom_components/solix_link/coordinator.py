@@ -17,6 +17,8 @@ from .const import DOMAIN, POLL_SECONDS
 from .charging_controller import confirmed_state, controller_decision, owner, validate_store
 from .repair_notifications import sync_repairs
 from .price_policy import _number
+from .native_energy_continuity import (continuity_reason, record_from_snapshot,
+                                      validate_store as validate_native_store)
 from .history import (HISTORY_DISCOVERY_SECONDS, HISTORY_POLL_SECONDS,
                       HistoryValidationError, history_nonregressing, parse_history_highwater,
                       parse_history_summary, history_storage_evidence)
@@ -44,10 +46,71 @@ class SolixCoordinator(DataUpdateCoordinator[dict[str, dict]]):
         self._price_storage_valid = True
         self._price_states: dict[str, dict] = {}
         self._policy_runtime: dict[str, dict] = {}
+        self._native_store = None
+        self._native_loaded = False
+        self._native_storage_valid = True
+        self._native_highwater: dict[str, dict] = {}
         if hass is not None:
             from homeassistant.helpers.storage import Store
             self._history_store = Store(hass, 1, f"{DOMAIN}.energy_continuity.{entry.entry_id}")
             self._price_store = Store(hass, 1, f"{DOMAIN}.price_policy.{entry.entry_id}")
+            self._native_store = Store(hass, 1, f"{DOMAIN}.native_energy_continuity.{entry.entry_id}")
+
+    async def _async_restore_native(self) -> None:
+        if self._native_loaded:
+            return
+        if self._native_store is not None:
+            try:
+                path = getattr(self._native_store, "path", None)
+                evidence = (await self.hass.async_add_executor_job(history_storage_evidence, path)
+                            if isinstance(path, str) else False)
+                raw = await self._native_store.async_load()
+                if raw is None and evidence:
+                    raise ValueError("Native continuity storage was lost or corrupt")
+                self._native_highwater = validate_native_store(raw)
+            except (OSError, ValueError, TypeError, HomeAssistantError):
+                self._native_storage_valid = False
+                _LOGGER.error("Unable to restore native energy continuity; native statistics are unavailable")
+        # Cancellation before a completed load must not establish an empty baseline.
+        self._native_loaded = True
+
+    async def _async_native(self, data: dict[str, dict]) -> dict[str, dict]:
+        await self._async_restore_native()
+        proposed, reasons = dict(self._native_highwater), {}
+        for name, snapshot in data.items():
+            if "native_energy" not in snapshot and name not in proposed:
+                continue
+            reason = "meter_unavailable"
+            energy = snapshot.get("native_energy")
+            meter = energy.get("meter") if type(energy) is dict else None
+            if type(meter) is dict and meter.get("status") == "quarantined":
+                reason = "meter_quarantined"
+            record = record_from_snapshot(snapshot, now=time.time())
+            if record is not None:
+                reason = continuity_reason(proposed.get(name), record)
+                if reason == "none":
+                    if name not in proposed and len(proposed) >= 32:
+                        reason = "station_limit"
+                    else:
+                        proposed[name] = record
+            reasons[name] = reason
+        if self._native_store is not None and self._native_storage_valid and proposed != self._native_highwater:
+            try:
+                await self._native_store.async_save({"stations": proposed})
+            except asyncio.CancelledError:
+                self._native_storage_valid = False
+                raise
+            except (OSError, ValueError, TypeError, HomeAssistantError):
+                self._native_storage_valid = False
+                _LOGGER.error("Unable to persist native energy continuity; native statistics are unavailable")
+            else:
+                self._native_highwater = proposed
+        if not self._native_storage_valid:
+            reasons = dict.fromkeys(reasons, "storage_error")
+        elif self._native_store is None:
+            reasons = dict.fromkeys(reasons, "storage_unavailable")
+        return {name: {**snapshot, "native_meter_accounting": {"ready": reasons[name] == "none", "reason": reasons[name]}}
+                if name in reasons else snapshot for name, snapshot in data.items()}
 
     async def _async_restore_price(self) -> None:
         if self._price_loaded:
@@ -149,7 +212,7 @@ class SolixCoordinator(DataUpdateCoordinator[dict[str, dict]]):
                         confirmed = confirmed_state(data[name], result["next_state"], now=time.time())
                         await self._async_save_price(name, None if mode == "release" else confirmed)
             finally:
-                self.async_set_updated_data(self._attach_price(self._attach_history(data)))
+                self.async_set_updated_data(self._attach_price(await self._async_native(self._attach_history(data))))
             return {key: result[key] for key in ("eligible", "reason", "decision")} | {
                 "would_send": result["command"] is not None,
                 "phase": self._price_states.get(name, {}).get("phase", "unowned"),
@@ -242,7 +305,7 @@ class SolixCoordinator(DataUpdateCoordinator[dict[str, dict]]):
                 await self._async_history()
                 data = self._attach_history(data)
                 await self._async_save_history()
-                return self._attach_price(data)
+                return self._attach_price(await self._async_native(data))
         except GatewayAuthError as err:
             raise ConfigEntryAuthFailed("Gateway authentication failed") from err
         except GatewayError as err:
@@ -267,7 +330,7 @@ class SolixCoordinator(DataUpdateCoordinator[dict[str, dict]]):
                 except GatewayError:
                     if name in data:
                         data[name] = {**data[name], "connected": False, "available": False}
-            self.async_set_updated_data(self._attach_price(self._attach_history(data)))
+            self.async_set_updated_data(self._attach_price(await self._async_native(self._attach_history(data))))
         if error is not None:
             raise HomeAssistantError(str(error)) from error
 

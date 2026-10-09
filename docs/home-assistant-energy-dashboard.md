@@ -1,6 +1,7 @@
 # AC energy and the Home Assistant Energy dashboard
 
-Implementation updated **2026-10-07**. The earlier Integral-helper source audit
+Implementation updated **2026-10-09**; native continuity changes are prepared,
+not deployed by this checkpoint. The earlier Integral-helper source audit
 used Home Assistant Core **2026.9.4**; the live installation uses **2026.7.4**.
 
 ## Built-in energy entities
@@ -151,6 +152,13 @@ instead of integrating HA's polled values a second time.
 HA initially establishes a statistics baseline; existing lifetime values do
 not automatically backfill earlier daily consumption.
 [Sensor statistics contract](https://developers.home-assistant.io/docs/core/entity/sensor/)
+
+The separate [native-meter continuity guard](native-energy-meter.md#ha-continuity-guard--prepared-2026-10-09)
+also persists raw anchors, totals and source/receipt timestamps before exposing
+native Energy values. Older gateway backups and storage failures become
+unavailable with a HA Repair; raw diagnostics remain visible. First adoption
+cannot repair earlier statistics or establish continuity after simultaneous
+loss of gateway and HA stores.
 
 ## Native counters and verification
 

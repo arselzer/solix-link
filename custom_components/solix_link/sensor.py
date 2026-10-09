@@ -341,7 +341,8 @@ class SolixNativeMeterSensor(SolixNativeEnergySensor):
     @property
     def available(self) -> bool:
         meter = self.meter
-        return bool(self.coordinator.last_update_success and meter and meter["available"])
+        return bool(self.coordinator.last_update_success and meter and meter["available"]
+                    and self.snapshot.get("native_meter_accounting", {}).get("ready") is True)
 
     @property
     def last_reset(self):
@@ -357,6 +358,9 @@ class SolixNativeMeterSensor(SolixNativeEnergySensor):
             attributes.update({key: meter[key] for key in ("generation", "status", "reason",
                 "accepted_reports", "rejected_reports", "last_event_timestamp", "last_receipt_at")})
             attributes["anchor_counter_raw"] = meter["channels"][self.channel]["counter_raw"]
+        accounting = self.snapshot.get("native_meter_accounting", {})
+        attributes["continuity_ready"] = accounting.get("ready") is True
+        attributes["continuity_reason"] = accounting.get("reason", "storage_unavailable")
         return attributes
 
 

@@ -25,6 +25,7 @@ class Demo:
         self.preview_power_w = None
         self.comparison_power_w = None
         self.preview_slot_count = None
+        self.preview_reserve = None
         self.plan_readback = None
         self.native_energy = {}
         self.wifi_signal = {}
@@ -57,10 +58,13 @@ class Demo:
                    "software_version": "code 151" if original else "1.1.4.9" if c1000 else "2.1.6.4", "software_version_module": "0.3.3.0"}
         if c1000:
             metrics["time_remaining_minutes"] = 120
+            metrics["disaster_preparation_active"] = 0
             if self.preview_power_w is not None:
                 metrics["ac_charging_power_limit_w"] = self.preview_power_w
             if self.preview_slot_count is not None:
                 metrics["tou_schedule_slot_count"] = self.preview_slot_count
+            if self.preview_reserve is not None:
+                metrics["backup_reserve_percentage"] = self.preview_reserve
             metrics.update(display_brightness=1, display_timeout_seconds=30, port_memory_enabled=1, pv_weak_light_locked=0,
                            ac_output_timeout_seconds=0, dc_output_timeout_seconds=0,
                            clock_screen_enabled=0, clock_screen_transfer_status_raw=0,

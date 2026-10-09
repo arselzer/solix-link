@@ -297,6 +297,7 @@ try {
   cases++; console.log(`Scenario ${cases} passed`);
 
   const beforePreview = posts;
+  await page.getByTestId('preview-policy').selectOption('fixed');
   await page.getByTestId('preview-export').fill('700');
   await page.getByTestId('preview-export-sign').check();
   await page.getByTestId('run-charging-preview').click();
@@ -334,6 +335,45 @@ try {
   await page.getByTestId('preview-policy').selectOption('fixed');
   await change({ preview_power_w: null, preview_slot_count: null });
   await change({ standard: false });
+  await refresh();
+  cases++; console.log(`Scenario ${cases} passed`);
+
+  // Exact controller rules reject the reserve-raising exploratory proposal.
+  await change({ standard: true, preview_power_w: 300, preview_slot_count: 0, preview_reserve: 10,
+    plan_readback: { schema_version: 1, source: 'status_d9', reported_at: Date.now() / 1000,
+      enabled: false, periods: [] } });
+  await refresh();
+  await page.getByTestId('preview-policy').selectOption('owned_surplus');
+  await page.getByTestId('preview-export').fill('900');
+  await page.getByTestId('run-charging-preview').click();
+  await page.getByTestId('charging-preview-result').filter({ hasText: 'Configure reserve' }).waitFor();
+  assert.equal(posts, beforePreview);
+  await change({ preview_reserve: 20 });
+  await refresh();
+  await page.getByTestId('run-charging-preview').click();
+  await page.getByTestId('charging-preview-result').filter({ hasText: 'Charging power → 500 W' }).waitFor();
+  assert.match(await page.getByTestId('controller-preview-scope').textContent(), /Ownership here is a simulation/);
+  assert.equal(await page.getByTestId('command-review').count(), 0);
+  await page.getByTestId('charging-preview-panel').screenshot({ path: `${root}/docs/images/web-controller-preview.png` });
+  cases++; console.log(`Scenario ${cases} passed`);
+
+  await page.getByTestId('preview-policy').selectOption('owned_price');
+  await page.getByTestId('preview-price').fill('0.50');
+  await page.getByTestId('run-charging-preview').click();
+  await page.getByTestId('charging-preview-result').filter({ hasText: 'peak / battery use' }).waitFor();
+  const current = await fetch(`${base}/devices/${encodeURIComponent('Office · C1000 Gen 2')}`, { headers: { Authorization: authorization } }).then((response) => response.json());
+  const protectedKeys = ['ac_charging_power_limit_w', 'max_charge_percentage', 'min_charge_percentage', 'backup_reserve_percentage',
+    'ac_fast_charge_enabled', 'ac_output_enabled', 'dc_output_enabled', 'ac_input_connected', 'clock_screen_enabled',
+    'clock_screen_transfer_status_raw', 'disaster_preparation_active', 'ac_output_timeout_seconds', 'dc_output_timeout_seconds', 'software_version'];
+  await page.getByTestId('preview-ownership').fill(JSON.stringify({ policy: 'surplus', phase: 'active', decision: 'idle',
+    changed_at: Date.now() / 1000 - 600, baseline_power_w: 300,
+    protected: Object.fromEntries(protectedKeys.map((key) => [key, current.metrics[key]])) }));
+  await page.getByTestId('run-charging-preview').click();
+  await page.getByTestId('charging-preview-result').filter({ hasText: 'Release the other policy' }).waitFor();
+  assert.equal(posts, beforePreview);
+  await page.getByTestId('preview-ownership').fill('');
+  await page.getByTestId('preview-policy').selectOption('fixed');
+  await change({ standard: false, preview_power_w: null, preview_slot_count: null, preview_reserve: null, plan_readback: null });
   await refresh();
   cases++; console.log(`Scenario ${cases} passed`);
 

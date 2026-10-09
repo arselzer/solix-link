@@ -7,6 +7,7 @@ import time
 
 from .const import DOMAIN
 from .native_energy import validate_native_energy
+from .native_energy_continuity import REASONS
 
 
 def repair_conditions(snapshots: dict, ownership: dict, runtime: dict, *,
@@ -46,6 +47,13 @@ def repair_conditions(snapshots: dict, ownership: dict, runtime: dict, *,
         if meter and meter["status"] == "quarantined":
             active[key] = ("energy_quarantine", {"station": label, "reason": meter["reason"]})
         elif meter and meter["status"] == "tracking":
+            resolved.add(key)
+        accounting = snapshot.get("native_meter_accounting", {})
+        key = "native_energy_continuity_" + suffix
+        reason = accounting.get("reason")
+        if reason in REASONS - {"none", "meter_unavailable", "meter_quarantined"}:
+            active[key] = ("native_energy_continuity", {"station": label, "reason": reason})
+        elif accounting.get("ready") is True and reason == "none":
             resolved.add(key)
         # Missing/invalid energy data is not evidence quarantine was repaired.
     return active, resolved

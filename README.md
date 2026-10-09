@@ -39,7 +39,8 @@ firmware specific; detailed capabilities are in the [Python guide](python/README
 - Preview solar/price charging policies; opt into HA surplus or
   [owned price charging](docs/owned-price-charging.md) with
   [shared ownership and HA Repairs](docs/charging-controller-and-repairs.md).
-  Automations start disabled.
+  [Exact controller previews](docs/controller-policy-preview.md) use the same
+  guards, with explicitly simulated ownership. Automations start disabled.
   [Additional data](docs/additional-controls-and-data.md) includes expansion
   presence/SOC/temperature and original C1000 raw report diagnostics.
 
@@ -89,7 +90,7 @@ AC output is protected.
 | [History](docs/persistent-history.md) / [HA Energy](docs/home-assistant-energy-dashboard.md) | Saved charts, derived kWh, missing intervals and dashboard requirements |
 | [Energy calibration](docs/energy-calibration-workflow.md) | Guided independent-meter comparisons; no automatic conversion changes |
 | [Charging automation](docs/home-assistant-charging-automation.md) / [Surplus charging](docs/home-assistant-surplus-charging.md) | Opt-in blueprints, reserve guards and activation checks |
-| [Policy previews](docs/adaptive-policy-preview.md) / [Offline replay](docs/policy-timeline-replay.md) | Read-only surplus/price decisions and synthetic timeline charts |
+| [Controller previews](docs/controller-policy-preview.md) / [Exploratory previews](docs/adaptive-policy-preview.md) / [Offline replay](docs/policy-timeline-replay.md) | Exact HA rules, simulated ownership and synthetic timeline charts |
 | [UPS activity and permissions](docs/ups-activity-and-permissions.md) / [Control coordination](docs/control-readiness-and-coordination.md) | Alerts, scoped access, fleet overview and write conflict handling |
 
 ## Development
@@ -99,19 +100,20 @@ The gateway dashboard is in `dashboard/`; the separate Web Bluetooth explorer
 and protocol tools are in `src/` and `tools/`.
 
 ```sh
-python3 -m pip install -e './python[server,mqtt,tui]'
+python3 -m pip install -e './python[server,mqtt,tui,test]'
 npm ci
 npm run dev                        # Web Bluetooth explorer
 npm run build
 npm run build:dashboard             # Vue check + bundled gateway assets
-PYTHONPATH=python python3 -m pytest python/tests home_assistant_tests -q
+PYTHONPATH=python:python/tests python3 -m pytest python/tests home_assistant_tests -q
 npm run test:protocol
 npm run test:dashboard              # synthetic browser fixtures
 ```
 
-Server/HA tests also need `pytest`, `httpx`, `aiohttp`, `PyYAML` and `Jinja2`;
-browser checks need Playwright Chromium. See the web-dashboard guide for setup.
-Commit dashboard source and compiled Python assets together.
+The `test` extra supplies Python/HA test dependencies; browser checks also need
+Playwright Chromium. See the web-dashboard guide for setup. CI runs these checks
+on pushes to `main` and pull requests, including Python 3.11/3.14 and bundled
+dashboard consistency. Commit dashboard source and compiled Python assets together.
 
 ## Research and license
 

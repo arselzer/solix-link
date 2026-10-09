@@ -9,6 +9,7 @@ from typing import TYPE_CHECKING, Any
 
 from .api import COMMANDS, METRICS, numeric, snapshot_available
 from .native_energy import validate_native_energy
+from .native_energy_continuity import REASONS as CONTINUITY_REASONS
 
 if TYPE_CHECKING:
     from homeassistant.core import HomeAssistant
@@ -79,6 +80,10 @@ def diagnostics_report(snapshots: dict, *, now: float | None = None) -> dict[str
             controls = []
         model, protocol = snapshot.get("model"), snapshot.get("protocol")
         power_flow = snapshot.get("power_flow")
+        accounting = snapshot.get("native_meter_accounting", {})
+        continuity = ({"ready": accounting["ready"], "reason": accounting["reason"]}
+                      if type(accounting) is dict and type(accounting.get("ready")) is bool
+                      and type(accounting.get("reason")) is str and accounting["reason"] in CONTINUITY_REASONS else None)
         stations.append({
             "station": len(stations) + 1,
             "model": model if isinstance(model, str) and model in MODELS else "unknown",
@@ -91,6 +96,7 @@ def diagnostics_report(snapshots: dict, *, now: float | None = None) -> dict[str
             "metrics": metrics,
             "native_energy": validate_native_energy(snapshot.get("native_energy"), model=model, now=now) if protocol == "native_mqtt" else None,
             "charging_policy": policy_diagnostics(snapshot.get("price_policy")),
+            "native_meter_accounting": continuity,
         })
     return {"station_count": len(stations), "stations": stations}
 

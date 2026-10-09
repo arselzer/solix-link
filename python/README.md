@@ -58,7 +58,7 @@ pip install './python[server,mqtt,tui]'
 AP-service Python APIs use `APServiceConfig`, `APService` and
 `ap_service_request`; configuration is `ap_service.json`. Add
 `ap-service-run --energy-reports` for optional local analytics capture. The
-counter units remain physically unverified. C1000 Gen 2 main 1.1.4.9 also has
+counter units remain physically unverified. Both qualified Gen 2 models also have
 guarded [observed Standard AC energy estimates](../docs/native-energy-meter.md)
 for HA statistics; they begin at zero and quarantine ambiguous boundaries.
 Per-device `native_energy` snapshots now carry raw counters, nominal kWh,
@@ -97,6 +97,14 @@ surplus steps and price-driven TOU candidates through `--adaptive`, terminal F6
 and `POST /devices/{name}/adaptive-preview`. These remain read-only with no
 executor. [Timeline replay](../docs/policy-timeline-replay.md) accepts saved frames
 and exports JSON or SVG; it never fabricates charging/SOC response from a proposal.
+
+Use **`--controller`** instead for the
+[same guards as HA's shared charging executor](../docs/controller-policy-preview.md).
+Browser HA controller choices, terminal F6 and
+`POST /devices/{name}/controller-preview` call the same pure decision function.
+Ownership is caller-supplied or explicitly assumed unowned; no live HA ownership
+is read, saved or acquired. Reserve must already be configured. Only native
+C1000 Gen 2 / 1.1.4.9 qualifies; C2000 exploratory previews remain available.
 
 `settings-export --snapshot-file snapshot.json` exports sanitized partial
 preferences; `--gateway-url`, `--gateway-token-file` and `--name` select a cached

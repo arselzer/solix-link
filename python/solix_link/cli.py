@@ -114,7 +114,9 @@ def parser() -> argparse.ArgumentParser:
     preview = subcommands.add_parser("charging-preview", help="Explain a charging policy from saved JSON; sends no commands")
     preview.add_argument("--snapshot-file", type=Path, required=True)
     preview.add_argument("--request-file", type=Path, required=True)
-    preview.add_argument("--adaptive", action="store_true", help="Opt in to offline surplus/TOU proposals; no executor")
+    preview_kind = preview.add_mutually_exclusive_group()
+    preview_kind.add_argument("--adaptive", action="store_true", help="Exploratory surplus/TOU simulation; different from HA execution")
+    preview_kind.add_argument("--controller", action="store_true", help="Use exact HA controller guards with explicit simulated ownership")
 
     replay = subcommands.add_parser("policy-replay", help="Replay saved adaptive-preview frames; no commands or physical prediction")
     replay.add_argument("--timeline-file", type=Path, required=True)
@@ -555,7 +557,7 @@ def main(argv: list[str] | None = None) -> int:
                        activity_retention_days=args.activity_retention_days)
         elif args.command == "charging-preview":
             from .charging_preview_cli import offline_preview
-            print(json.dumps(offline_preview(args.snapshot_file, args.request_file, adaptive=args.adaptive), indent=2))
+            print(json.dumps(offline_preview(args.snapshot_file, args.request_file, adaptive=args.adaptive, controller=args.controller), indent=2))
         elif args.command == "policy-replay":
             from .charging_preview_cli import read_document
             from .policy_replay import MAX_REPLAY_BYTES, adaptive_timeline_svg, replay_adaptive_timeline

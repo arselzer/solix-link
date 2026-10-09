@@ -64,6 +64,36 @@ independent consumption, or double-count chained stations.
 [HA sensor contract](https://developers.home-assistant.io/docs/core/entity/sensor/),
 [Energy requirements](https://www.home-assistant.io/docs/energy/faq/)
 
+## HA continuity guard — prepared 2026-10-09
+
+HA now persists the last accepted native-meter record in a separate version-1
+store, **`solix_link.native_energy_continuity.<entry_id>`**. It does not rewrite
+gateway `energy-state.json`, history continuity or charging ownership. Model,
+firmware, generation, start time, source/receipt timestamps, accepted-report
+count, raw anchors and accumulated integer totals are saved **before** the
+Energy sensors become available.
+
+Within an epoch, timestamps, report count, raw anchors and totals cannot go
+backwards; its start time cannot change. A different generation is accepted
+only if its start and source time follow the previously accepted report. A
+restored older gateway backup therefore cannot masquerade as a new meter reset.
+HA integration reloads retain this check. There is no automatic rebase.
+
+Snapshots expose HA-only `native_meter_accounting.ready/reason`; the Energy
+entities expose `continuity_ready/continuity_reason`. Failed loads/saves,
+corruption evidence and cancelled saves block statistics, preserve existing
+records and create an informational HA Repair. Ordinary telemetry, raw counter
+diagnostics and controls continue. Returning to a valid nonregressing report can
+clear a regression; storage failures require investigation and integration
+reload after the cause is resolved. Do not delete continuity files or statistics
+to silence a warning.
+
+First installation adopts the current valid meter record. It cannot detect a
+rollback predating that baseline, repair older Recorder data, or establish
+continuity if both gateway and HA stores are lost/restored together. This
+software safeguard does not calibrate counters or verify physical restart
+retention. The 2026-10-09 changes are prepared, not deployed by this checkpoint.
+
 ## Restart test still pending
 
 The user authorized a C1000 Gen 2 restart, then confirmed they were unavailable

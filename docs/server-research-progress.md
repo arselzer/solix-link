@@ -1779,3 +1779,63 @@ post-restart counters. MCU sampling timing, channel semantics, physical scales,
 mode transitions and retained epochs remain unqualified. C2000 screen native
 validation and other preference/identity research remain separate, supervised
 work; its server supply stays excluded from output/reset experiments.
+
+## Review follow-up: continuity, exact previews and CI — 2026-10-09
+
+Source baseline: `41a25123ba2db57f3b2af4ebf813e385695583f1`, `main`.
+Implemented the accepted source-review priorities with synthetic inputs only:
+
+1. **Native Energy continuity:** a separate version-1 HA store persists the last
+   accepted model/firmware, generation, epoch, timestamps, report count, raw
+   anchors and totals before publishing Energy values. Restored older gateway
+   snapshots, regressing counters/epochs and storage failures block statistics;
+   raw diagnostics survive. Cancellation/corruption preserves evidence. A
+   validated later generation can establish a new zero baseline; no automatic
+   rebase, counter reset or change to C2000's assumed conversion is introduced.
+   First adoption cannot repair prior Recorder data or detect simultaneous loss
+   of both stores. [Continuity contract](native-energy-meter.md)
+2. **Test/CI repair:** the stale C2000 preference test now permits only its
+   prepared native screen timeout. The new test extra supplies Python/HA
+   dependencies. CI covers Python 3.11/3.14, both frontend type checks/builds,
+   bundled-asset consistency, protocol checks and synthetic browser scenarios.
+   The Pages build now includes its TypeScript check. GitHub CI and Python 3.11
+   have not been executed in this local checkpoint.
+3. **Exact controller previews:** SDK, offline/cached CLI `--controller`, terminal
+   F6 and authenticated `/controller-preview` call HA's existing pure shared
+   controller. Reserve must already be configured; protected settings, fresh D9,
+   signal age, cooldown and other-owner conflicts match execution guards.
+   Ownership remains explicitly simulated; no live HA owner is read or adopted,
+   no request ticket is issued and zero commands are sent. Exploratory preview
+   contracts remain available and are labelled separately. [Preview guide](controller-policy-preview.md)
+4. **Feature inventory:** updated implemented/deployed/prepared boundaries,
+   Energy coverage, original raw reports, C2000's six native command families,
+   shared charging ownership and remaining physical qualification work.
+   [Current gaps](implementation-gaps.md)
+
+Verification: **3,759 Python/HA tests passed in 96.64 seconds**;
+**37 browser scenarios passed**,
+both Vue builds/type checks passed, and the protocol encryption test passed.
+The new preview screenshot and refreshed fixed-preview screenshot use synthetic
+telemetry only; unrelated generated screenshot changes were discarded.
+Local tools: Python **3.14.4**, pytest **9.1.1**, Textual **8.2.8**, FastAPI
+**0.142.2**, cached Node **22.20.0** and Vite **8.0.3**. No tooling download or new
+firmware/Android instruction replay occurred.
+
+The shared pure decision sources remain identical between package and HA:
+
+- `charging_controller.py` SHA-256
+  `796238cd7d155dadc1972c89ab19ccd2199768fa147ad77be3e5f38c36c50272`.
+- `price_policy.py` SHA-256
+  `77037161e50f1fad6bb999b4fdb70d7901eca8f089e05168a418b60078b4ccf4`.
+
+Changes are prepared in the repository, **not deployed to HA or the gateway**.
+No BLE/MQTT access, station commands, service restarts, cloud requests,
+live configuration reads/writes or automation activation were performed. `AGENTS.md`,
+private inputs and the preexisting untracked `python/build/` were preserved.
+
+Next hardware work remains independent-meter calibration, labelled noncritical
+station restarts, original below-full loaded charging tests and supervised
+surplus/price consumption checks. C2000's server supply stays excluded from
+output/reset/reprovisioning experiments; native screen validation requires its
+own supervised test. True pause, complete restoration, additional C2000
+preferences, generated-ID fleet setup and local OTA remain investigations.

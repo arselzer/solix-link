@@ -31,7 +31,7 @@ of existing plans. C2000 and original C1000 remain excluded from this executor.
 [same durable owner](../../docs/charging-controller-and-repairs.md). The
 **Charging policy ownership** diagnostic includes the current owner, decision,
 reason and override. HA Repairs explains storage failures, pending/blocked
-ownership, stale signals and native-energy quarantine. Recreate automations
+ownership, stale signals and native-energy quarantine/continuity failures. Recreate automations
 using the older surplus blueprint; the new blueprint remains disabled.
 
 [Additional controls/data](../../docs/additional-controls-and-data.md) include
@@ -70,8 +70,12 @@ independent ten-minute expiry. HA itself reads cached HTTP data only. See
   remain unverified; no lifetime statistics state class is supplied. See
   [native energy collection and limits](../../docs/native-energy-values.md).
 - Optional history diagnostics: estimated AC input/output kWh, coverage and gaps.
-  These currently have no energy statistics state class. See
-  [Energy-dashboard options and remaining work](../../docs/home-assistant-energy-dashboard.md).
+  These keep their diagnostic IDs without a statistics state class. Separate
+  optional AC input/output energy estimates support HA Energy for all supported
+  models. Both Gen 2 models also have observed Standard AC estimates, with
+  persisted [native-meter continuity guards](../../docs/native-energy-meter.md).
+  C2000 conversion remains assumed; neither source isolates battery energy.
+  See [Energy-dashboard configuration](../../docs/home-assistant-energy-dashboard.md).
 - Numbers: AC charging power limit, charge cap and backup reserve. A number is
   created only for a supported model when telemetry exists and the gateway
   advertises that command. Charging-power ranges are original C1000/A1761

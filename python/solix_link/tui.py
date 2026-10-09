@@ -358,7 +358,20 @@ class TuiBackend:
             return {"connected": False, "available": False, "metrics": {}}
         protocol = (self.gateway_snapshot.get("protocol") if target.gateway else
                     "native_mqtt" if target.native else target.device.protocol)
-        return {**public_snapshot(cached), "model": target.model.value, "protocol": protocol}
+        result = {**public_snapshot(cached), "model": target.model.value, "protocol": protocol}
+        # These settings are needed for exact controller guards, but do not
+        # become controls or arbitrary strings in the terminal display.
+        from .price_policy import PROTECTED
+        from .controller_preview import cached_controller_snapshot
+        from .commands import native_commands_for_model
+        raw = self.gateway_snapshot if target.gateway else self.native_snapshot if target.native else cached
+        for key in PROTECTED:
+            value = raw.get("metrics", {}).get(key)
+            if type(value) is int and 0 <= value <= 2**32 or key == "software_version" and value == "1.1.4.9":
+                result["metrics"][key] = value
+        controls = (raw.get("preview_controls", []) if target.gateway else
+                    native_commands_for_model(target.model) if target.native and raw.get("control_enabled") is True else ())
+        return cached_controller_snapshot(result, controls)
 
     @staticmethod
     def _native_model(directory: Path) -> Model:
@@ -1107,8 +1120,9 @@ def create_app(config_path: Path = DEFAULT_CONFIG, ap_service_directory: Path | 
                     with TabPane("Preview", id="preview"):
                         with VerticalScroll(id="preview-scroll"):
                             yield Static("Read-only charging policy preview · commands sent: 0\nUses the local clock and current cached snapshot. Simulated armed/latch values in the file do not enable automation.", classes="hint", markup=False)
-                            yield Select([("Fixed charging preview", "fixed"),
-                                          ("Adaptive surplus / price TOU preview", "adaptive")],
+                            yield Select([("Exploratory fixed charging preview", "fixed"),
+                                          ("Exploratory surplus / price TOU simulation", "adaptive"),
+                                          ("HA controller rules / simulated ownership", "controller")],
                                          value="fixed", allow_blank=False, id="preview-kind")
                             yield Label("Policy request JSON file (maximum 4 KiB)", classes="form-label")
                             yield Input(placeholder="/path/to/policy-request.json", id="preview-file")
@@ -1651,7 +1665,8 @@ def create_app(config_path: Path = DEFAULT_CONFIG, ap_service_directory: Path | 
                       "price_age": self.query_one("#preview-price-age", Input).value,
                       "export_value": self.query_one("#preview-export", Input).value,
                       "export_age": self.query_one("#preview-export-age", Input).value,
-                      "adaptive": self.query_one("#preview-kind", Select).value == "adaptive"}
+                      "adaptive": self.query_one("#preview-kind", Select).value == "adaptive",
+                      "controller": self.query_one("#preview-kind", Select).value == "controller"}
             async def preview() -> None:
                 try:
                     result = await asyncio.to_thread(manual_preview, snapshot, path, **fields)
@@ -1663,9 +1678,10 @@ def create_app(config_path: Path = DEFAULT_CONFIG, ap_service_directory: Path | 
                     log.write("Reasons: " + ", ".join(result["reasons"]))
                     log.write("Current settings: " + str(result["current_settings"]))
                     log.write("Proposed settings (never applied): " + str(result["proposed_settings"]))
-                    if fields["adaptive"]:
+                    if fields["adaptive"] or fields["controller"]:
                         log.write("Candidate TOU plan (never applied): " + str(result["proposed_plan"]))
-                        log.write("Previous-preview state only; no executor or physical prediction.")
+                        log.write("Simulated ownership only; use the HA preview action for its actual saved owner." if fields["controller"] else
+                                  "Exploratory previous-preview state; different from HA controller rules.")
                     log.write(f"Telemetry age: {result['telemetry_age_seconds']}s · local clock")
                     self.query_one("#preview-state", Static).update("Preview calculated at " + time.strftime("%H:%M:%S") + " local time; commands sent: 0.")
                     self._has_preview = True
