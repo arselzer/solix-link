@@ -30,6 +30,7 @@ class Demo:
         self.native_energy = {}
         self.wifi_signal = {}
         self.original_counters = {}
+        self.ac_permission = False
     async def start(self): pass
     async def stop(self): pass
     def supported_commands(self, name):
@@ -37,7 +38,8 @@ class Demo:
         if name.startswith("Local"): return list(native_commands_for_model(Model.C1000))
         if name.startswith("Updated"): return original_prime_commands()
         if name.startswith("Spare"): return ["set-charge-power", "set-device-timeout", "set-temperature-unit", "set-fast-charge", "set-ac-power-saving", "set-dc-power-saving"]
-        return list(NATIVE_COMMANDS) + (list(NATIVE_C1000_COMMANDS) if name.startswith("Office") else ["set-display-timeout"])
+        return list(NATIVE_COMMANDS) + (list(NATIVE_C1000_COMMANDS) if name.startswith("Office") else
+            ["set-display-timeout"] + (["set-ac-output", "cycle-ac-output"] if self.ac_permission else []))
     def snapshot(self, name):
         c1000 = name.startswith("Office")
         updated = name.startswith("Updated")
@@ -91,7 +93,14 @@ class Demo:
                 "metrics":metrics,"power_flow":"unknown" if original else "battery" if c1000 else "grid",
                 "tou_plan_readback": None if original else self.plan_readback,
                 "native_energy": self.native_energy.get(name), "wifi_signal": self.wifi_signal.get(name),
-                "original_counters": self.original_counters.get(name)}
+                "original_counters": self.original_counters.get(name), "control_enabled": not self.readonly,
+                "ac_power_control": {"supported": True, "enabled": self.ac_permission,
+                    "storage_valid": True, "restore_pending": False} if not original and not c1000 else None}
+    async def set_ac_output_permission(self, name, enabled, *, acknowledge_high_impact):
+        if not name.startswith("Server"): raise ValueError
+        if enabled and not acknowledge_high_impact: raise PermissionError
+        self.ac_permission = enabled
+        return self.snapshot(name)
     def snapshots(self): return [self.snapshot(name) for name in self.devices]
     async def check_setup(self):
         return {"schema": 1, "ok": True, "read_only": True,
@@ -102,6 +111,9 @@ class Demo:
                               "message": "Generated native identity support remains unverified on this model."}]}
     async def command(self,name,command,**values):
         self.commands.append({"name":name,"command":command,**values})
+        if command in ("set-ac-output", "cycle-ac-output"):
+            if not self.ac_permission: raise PermissionError
+            self.overrides[name]["ac_output_enabled"] = int(values["enabled"]) if command == "set-ac-output" else 1
         key={"set-charge-power":"ac_charging_power_limit_w","set-charge-cap":"max_charge_percentage",
              "set-backup-reserve":"backup_reserve_percentage", "set-discharge-floor":"min_charge_percentage","set-temperature-unit":"temperature_unit_fahrenheit",
              "set-off-grid-alert":"ac_off_grid_alert_enabled", "set-device-timeout":"device_timeout_minutes",

@@ -240,9 +240,9 @@ class NativeMqttCommands:
         return self._original_setting("ac_power_saving_mode_enabled", enabled)
 
     def ac_output(self, enabled: bool) -> NativeMqttRequest:
-        """Build a C1000 Gen 2 output request for local operators, never C2000."""
-        if self.model != Model.C1000_GEN2 or type(enabled) is not bool:
-            raise ValueError("AC output requires C1000 Gen 2 and a boolean")
+        """Native Gen 2 packet; workers enforce permission and exact firmware."""
+        if self.model not in (Model.C1000_GEN2, Model.C2000_GEN2) or type(enabled) is not bool:
+            raise ValueError("AC output requires a Gen 2 model and a boolean")
         return self._request("0101", tlv(0xA2, bytes((1, int(enabled)))), milliseconds=True)
 
     def ac_countdown(self, seconds: int) -> NativeMqttRequest:

@@ -85,7 +85,8 @@ other models and Gen 2 BLE brightness are unchanged.
 The native brightness setter checks Standard/no active tariff and an inactive
 clock screen before writing.
 C1000 Gen 2 also has a guarded lower discharge limit; it cannot silently
-adjust reserve. There is no HTTP AC-output switch. Several native stations can
+adjust reserve. Native C2000 has separate [guarded AC output controls](ac-output-controls.md)
+with owner permission off by default and explicit confirmation. Several native stations can
 share one AP: see [registration and selection](multiple-ap-devices.md).
 
 The tariff editor is a **draft**. Fresh native Gen 2 saved-plan readback can

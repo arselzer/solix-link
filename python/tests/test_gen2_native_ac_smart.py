@@ -64,12 +64,13 @@ def test_protected_mutations_fail_without_retry(tmp_path, target, index):
     assert len([r for r in station.requests if r[0] == "0101"]) == 1
 
 
-def test_no_http_output_shape_c2000_or_readonly_write(tmp_path):
-    for model in (Model.C1000_GEN2, Model.C2000_GEN2, Model.C1000):
+def test_c2000_requires_separate_permission_and_c1000_output_stays_private(tmp_path):
+    for model in (Model.C1000_GEN2, Model.C1000):
         assert "set-ac-output" not in native_commands_for_model(model)
+    assert "set-ac-output" in native_commands_for_model(Model.C2000_GEN2)
     with pytest.raises(ValueError): validate_command("set-ac-output", {"enabled":False})
     server, station = setup(tmp_path,model=Model.C2000_GEN2)
-    with pytest.raises(ValueError): asyncio.run(server.set_ac_output_enabled(False))
+    with pytest.raises(PermissionError): asyncio.run(server.set_ac_output_enabled(False))
     assert not station.requests
     server, station = setup(tmp_path,allow_control=False)
     with pytest.raises(PermissionError): asyncio.run(server.set_ac_output_enabled(False))

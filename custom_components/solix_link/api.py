@@ -17,7 +17,8 @@ COMMANDS = frozenset({"set-charge-power", "set-charge-cap", "set-backup-reserve"
                       "set-tou-plan", "return-grid", "set-discharge-floor",
                       "set-temperature-unit", "set-off-grid-alert", "set-device-timeout",
                       "set-fast-charge", "set-ac-power-saving", "set-dc-power-saving",
-                      "set-display-brightness", "set-display-timeout", "set-port-memory", "set-light", "set-clock-brightness"})
+                      "set-display-brightness", "set-display-timeout", "set-port-memory", "set-light", "set-clock-brightness",
+                      "set-ac-output", "cycle-ac-output"})
 METRICS = frozenset({"battery_percentage", "temperature_c", "output_power_w",
                     "expansion_battery_count", "expansion_battery_percentage", "expansion_temperature_c",
                     "ac_input_power_w", "ac_output_power_w", "dc_output_power_w",
@@ -143,7 +144,8 @@ def parse_tou_plan(value: Any) -> dict | None:
 CONTROL_REASONS = frozenset({"model_unsupported", "transport_unsupported", "gateway_controls_disabled",
     "token_scope_denied", "worker_controls_disabled", "not_advertised", "telemetry_unavailable",
     "missing_or_invalid_metrics", "firmware_unqualified", "output_must_be_off",
-    "countdown_must_be_inactive", "standard_mode_required", "clock_must_be_inactive", "command_in_progress"})
+    "countdown_must_be_inactive", "standard_mode_required", "clock_must_be_inactive", "command_in_progress",
+    "ac_output_locked", "ac_restore_pending"})
 EXPECTED_METRICS = frozenset({"ac_charging_power_limit_w", "max_charge_percentage", "min_charge_percentage",
     "backup_reserve_percentage", "display_timeout_seconds", "display_brightness", "device_timeout_minutes",
     "clock_screen_first_brightness_flag_raw", "clock_screen_second_brightness_flag_raw", "port_memory_enabled",
@@ -231,6 +233,16 @@ def parse_snapshot(value: Any) -> dict:
     result = {key: value[key] for key in ("name", "model", "protocol", "connected", "available")}
     result["last_seen_timestamp"] = numeric(value.get("last_seen_timestamp"))
     result["controls"] = sorted(set(controls) & COMMANDS)
+    power = value.get("ac_power_control")
+    result["ac_power_control"] = {key: power[key] for key in
+        ("supported", "enabled", "storage_valid", "restore_pending", "manageable")} if (
+            value["model"] == "c2000_gen2" and value["protocol"] == "native_mqtt" and type(power) is dict
+            and all(type(power.get(key)) is bool for key in
+                ("supported", "enabled", "storage_valid", "restore_pending", "manageable"))) else None
+    if (result["ac_power_control"] is None or result["ac_power_control"]["enabled"] is not True
+            or result["ac_power_control"]["storage_valid"] is not True
+            or value["metrics"].get("software_version") != "2.1.6.4"):
+        result["controls"] = [command for command in result["controls"] if command not in ("set-ac-output", "cycle-ac-output")]
     result["tou_plan_readback"] = parse_tou_plan(value.get("tou_plan_readback")) if (
         value["model"] in ("c1000_gen2", "c2000_gen2") and value["protocol"] == "native_mqtt") else None
     result["native_energy"] = None
@@ -465,10 +477,27 @@ def validate_command(snapshot: dict, payload: dict) -> None:
         "set-clock-brightness": {"command", "window", "high"},
         "set-display-timeout": {"command", "seconds"},
         "set-light": {"command", "mode"},
+        "set-ac-output": {"command", "enabled", "acknowledge_power_interruption"},
+        "cycle-ac-output": {"command", "off_seconds", "acknowledge_power_interruption", "controller_independent"},
     }[command]
     if set(payload) != expected:
         raise ValueError("Unexpected command fields")
-    if command == "set-charge-power":
+    if command in ("set-ac-output", "cycle-ac-output"):
+        power = snapshot.get("ac_power_control") or {}
+        if (model != "c2000_gen2" or snapshot.get("protocol") != "native_mqtt"
+                or metrics.get("software_version") != "2.1.6.4" or power.get("enabled") is not True
+                or power.get("storage_valid") is not True or power.get("restore_pending") is True
+                or binary_state(metrics.get("ac_output_enabled")) is None):
+            raise ValueError("AC output requires an unlocked, qualified native C2000 Gen 2")
+        if type(payload["acknowledge_power_interruption"]) is not bool:
+            raise ValueError("Use an explicit interruption acknowledgment")
+        if command == "set-ac-output":
+            if type(payload["enabled"]) is not bool or not payload["enabled"] and not payload["acknowledge_power_interruption"]:
+                raise ValueError("AC OFF requires explicit acknowledgment")
+        elif (not 5 <= integer(payload["off_seconds"], "AC hold") <= 60
+                or payload["acknowledge_power_interruption"] is not True or payload["controller_independent"] is not True):
+            raise ValueError("AC cycle requires a 5–60 second hold and both acknowledgments")
+    elif command == "set-charge-power":
         watts = integer(payload["watts"], "Charging power")
         if (model not in POWER_MAXIMUM
                 or not POWER_MINIMUM[model] <= watts <= POWER_MAXIMUM[model] or watts % 100):
@@ -564,6 +593,10 @@ def request_deadline(method: str, payload: dict | None = None) -> int:
         budget = 2 * duration + 100
     elif command == "set-tou-plan":
         budget = 120
+    elif command == "set-ac-output":
+        budget = 90
+    elif command == "cycle-ac-output":
+        budget = 240
     return budget + 5 + 10
 
 
@@ -642,6 +675,17 @@ class GatewayClient:
         if snapshot["name"] != name:
             raise GatewayError("Gateway returned a different device")
         return snapshot
+
+    async def async_ac_output_permission(self, name: str, enabled: bool, *, acknowledge_high_impact: bool) -> dict:
+        if not self.token or type(enabled) is not bool or type(acknowledge_high_impact) is not bool:
+            raise GatewayAuthError("AC permission requires an owner token and explicit booleans")
+        if enabled and not acknowledge_high_impact:
+            raise ValueError("Acknowledge interruption of all attached AC loads")
+        result = parse_snapshot(await self._request("POST", f"/devices/{quote(name, safe='')}/ac-output-permission",
+            {"enabled": enabled, "acknowledge_high_impact": acknowledge_high_impact}))
+        if result["name"] != name:
+            raise GatewayError("Gateway returned a different station")
+        return result
 
     async def async_command(self, name: str, payload: dict, *, expected_snapshot: dict | None = None) -> dict:
         if not self.token:

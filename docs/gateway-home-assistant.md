@@ -98,7 +98,10 @@ existing entity choices remain independent. Collection and HA presentation are
 separate preferences, and neither supplies calibrated lifetime statistics.
 
 GET `/devices` returns stations, freshness, `power_flow`, metrics and the
-available `controls` and configured `timezone_name`.
+available `controls` and configured `timezone_name`. Native C2000 main 2.1.6.4
+has separate owner-managed [AC output permission and guarded controls](ac-output-controls.md);
+these start locked, and the HA AC switch starts disabled. Card confirmation
+protects a dashboard action; the worker permission protects every caller.
 A [shared AP](multiple-ap-devices.md) exposes each registered station through
 these same endpoints. POST `/devices/{saved-name}/commands` accepts only the
 advertised command schema. For example:
@@ -175,7 +178,8 @@ See [native AC Smart validation](c1000-native-ac-smart-validation.md).
 Native output switching remains unavailable through public interfaces.
 Direct SDK/CLI/terminal AC output control requires the same inactive countdown
 and complete readback confirmation, giving ten direct Prime controls. HTTP/browser/HA and
-the Prime BLE MQTT bridge do not expose output switching. C2000 AC is blocked.
+the Prime BLE MQTT bridge do not expose original output switching. Native C2000
+has the separate opt-in controls described above; its BLE output is unqualified.
 
 Both directions of DC Smart require fresh DC output off. The BLE prototype
 and public SDK each passed two writes/nine fresh samples. Native prototype

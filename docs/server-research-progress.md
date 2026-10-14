@@ -1880,3 +1880,64 @@ identities are published. `AGENTS.md` and preexisting `python/build/` are preser
 See [recovery details and boundaries](c2000-ac-recovery.md). Prepared source
 retains the guarded private operation for review; ordinary C2000 output switches
 remain absent, and the deployed temporary maintenance operation is removed.
+
+## Guarded AC interfaces and deployment — 2026-10-14
+
+Source baseline **`9b43091`**, `main`. Integrated the preceding authorized
+C2000 OFF/ON finding into the native SDK, AP RPC/monitor, CLI, line/full-screen
+terminal, authenticated FastAPI/Vue dashboard and HA. No additional station
+setting request or physical output experiment occurred during this work.
+
+- **Per-station permission:** Allow AC output changes starts locked in a
+  separate owner-only, profile-bound file. Missing means off; invalid/mismatched
+  state fails closed. HTTP scopes distinguish command writes from explicit
+  `manage_ac_output` ownership. Existing scoped tokens cannot unlock the gate.
+  C2000 exposes six ordinary native families, eight only after AC opt-in.
+- **Confirmed setting versus electrical behavior:** only native A1783 main
+  2.1.6.4 qualifies. Explicit ON/OFF uses the established `0101/A2` request and
+  two fresh guarded A4/D9/A7/B2 confirmations. OFF needs its acknowledged,
+  mains-present Standard/no-timer baseline. Firmware/ACK/readback evidence is
+  not waveform qualification, and other firmware/BLE/DC output is unqualified.
+- **Cycle recovery:** fsynced ON intent precedes the single OFF attempt; hold is
+  5–60 seconds after confirmation. Client cancellation cannot cancel the worker
+  cycle. ON has three attempts within 90 seconds and valid pending intent can
+  resume on reconnection/restart. Locking permission cannot revoke restoration.
+  Shutdown attempts ON before closing MQTT/routing. Failed ON retains pending
+  intent; there is no guaranteed recovery from controller/network/device failure.
+- **HA/UI:** HA Configure manages permission without a station setting request.
+  The C2000 AC switch is registered disabled by integration; the separate cycle
+  action requires interruption and independent-controller acknowledgments.
+  Dashboard confirmation is card-specific, and does not govern every automation,
+  API call or ordinary switch widget. The guide supplies a hold/confirm OFF card.
+  Browser modals have unchecked acknowledgments and Cancel focused by default.
+
+Verification: **3,807 Python/HA tests passed in 103.74 seconds**, followed by
+**48 focused power tests passed** after final pre-arm/shutdown/reconnection
+checks. **39 synthetic browser scenarios passed** and the dashboard Vue type
+check/build passed. The screenshot uses synthetic data only; unrelated generated
+screenshots were restored. Build tooling was Python **3.14.4**, pytest **9.1.1**,
+cached Node **22.20.0**, Vite **8.0.3** and locally available setuptools **78.1.1**.
+The analysis venv lacked setuptools, so the wheel used the existing system
+backend offline. No dependency or tooling download occurred.
+
+Wheel **`solix_link-0.1.0`**, SHA-256
+`5a1620af4e3ba21459137f835c31d4b71d4f7bd7c7fa05fc44e231bafe7cdc3a`.
+Its **87 source/asset files** matched the repository. The existing AP/gateway
+and HA 2026.7.4 component were updated with private code backups and rollback.
+The first deployment failed its readiness guard and restored the previous code;
+the original failure stage was not captured, so its exact cause is unresolved.
+The retry recorded explicit stages and passed the final checks. These service
+restarts are observation interventions, not spontaneous link failures.
+
+Final cached telemetry: original C1000 **1.7.1 / 9 controls**, C1000 Gen 2
+**1.1.4.9 / 16**, C2000 Gen 2 **2.1.6.4 / 6**; all three fresh and reporting
+**AC ON**. All AC permissions remain false, no restoration intent/permission
+file was created, and the C2000 HA switch remains **disabled by integration**.
+Published baseline preferences matched after the update. Existing station
+profiles, certificates and gateway credentials matched their retained hashes.
+No network/provisioning, identity, automation or station-setting change was made.
+
+Private runtime backups, baselines, deployment logs and the sanitized report
+are retained in ignored `.solix-private/server-research/ac-controls-20261014-release/`.
+`AGENTS.md`, phone inputs and preexisting `python/build/` were preserved.
+See [interface and HA confirmation guide](ac-output-controls.md).

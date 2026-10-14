@@ -30,7 +30,7 @@ def row(report, command):
 
 def test_allowlists_and_model_transport_explanations():
     counts = {Model.C300: (3, 0, 0), Model.C1000: (8, 9, 9),
-              Model.C1000_GEN2: (0, 4, 16), Model.C2000_GEN2: (0, 3, 6)}
+              Model.C1000_GEN2: (0, 4, 16), Model.C2000_GEN2: (0, 3, 8)}
     for model, expected in counts.items():
         assert tuple(len(commands_for_transport(model, transport))
                      for transport in ("legacy", "prime", "native_mqtt")) == expected

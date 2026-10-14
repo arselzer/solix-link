@@ -26,6 +26,7 @@ def unique_object(pairs):
 class Principal:
     read: frozenset[str]
     write: tuple[tuple[str, frozenset[str]], ...] = ()
+    manage_ac_output: frozenset[str] = frozenset()
 
     def commands(self, name: str) -> frozenset[str]:
         return dict(self.write).get(name, frozenset())
@@ -66,7 +67,8 @@ class AccessPolicy:
             known = set(devices)
             entries, secrets = [], set()
             for item in body["tokens"]:
-                if type(item) is not dict or set(item) != {"token_file", "read", "write"}:
+                if (type(item) is not dict or not {"token_file", "read", "write"} <= set(item)
+                        or set(item) - {"token_file", "read", "write", "manage_ac_output"}):
                     raise ValueError
                 reads, writes = item["read"], item["write"]
                 if (type(reads) is not list or not 1 <= len(reads) <= 32
@@ -75,6 +77,10 @@ class AccessPolicy:
                         or type(writes) is not dict or not set(writes) <= set(reads)):
                     raise ValueError
                 scoped = []
+                managers = item.get("manage_ac_output", [])
+                if (type(managers) is not list or any(type(name) is not str for name in managers)
+                        or len(set(managers)) != len(managers) or not set(managers) <= set(reads)):
+                    raise ValueError
                 for name, commands in writes.items():
                     if (type(commands) is not list or not commands
                             or any(type(command) is not str for command in commands)
@@ -88,7 +94,7 @@ class AccessPolicy:
                 if not 16 <= len(token) <= 1024 or token in secrets:
                     raise ValueError
                 secrets.add(token)
-                entries.append((("Bearer " + token).encode("ascii"), Principal(frozenset(reads), tuple(scoped))))
+                entries.append((("Bearer " + token).encode("ascii"), Principal(frozenset(reads), tuple(scoped), frozenset(managers))))
             return cls(tuple(entries))
         except (OSError, ValueError, TypeError, UnicodeError, RecursionError):
             raise ValueError("Invalid owner-only HTTP permissions or token file") from None

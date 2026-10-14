@@ -7,6 +7,7 @@ import StationActivity from './StationActivity.vue';
 import FleetOverview from './FleetOverview.vue';
 import ControlAvailability from './ControlAvailability.vue';
 import StationControls from './StationControls.vue';
+import ACOutputControls from './ACOutputControls.vue';
 import GatewayChecks from './GatewayChecks.vue';
 import ChargingPreview from './ChargingPreview.vue';
 import { draftFor, modelLabel, numberMetric, powerMetric } from './types';
@@ -20,6 +21,8 @@ const tokenInput = ref('');
 const selectedName = ref('');
 const drafts = reactive<Record<string, Draft>>({});
 const proposal = ref<Proposal | null>(null);
+const impactAcknowledged = ref(false);
+const independenceAcknowledged = ref(false);
 const dialog = ref<HTMLDialogElement | null>(null);
 const cancelButton = ref<HTMLButtonElement | null>(null);
 const selected = computed(() => stations.value.find((station) => station.name === selectedName.value) ?? null);
@@ -45,7 +48,10 @@ const flow = computed(() => {
 const confirmationStation = computed(() => proposal.value ? stations.value.find((station) => station.name === proposal.value!.station) : null);
 const canConfirm = computed(() => !!confirmationStation.value && gateway.fresh(confirmationStation.value)
   && !busy.value && !polling.value && !confirmationStation.value.command_context?.busy
-  && !!proposal.value && confirmationStation.value.controls.includes(proposal.value.body.command));
+  && !!proposal.value && (proposal.value.permissionChange ? confirmationStation.value.ac_power_control?.manageable === true
+    : confirmationStation.value.controls.includes(proposal.value.body.command))
+  && (!proposal.value.highImpact || impactAcknowledged.value)
+  && (!proposal.value.independentController || independenceAcknowledged.value));
 const format = (value: number | null, suffix = '') => value === null ? '—' : `${Math.round(value)}${suffix}`;
 
 watch(stations, (values) => {
@@ -88,12 +94,16 @@ function cancel() {
 function confirm() {
   if (!canConfirm.value || !proposal.value || !confirmationStation.value) return;
   const body = proposal.value.body;
+  const permissionChange = proposal.value.permissionChange;
   const station = confirmationStation.value;
   cancel();
-  void gateway.send(station, body);
+  if (permissionChange) void gateway.setACPermission(station, body.enabled === true, body.acknowledge_high_impact === true);
+  else void gateway.send(station, body);
 }
 
 function review(value: Proposal) {
+  impactAcknowledged.value = independenceAcknowledged.value = false;
+  if (value.permissionChange) { proposal.value = value; return; }
   const station = stations.value.find((candidate) => candidate.name === value.station);
   const context = station?.command_context;
   if (context?.schema_version === 1 && context.preconditions_supported && /^[0-9a-f]{32}$/.test(context.gateway_instance)
@@ -148,6 +158,7 @@ function review(value: Proposal) {
           <StationActivity :key="selected.name" :station="selected" :busy="busy" :request="gateway.readOnly" />
           <ControlAvailability :key="selected.name" :station="selected" :fresh="fresh" />
           <StationControls v-if="drafts[selected.name]" :station="selected" :draft="drafts[selected.name]!" :writable="writable && !selected.command_context?.busy" :now="now" @propose="review" />
+          <ACOutputControls :station="selected" :active="fresh && !busy && !polling && !selected.command_context?.busy" @propose="review" />
           <ChargingPreview :key="selected.name" :station="selected" :busy="busy" :request="gateway.readOnly" />
         </template>
         <section v-else-if="!connecting" class="panel empty-stations"><h2>No stations configured</h2><p>Add a station to your SOLIX Link gateway, then refresh this page.</p><button class="secondary" :disabled="polling" @click="gateway.refresh">Refresh stations</button></section>
@@ -157,7 +168,10 @@ function review(value: Proposal) {
 
     <GatewayChecks v-if="checksOpen && session" :checking="checking" :reports="checks" @close="checksOpen = false" @refresh="gateway.checkGateway" />
     <dialog v-if="proposal" ref="dialog" class="confirm-dialog" data-testid="command-review" aria-labelledby="confirmation-title" @cancel.prevent="cancel">
-      <div class="confirmation-label"><span class="status-dot"></span>Confirm station command</div><h2 id="confirmation-title">{{ proposal.title }}</h2><p class="confirmation-station">{{ proposal.station }}</p><p>{{ proposal.detail }}</p><ul class="confirmation-summary"><li v-for="item in proposal.summary" :key="item">{{ item }}</li></ul><p v-if="!canConfirm" class="validation-error">Wait for fresh telemetry and an available gateway before applying.</p><div class="confirmation-actions"><button ref="cancelButton" class="secondary" data-testid="cancel-command" @click="cancel">Cancel</button><button class="primary" data-testid="confirm-command" :disabled="!canConfirm" @click="confirm">Apply command</button></div>
+      <div class="confirmation-label"><span class="status-dot"></span>Confirm station command</div><h2 id="confirmation-title">{{ proposal.title }}</h2><p class="confirmation-station">{{ proposal.station }}</p><p>{{ proposal.detail }}</p><ul class="confirmation-summary"><li v-for="item in proposal.summary" :key="item">{{ item }}</li></ul>
+      <label v-if="proposal.highImpact" class="confirmation-ack"><input v-model="impactAcknowledged" type="checkbox" data-testid="ac-impact-ack"> I understand that AC changes can interrupt every attached AC load.</label>
+      <label v-if="proposal.independentController" class="confirmation-ack"><input v-model="independenceAcknowledged" type="checkbox" data-testid="ac-independence-ack"> The controller, access point and router have independent power.</label>
+      <p v-if="!canConfirm" class="validation-error">Fresh telemetry, available permissions and all required acknowledgments are needed.</p><div class="confirmation-actions"><button ref="cancelButton" class="secondary" data-testid="cancel-command" @click="cancel">Cancel</button><button class="primary" data-testid="confirm-command" :disabled="!canConfirm" @click="confirm">Apply command</button></div>
     </dialog>
   </div>
 </template>

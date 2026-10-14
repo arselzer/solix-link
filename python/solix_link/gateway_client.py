@@ -163,6 +163,7 @@ class GatewayClient:
         from .wifi_signal import validate_wifi_signal
         from .original_counters import validate_original_counters
         from .commands import COMMAND_FIELDS
+        from .ac_output_permission import public_ac_power_control
         controls = document.get("controls", [])
         preview_controls = [c for c in controls if type(c) is str and c in COMMAND_FIELDS] if type(controls) is list else []
         return {"name": document["name"], "model": document["model"], "protocol": document["protocol"],
@@ -176,6 +177,7 @@ class GatewayClient:
                 "power_flow": document.get("power_flow") if document.get("power_flow") in (
                     "unknown", "grid", "battery", "transitioning") else "unknown", "control_enabled": False,
                 "preview_controls": preview_controls,
+                "ac_power_control": public_ac_power_control(document.get("ac_power_control")),
                 "error": "ConnectionError" if document.get("error") is not None else None}
 
     def devices(self) -> list[dict]:

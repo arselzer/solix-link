@@ -56,7 +56,7 @@ def create_app(service: MonitorService, token: str | None = None, *, allow_contr
     if allow_control and not token and permissions is None:
         raise ValueError("HTTP controls require SOLIX_HTTP_TOKEN or an explicit Bearer token")
     legacy_principal = Principal(frozenset(service.devices), tuple(
-        (name, frozenset(COMMAND_FIELDS)) for name in service.devices))
+        (name, frozenset(COMMAND_FIELDS)) for name in service.devices), frozenset(service.devices))
     tracker = UpsTracker()
     coordinator = CommandCoordinator()
     activity_store = ActivityStore(retention_days=activity_retention_days)
@@ -171,6 +171,11 @@ def create_app(service: MonitorService, token: str | None = None, *, allow_contr
         public["original_counters"] = validate_original_counters(status.get("original_counters"), model=status.get("model"), protocol=status.get("protocol"))
         public["wifi_signal"] = validate_wifi_signal(status.get("wifi_signal"),
             model=status.get("model"), protocol=status.get("protocol"))
+        from .ac_output_permission import public_ac_power_control
+        power = public_ac_power_control(status.get("ac_power_control"))
+        public["ac_power_control"] = {**power, "manageable": bool(allow_control
+            and status["name"] in principal.manage_ac_output and power["supported"]
+            and status.get("control_enabled") and hasattr(service, "set_ac_output_permission"))} if power else None
         public["tou_plan_readback"] = validate_plan_readback(status.get("tou_plan_readback")) if (
             status.get("model") in ("c1000_gen2", "c2000_gen2") and status.get("protocol") == "native_mqtt") else None
         if public.get("error"):
@@ -371,6 +376,32 @@ def create_app(service: MonitorService, token: str | None = None, *, allow_contr
     async def controller_preview(name: str, request: Request):
         return await evaluate_preview(name, request, preview_controller)
 
+    @app.post("/devices/{name}/ac-output-permission")
+    async def ac_output_permission(name: str, request: Request):
+        if not readable(request, name):
+            return PlainTextResponse("Unknown device", status_code=404)
+        if (not allow_control or name not in request.state.principal.manage_ac_output
+                or not hasattr(service, "set_ac_output_permission")):
+            return JSONResponse({"error": "InsufficientScope", "settings_may_have_changed": False}, status_code=403)
+        try:
+            raw = bytearray()
+            async for chunk in request.stream():
+                if len(raw) + len(chunk) > 1024:
+                    raise ValueError
+                raw.extend(chunk)
+            body = json.loads(raw, object_pairs_hook=unique_object)
+            if (type(body) is not dict or set(body) != {"enabled", "acknowledge_high_impact"}
+                    or any(type(value) is not bool for value in body.values())):
+                raise ValueError
+            result = await service.set_ac_output_permission(name, **body)
+            return status_with_controls(result, request.state.principal)
+        except PermissionError:
+            return JSONResponse({"error": "PermissionError", "settings_may_have_changed": False}, status_code=403)
+        except (ValueError, UnicodeError, RecursionError):
+            return JSONResponse({"error": "InvalidPermission", "settings_may_have_changed": False}, status_code=400)
+        except (OSError, RuntimeError, TimeoutError):
+            return JSONResponse({"error": "PermissionResultUnknown", "settings_may_have_changed": False}, status_code=503)
+
     @app.post("/devices/{name}/commands")
     async def command(name: str, request: Request):
         if not allow_control:
@@ -396,6 +427,8 @@ def create_app(service: MonitorService, token: str | None = None, *, allow_contr
             validate_command(action, body)
         except (ValueError, UnicodeError, RecursionError):
             return JSONResponse({"error": "InvalidCommand", "settings_may_have_changed": False}, status_code=400)
+        except PermissionError:
+            return JSONResponse({"error": "AcknowledgmentRequired", "settings_may_have_changed": False}, status_code=403)
         if action not in request.state.principal.commands(name):
             return JSONResponse({"error": "InsufficientScope", "settings_may_have_changed": False}, status_code=403)
         if action not in service.supported_commands(name):

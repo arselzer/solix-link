@@ -44,6 +44,13 @@ async def async_setup(hass: HomeAssistant, config: dict) -> bool:
             "command": "set-tou-plan", "periods": call.data["periods"], "enabled": call.data["enabled"],
         })
 
+    async def cycle_ac_output(call: ServiceCall) -> None:
+        coordinator, name = selected(call.data["device_id"])
+        if call.data["acknowledge_power_interruption"] is not True or call.data["controller_independent"] is not True:
+            raise HomeAssistantError("Acknowledge all AC loads and independent controller/network power")
+        await coordinator.async_command(name, {"command": "cycle-ac-output", "off_seconds": call.data["off_seconds"],
+            "acknowledge_power_interruption": True, "controller_independent": True})
+
     async def price_policy(call: ServiceCall) -> dict:
         coordinator, name = selected(call.data["device_id"])
         state = hass.states.get(call.data.get("price_entity", ""))
@@ -87,6 +94,12 @@ async def async_setup(hass: HomeAssistant, config: dict) -> bool:
         vol.Required("device_id"): str,
         vol.Required("periods"): [dict],
         vol.Required("enabled"): bool,
+    }))
+    hass.services.async_register(DOMAIN, "cycle_ac_output", cycle_ac_output, schema=vol.Schema({
+        vol.Required("device_id"): str,
+        vol.Optional("off_seconds", default=20): vol.All(int, vol.Range(min=5, max=60)),
+        vol.Required("acknowledge_power_interruption"): bool,
+        vol.Required("controller_independent"): bool,
     }))
     price_schema = {
         vol.Required("device_id"): str,

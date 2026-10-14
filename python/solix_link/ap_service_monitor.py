@@ -14,6 +14,7 @@ from .protocol import Model
 from .energy_values import validate_native_energy
 from .original_counters import validate_original_counters
 from .wifi_signal import POLL_INTERVAL_SECONDS, validate_wifi_signal
+from .ac_output_permission import POWER_COMMANDS, public_ac_power_control
 
 
 class APServiceMonitor:
@@ -43,6 +44,7 @@ class APServiceMonitor:
             status["original_counters"] = validate_original_counters(status.get("original_counters"), model=self.devices[name].model.value, protocol="native_mqtt")
             status["wifi_signal"] = validate_wifi_signal(status.get("wifi_signal"),
                 model=self.devices[name].model.value, protocol="native_mqtt")
+            status["ac_power_control"] = public_ac_power_control(status.get("ac_power_control"))
             if not status["available"] or self.devices[name].model == Model.C1000:
                 status["power_flow"] = "unknown"
             return status
@@ -52,9 +54,19 @@ class APServiceMonitor:
                     "error": "AP service status unavailable", "metrics": {}}
 
     def supported_commands(self, name: str) -> list[str]:
-        if not self.snapshot(name).get("control_enabled"):
+        status = self.snapshot(name)
+        if not status.get("control_enabled"):
             return []
-        return list(native_commands_for_model(self.devices[name].model))
+        power = status.get("ac_power_control") or {}
+        return [command for command in native_commands_for_model(self.devices[name].model)
+                if command not in POWER_COMMANDS or power.get("enabled") is True
+                and power.get("storage_valid") is True]
+
+    async def set_ac_output_permission(self, name: str, enabled: bool, *, acknowledge_high_impact: bool) -> dict:
+        if name not in self.devices or self.devices[name].model != Model.C2000_GEN2:
+            raise ValueError("AC permission is only supported for native C2000 Gen 2")
+        return await ap_service_request(self.directory, "set-ac-output-permission", name=name,
+            enabled=enabled, acknowledge_high_impact=acknowledge_high_impact)
 
     async def check_setup(self) -> dict:
         """Check saved AP files without polling or contacting the worker."""

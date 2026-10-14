@@ -23,6 +23,8 @@ CONTROL_METRICS = {
     "set-dc-power-saving": ("dc_power_saving_mode_enabled",),
     "set-tou-plan": ("min_charge_percentage", "max_charge_percentage", "backup_reserve_percentage"),
     "return-grid": ("min_charge_percentage", "max_charge_percentage", "backup_reserve_percentage"),
+    "set-ac-output": (),
+    "cycle-ac-output": (),
 }
 
 REASONS = {
@@ -40,6 +42,8 @@ REASONS = {
     "standard_mode_required": "Standard mode with no active tariff is required.",
     "clock_must_be_inactive": "The clock screen and asset transfer must be inactive.",
     "command_in_progress": "Another HTTP command is running for this station.",
+    "ac_output_locked": "Allow AC output changes must be enabled by the station owner.",
+    "ac_restore_pending": "An authorized AC ON restoration is pending.",
 }
 
 
@@ -101,6 +105,16 @@ def control_availability(snapshot: dict, advertised, permitted, *, gateway_enabl
         if busy:
             reasons.append("command_in_progress")
         if command in supported:
+            if command in ("set-ac-output", "cycle-ac-output"):
+                power = snapshot.get("ac_power_control") or {}
+                if power.get("enabled") is not True or power.get("storage_valid") is not True:
+                    reasons.append("ac_output_locked")
+                if power.get("restore_pending") is True:
+                    reasons.append("ac_restore_pending")
+                if metrics.get("software_version") != "2.1.6.4":
+                    reasons.append("firmware_unqualified")
+                if type(metrics.get("ac_output_enabled")) is not int or metrics["ac_output_enabled"] not in (0, 1):
+                    reasons.append("missing_or_invalid_metrics")
             missing = [key for key in CONTROL_METRICS[command]
                        if not valid_preference(key, metrics.get(key), exported["model"])]
             if missing:

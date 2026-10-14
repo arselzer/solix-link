@@ -50,7 +50,7 @@ def test_malformed_context_is_ignored(field, value):
 
 
 @pytest.mark.parametrize("field,value", [("reasons", ["PRIVATE"]), ("missing_metrics", ["owner_id"]),
-    ("ready", 1), ("command", []), ("command", "set-ac-output")])
+    ("ready", 1), ("command", []), ("command", "unknown-command")])
 def test_malformed_explanations_do_not_become_entity_attributes(field, value):
     raw = status()
     raw.update(additions(raw))
@@ -114,7 +114,7 @@ def test_diagnostic_sensor_explains_stale_controls_without_claiming_power_state(
     coord = coordinator({raw["name"]: parsed})
     description = next(item for item in platform.sensor.DESCRIPTIONS if item.key == "control_availability")
     entity = platform.sensor.SolixSensor(coord, raw["name"], description)
-    assert entity.available and entity.native_value == 6
+    assert entity.available and entity.native_value == 8
     assert description.entity_category == "diagnostic" and description.state_class is None
     attrs = entity.extra_state_attributes
     assert attrs["preflight_only"] and attrs["backend_validation_required"]

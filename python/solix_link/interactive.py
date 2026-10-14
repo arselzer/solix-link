@@ -393,6 +393,7 @@ def native_session(directory: Path, config_path: Path, *, provision: bool, allow
                 options.append("Charging, display and port-memory preferences" if allow_control else "Station preferences disabled")
             elif config.model == Model.C2000_GEN2:
                 options.append("Screen timeout (native hardware test pending)" if allow_control else "Screen timeout controls disabled")
+                options.append("Guarded AC output permission / switching / cycle" if allow_control else "AC output controls disabled")
             options.append("Stop this AP session")
             selected = choose("AP-service session", options)
             if selected is None or selected == len(options) - 1:
@@ -432,6 +433,26 @@ def native_session(directory: Path, config_path: Path, *, provision: bool, allow
                     preference_menu(config, config_path, directory)
                 elif selected == 7 and allow_control and config.model == Model.C2000_GEN2:
                     preference_menu(config, config_path, directory)
+                elif selected == 8 and allow_control and config.model == Model.C2000_GEN2:
+                    action = choose("C2000 AC control", ["Allow AC output changes", "Lock AC output changes",
+                        "Turn every AC socket ON", "Turn every AC socket OFF", "Power-cycle every AC load"])
+                    if action is None:
+                        continue
+                    print("OFF interrupts every attached AC load. A pending cycle still restores ON if permission is locked.")
+                    if action == 4:
+                        print("Controller, access point and router must have independent power.")
+                    if prompt("Type CONFIRM to proceed") != "CONFIRM":
+                        continue
+                    if action in (0, 1):
+                        command, fields = "set-ac-output-permission", {"enabled": action == 0,
+                            "acknowledge_high_impact": action == 0}
+                    elif action in (2, 3):
+                        command, fields = "set-ac-output", {"enabled": action == 2,
+                            "acknowledge_power_interruption": action == 3}
+                    else:
+                        command, fields = "cycle-ac-output", {"off_seconds": int(prompt("OFF hold seconds (5–60)", "20")),
+                            "acknowledge_power_interruption": True, "controller_independent": True}
+                    _show_status(asyncio.run(ap_service_request(directory, command, name=config.name, **fields)))
             except (ValueError, OSError, RuntimeError, TimeoutError) as error:
                 print(f"{type(error).__name__}: {error}. Check fresh status before retrying a control write.")
         if process.poll() is not None and process.returncode:

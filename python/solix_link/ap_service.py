@@ -235,10 +235,10 @@ class APService:
                 raise ValueError("Select a configured station by name")
             mqtt = self.stations[name]
             local_output = action == "set-ac-output" and mqtt.config.model == Model.C1000_GEN2
-            local_recovery = action == "recovery-ac-output" and mqtt.config.model == Model.C2000_GEN2
+            local_permission = action == "set-ac-output-permission" and mqtt.config.model == Model.C2000_GEN2
             local_countdown = action == "set-ac-countdown" and mqtt.config.model == Model.C1000_GEN2
             local_wireless = action in ("wireless-state", "wifi-rssi") and mqtt.config.model == Model.C1000_GEN2
-            if action not in ("status", "readiness") and not (local_output or local_recovery or local_countdown or local_wireless) and action not in native_commands_for_model(mqtt.config.model):
+            if action not in ("status", "readiness") and not (local_output or local_permission or local_countdown or local_wireless) and action not in native_commands_for_model(mqtt.config.model):
                 raise ValueError("This native control is not verified for the selected model")
             if action == "readiness" and mqtt.config.model == Model.C1000:
                 raise ValueError("Controller readiness is unavailable for original C1000")
@@ -247,12 +247,18 @@ class APService:
             async with asyncio.timeout(control_timeout(action, request)):
                 if action == "status":
                     result = mqtt.snapshot()
-                elif local_recovery:
-                    if set(request) != {"command", "enabled", "acknowledge_power_interruption"}:
-                        raise ValueError("Use exact C2000 recovery fields")
-                    from .c2000_power_recovery import recovery_output
-                    result = await recovery_output(mqtt, request["enabled"],
-                        acknowledge_power_interruption=request["acknowledge_power_interruption"])
+                elif local_permission:
+                    if set(request) != {"command", "enabled", "acknowledge_high_impact"}:
+                        raise ValueError("Use exact AC permission fields")
+                    result = await mqtt.configure_ac_output_permission(request["enabled"],
+                        acknowledge_high_impact=request["acknowledge_high_impact"])
+                elif action in ("set-ac-output", "cycle-ac-output") and not local_output:
+                    values = {key: value for key, value in request.items() if key != "command"}
+                    validate_command(action, values)
+                    if action == "set-ac-output":
+                        result = await mqtt.set_ac_output_enabled(**values)
+                    else:
+                        result = await mqtt.cycle_ac_output(**values)
                 elif local_output:
                     if set(request) != {"command", "enabled"} or type(request["enabled"]) is not bool:
                         raise ValueError("Use an explicit enabled boolean")
@@ -359,10 +365,10 @@ class APService:
         for server in self._servers:
             await server.wait_closed()
         self._servers.clear()
-        if self._router:
-            await self._router.stop()
         for station in self.stations.values():
             await station.stop()
+        if self._router:
+            await self._router.stop()
         if self._socket_owned:
             self.socket_path.unlink(missing_ok=True)
             self._socket_owned = False
@@ -370,8 +376,10 @@ class APService:
 
 def control_timeout(command: str, fields: dict) -> int:
     """Bound command transport separately from each power-flow confirmation."""
-    if command == "recovery-ac-output":
+    if command == "set-ac-output":
         return 90
+    if command == "cycle-ac-output":
+        return 240  # Worker owns restoration, even after this caller disconnects.
     if command == "return-grid":
         duration = fields.get("timeout", 30)
         if type(duration) is int and 5 <= duration <= 120:

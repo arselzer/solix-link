@@ -51,6 +51,10 @@ def command_readback(command: str, parameters: dict, snapshot: dict) -> dict:
         match = (plan["enabled"] == parameters["enabled"] and plan["periods"] == parameters["periods"])
     if command == "return-grid" and exported["snapshot_fresh"]:
         match = snapshot.get("power_flow") == "grid" if snapshot.get("power_flow") in ("grid", "battery", "transitioning") else None
+    if command in ("set-ac-output", "cycle-ac-output") and exported["snapshot_fresh"]:
+        output = snapshot.get("metrics", {}).get("ac_output_enabled")
+        if type(output) is int and output in (0, 1):
+            match = output == (int(parameters["enabled"]) if command == "set-ac-output" else 1)
     return {"source": "cached_telemetry", "reported_values_match": match,
         "independent_confirmation": False, "physical_behavior_verified": False}
 

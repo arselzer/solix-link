@@ -36,6 +36,7 @@ def make(tmp_path, **kwargs):
     server, _ = service(tmp_path, model=Model.C2000_GEN2, **kwargs)
     station = RecoveryStation(server)
     server.connection = station
+    server.ac_output_permission.configure(True, acknowledge_high_impact=True)
     return server, station
 
 
@@ -101,7 +102,7 @@ def test_failed_confirmation_is_uncertain_and_never_repeats_off(tmp_path, proble
     assert sum(command == "0101" for command, _ in station.requests) == 1
 
 
-def test_recovery_never_becomes_an_http_or_ha_capability():
+def test_removed_maintenance_name_is_not_a_public_capability():
     assert "recovery-ac-output" not in native_commands_for_model(Model.C2000_GEN2)
     with pytest.raises(ValueError):
         validate_command("recovery-ac-output", {"enabled": False, "acknowledge_power_interruption": True})
@@ -109,17 +110,15 @@ def test_recovery_never_becomes_an_http_or_ha_capability():
 
 @pytest.mark.parametrize("extra", [{}, {"unexpected": True}])
 def test_private_socket_accepts_only_exact_maintenance_fields(monkeypatch, extra):
-    from solix_link import c2000_power_recovery
     method = AsyncMock(return_value={"settings_confirmed": True})
-    monkeypatch.setattr(c2000_power_recovery, "recovery_output", method)
     async def run():
-        mqtt = SimpleNamespace(config=SimpleNamespace(model=Model.C2000_GEN2))
+        mqtt = SimpleNamespace(config=SimpleNamespace(model=Model.C2000_GEN2), set_ac_output_enabled=method)
         worker = object.__new__(APService)
         worker._clients = set()
         worker.config = SimpleNamespace(name="test")
         worker.stations = {"test": mqtt}
         reader = asyncio.StreamReader()
-        reader.feed_data(json.dumps({"command": "recovery-ac-output", "enabled": True,
+        reader.feed_data(json.dumps({"command": "set-ac-output", "enabled": True,
             "acknowledge_power_interruption": False, **extra}).encode()+b"\n")
         class Writer:
             data = b""
@@ -130,5 +129,5 @@ def test_private_socket_accepts_only_exact_maintenance_fields(monkeypatch, extra
         await worker._control(reader, writer)
         assert json.loads(writer.data)["ok"] is (not extra)
         if extra: method.assert_not_awaited()
-        else: method.assert_awaited_once_with(mqtt, True, acknowledge_power_interruption=False)
+        else: method.assert_awaited_once_with(enabled=True, acknowledge_power_interruption=False)
     asyncio.run(run())

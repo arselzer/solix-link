@@ -1,3 +1,22 @@
+cycle_ac_output:
+  fields:
+    device_id:
+      required: true
+      selector:
+        device:
+          integration: solix_link
+    off_seconds:
+      default: 20
+      selector:
+        number: {min: 5, max: 60, step: 1, mode: box}
+    acknowledge_power_interruption:
+      required: true
+      selector:
+        boolean:
+    controller_independent:
+      required: true
+      selector:
+        boolean:
 price_policy:
   fields:
     device_id:

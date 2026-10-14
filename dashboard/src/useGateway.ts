@@ -69,7 +69,7 @@ export function useGateway() {
     const currentGeneration = generation;
     const controller = new AbortController();
     requests.add(controller);
-    const timeout = readOnly ? 10000 : body?.command === 'return-grid' ? 190000 : body ? 150000 : 10000;
+    const timeout = readOnly ? 10000 : body?.command === 'cycle-ac-output' ? 260000 : body?.command === 'return-grid' ? 190000 : body ? 150000 : 10000;
     const deadline = setTimeout(() => controller.abort(), timeout);
     try {
       const headers: Record<string, string> = {};
@@ -204,6 +204,22 @@ export function useGateway() {
     }
   }
 
+  async function setACPermission(station: Station, enabled: boolean, acknowledge: boolean) {
+    if (busy.value || polling.value || !fresh(station) || station.ac_power_control?.manageable !== true) return;
+    const currentGeneration = generation;
+    busy.value = true;
+    message('Updating local AC output permission; no station command is sent…');
+    const result = await request(`/devices/${encodeURIComponent(station.name)}/ac-output-permission`,
+      { enabled, acknowledge_high_impact: acknowledge });
+    if (currentGeneration !== generation) return;
+    if (isStation(result) && result.name === station.name) {
+      stations.value = stations.value.map((current) => current.name === station.name ? result : current);
+      message(enabled ? 'AC output changes are allowed for this station.' : 'AC output changes are locked.', 'success');
+    }
+    busy.value = false;
+    await refresh();
+  }
+
   async function checkGateway() {
     if (!session.value || checking.value || busy.value) return;
     const currentGeneration = generation;
@@ -256,5 +272,5 @@ export function useGateway() {
 
   onUnmounted(() => disconnect(true));
   return { stations, histories, session, online, connecting, polling, busy, checking, checkingResult, lastCommand, checks, notice, noticeKind, now,
-    active: computed(() => session.value && online.value), connect, disconnect, refresh, send, fresh, checkGateway, readOnly, exportSettings, checkCommandResult };
+    active: computed(() => session.value && online.value), connect, disconnect, refresh, send, setACPermission, fresh, checkGateway, readOnly, exportSettings, checkCommandResult };
 }

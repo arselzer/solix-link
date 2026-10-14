@@ -69,10 +69,10 @@ class FakeMonitor:
         self.calls.append(("charge-limits", upper, lower))
 
 
-def test_c2000_has_no_ac_control_in_ui_or_backend():
+def test_c2000_ac_control_requires_native_transport():
     for native in (False, True):
         target = Target("test", "Test station", Model.C2000_GEN2, native)
-        assert "ac-output" not in {item.key for item in controls_for(target)}
+        assert ("ac-output" in {item.key for item in controls_for(target)}) is native
     async def run():
         backend = TuiBackend([station(Model.C2000_GEN2, "a" * 40)], monitor_factory=FakeMonitor)
         await backend.connect("ble:test_station")
@@ -99,6 +99,8 @@ def test_native_target_uses_initialized_profile_model_and_limits(tmp_path, model
         expected |= {"temperature-unit", "off-grid-alert", "discharge-floor", "device-timeout", "fast-charge",
                      "display-brightness", "display-timeout", "port-memory", "dc-power-saving", "ac-power-saving",
                      "clock-first-brightness", "clock-second-brightness"}
+    else:
+        expected |= {"ac-output-permission", "ac-output", "cycle-ac-output"}
     assert {control.key for control in controls} == expected
     assert config.account_id not in target.label and config.device_serial not in target.label
 
@@ -319,7 +321,7 @@ def test_headless_dashboard_connect_control_and_narrow_layout():
     asyncio.run(run())
 
 
-def test_headless_native_plan_is_explicit_and_no_ac_button(tmp_path):
+def test_headless_native_plan_never_sends_an_ac_command_implicitly(tmp_path):
     pytest.importorskip("textual")
     from textual.widgets import Input, Select, TabbedContent
     async def run():
@@ -334,7 +336,7 @@ def test_headless_native_plan_is_explicit_and_no_ac_button(tmp_path):
             assert calls == []
             await pilot.click("#connect")
             await pilot.pause()
-            assert "ac-output" not in {item.key for item in controls_for(backend.target)}
+            assert "ac-output-permission" in {item.key for item in controls_for(backend.target)}
             app.query_one("#tabs", TabbedContent).active = "plan"
             await pilot.pause()
             app.query_one("#plan-text", Input).value = "peak:0:24"

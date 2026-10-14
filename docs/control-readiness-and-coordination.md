@@ -46,9 +46,10 @@ Fast-charge enablement has additional mode/mains requirements; its Off action
 can have different prerequisites. A `ready` row is not a promise that either
 action will execute or change electrical behavior.
 
-C2000 native MQTT retains five control families: charging power, charge cap,
-backup reserve, TOU and return to grid. Its BLE screen-timeout control is
-reported as unavailable on native MQTT. C1000 Gen 2 native has sixteen families;
+C2000 native MQTT has six default families: charging power, charge cap,
+backup reserve, TOU, return to grid and its guarded screen timeout. Owner AC
+opt-in adds explicit output setting and cycle. Locked permission and pending
+ON restoration have separate cached explanations. C1000 Gen 2 native has sixteen families;
 its firmware-specific preference evidence does not qualify the C2000.
 
 ## Fleet overview

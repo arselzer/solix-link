@@ -69,7 +69,9 @@ def add_commands(subcommands) -> None:
                                ("ap-service-set-light", "Set and confirm original C1000 native MQTT light mode"),
                                ("ap-service-set-dc-power-saving", "Set original/Gen 2 C1000 native DC Smart; requires DC output OFF"),
                                ("ap-service-set-ac-power-saving", "Set original/Gen 2 C1000 native AC Smart; requires AC OFF and inactive countdowns"),
-                               ("ap-service-set-ac-output", "Local C1000 Gen 2 AC socket control; never exposed by HTTP or HA"),
+                               ("ap-service-set-ac-output", "Native Gen 2 AC socket control; C2000 requires per-station opt-in"),
+                               ("ap-service-ac-output-permission", "Enable/disable owner permission for C2000 AC commands; sends no station command"),
+                               ("ap-service-cycle-ac-output", "Guarded C2000 OFF/ON cycle with durable ON restoration intent"),
                                ("ap-service-set-ac-countdown", "Local C1000 Gen 2 AC expiry timer; zero cancels remaining time"),
                                ("ap-service-set-port-memory", "Set C1000 Gen 2 native MQTT output-port memory"),
                                ("ap-service-set-reserve", "Set and confirm backup reserve without changing outputs"),
@@ -95,7 +97,15 @@ def add_commands(subcommands) -> None:
             parser.add_argument("--enabled", choices=["on", "off"], required=True)
         elif command == "ap-service-set-ac-output":
             parser.add_argument("--enabled", choices=["on", "off"], required=True,
-                                help="Changes power at AC sockets; use only on noncritical C1000 Gen 2 loads")
+                                help="Changes power at every AC socket")
+            parser.add_argument("--acknowledge-power-interruption", action="store_true")
+        elif command == "ap-service-ac-output-permission":
+            parser.add_argument("--enabled", choices=["on", "off"], required=True)
+            parser.add_argument("--acknowledge-high-impact", action="store_true")
+        elif command == "ap-service-cycle-ac-output":
+            parser.add_argument("--off-seconds", type=int, default=20)
+            parser.add_argument("--acknowledge-power-interruption", action="store_true")
+            parser.add_argument("--controller-independent", action="store_true")
         elif command == "ap-service-set-ac-countdown":
             parser.add_argument("--seconds", type=int, required=True,
                                 help="0 or 600–86400; expiry stops AC. Cancel early: zero cannot revoke an already queued stop")
@@ -289,6 +299,8 @@ def dispatch(args) -> None:
                    "ap-service-set-display-brightness": "set-display-brightness",
                    "ap-service-set-clock-brightness": "set-clock-brightness",
                    "ap-service-set-ac-output": "set-ac-output",
+                   "ap-service-ac-output-permission": "set-ac-output-permission",
+                   "ap-service-cycle-ac-output": "cycle-ac-output",
                    "ap-service-set-ac-countdown": "set-ac-countdown",
                    "ap-service-set-display-timeout": "set-display-timeout",
                    "ap-service-set-light": "set-light",
@@ -321,6 +333,17 @@ def dispatch(args) -> None:
             fields = {"window": args.window, "high": args.high == "on"}
         elif args.command == "ap-service-set-ac-output":
             fields = {"enabled": args.enabled == "on"}
+            config = load_ap_service(args.directory / "ap_service.json")
+            profiles = load_ap_service_profiles(args.directory, config)
+            name = args.name or (config.name if len(profiles) == 1 else None)
+            if name in profiles and profiles[name][0].model == Model.C2000_GEN2:
+                fields["acknowledge_power_interruption"] = args.acknowledge_power_interruption
+        elif args.command == "ap-service-ac-output-permission":
+            fields = {"enabled": args.enabled == "on", "acknowledge_high_impact": args.acknowledge_high_impact}
+        elif args.command == "ap-service-cycle-ac-output":
+            fields = {"off_seconds": args.off_seconds,
+                "acknowledge_power_interruption": args.acknowledge_power_interruption,
+                "controller_independent": args.controller_independent}
         elif args.command == "ap-service-set-ac-countdown":
             print("An AC countdown eventually stops AC. Zero clears remaining time but cannot revoke a queued stop; use only noncritical C1000 Gen 2 loads.", file=sys.stderr)
             fields = {"seconds": args.seconds}

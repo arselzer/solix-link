@@ -72,7 +72,7 @@ def test_tokens_do_not_leak_or_allow_invalid_duplicate_expanded_scopes(tmp_path)
     body = json.loads(path.read_text())
     for mutate in (lambda b: b["tokens"][0]["read"].append("unknown"),
                    lambda b: b["tokens"][0]["read"].append("test"),
-                   lambda b: b["tokens"][0]["write"].update(protected=["set-ac-output"]),
+                   lambda b: b["tokens"][0]["write"].update(protected=["unknown-command"]),
                    lambda b: b["tokens"][0].update(extra="PRIVATE"),
                    lambda b: b["tokens"][0].update(token_file=b["tokens"][1]["token_file"])):
         changed = deepcopy(body)

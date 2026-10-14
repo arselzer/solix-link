@@ -22,6 +22,8 @@ COMMAND_FIELDS = {
     "set-device-timeout": {"minutes": int},
     "set-ac-power-saving": {"enabled": bool},
     "set-dc-power-saving": {"enabled": bool},
+    "set-ac-output": {"enabled": bool, "acknowledge_power_interruption": bool},
+    "cycle-ac-output": {"off_seconds": int, "acknowledge_power_interruption": bool, "controller_independent": bool},
 }
 NATIVE_COMMANDS = ("set-charge-power", "set-charge-cap", "set-backup-reserve", "set-tou-plan", "return-grid")
 NATIVE_C1000_COMMANDS = ("set-temperature-unit", "set-off-grid-alert", "set-discharge-floor", "set-device-timeout", "set-fast-charge",
@@ -35,7 +37,7 @@ def native_commands_for_model(model: Model) -> tuple[str, ...]:
     if model == Model.C1000_GEN2:
         return NATIVE_COMMANDS + NATIVE_C1000_COMMANDS
     if model == Model.C2000_GEN2:
-        return NATIVE_COMMANDS + ("set-display-timeout",)
+        return NATIVE_COMMANDS + ("set-display-timeout", "set-ac-output", "cycle-ac-output")
     return ()
 
 
@@ -84,3 +86,10 @@ def validate_command(command: str, values: dict) -> None:
         raise ValueError("Clock window must be 1 or 2")
     if command == "set-display-brightness" and values["level"] not in (1, 2, 3):
         raise ValueError("Display brightness must be 1 (low), 2 (medium) or 3 (high)")
+    if command == "set-ac-output" and not values["enabled"] and not values["acknowledge_power_interruption"]:
+        raise PermissionError("Acknowledge interruption of every attached AC load")
+    if command == "cycle-ac-output":
+        if not 5 <= values["off_seconds"] <= 60:
+            raise ValueError("AC cycle hold must be 5–60 seconds")
+        if not values["acknowledge_power_interruption"] or not values["controller_independent"]:
+            raise PermissionError("Acknowledge all AC loads and independent controller/network power")

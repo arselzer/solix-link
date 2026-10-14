@@ -143,6 +143,11 @@ class LocalMqttServer:
         self._tasks: set[asyncio.Task] = set()
         self._clients: set[_Connection] = set()
         self._control_lock = asyncio.Lock()
+        from .ac_output_permission import ACOutputPermission
+        self.ac_output_permission = ACOutputPermission(config, directory)
+        self._ac_power_task: asyncio.Task | None = None
+        self._ac_restore_connection = None
+        self._stopping = False
 
     def snapshot(self) -> dict:
         from .wifi_signal import validate_wifi_signal
@@ -157,6 +162,7 @@ class LocalMqttServer:
                 "wifi_signal": validate_wifi_signal(self.wifi_signal, model=self.config.model.value,
                                                      protocol="native_mqtt"),
                 "control_enabled": self.allow_control,
+                "ac_power_control": self.ac_output_permission.snapshot(),
                 "power_flow": power_flow(self.metrics) if self.config.model != Model.C1000 and connected and self.last_seen and time.time() - self.last_seen < 30 else "unknown"}
 
     def ingest_energy(self, reports: list[dict]) -> None:
@@ -193,6 +199,34 @@ class LocalMqttServer:
         private_write(self.directory / "status.json", json.dumps(snapshot))
         if self.callback:
             self.callback(snapshot)
+        power = snapshot["ac_power_control"]
+        if (not self._stopping and power["storage_valid"] and power["restore_pending"]
+                and self.connection is not None and self.connection is not self._ac_restore_connection
+                and (self._ac_power_task is None or self._ac_power_task.done())):
+            from .c2000_power_recovery import resume_restore
+            self._ac_restore_connection = self.connection
+            self._ac_power_task = asyncio.create_task(resume_restore(self))
+            self._ac_power_task.add_done_callback(self._ac_power_done)
+
+    def _ac_power_done(self, task) -> None:
+        if not task.cancelled() and task.exception() is not None:
+            self.error = ("AC restoration unconfirmed; inspect pending recovery before another interruption"
+                if self.ac_output_permission.snapshot()["restore_pending"] else "AC command failed; check fresh status")
+        self.changed()
+
+    async def configure_ac_output_permission(self, enabled: bool, *, acknowledge_high_impact: bool) -> dict:
+        if not self.allow_control:
+            raise PermissionError("Native controls are disabled")
+        self.ac_output_permission.configure(enabled, acknowledge_high_impact=acknowledge_high_impact)
+        self.changed()
+        return self.snapshot()
+
+    async def cycle_ac_output(self, off_seconds: int, *, acknowledge_power_interruption: bool,
+                              controller_independent: bool) -> dict:
+        from .c2000_power_recovery import cycle_output
+        return await cycle_output(self, off_seconds,
+            acknowledge_power_interruption=acknowledge_power_interruption,
+            controller_independent=controller_independent)
 
     async def start(self, host: str | None = None, port: int = 8883) -> None:
         context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
@@ -230,6 +264,10 @@ class LocalMqttServer:
                 self.changed()
 
     async def stop(self) -> None:
+        self._stopping = True
+        if self._ac_power_task is not None and not self._ac_power_task.done():
+            self._ac_power_task.cancel()  # Finally restores ON before closing MQTT.
+            await asyncio.gather(self._ac_power_task, return_exceptions=True)
         if self._server:
             self._server.close()
         # Server.wait_closed() can wait for accepted clients. Close those before
@@ -393,8 +431,12 @@ class LocalMqttServer:
             return await self._set_c1000_setting(request, "ac_power_saving_mode_enabled", int(enabled))
         return await self._set_original_setting(request, "ac_power_saving_mode_enabled", int(enabled))
 
-    async def set_ac_output_enabled(self, enabled: bool) -> dict:
+    async def set_ac_output_enabled(self, enabled: bool, *, acknowledge_power_interruption: bool = False) -> dict:
         """Local C1000 Gen 2 operator control; excluded from HTTP and HA capabilities."""
+        if self.config.model == Model.C2000_GEN2:
+            from .c2000_power_recovery import recovery_output
+            return await recovery_output(self, enabled,
+                acknowledge_power_interruption=acknowledge_power_interruption)
         request = self.commands.ac_output(enabled)
         async with self._control_lock:
             connection = self._control_connection()

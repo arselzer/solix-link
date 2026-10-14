@@ -218,3 +218,5 @@ main { width: min(1320px, 100%); margin: 0 auto; padding: 32px 28px 0; }
 .availability-filter { display: flex; gap: 8px; align-items: center; margin-bottom: 15px; }
 .availability-table { overflow-x: auto; }.availability-table table { width: 100%; font-size: 12px; border-collapse: collapse; }
 .availability-table th, .availability-table td { padding: 12px; border-bottom: 1px solid #344151; text-align: left; overflow-wrap: anywhere; }
+.confirmation-ack { display: flex; align-items: flex-start; gap: 10px; margin: 14px 0; line-height: 1.6; }
+.confirmation-ack input { flex: 0 0 auto; margin-top: 4px; }

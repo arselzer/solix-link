@@ -34,6 +34,11 @@ async def async_setup_entry(hass, entry: SolixConfigEntry, async_add_entities) -
         if not coordinator.client.token:
             return
         for name, snapshot in (coordinator.data or {}).items():
+            power = snapshot.get("ac_power_control") or {}
+            if (snapshot.get("model") == "c2000_gen2" and snapshot.get("protocol") == "native_mqtt"
+                    and power.get("supported") is True and (name, "ac_output_enabled") not in added):
+                added.add((name, "ac_output_enabled"))
+                entities.append(SolixACOutputSwitch(coordinator, name))
             for description in DESCRIPTIONS:
                 key = description.key
                 if (name, key) not in added and boolean_setting_supported(snapshot, SETTINGS[key]):
@@ -97,3 +102,41 @@ class SolixSettingSwitch(SolixEntity, SwitchEntity):
 
     async def async_turn_off(self, **kwargs: Any) -> None:
         await self._set_enabled(False)
+
+
+class SolixACOutputSwitch(SolixEntity, SwitchEntity):
+    """Owner opt-in plus disabled entity default; dashboards add confirmation."""
+
+    _attr_entity_registry_enabled_default = False
+    _attr_translation_key = "ac_output"
+    _attr_extra_state_attributes = {
+        "warning": "Turning OFF interrupts every AC socket and every attached AC load.",
+        "confirmation": "Dashboard confirmation is card-specific; use the supplied guarded card.",
+    }
+
+    def __init__(self, coordinator, name):
+        super().__init__(coordinator, name, "ac_output_enabled")
+
+    @property
+    def is_on(self) -> bool | None:
+        return binary_state(self.snapshot.get("metrics", {}).get("ac_output_enabled"))
+
+    @property
+    def available(self) -> bool:
+        power = self.snapshot.get("ac_power_control") or {}
+        return (power.get("enabled") is True and power.get("storage_valid") is True
+            and power.get("restore_pending") is not True
+            and self.snapshot.get("metrics", {}).get("software_version") == "2.1.6.4"
+            and self.is_on is not None and self.control_available("set-ac-output"))
+
+    async def _set(self, enabled: bool):
+        if not self.available:
+            raise HomeAssistantError("Enable Allow AC output changes and require fresh qualified telemetry")
+        await self.coordinator.async_command(self.station_name, {"command": "set-ac-output", "enabled": enabled,
+            "acknowledge_power_interruption": not enabled})
+
+    async def async_turn_on(self, **kwargs: Any) -> None:
+        await self._set(True)
+
+    async def async_turn_off(self, **kwargs: Any) -> None:
+        await self._set(False)

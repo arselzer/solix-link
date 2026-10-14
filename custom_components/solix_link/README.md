@@ -22,6 +22,16 @@ Authorization header. Treat HA configuration backups as containing credentials.
 
 ## Entities and actions
 
+Native **C2000 Gen 2 / main 2.1.6.4** also has optional AC ON/OFF and a guarded
+`solix_link.cycle_ac_output` action. **Configure → Allow AC output changes**
+requires owner access and acknowledgment, starts off per station, and changes
+local permission only. The **AC output** switch is disabled by default and must
+be enabled separately. Every AC socket is affected. Use a dashboard action with
+confirmation; HA has no generic switch flag enforcing prompts for every caller.
+The worker saves an ON intent before a cycle and continues restoration if the
+client disconnects or permission is locked. Controller/AP/router require
+independent power. See [guards, CLI/API and HA card example](../../docs/ac-output-controls.md).
+
 Optional [owned price charging](../../docs/owned-price-charging.md) adds a
 preview-by-default service and disabled blueprint for C1000 Gen 2. Persistent
 ownership, reserve guards and uncertainty latches prevent automatic takeover

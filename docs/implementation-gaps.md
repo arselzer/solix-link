@@ -17,17 +17,17 @@ HA reads the gateway; it does not need a separate BLE advertisement.
 | --- | --- | --- |
 | Original C1000 / A1761 | 1.7.1 | 9: watts, Fast, device/screen timeout, brightness, light, temperature and AC/DC Smart |
 | C1000 Gen 2 / A1763 | 1.1.4.9 | 16: watts, cap, reserve, TOU/grid return, discharge floor, timeouts, Fast, display/clock brightness, memory, temperature/alert and AC/DC Smart |
-| C2000 Gen 2 / A1783 | 2.1.6.4 | 6: watts, cap, reserve, TOU/grid return and screen timeout |
+| C2000 Gen 2 / A1783 | 2.1.6.4 | 6 by default; 8 after owner AC opt-in: adds explicit ON/OFF and power cycle |
 
 A separate [authorized C2000 AC recovery](c2000-ac-recovery.md) on 2026-10-14
-established one private OFF/ON round trip and server recovery. It is excluded
-from these ordinary command counts, HTTP, HA and automation capabilities.
-The temporary runtime operation was removed afterward; guarded source is
-retained for review. This does not qualify other C2000 preference setters.
+established one OFF/ON round trip and server recovery. Its confirmed command
+now has [opt-in interfaces](ac-output-controls.md), HA switch disabled by default,
+explicit acknowledgments and durable ON cycle restoration. New interface tests
+are synthetic. This does not qualify other C2000 preference setters or firmware.
 
 Counts are from `native_commands_for_model()`, not a claim that every value was
 tested physically. C2000 native screen timeout remains ready for supervised
-testing; its output writes are blocked. See [model/transport details](../python/README.md).
+testing; its output writes start locked. See [model/transport details](../python/README.md).
 
 - **Energy:** all supported models have optional persisted AC-power kWh
   estimates for HA Energy. Qualified Gen 2 firmware also has observed native

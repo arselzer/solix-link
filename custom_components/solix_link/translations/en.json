@@ -32,13 +32,23 @@
   "options": {
     "step": {
       "init": {
-        "title": "Energy estimates",
-        "description": "Enable newly discovered energy entities. Power-history estimates work across supported models and modes; native observed estimates cover Standard AC on tested Gen 2 firmware. These are estimates, include bypass and must not be added together for the same consumption. Existing entity choices are preserved. History and native report collection must be enabled on the gateway.",
-        "data": {"native_energy_enabled": "Enable newly discovered native energy sensors", "history_energy_enabled": "Enable newly discovered AC energy estimates"}
+        "title": "Energy and AC output permission",
+        "description": "Enable newly discovered energy entities. Power-history estimates work across supported models and modes; native observed estimates cover Standard AC on tested Gen 2 firmware. These are estimates, include bypass and must not be added together for the same consumption. Existing entity choices are preserved. History and native report collection must be enabled on the gateway. AC output changes start locked per station. Enabling permission sends no output command, but permits deliberate AC OFF and power-cycle requests affecting every AC load. A pending cycle still restores ON after permission is disabled. Enable the AC switch entity separately and use a dashboard card with confirmation.",
+        "data": {
+          "native_energy_enabled": "Enable newly discovered native energy sensors",
+          "history_energy_enabled": "Enable newly discovered AC energy estimates",
+          "ac_output_devices": "Allow AC output changes for these stations",
+          "acknowledge_ac_interruption": "I understand that AC output changes interrupt every attached AC load"
+        }
       }
+    },
+    "error": {
+      "ac_acknowledgment_required": "Acknowledge the effect on all AC loads before enabling permission.",
+      "ac_permission_failed": "Permission could not be confirmed. Refresh the gateway status and check owner access; no station output command was sent."
     }
   },
   "services": {
+    "cycle_ac_output": {"name": "Cycle AC output", "description": "Opt-in native C2000 Gen 2 main 2.1.6.4 only. Interrupts every AC load and restores ON with a durable intent. Controller, AP and router require independent power. No automatic OFF retry; restoration may be delayed by hardware or network failure.", "fields": {"device_id": {"name": "Station"}, "off_seconds": {"name": "OFF hold (seconds)"}, "acknowledge_power_interruption": {"name": "I acknowledge interruption of all AC loads"}, "controller_independent": {"name": "Controller, AP and router have independent power"}}},
     "price_policy": {"name": "Owned price charging policy", "description": "Price policy using the shared charging owner. C1000 Gen 2 1.1.4.9 only. Release before switching to surplus; persistent plans continue while HA is offline.", "fields": {"device_id": {"name": "C1000 Gen 2"}, "price_entity": {"name": "Price sensor", "description": "Fresh price in currency/kWh. Thresholds use this same unit."}, "mode": {"name": "Mode", "description": "Preview sends nothing. Apply needs armed. Release clears only a confirmed owned plan. Reset clears ownership only after an empty Standard plan is present."}, "armed": {"name": "Armed"}, "override": {"name": "Manual override", "description": "Hold leaves the persistent plan unchanged."}, "charge_start": {"name": "Charge start price"}, "charge_stop": {"name": "Charge stop price"}, "discharge_stop": {"name": "Battery use stop price"}, "discharge_start": {"name": "Battery use start price"}, "cooldown": {"name": "Cooldown (seconds)"}, "price_max_age": {"name": "Maximum price age (seconds)"}, "minimum_reserve": {"name": "Required configured reserve (%)"}, "soc_resume_margin": {"name": "Battery use restart margin (%)"}}},
     "charging_policy": {"name": "Owned charging policy", "description": "Preview or apply one owned price-plan or surplus-power operation. Only C1000 Gen 2 1.1.4.9; release the current owner before switching policy. No output switching. Uncertain results require reconciliation.", "fields": {"device_id": {"name": "C1000 Gen 2"}, "price_entity": {"name": "Price sensor", "description": "Fresh price in currency/kWh. Thresholds use this same unit."}, "mode": {"name": "Mode", "description": "Preview sends nothing. Apply requires arming. Release restores only this policy’s confirmed baseline. Reset is read-only after the baseline has been restored manually."}, "armed": {"name": "Armed"}, "override": {"name": "Manual override", "description": "Hold leaves the persistent plan unchanged."}, "charge_start": {"name": "Charge start price"}, "charge_stop": {"name": "Charge stop price"}, "discharge_stop": {"name": "Battery use stop price"}, "discharge_start": {"name": "Battery use start price"}, "cooldown": {"name": "Cooldown (seconds)"}, "price_max_age": {"name": "Maximum price age (seconds)"}, "minimum_reserve": {"name": "Required configured reserve (%)"}, "soc_resume_margin": {"name": "Battery use restart margin (%)"}, "policy": {"name": "Policy", "description": "Price and surplus share one durable owner per station."}, "export_entity": {"name": "Grid export sensor", "description": "Fresh W, with positive values meaning export. Confirm the sign before arming."}, "positive_export_confirmed": {"name": "Positive export sign verified"}, "idle_watts": {"name": "Nonzero idle charging limit (W)"}, "maximum_watts": {"name": "Maximum charging limit (W)"}, "maximum_step_w": {"name": "Maximum change per cycle (W)"}, "export_start": {"name": "Export start threshold (W)"}, "export_stop": {"name": "Export stop threshold (W)"}, "export_max_age": {"name": "Maximum export age (seconds)"}, "target_export_w": {"name": "Target remaining export (W)"}, "deadband_w": {"name": "Export deadband (W)"}}},
     "set_tou_plan": {
@@ -155,7 +165,8 @@
       "clock_first_brightness": {"name": "First clock window brightness", "state": {"normal": "Normal", "high": "High"}},
       "clock_second_brightness": {"name": "Second clock window brightness", "state": {"normal": "Normal", "high": "High"}}
     },
-    "switch": {"off_grid_alert": {"name": "Off-grid alert"}, "fast_charge": {"name": "Fast charging"},
+    "switch": {
+      "ac_output": {"name": "AC output"},"off_grid_alert": {"name": "Off-grid alert"}, "fast_charge": {"name": "Fast charging"},
                "ac_power_saving": {"name": "AC power saving"}, "dc_power_saving": {"name": "DC power saving"}, "port_memory": {"name": "Output port memory"}}
   }
 }

@@ -79,6 +79,13 @@ def diagnostics_report(snapshots: dict, *, now: float | None = None) -> dict[str
         if not isinstance(controls, list):
             controls = []
         model, protocol = snapshot.get("model"), snapshot.get("protocol")
+        raw_power = snapshot.get("ac_power_control")
+        power = {key: raw_power[key] for key in ("supported", "enabled", "storage_valid", "restore_pending", "manageable")} if (
+            model == "c2000_gen2" and protocol == "native_mqtt" and type(raw_power) is dict
+            and all(type(raw_power.get(key)) is bool for key in
+                ("supported", "enabled", "storage_valid", "restore_pending", "manageable"))) else None
+        if not power or not power["enabled"] or not power["storage_valid"] or raw_metrics.get("software_version") != "2.1.6.4":
+            controls = [command for command in controls if command not in ("set-ac-output", "cycle-ac-output")]
         power_flow = snapshot.get("power_flow")
         accounting = snapshot.get("native_meter_accounting", {})
         continuity = ({"ready": accounting["ready"], "reason": accounting["reason"]}
@@ -93,6 +100,7 @@ def diagnostics_report(snapshots: dict, *, now: float | None = None) -> dict[str
             "last_seen_age_seconds": round(age, 2) if age is not None and math.isfinite(age) else None,
             "power_flow": power_flow if isinstance(power_flow, str) and power_flow in POWER_FLOWS else "unknown",
             "controls": sorted({c for c in controls if isinstance(c, str) and c in COMMANDS}),
+            "ac_power_control": power,
             "metrics": metrics,
             "native_energy": validate_native_energy(snapshot.get("native_energy"), model=model, now=now) if protocol == "native_mqtt" else None,
             "charging_policy": policy_diagnostics(snapshot.get("price_policy")),

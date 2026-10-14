@@ -157,7 +157,9 @@ it saves local configuration and disconnects the current session.
 For unpaired Prime stations, follow `pair`/`interactive` main-button instructions
 first. The dashboard opens disconnected and connects only on request. Native
 MQTT selection uses an already-running AP-service worker; it does not create an AP.
-Controls honor model/worker permissions, and C2000 has no AC-output switch.
+Controls honor model/worker permissions. Native C2000 main 2.1.6.4 has
+[opt-in AC ON/OFF and cycle controls](../docs/ac-output-controls.md), with a
+separate owner permission off by default; its BLE output remains unqualified.
 
 Device Timeout is available for the two C1000 profiles:
 `solix-link set-device-timeout --name c1000-original --minutes 0` or
@@ -403,8 +405,8 @@ four writes/twenty explicit complete fresh snapshots: AC off, Smart off/on,
 then AC on restoration. All eleven preferences/F8 and the read-only upstream
 station's baseline were restored. Smart can inherit an inactivity counter;
 enabling does not guarantee a new grace period. Output switching is excluded
-from HTTP/browser/HA, public native MQTT interfaces and the Prime BLE broker bridge. C2000 AC
-output remains blocked.
+from HTTP/browser/HA, public original native MQTT interfaces and the Prime BLE broker bridge.
+C2000 native AC control has a separate [owner opt-in](../docs/ac-output-controls.md).
 Native AC Smart uses
 `ap-service-set-ac-power-saving --directory /private/ap --name original --enabled on|off`.
 Both directions require fresh AC output off, an exact integer zero AC countdown

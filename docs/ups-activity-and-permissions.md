@@ -89,6 +89,11 @@ Subsequent writes are blocked until the recorder is recovered/restarted.
 Both `serve` and `ap-service-serve` accept `--permissions-file`. This explicitly
 replaces `SOLIX_HTTP_TOKEN`; there is no legacy-token bypass. Controls still
 require `--allow-control`, worker permission and a model-supported command.
+Native C2000 AC commands additionally require a separate per-station opt-in.
+Granting their write scopes cannot unlock it: owner tokens need the additional
+`manage_ac_output` station-name list to manage that permission, a subset of their
+read scope. Existing scoped tokens default to no permission-management access.
+See [AC controls and confirmation](ac-output-controls.md).
 Files must be owner-only, regular, single-link files; scoped tokens contain
 16–1024 printable ASCII characters and token paths are absolute. Example:
 

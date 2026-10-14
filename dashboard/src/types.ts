@@ -21,6 +21,8 @@ export interface Station {
   native_energy?: unknown;
   wifi_signal?: unknown;
   original_counters?: unknown;
+  ac_power_control?: { supported: boolean; enabled: boolean; storage_valid: boolean;
+    restore_pending: boolean; manageable: boolean } | null;
   ups_state?: { battery_reserve_low?: boolean | null };
   command_context?: { schema_version: 1; gateway_instance: string; issued_at: number;
     request_window_seconds: number; busy: boolean; preconditions_supported: boolean; expected: Record<string, unknown> };
@@ -45,6 +47,9 @@ export interface Proposal {
   title: string;
   detail: string;
   summary: string[];
+  permissionChange?: boolean;
+  highImpact?: boolean;
+  independentController?: boolean;
 }
 
 export interface DraftPeriod {

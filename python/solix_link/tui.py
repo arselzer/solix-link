@@ -98,7 +98,7 @@ class Control:
 
 
 def controls_for(target: Target) -> tuple[Control, ...]:
-    """Expose model-supported operations; C2000 never gets an AC switch."""
+    """Expose transport-qualified operations; native C2000 power needs opt-in."""
     if target.gateway:
         return ()
     if target.model == Model.C1000 and (target.native or target.device and target.device.protocol == "prime"):
@@ -142,7 +142,10 @@ def controls_for(target: Target) -> tuple[Control, ...]:
                 Control("clock-second-brightness", "Clock second-window High", "on = High, off = Normal; saved selector only, does not enable the clock"),
             )
         if target.model == Model.C2000_GEN2:
-            items += (Control("display-timeout", "Display timeout", "30 or 60 seconds; native round trip pending"),)
+            items += (Control("display-timeout", "Display timeout", "30 or 60 seconds; native round trip pending"),
+                Control("ac-output-permission", "Allow AC output changes", "on or off; changes only local permission. All AC loads can lose power when unlocked."),
+                Control("ac-output", "AC output", "on or off; owner permission and fresh main 2.1.6.4 required. OFF interrupts all AC loads."),
+                Control("cycle-ac-output", "AC power cycle", "5–60 seconds OFF. Controller, AP and router must have independent power. ON restoration intent is saved first."))
         return items
     limits = {
         Model.C300: "100, 200, 300 or 330 W",
@@ -259,6 +262,8 @@ def public_snapshot(snapshot: dict) -> dict:
                 checked = duration_value(key, value, model=model, activity=metrics.get("battery_status"))
                 result["metrics"][key] = checked if checked is not None else "unknown"
     result["error"] = "ConnectionError" if snapshot.get("error") is not None else None
+    from .ac_output_permission import public_ac_power_control
+    result["ac_power_control"] = public_ac_power_control(snapshot.get("ac_power_control"))
     from .plan_readback import validate_plan_readback
     result["tou_plan_readback"] = validate_plan_readback(snapshot.get("tou_plan_readback"))
     from .energy_values import validate_native_energy
@@ -601,13 +606,16 @@ class TuiBackend:
                 await self.monitor.wait_for_update(timeout=20)
             return self._ble_snapshot()
 
-    async def control(self, action: str, value: str = "", *, enabled: bool = False) -> dict:
+    async def control(self, action: str, value: str = "", *, enabled: bool = False, confirmed: bool = False) -> dict:
         async with self._lock:
             target = self.target
             if target is None:
                 raise RuntimeError("Connect to a station first")
             if target.gateway:
                 raise PermissionError("Gateway terminal targets are read only")
+            if (target.native and target.model == Model.C2000_GEN2
+                    and action in ("ac-output-permission", "ac-output", "cycle-ac-output") and confirmed is not True):
+                raise PermissionError("Explicit confirmation is required for AC permission/output changes")
             allowed = {item.key for item in controls_for(target)}
             if target.native and target.model in (Model.C1000_GEN2, Model.C2000_GEN2):
                 allowed.update(("plan", "return-grid"))
@@ -620,6 +628,17 @@ class TuiBackend:
                     response = await self._native("set-tou-plan", periods=parse_plan(value), enabled=enabled)
                 elif action == "return-grid":
                     response = await self._native("return-grid", timeout=30)
+                elif action == "ac-output-permission":
+                    permitted = parse_enabled(value)
+                    response = await self._native("set-ac-output-permission", enabled=permitted,
+                        acknowledge_high_impact=permitted)
+                elif action == "ac-output" and target.model == Model.C2000_GEN2:
+                    output = parse_enabled(value)
+                    response = await self._native("set-ac-output", enabled=output,
+                        acknowledge_power_interruption=not output)
+                elif action == "cycle-ac-output":
+                    response = await self._native("cycle-ac-output", off_seconds=int(value),
+                        acknowledge_power_interruption=True, controller_independent=True)
                 elif action == "temperature-unit":
                     if value.strip().lower() not in ("celsius", "fahrenheit"):
                         raise ValueError("Enter celsius or fahrenheit")
@@ -1281,6 +1300,10 @@ def create_app(config_path: Path = DEFAULT_CONFIG, ap_service_directory: Path | 
             age = f" · {max(0, int(time.time() - latest))}s since update" if isinstance(latest, (int, float)) else ""
             state = "Live" if fresh else "Waiting for fresh telemetry" if snapshot.get("connected") else "Disconnected"
             permission = " · Read only" if backend.target and (backend.target.gateway or backend.target.native and not snapshot.get("control_enabled")) else ""
+            power = snapshot.get("ac_power_control") or {}
+            if power.get("supported"):
+                permission += (" · ON restoration pending" if power.get("restore_pending") else
+                    " · AC changes allowed" if power.get("enabled") and power.get("storage_valid") else " · AC changes locked")
             self.status(state + age + permission, "live" if fresh else "idle")
             self.query_one("#battery", Static).update(f"BATTERY\n{metrics.get('battery_percentage', '—')}% · {metrics.get('battery_status', 'unknown')}")
             incoming = metrics.get("input_power_w", metrics.get("ac_input_power_w", "—"))
@@ -1435,12 +1458,14 @@ def create_app(config_path: Path = DEFAULT_CONFIG, ap_service_directory: Path | 
                 key = self.query_one("#setting", Select).value
                 if isinstance(key, str):
                     value = self.query_one("#setting-value", Input).value
-                    if key in ("ac-power-saving", "dc-power-saving", "port-memory", "ac-output") or (
+                    if key in ("ac-power-saving", "dc-power-saving", "port-memory", "ac-output", "ac-output-permission", "cycle-ac-output") or (
                             key == "fast-charge" and backend.target and backend.target.model == Model.C1000
                             and (backend.target.native or backend.target.device and backend.target.device.protocol == "prime")) or (
                             backend.target and backend.target.native and key in ("display-brightness", "display-timeout", "clock-first-brightness", "clock-second-brightness")):
                         try:
-                            parsed = parse_enabled(value) if key in ("ac-power-saving", "dc-power-saving", "port-memory", "fast-charge", "ac-output", "clock-first-brightness", "clock-second-brightness") else int(value)
+                            parsed = parse_enabled(value) if key in ("ac-power-saving", "dc-power-saving", "port-memory", "fast-charge", "ac-output", "ac-output-permission", "clock-first-brightness", "clock-second-brightness") else int(value)
+                            if key == "cycle-ac-output" and not 5 <= parsed <= 60:
+                                raise ValueError("AC cycle hold must be 5–60 seconds")
                             if key == "display-brightness" and parsed not in (1, 2, 3):
                                 raise ValueError("Choose brightness 1 low, 2 medium or 3 high")
                             if key == "display-timeout" and parsed not in (0, 10, 20, 30, 60, 300, 1800):
@@ -1454,9 +1479,11 @@ def create_app(config_path: Path = DEFAULT_CONFIG, ap_service_directory: Path | 
                         target_key = target.key
                         def confirmed(result: bool | None) -> None:
                             if result is True and backend.target and backend.target.key == target_key:
-                                self.launch(backend.control(key, value), control=True)
+                                self.launch(backend.control(key, value, confirmed=True), control=True)
                         label = next(item.label for item in controls_for(target) if item.key == key)
                         detail = ("Off clears output-recovery bookkeeping; turning On does not restore that transient state." if key == "port-memory" else
+                                  "This unlocks all AC output commands for this station. OFF interrupts every AC load. It sends no station command. Disabling it cannot cancel a pending ON restoration." if key == "ac-output-permission" else
+                                  "Every AC load loses power. Confirm that the controller, access point and router have independent power. ON restoration is saved before OFF, with bounded ON retries; network or device failure can delay restoration." if key == "cycle-ac-output" else
                                   "Change one saved inactive clock-window brightness selector. Does not enable the clock or alter its theme/assets." if key in ("clock-first-brightness", "clock-second-brightness") else
                                   "Set the display brightness. Zero is not a brightness level." if key == "display-brightness" else
                                   "Set the screen timeout; zero means Never." if key == "display-timeout" else

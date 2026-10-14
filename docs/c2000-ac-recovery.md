@@ -4,8 +4,9 @@
 
 The user explicitly authorized interrupting both attached servers to recover an
 unresponsive machine, and confirmed the SOLIX controller, AP and router had
-independent power. This was a recovery operation; ordinary C2000 output controls
-remain excluded from HTTP, HA and automated policies.
+independent power. This was a recovery operation. The later
+[guarded interfaces](ac-output-controls.md) expose the confirmed command only
+with per-station owner opt-in; no output automation is enabled.
 
 Tested device: **C2000 Gen 2 / A1783, main 2.1.6.4**. Baseline: native MQTT
 connected, battery 100%, Standard mode, no saved tariff slots, mains present,
@@ -39,13 +40,14 @@ specific load/network endpoint; it is not an uptime guarantee for other servers.
 
 ## Private maintenance interface
 
-The owner-only AP Unix socket supports **recovery-ac-output** for this exact
+The original owner-only AP Unix socket supported **recovery-ac-output** for this exact
 model/firmware. It requires `enabled` and `acknowledge_power_interruption` as
 explicit booleans. OFF requires acknowledgment, an on/mains-present Standard
 baseline, DC off, no tariff slots/countdowns and at least 20% SOC. The helper
 performs one write and two fresh confirmations; it never retries an uncertain
-OFF. Full fresh state is required for ON too. No generic raw-packet API, HTTP
-command, HA switch or automatic recovery policy was added.
+OFF. Full fresh state is required for ON too. That temporary maintenance name
+has been replaced by the canonical, opt-in `set-ac-output` and `cycle-ac-output`
+interfaces. No generic raw-packet API or automatic output policy was added.
 
 The private operator preserves local evidence, attempts ON in `finally` after
 any OFF attempt, and allows up to three deliberate ON recovery attempts after

@@ -10,7 +10,7 @@ from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers import selector
 
 from .api import GatewayAuthError, GatewayClient, GatewayError, gateway_id, normalize_url
-from .const import CONF_HISTORY_ENERGY_ENABLED, CONF_NATIVE_ENERGY_ENABLED, CONF_TOKEN, CONF_URL, DOMAIN
+from .const import CONF_AC_OUTPUT_DEVICES, CONF_HISTORY_ENERGY_ENABLED, CONF_NATIVE_ENERGY_ENABLED, CONF_TOKEN, CONF_URL, DOMAIN
 
 
 def schema(defaults: dict, *, token_only: bool = False) -> vol.Schema:
@@ -93,17 +93,46 @@ class SolixConfigFlow(ConfigFlow, domain=DOMAIN):
 
 
 class SolixOptionsFlow(OptionsFlowWithReload):
-    """Choose energy entity defaults without changing station settings."""
+    """Choose energy defaults and owner AC permission; never switch an output."""
 
     async def async_step_init(self, user_input: dict | None = None) -> ConfigFlowResult:
         options = self.config_entry.options
+        coordinator = getattr(self.config_entry, "runtime_data", None)
+        data = getattr(coordinator, "data", None) or {}
+        stations = {name: status for name, status in data.items()
+            if (status.get("ac_power_control") or {}).get("manageable") is True}
+        unlocked = [name for name, status in stations.items()
+            if (status.get("ac_power_control") or {}).get("enabled") is True]
+        errors = {}
         if user_input is not None:
-            return self.async_create_entry(title="", data={**options, **{
-                key: user_input[key] for key in (CONF_NATIVE_ENERGY_ENABLED, CONF_HISTORY_ENERGY_ENABLED)
-                if key in user_input}})
-        return self.async_show_form(step_id="init", data_schema=vol.Schema({
+            selected = user_input.get(CONF_AC_OUTPUT_DEVICES, unlocked)
+            if type(selected) is not list or any(type(name) is not str or name not in stations for name in selected):
+                errors["base"] = "ac_permission_failed"
+            elif set(selected) - set(unlocked) and user_input.get("acknowledge_ac_interruption") is not True:
+                errors["base"] = "ac_acknowledgment_required"
+            else:
+                try:
+                    for name in stations:
+                        enabled = name in selected
+                        if enabled != (name in unlocked):
+                            await coordinator.client.async_ac_output_permission(name, enabled,
+                                acknowledge_high_impact=user_input.get("acknowledge_ac_interruption") is True)
+                    if stations:
+                        await coordinator.async_request_refresh()
+                except (GatewayError, ValueError):
+                    errors["base"] = "ac_permission_failed"
+                else:
+                    return self.async_create_entry(title="", data={**options, **{
+                        key: user_input[key] for key in (CONF_NATIVE_ENERGY_ENABLED, CONF_HISTORY_ENERGY_ENABLED)
+                        if key in user_input}})
+        fields = {
             vol.Required(CONF_NATIVE_ENERGY_ENABLED,
                 default=options.get(CONF_NATIVE_ENERGY_ENABLED, False) is True): bool,
             vol.Required(CONF_HISTORY_ENERGY_ENABLED,
                 default=options.get(CONF_HISTORY_ENERGY_ENABLED, False) is True): bool,
-        }))
+        }
+        if stations:
+            fields[vol.Optional(CONF_AC_OUTPUT_DEVICES, default=unlocked)] = selector.SelectSelector(
+                selector.SelectSelectorConfig(options=list(stations), multiple=True))
+            fields[vol.Optional("acknowledge_ac_interruption", default=False)] = bool
+        return self.async_show_form(step_id="init", data_schema=vol.Schema(fields), errors=errors)

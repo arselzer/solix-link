@@ -877,6 +877,46 @@ try {
   await refresh();
   cases++; console.log(`Scenario ${cases} passed`);
 
+  // Owner permission and confirmations change only synthetic fixture state.
+  await page.getByTestId('station-select').selectOption('Server · C2000 Gen 2');
+  await page.getByTestId('ac-output-controls').waitFor();
+  assert.equal(await page.getByTestId('ac-off').isDisabled(), true);
+  assert.equal(await page.getByTestId('ac-on').isDisabled(), true);
+  const beforePower = (await recorded()).length;
+  await page.getByTestId('ac-permission').click();
+  assert.equal(await page.getByTestId('confirm-command').isDisabled(), true);
+  await page.getByTestId('cancel-command').click();
+  assert.equal((await recorded()).length, beforePower);
+  await page.getByTestId('ac-permission').click();
+  await page.getByTestId('ac-impact-ack').check();
+  await page.getByTestId('confirm-command').click();
+  await page.getByTestId('gateway-notice').filter({ hasText: 'AC output changes are allowed' }).waitFor();
+  assert.equal((await recorded()).length, beforePower); // Permission is local metadata.
+  await page.waitForFunction(() => !document.querySelector('[data-testid="ac-off"]')?.disabled);
+  await page.getByTestId('ac-off').click();
+  assert.equal(await page.getByTestId('confirm-command').isDisabled(), true);
+  await page.getByTestId('cancel-command').click();
+  assert.equal((await recorded()).length, beforePower);
+  cases++; console.log(`Scenario ${cases} passed`);
+
+  await page.getByTestId('ac-cycle').click();
+  await page.getByTestId('ac-impact-ack').check();
+  assert.equal(await page.getByTestId('confirm-command').isDisabled(), true);
+  await page.getByTestId('ac-independence-ack').check();
+  await page.screenshot({ path: `${root}/docs/images/web-dashboard-ac-cycle-review.png` });
+  await page.getByTestId('confirm-command').click();
+  await page.getByTestId('gateway-notice').filter({ hasText: 'Command confirmed' }).waitFor();
+  assert.deepEqual((await recorded()).at(-1), { name: 'Server · C2000 Gen 2', command: 'cycle-ac-output',
+    off_seconds: 20, acknowledge_power_interruption: true, controller_independent: true });
+  await page.waitForFunction(() => !document.querySelector('[data-testid="ac-permission"]')?.disabled);
+  await page.getByTestId('ac-permission').click();
+  await page.getByTestId('confirm-command').click();
+  await page.getByTestId('gateway-notice').filter({ hasText: 'AC output changes are locked' }).waitFor();
+  assert.equal(await page.getByTestId('ac-off').isDisabled(), true);
+  assert.equal((await recorded()).length, beforePower + 1);
+  await page.getByTestId('station-select').selectOption('Office · C1000 Gen 2');
+  cases++; console.log(`Scenario ${cases} passed`);
+
   // Controlled browser clock and synthetic read-only responses produce a chart
   // without waiting 20 real minutes or contacting a station.
   const initial = await fetch(`${base}/devices`, { headers: { Authorization: authorization } }).then((response) => response.json());
