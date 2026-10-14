@@ -73,6 +73,37 @@ unknown settings changes, lost ACKs, ignored writes, private RPC validation and
 unchanged public capabilities. Raw request evidence, timestamps, private host
 addresses and operator events remain in the ignored, restricted recovery folder.
 The temporary runtime operation is removed after AC restoration; the normal AP
-code is restored and monitoring is reloaded. Prepared repository source retains
-the guarded private route for review, without exposing ordinary C2000 output
-controls. No phone data or private identities belong in public Git.
+code was restored and monitoring reloaded at that operation's checkpoint.
+The subsequent [guarded interface release](ac-output-controls.md) supersedes
+the temporary private route. No phone data or private identities belong in public Git.
+
+## Repeat recovery through the shipped API — 2026-10-14
+
+After the server froze again, the user explicitly requested another restart.
+Ping and SSH were unreachable before the operation. The previously confirmed
+independent controller/AP/router power arrangement remained applicable.
+Source/runtime **`20f9207`**, native A1783 main **2.1.6.4**, reported 100% SOC,
+AC on/DC off, mains present, Standard/no tariff slots, zero output timers and
+approximately 192 W AC output. The permission initially remained locked.
+
+The operator temporarily enabled the canonical owner permission endpoint, sent
+exactly one authenticated, coordinated `cycle-ac-output` request with a
+20-second hold and both acknowledgments, then restored the original locked
+permission. This exercised the shipped HTTP, AP RPC and worker cycle rather
+than the removed private maintenance route.
+
+The retained MQTT window confirms exactly **one OFF and one ON** `0101`
+request, each containing only **A1/A2/FD**. Telemetry reported OFF/0 W, then
+ON; the API completed with matching readback, recorded audit and no pending
+restoration intent. No interruption was retried and the ON restoration needed
+no retry. Both C1000 AC outputs remained on, and all compared published
+preferences matched their recorded baselines.
+
+The first post-cycle reachability check, approximately **63 seconds after API
+completion**, found ping and an SSH greeting. This is an observation bound,
+not a measured boot duration; no SSH authentication or OS command occurred.
+It establishes a second recovery of the attached server, while electrical
+waveforms, other firmware and the cause of the recurring freezes remain unverified.
+No HA entity was enabled or automation changed. Private request/response,
+MQTT/telemetry windows and boot evidence remain in ignored
+`.solix-private/server-research/c2000-recovery-repeat-20261014/`.

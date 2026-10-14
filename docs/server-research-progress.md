@@ -1941,3 +1941,31 @@ Private runtime backups, baselines, deployment logs and the sanitized report
 are retained in ignored `.solix-private/server-research/ac-controls-20261014-release/`.
 `AGENTS.md`, phone inputs and preexisting `python/build/` were preserved.
 See [interface and HA confirmation guide](ac-output-controls.md).
+
+## Repeat server recovery with the shipped cycle API — 2026-10-14
+
+The user's explicit repeat restart request authorized one C2000 AC cycle,
+with the previously confirmed independent controller/network supply. Runtime
+**`20f9207`**, A1783 main **2.1.6.4**, began at 100% SOC, AC on/DC off, mains
+present, Standard/no tariff slots and inactive output timers; the affected
+server did not answer ping or SSH. The original AC permission was locked.
+
+The normal owner permission endpoint temporarily unlocked the station and one
+coordinated HTTP `cycle-ac-output` request used a **20-second confirmed OFF
+hold**. Raw MQTT evidence records exactly **one `0101/A2` OFF and one ON**,
+with only A1/A2/FD tags, no OFF retry and no ON retry. The API confirmed AC ON,
+recorded its audit and cleared the durable restoration intent. The original
+permission was restored locked. Both C1000s were unchanged/AC on, and all
+compared published preferences matched their baselines.
+
+The first post-cycle check, approximately 63 seconds after API completion,
+received ping and a valid SSH greeting. This bounds observation, not exact
+boot duration. No OS login, HA entity activation, service deployment, automation,
+network provisioning or identity change occurred. This provides physical
+recovery evidence for the shipped HTTP/RPC/worker path; waveform behavior,
+other firmware and the recurring server-freeze cause remain unresolved.
+
+Private baseline, command envelope/result, actual MQTT window, telemetry,
+operator events and boot evidence are retained in ignored restricted
+`.solix-private/server-research/c2000-recovery-repeat-20261014/`.
+Only sanitized findings are public. [Recovery evidence](c2000-ac-recovery.md).
