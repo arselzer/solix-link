@@ -19,6 +19,12 @@ HA reads the gateway; it does not need a separate BLE advertisement.
 | C1000 Gen 2 / A1763 | 1.1.4.9 | 16: watts, cap, reserve, TOU/grid return, discharge floor, timeouts, Fast, display/clock brightness, memory, temperature/alert and AC/DC Smart |
 | C2000 Gen 2 / A1783 | 2.1.6.4 | 6: watts, cap, reserve, TOU/grid return and screen timeout |
 
+A separate [authorized C2000 AC recovery](c2000-ac-recovery.md) on 2026-10-14
+established one private OFF/ON round trip and server recovery. It is excluded
+from these ordinary command counts, HTTP, HA and automation capabilities.
+The temporary runtime operation was removed afterward; guarded source is
+retained for review. This does not qualify other C2000 preference setters.
+
 Counts are from `native_commands_for_model()`, not a claim that every value was
 tested physically. C2000 native screen timeout remains ready for supervised
 testing; its output writes are blocked. See [model/transport details](../python/README.md).

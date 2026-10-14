@@ -1839,3 +1839,44 @@ surplus/price consumption checks. C2000's server supply stays excluded from
 output/reset/reprovisioning experiments; native screen validation requires its
 own supervised test. True pause, complete restoration, additional C2000
 preferences, generated-ID fleet setup and local OTA remain investigations.
+
+## Authorized C2000 server recovery — 2026-10-14
+
+Baseline: `a5339e0405b26218ece80bd9cf1444a4180955b5`, `main`.
+The user explicitly authorized an AC interruption affecting two attached
+servers, confirmed the second had BMC management, and confirmed that the SOLIX
+controller, AP and router had independent power. No output experiment was
+initiated under the earlier server-preservation authorization.
+
+C2000 / A1783 main **2.1.6.4** was connected over native MQTT: 100% battery,
+Standard mode, mains present, AC on, DC off, inactive countdowns and approximately
+175–176 W input/output. BLE scans saw none of the three stations advertising.
+A guarded owner-only maintenance route used **0101/A2**, with exact source and
+millisecond timestamp fields. Ordinary HTTP/HA/automation capabilities stayed
+unchanged. **72 synthetic checks passed before the live operation**.
+
+The idempotent ON request acknowledged and preserved fresh A4/D9/output
+readback. The authorized OFF then reported AC off and zero watts. After a
+20-second hold, the first explicit restoration attempt confirmed AC on; later
+reports showed real load returning, including approximately 153 W. The formerly
+unresponsive server answered ping and accepted an SSH TCP connection after
+approximately three minutes. No server login or OS configuration change was
+performed. These observations establish this recovery round trip, not calibrated
+watts, waveform behavior or complete hidden-settings restoration.
+
+The temporary AP-module/helper installation was removed after recovery, its
+original code hash was verified, AP/gateway monitoring was reloaded, and fresh
+C2000 telemetry confirmed AC remained on. Neither C1000 received any setting
+command. HA, identities, certificates, provisioning and automations were
+unchanged. Setup failures (startup `None` readiness and a runner filename
+shadowing Python's `operator`) occurred before any setting request and were
+corrected; the first installation restored stock code automatically.
+
+Final retained source adds strict report-prefix guards and has **75 focused
+synthetic checks passed**. Exact runtime code backups, hashes, timestamps and
+operator events remain restricted in ignored
+`.solix-private/server-research/c2000-recovery-20261014/`; no phone data or raw
+identities are published. `AGENTS.md` and preexisting `python/build/` are preserved.
+See [recovery details and boundaries](c2000-ac-recovery.md). Prepared source
+retains the guarded private operation for review; ordinary C2000 output switches
+remain absent, and the deployed temporary maintenance operation is removed.

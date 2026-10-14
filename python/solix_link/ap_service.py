@@ -235,9 +235,10 @@ class APService:
                 raise ValueError("Select a configured station by name")
             mqtt = self.stations[name]
             local_output = action == "set-ac-output" and mqtt.config.model == Model.C1000_GEN2
+            local_recovery = action == "recovery-ac-output" and mqtt.config.model == Model.C2000_GEN2
             local_countdown = action == "set-ac-countdown" and mqtt.config.model == Model.C1000_GEN2
             local_wireless = action in ("wireless-state", "wifi-rssi") and mqtt.config.model == Model.C1000_GEN2
-            if action not in ("status", "readiness") and not (local_output or local_countdown or local_wireless) and action not in native_commands_for_model(mqtt.config.model):
+            if action not in ("status", "readiness") and not (local_output or local_recovery or local_countdown or local_wireless) and action not in native_commands_for_model(mqtt.config.model):
                 raise ValueError("This native control is not verified for the selected model")
             if action == "readiness" and mqtt.config.model == Model.C1000:
                 raise ValueError("Controller readiness is unavailable for original C1000")
@@ -246,6 +247,12 @@ class APService:
             async with asyncio.timeout(control_timeout(action, request)):
                 if action == "status":
                     result = mqtt.snapshot()
+                elif local_recovery:
+                    if set(request) != {"command", "enabled", "acknowledge_power_interruption"}:
+                        raise ValueError("Use exact C2000 recovery fields")
+                    from .c2000_power_recovery import recovery_output
+                    result = await recovery_output(mqtt, request["enabled"],
+                        acknowledge_power_interruption=request["acknowledge_power_interruption"])
                 elif local_output:
                     if set(request) != {"command", "enabled"} or type(request["enabled"]) is not bool:
                         raise ValueError("Use an explicit enabled boolean")
@@ -363,6 +370,8 @@ class APService:
 
 def control_timeout(command: str, fields: dict) -> int:
     """Bound command transport separately from each power-flow confirmation."""
+    if command == "recovery-ac-output":
+        return 90
     if command == "return-grid":
         duration = fields.get("timeout", 30)
         if type(duration) is int and 5 <= duration <= 120:
